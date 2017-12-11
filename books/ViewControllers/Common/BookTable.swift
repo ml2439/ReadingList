@@ -185,6 +185,14 @@ class BookTable: AutoUpdatingTableViewController {
             })
         }
         
+        optionsAlert.addAction(UIAlertAction(title: "Add Collection", style: .default){ [unowned self] _ in
+            let collection = appDelegate.booksStore.createCollection(name: "New collection")
+            collection.books = NSOrderedSet(array: selectedRows.map{ [unowned self] in
+                self.resultsController.object(at: $0)
+            })
+            appDelegate.booksStore.save()
+        })
+        
         optionsAlert.addAction(UIAlertAction(title: "Delete\(selectedRows.count > 1 ? " All" : "")", style: .destructive) { [unowned self] _ in
             // Are you sure?
             let confirmDeleteAlert = UIAlertController(title: "Confirm deletion of \(selectedRows.count) book\(selectedRows.count == 1 ? "" : "s")", message: nil, preferredStyle: .actionSheet)

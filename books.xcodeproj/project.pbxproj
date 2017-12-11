@@ -107,6 +107,7 @@
 
 /* Begin PBXFileReference section */
 		04FA98AC358B690592A17857 /* Pods_books_books_UnitTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_books_books_UnitTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1C40B38D1FDD91F500AD5A3B /* books_8.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = books_8.xcdatamodel; sourceTree = "<group>"; };
 		1C4765921FB8F012005F6AEC /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		1C6092291F922A0D0055AC5E /* Storyboards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storyboards.swift; sourceTree = "<group>"; };
 		1C6CC34E1F8A25B7001B54A1 /* NoCancelButtonSearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoCancelButtonSearchBar.swift; sourceTree = "<group>"; };
@@ -1232,11 +1233,12 @@
 		498CD1E41F2A8369007E98B5 /* books.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				1C40B38D1FDD91F500AD5A3B /* books_8.xcdatamodel */,
 				49B8D8D91F44C96E00D4C4EF /* books_7.xcdatamodel */,
 				492710541F360E9D00286352 /* books_6.xcdatamodel */,
 				498CD1E51F2A8369007E98B5 /* books_5.xcdatamodel */,
 			);
-			currentVersion = 49B8D8D91F44C96E00D4C4EF /* books_7.xcdatamodel */;
+			currentVersion = 1C40B38D1FDD91F500AD5A3B /* books_8.xcdatamodel */;
 			path = books.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

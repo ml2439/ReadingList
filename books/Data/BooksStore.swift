@@ -15,6 +15,7 @@ class BooksStore {
     private let bookEntityName = "Book"
     private let authorEntityName = "Author"
     private let subjectEntityName = "Subject"
+    private let collectionEntityName = "Collection"
     
     private let coreDataStack: CoreDataStack
     private let coreSpotlightStack: CoreSpotlightStack
@@ -214,6 +215,12 @@ class BooksStore {
         return author
     }
     
+    func createCollection(name: String) -> Collection {
+        let collection = coreDataStack.createNew(entity: collectionEntityName) as! Collection
+        collection.name = name
+        return collection
+    }
+    
     /**
         Updates the provided book with the provided metadata and reading information (whichever are provided).
         Saves and reindexes in spotlight.
@@ -300,7 +307,6 @@ class BooksStore {
      Deindexes all items from Spotlight if necessary.
     */
     func deleteAll() {
-
         do {
             let results = try coreDataStack.managedObjectContext.fetch(bookFetchRequest())
             for result in results {
@@ -321,4 +327,5 @@ class BooksStore {
         let bookCount = try? managedObjectContext.count(for: fetchRequest)
         return bookCount ?? -1
     }
+    
 }

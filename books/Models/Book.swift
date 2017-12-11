@@ -50,6 +50,7 @@ public class Book: NSManagedObject {
     // Relationships
     @NSManaged var subjects: NSOrderedSet
     @NSManaged var authors: NSOrderedSet
+    @NSManaged var collections: NSSet
     
     var subjectsArray: [Subject] {
         get { return subjects.array.map{($0 as! Subject)} }
@@ -57,6 +58,10 @@ public class Book: NSManagedObject {
     
     var authorsArray: [Author] {
         get { return authors.array.map{($0 as! Author)} }
+    }
+    
+    var collectionsArray: [Collection] {
+        get { return collections.map{($0 as! Collection)} }
     }
     
     var authorsFirstLast: String {
@@ -88,6 +93,17 @@ public class Subject: NSManagedObject {
         if !isDeleted && books.count == 0 {
             managedObjectContext?.delete(self)
         }
+    }
+}
+
+/// A 'Collection' is a named ordered set of books
+@objc(Collection)
+public class Collection: NSManagedObject {
+    @NSManaged var name: String
+    @NSManaged var books: NSOrderedSet
+    
+    var booksArray: [Book] {
+        get { return books.array.map{($0 as! Book)} }
     }
 }
 
