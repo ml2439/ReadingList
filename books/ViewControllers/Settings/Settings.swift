@@ -14,6 +14,7 @@ import MessageUI
 class Settings: UITableViewController, MFMailComposeViewControllerDelegate {
 
     static let appStoreAddress = "itunes.apple.com/gb/app/reading-list-book-tracker/id1217139955"
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
@@ -23,13 +24,11 @@ class Settings: UITableViewController, MFMailComposeViewControllerDelegate {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
         switch (indexPath.section, indexPath.row) {
-        case (0, 1):
-            contact()
-        case (0, 2):
-            UIApplication.shared.openUrlPlatformSpecific(url: URL(string: "itms-apps://\(Settings.appStoreAddress)?action=write-review")!)
-        default:
-            break
+        case (0, 1): contact()
+        case (0, 2): UIApplication.shared.openUrlPlatformSpecific(url: URL(string: "itms-apps://\(Settings.appStoreAddress)?action=write-review")!)
+        default: return
         }
         tableView.deselectRow(at: indexPath, animated: true)
     }
