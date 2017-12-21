@@ -12,6 +12,7 @@ import Fabric
 import Crashlytics
 import Firebase
 import SVProgressHUD
+import SwiftyStoreKit
 
 let productBundleIdentifier = "com.andrewbennet.books"
 
@@ -49,6 +50,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         SVProgressHUD.setDefaultAnimationType(.native)
         SVProgressHUD.setDefaultMaskType(.clear)
         SVProgressHUD.setMinimumDismissTimeInterval(2)
+        
+        // Apple recommends to register a transaction observer as soon as the app starts.
+        SwiftyStoreKit.completeTransactions(atomically: true) { purchases in
+            for purchase in purchases {
+                if purchase.transaction.transactionState == .purchased || purchase.transaction.transactionState == .restored {
+                    if purchase.needsFinishTransaction {
+                        SwiftyStoreKit.finishTransaction(purchase.transaction)
+                    }
+                }
+            }
+        }
 
         return true
     }

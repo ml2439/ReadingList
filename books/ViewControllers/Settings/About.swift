@@ -10,17 +10,14 @@ import Foundation
 import UIKit
 
 class About: UITableViewController {
-
+    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        switch (indexPath.section, indexPath.row) {
-        case (0, 0):
-            UIApplication.shared.openUrlPlatformSpecific(url: URL(string: "https://www.readinglistapp.xyz")!)
-        case (0, 2):
-            UIApplication.shared.openUrlPlatformSpecific(url: URL(string: "https://github.com/AndrewBennet/readinglist")!)
-        case (0, 3):
-            share()
-        default:
-            break
+        guard indexPath.section == 0 else { return }
+        switch indexPath.row {
+        case 0: UIApplication.shared.openUrlPlatformSpecific(url: URL(string: "https://www.readinglistapp.xyz")!)
+        case 2: UIApplication.shared.openUrlPlatformSpecific(url: URL(string: "https://github.com/AndrewBennet/readinglist")!)
+        case 3: share()
+        default: return
         }
         tableView.deselectRow(at: indexPath, animated: true)
     }
@@ -37,28 +34,21 @@ class About: UITableViewController {
     }
 }
 
-class Attributions: UIViewController {
-    
-    @IBOutlet var textView: UITextView!
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        let mutableText = NSMutableAttributedString(attributedString: textView.attributedText)
-        mutableText.hyperlinkText("Icons8", to: URL(string: "https://icons8.com")!)
-        mutableText.hyperlinkText("Eureka", to: URL(string: "https://github.com/xmartlabs/Eureka")!)
-        mutableText.hyperlinkText("DZNEmptyDataSet", to: URL(string: "https://github.com/dzenbot/DZNEmptyDataSet")!)
-        mutableText.hyperlinkText("SwiftyJSON", to: URL(string: "https://github.com/SwiftyJSON/SwiftyJSON")!)
-        mutableText.hyperlinkText("RxSwift", to: URL(string: "https://github.com/ReactiveX/RxSwift")!)
-        mutableText.hyperlinkText("SVProgressHUD", to: URL(string: "https://github.com/SVProgressHUD/SVProgressHUD")!)
-        mutableText.hyperlinkText("CHCSVParser", to: URL(string: "https://github.com/davedelong/CHCSVParser")!)
-        
-        textView.attributedText = mutableText
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        self.textView.contentOffset = CGPoint.zero
-        super.viewWillAppear(animated)
+class Attributions: UITableViewController {
+
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard indexPath.section == 0 else { return }
+        switch indexPath.row {
+        case 0: UIApplication.shared.openUrlPlatformSpecific(url: URL(string: "https://icons8.com")!)
+        case 1: UIApplication.shared.openUrlPlatformSpecific(url: URL(string: "https://github.com/xmartlabs/Eureka")!)
+        case 2: UIApplication.shared.openUrlPlatformSpecific(url: URL(string: "https://github.com/dzenbot/DZNEmptyDataSet")!)
+        case 3: UIApplication.shared.openUrlPlatformSpecific(url: URL(string: "https://github.com/SwiftyJSON/SwiftyJSON")!)
+        case 4: UIApplication.shared.openUrlPlatformSpecific(url: URL(string: "https://github.com/SVProgressHUD/SVProgressHUD")!)
+        case 5: UIApplication.shared.openUrlPlatformSpecific(url: URL(string: "https://github.com/davedelong/CHCSVParser")!)
+        case 6: UIApplication.shared.openUrlPlatformSpecific(url: URL(string: "https://github.com/bizz84/SwiftyStoreKit")!)
+        default: return
+        }
+        tableView.deselectRow(at: indexPath, animated: true)
     }
 }
 
