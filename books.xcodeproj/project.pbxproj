@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1C1C887F1FE05A9D00A20402 /* Tip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C1C887E1FE05A9D00A20402 /* Tip.swift */; };
 		1C4765931FB8F012005F6AEC /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1C4765921FB8F012005F6AEC /* GoogleService-Info.plist */; };
 		1C4765941FB8F012005F6AEC /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1C4765921FB8F012005F6AEC /* GoogleService-Info.plist */; };
 		1C4765951FB8F012005F6AEC /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1C4765921FB8F012005F6AEC /* GoogleService-Info.plist */; };
@@ -16,6 +17,7 @@
 		1C87F5BA1FAE4AF500E44043 /* General.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C87F5B91FAE4AF500E44043 /* General.swift */; };
 		1C87F5BC1FAE582A00E44043 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C87F5BB1FAE582A00E44043 /* Data.swift */; };
 		1C8D13781F88F224004A7F18 /* MD5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8D13771F88F224004A7F18 /* MD5.swift */; };
+		1C9D2A4A1FDF453D00A86C96 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C9D2A491FDF453D00A86C96 /* StoreKit.framework */; };
 		1CA61FF61F861AAB00DD88F1 /* EditReadState.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1CA61FF51F861AAB00DD88F1 /* EditReadState.storyboard */; };
 		1CA61FF81F861ABC00DD88F1 /* EditBook.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1CA61FF71F861ABC00DD88F1 /* EditBook.storyboard */; };
 		1CAD7E971F8EA11B00A2E178 /* Privacy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CAD7E961F8EA11B00A2E178 /* Privacy.swift */; };
@@ -107,6 +109,7 @@
 
 /* Begin PBXFileReference section */
 		04FA98AC358B690592A17857 /* Pods_books_books_UnitTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_books_books_UnitTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1C1C887E1FE05A9D00A20402 /* Tip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tip.swift; sourceTree = "<group>"; };
 		1C4765921FB8F012005F6AEC /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		1C6092291F922A0D0055AC5E /* Storyboards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storyboards.swift; sourceTree = "<group>"; };
 		1C6CC34E1F8A25B7001B54A1 /* NoCancelButtonSearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoCancelButtonSearchBar.swift; sourceTree = "<group>"; };
@@ -115,6 +118,7 @@
 		1C87F5BB1FAE582A00E44043 /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
 		1C8D13771F88F224004A7F18 /* MD5.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MD5.swift; sourceTree = "<group>"; };
 		1C8D137A1F88F316004A7F18 /* books-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "books-Bridging-Header.h"; sourceTree = "<group>"; };
+		1C9D2A491FDF453D00A86C96 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		1CA61FF51F861AAB00DD88F1 /* EditReadState.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = EditReadState.storyboard; sourceTree = "<group>"; };
 		1CA61FF71F861ABC00DD88F1 /* EditBook.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = EditBook.storyboard; sourceTree = "<group>"; };
 		1CAD7E961F8EA11B00A2E178 /* Privacy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Privacy.swift; sourceTree = "<group>"; };
@@ -219,6 +223,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				83AB081E3766154919000CC4 /* Pods_books.framework in Frameworks */,
+				1C9D2A4A1FDF453D00A86C96 /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -263,6 +268,7 @@
 		241740D919B869177546F852 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1C9D2A491FDF453D00A86C96 /* StoreKit.framework */,
 				49E0C8931CA4945700703A9A /* NotificationCenter.framework */,
 				CD79B1B507C38A094F3B564E /* Pods_books.framework */,
 				5AF1B0A846B4E06E2AC9871A /* Pods_books_books_UITests.framework */,
@@ -340,6 +346,7 @@
 			children = (
 				4943DB781DBD5104004CAF30 /* Settings.swift */,
 				1C87F5B71FAE4A5200E44043 /* About.swift */,
+				1C1C887E1FE05A9D00A20402 /* Tip.swift */,
 				1C87F5B91FAE4AF500E44043 /* General.swift */,
 				1C87F5BB1FAE582A00E44043 /* Data.swift */,
 				49B2CEF71F39A4D300C6B45D /* SortOrder.swift */,
@@ -575,6 +582,9 @@
 						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
+							com.apple.InAppPurchase = {
+								enabled = 1;
+							};
 							com.apple.iCloud = {
 								enabled = 1;
 							};
@@ -687,6 +697,7 @@
 				"${BUILT_PRODUCTS_DIR}/SVProgressHUD/SVProgressHUD.framework",
 				"${BUILT_PRODUCTS_DIR}/SimulatorStatusMagic/SimulatorStatusMagic.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftyStoreKit/SwiftyStoreKit.framework",
 				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -699,6 +710,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SVProgressHUD.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SimulatorStatusMagic.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyStoreKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -736,6 +748,7 @@
 				"${BUILT_PRODUCTS_DIR}/SVProgressHUD/SVProgressHUD.framework",
 				"${BUILT_PRODUCTS_DIR}/SimulatorStatusMagic/SimulatorStatusMagic.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftyStoreKit/SwiftyStoreKit.framework",
 				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -748,6 +761,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SVProgressHUD.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SimulatorStatusMagic.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyStoreKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -819,6 +833,7 @@
 				"${BUILT_PRODUCTS_DIR}/SVProgressHUD/SVProgressHUD.framework",
 				"${BUILT_PRODUCTS_DIR}/SimulatorStatusMagic/SimulatorStatusMagic.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftyStoreKit/SwiftyStoreKit.framework",
 				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -831,6 +846,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SVProgressHUD.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SimulatorStatusMagic.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyStoreKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -933,6 +949,7 @@
 				49CEB80A1E9D8C06003FD859 /* Debug.swift in Sources */,
 				49B8D8EB1F4CC85E00D4C4EF /* BookMapping_6_7.xcmappingmodel in Sources */,
 				49BDCC6C1CD6120400F20AAE /* Utilities.swift in Sources */,
+				1C1C887F1FE05A9D00A20402 /* Tip.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1114,7 +1131,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				INFOPLIST_FILE = books/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" \"-D\" \"DEBUG\"";
 				PRODUCT_BUNDLE_IDENTIFIER = com.andrewbennet.books;
@@ -1137,7 +1154,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer: Andrew Bennet (NSVAF8RDK6)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = books/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.andrewbennet.books;
 				PRODUCT_NAME = "Reading List";

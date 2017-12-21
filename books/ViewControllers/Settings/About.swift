@@ -45,6 +45,7 @@ class Attributions: UITableViewController {
         case 3: UIApplication.shared.openUrlPlatformSpecific(url: URL(string: "https://github.com/SwiftyJSON/SwiftyJSON")!)
         case 4: UIApplication.shared.openUrlPlatformSpecific(url: URL(string: "https://github.com/SVProgressHUD/SVProgressHUD")!)
         case 5: UIApplication.shared.openUrlPlatformSpecific(url: URL(string: "https://github.com/davedelong/CHCSVParser")!)
+        case 6: UIApplication.shared.openUrlPlatformSpecific(url: URL(string: "https://github.com/bizz84/SwiftyStoreKit")!)
         default: return
         }
         tableView.deselectRow(at: indexPath, animated: true)
