@@ -129,13 +129,20 @@ class BookTable: AutoUpdatingTableViewController {
     override func setEditing(_ editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: animated)
         if editing {
+            // If we're editing, the right button should become an "edit action" button
             let actionButton = UIBarButtonItem(image: #imageLiteral(resourceName: "MoreFilledIcon"), style: .plain, target: self, action: #selector(editActionButtonPressed(_:)))
             actionButton.isEnabled = false
             navigationItem.rightBarButtonItem = actionButton
         }
         else {
+            // If we're not editing, the right button should revert back to being an Add button
             navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addWasPressed(_:)))
         }
+        
+        // The search bar should be disabled iff editing: searches will clear selections in edit mode,
+        // so it's probably better to just prevent searches from occuring.
+        searchController.searchBar.isUserInteractionEnabled = !editing
+        searchController.searchBar.alpha = editing ? 0.5 : 1.0
     }
     
     @objc func bookSortChanged() {
