@@ -114,9 +114,6 @@ class BookTable: AutoUpdatingTableViewController {
         // Set the DZN data set source
         tableView.emptyDataSetSource = self
         tableView.emptyDataSetDelegate = self
-        
-        // The left button should be an edit button
-        navigationItem.leftBarButtonItem = editButtonItem
 
         // Watch for changes in book sort order
         NotificationCenter.default.addObserver(self, selector: #selector(bookSortChanged), name: NSNotification.Name.onBookSortOrderChanged, object: nil)
@@ -138,16 +135,14 @@ class BookTable: AutoUpdatingTableViewController {
             let actionButton = UIBarButtonItem(image: #imageLiteral(resourceName: "MoreFilledIcon"), style: .plain, target: self, action: #selector(editActionButtonPressed(_:)))
             actionButton.isEnabled = false
             navigationItem.rightBarButtonItem = actionButton
+            navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(editWasPressed(_:)))
         }
         else {
             // If we're not editing, the right button should revert back to being an Add button, and the title should be reset
-            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addWasPressed(_:)))
             navigationItem.title = navigationItemTitle
+            navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Edit", style: .plain, target: self, action: #selector(editWasPressed(_:)))
+            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addWasPressed(_:)))
         }
-        
-        // The search bar should be disabled iff editing: searches will clear selections in edit mode,
-        // so it's probably better to just prevent searches from occuring.
-        searchController.searchBar.setIsActive(!editing)
     }
     
     @objc func bookSortChanged() {
@@ -351,7 +346,14 @@ class BookTable: AutoUpdatingTableViewController {
             editReadStateController.bookToEdit = book
         }
     }
-
+    
+    @objc @IBAction func editWasPressed(_ sender: UIBarButtonItem) {
+        // The search bar should be disabled iff editing: searches will clear selections in edit mode,
+        // so it's probably better to just prevent searches from occuring.
+        searchController.searchBar.setIsActive(isEditing)
+        setEditing(!isEditing, animated: true)
+    }
+    
     @IBAction func addWasPressed(_ sender: UIBarButtonItem) {
     
         func storyboardAction(title: String, storyboard: UIStoryboard) -> UIAlertAction {
