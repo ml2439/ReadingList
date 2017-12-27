@@ -268,7 +268,7 @@ class BookTable: AutoUpdatingTableViewController {
         searchController.dimsBackgroundDuringPresentation = false
         searchController.searchBar.returnKeyType = .done
         searchController.searchBar.placeholder = "Your Library"
-        searchController.searchBar.searchBarStyle = .minimal
+        searchController.searchBar.searchBarStyle = .default
         tableView.keyboardDismissMode = .onDrag
     }
     
