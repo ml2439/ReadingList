@@ -74,6 +74,9 @@ class BookTable: AutoUpdatingTableViewController {
     var readStates: [BookReadState]!
     var searchController: UISearchController!
     
+    // Should be overriden by subclasses
+    var navigationItemTitle: String { get { return "" } }
+    
     var parentSplitViewController: SplitViewController {
         get { return splitViewController as! SplitViewController }
     }
@@ -97,10 +100,12 @@ class BookTable: AutoUpdatingTableViewController {
         }
         else {
             searchController.searchBar.backgroundColor = tableView.backgroundColor!
-            searchController.hidesNavigationBarDuringPresentation = false
             tableView.tableHeaderView = searchController.searchBar
             tableView.setContentOffset(CGPoint(x: 0, y: searchController.searchBar.frame.height), animated: false)
         }
+        
+        // Set the nav bar title
+        navigationItem.title = navigationItemTitle
         
         // Set the table footer text
         tableFooter.text = footerText()
@@ -135,14 +140,14 @@ class BookTable: AutoUpdatingTableViewController {
             navigationItem.rightBarButtonItem = actionButton
         }
         else {
-            // If we're not editing, the right button should revert back to being an Add button
+            // If we're not editing, the right button should revert back to being an Add button, and the title should be reset
             navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addWasPressed(_:)))
+            navigationItem.title = navigationItemTitle
         }
         
         // The search bar should be disabled iff editing: searches will clear selections in edit mode,
         // so it's probably better to just prevent searches from occuring.
-        searchController.searchBar.isUserInteractionEnabled = !editing
-        searchController.searchBar.alpha = editing ? 0.5 : 1.0
+        searchController.searchBar.setIsActive(!editing)
     }
     
     @objc func bookSortChanged() {
@@ -153,12 +158,18 @@ class BookTable: AutoUpdatingTableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard isEditing else { return }
         navigationItem.rightBarButtonItem!.isEnabled = true
+        navigationItem.title = "\(tableView.indexPathsForSelectedRows!.count) Selected"
     }
     
     override func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
         guard isEditing else { return }
+        // If this deselection was deselecting the only selected row, disable the edit action button and reset the title
         if tableView.indexPathsForSelectedRows?.isEmpty ?? true {
             navigationItem.rightBarButtonItem!.isEnabled = false
+            navigationItem.title = navigationItemTitle
+        }
+        else {
+            navigationItem.title = "\(tableView.indexPathsForSelectedRows!.count) Selected"
         }
     }
     
@@ -503,18 +514,21 @@ extension BookTable : DZNEmptyDataSetSource {
 }
 
 extension BookTable: DZNEmptyDataSetDelegate {
-    // We want to hide the Edit button when there are no items on the screen; show it when there are
-    // items on the screen.
+    
+    // We want to hide the Edit button when there are no items on the screen; show it when there are items on the screen.
     // We want to hide the Search Bar when there are no items, but not due to a search filtering everything out.
+
     func emptyDataSetDidAppear(_ scrollView: UIScrollView!) {
         if !resultsFilterer.showingSearchResults {
-            self.searchController.searchBar.isHidden = true
+            // Deactivate the search controller so that clearing a search term cannot hide an active search bar
+            if searchController.isActive { searchController.isActive = false }
+            searchController.searchBar.setActiveOrVisible(false)
         }
         navigationItem.leftBarButtonItem!.toggleHidden(hidden: true)
     }
     
     func emptyDataSetDidDisappear(_ scrollView: UIScrollView!) {
-        self.searchController.searchBar.isHidden = false
+        searchController.searchBar.setActiveOrVisible(true)
         navigationItem.leftBarButtonItem!.toggleHidden(hidden: false)
     }
 }
