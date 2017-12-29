@@ -404,7 +404,7 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <segue destination="DtC-Ho-Zzw" kind="showDetail" id="EtB-BB-XOS"/>
+                                            <segue destination="DtC-Ho-Zzw" kind="show" action="showDetailViewController:sender:" id="EtB-BB-XOS"/>
                                         </connections>
                                     </tableViewCell>
                                 </cells>
@@ -474,7 +474,7 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <segue destination="JrL-ql-2d7" kind="showDetail" id="Bjo-NG-s4Y"/>
+                                            <segue destination="JrL-ql-2d7" kind="show" id="ieb-XC-cth"/>
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" textLabel="xzd-ie-yeM" imageView="mg5-eN-5Ig" style="IBUITableViewCellStyleDefault" id="r2p-K4-rBi">
@@ -1123,7 +1123,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             <objects>
                 <navigationController id="DtC-Ho-Zzw" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="yKp-NC-DEr">
-                        <rect key="frame" x="0.0" y="44" width="375" height="96"/>
+                        <rect key="frame" x="0.0" y="44" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
