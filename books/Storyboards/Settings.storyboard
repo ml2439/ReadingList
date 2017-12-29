@@ -183,7 +183,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
-                        <view key="tableHeaderView" contentMode="scaleToFill" misplaced="YES" id="LPF-07-Qzn" customClass="XibView" customModule="Reading_List" customModuleProvider="target">
+                        <view key="tableHeaderView" contentMode="scaleToFill" id="LPF-07-Qzn" customClass="XibView" customModule="Reading_List" customModuleProvider="target">
                             <rect key="frame" x="0.0" y="0.0" width="375" height="143"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <userDefinedRuntimeAttributes>
@@ -1033,27 +1033,50 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KHw-hw-vTl">
                                         <rect key="frame" x="8" y="8" width="359" height="130.33333333333334"/>
-                                        <string key="text">Hi 👋 I'm Andrew, the developer of this app. I hope you're finding it useful! 😊  This app costs me time and money to develop and maintain. If you want to contribute, you can leave a tip 🙇</string>
+                                        <string key="text">Hi - I'm Andrew, the developer of this app. I hope you're finding it useful! 😊  This app costs me time and money to develop and maintain. If you want to contribute, you can leave a tip 🙏</string>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CAZ-oI-Tbx">
-                                        <rect key="frame" x="150.66666666666666" y="154" width="75" height="33"/>
+                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="right" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="f3z-eb-Ndj">
+                                        <rect key="frame" x="53" y="154" width="61" height="33"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                        <state key="normal" title="Loading"/>
+                                        <connections>
+                                            <action selector="tipPressed:" destination="PnR-pR-8bR" eventType="touchUpInside" id="cGj-zu-eqV"/>
+                                        </connections>
+                                    </button>
+                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cI1-yC-jm6">
+                                        <rect key="frame" x="261" y="154" width="61" height="33"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                        <state key="normal" title="Loading"/>
+                                        <connections>
+                                            <action selector="tipPressed:" destination="PnR-pR-8bR" eventType="touchUpInside" id="WMJ-qB-5MT"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1Az-Jp-ePc">
+                                        <rect key="frame" x="150" y="154" width="75" height="33"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                         <state key="normal" title="Loading..."/>
                                         <connections>
-                                            <action selector="buyPressed:" destination="PnR-pR-8bR" eventType="touchUpInside" id="AGg-TC-NWf"/>
+                                            <action selector="tipPressed:" destination="PnR-pR-8bR" eventType="touchUpInside" id="Ryh-vL-emo"/>
                                         </connections>
                                     </button>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
+                                    <constraint firstItem="cI1-yC-jm6" firstAttribute="top" secondItem="f3z-eb-Ndj" secondAttribute="top" id="20H-vi-ZjV"/>
+                                    <constraint firstItem="cI1-yC-jm6" firstAttribute="leading" secondItem="1Az-Jp-ePc" secondAttribute="trailing" priority="900" constant="36" id="4xO-C1-T2k"/>
                                     <constraint firstItem="KHw-hw-vTl" firstAttribute="top" secondItem="Y6l-ci-SAF" secondAttribute="top" constant="8" id="90J-Pg-TA8"/>
-                                    <constraint firstItem="CAZ-oI-Tbx" firstAttribute="top" secondItem="KHw-hw-vTl" secondAttribute="bottom" constant="16" id="Mzg-f6-afk"/>
-                                    <constraint firstAttribute="bottom" secondItem="CAZ-oI-Tbx" secondAttribute="bottom" id="QaB-We-8Rp"/>
+                                    <constraint firstItem="1Az-Jp-ePc" firstAttribute="top" secondItem="f3z-eb-Ndj" secondAttribute="top" id="BxW-lN-Cjj"/>
+                                    <constraint firstAttribute="bottom" secondItem="1Az-Jp-ePc" secondAttribute="bottom" id="RpE-Om-QiX"/>
                                     <constraint firstAttribute="trailing" secondItem="KHw-hw-vTl" secondAttribute="trailing" constant="8" id="aBR-m6-6Z1"/>
-                                    <constraint firstItem="CAZ-oI-Tbx" firstAttribute="centerX" secondItem="Y6l-ci-SAF" secondAttribute="centerX" id="gRy-jG-W9q"/>
+                                    <constraint firstItem="cI1-yC-jm6" firstAttribute="trailing" relation="lessThanOrEqual" secondItem="KHw-hw-vTl" secondAttribute="trailing" id="aaZ-cI-mUw"/>
+                                    <constraint firstItem="cI1-yC-jm6" firstAttribute="top" secondItem="1Az-Jp-ePc" secondAttribute="top" id="b7z-aE-jZd"/>
+                                    <constraint firstItem="1Az-Jp-ePc" firstAttribute="centerX" secondItem="Y6l-ci-SAF" secondAttribute="centerX" id="dLJ-V8-dTf"/>
+                                    <constraint firstItem="f3z-eb-Ndj" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="KHw-hw-vTl" secondAttribute="leading" id="exM-mS-zEA"/>
+                                    <constraint firstItem="1Az-Jp-ePc" firstAttribute="top" secondItem="KHw-hw-vTl" secondAttribute="bottom" constant="16" id="gA1-cz-L9e"/>
+                                    <constraint firstItem="1Az-Jp-ePc" firstAttribute="leading" secondItem="f3z-eb-Ndj" secondAttribute="trailing" priority="900" constant="36" id="hnd-pk-4iC"/>
                                     <constraint firstItem="KHw-hw-vTl" firstAttribute="leading" secondItem="Y6l-ci-SAF" secondAttribute="leading" constant="8" id="nEa-0g-fow"/>
                                 </constraints>
                             </view>
@@ -1070,7 +1093,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                     <navigationItem key="navigationItem" title="Tip" largeTitleDisplayMode="never" id="LpW-Sv-2XF"/>
                     <connections>
                         <outlet property="explanationLabel" destination="KHw-hw-vTl" id="ePc-MO-MLX"/>
-                        <outlet property="leaveTipButton" destination="CAZ-oI-Tbx" id="QPC-0a-XMv"/>
+                        <outlet property="largeTip" destination="cI1-yC-jm6" id="ntf-a3-kj6"/>
+                        <outlet property="mediumTip" destination="1Az-Jp-ePc" id="C1A-Rd-gao"/>
+                        <outlet property="smallTip" destination="f3z-eb-Ndj" id="bYl-ft-Amj"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Zwj-Bm-gcp" userLabel="First Responder" sceneMemberID="firstResponder"/>

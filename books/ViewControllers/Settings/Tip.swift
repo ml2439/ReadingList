@@ -10,46 +10,74 @@ import SwiftyStoreKit
 import StoreKit
 
 class Tip: UIViewController {
-    static let tipId = "smalltip"
-    var tipProduct: SKProduct?
+    static let smallTipId = "smalltip"
+    static let mediumTipId = "mediumtip"
+    static let largeTipId = "largetip"
+    var tipProducts: Set<SKProduct>?
     
     @IBOutlet weak var explanationLabel: UILabel!
-    @IBOutlet weak var leaveTipButton: UIButton!
+
+    // Small and large tip buttons are hidden at load
+    @IBOutlet weak var smallTip: UIButton!
+    @IBOutlet weak var mediumTip: UIButton!
+    @IBOutlet weak var largeTip: UIButton!
     
     override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        SwiftyStoreKit.retrieveProductsInfo(Set<String>(arrayLiteral: Tip.tipId)){ [weak self] results in
+        SwiftyStoreKit.retrieveProductsInfo([Tip.smallTipId, Tip.mediumTipId, Tip.largeTipId]){ [weak self] results in
             guard let vc = self else { return }
-            guard let product = results.retrievedProducts.first else {
-                vc.leaveTipButton.isEnabled = false
-                vc.leaveTipButton.setTitle("Not available", for: .normal)
+            guard results.retrievedProducts.count == 3 else {
+                vc.mediumTip.isEnabled = false
+                vc.mediumTip.setTitle("Not available", for: .normal)
                 return
             }
-            
-            // Set up the price label
-            let priceFormatter: NumberFormatter = {
-                let formatter = NumberFormatter()
-                formatter.formatterBehavior = .behavior10_4
-                formatter.numberStyle = .currency
-                formatter.locale = product.priceLocale
-                return formatter
-            }()
-            guard let priceString = priceFormatter.string(from: product.price) else { return }
-            
-            vc.tipProduct = product
-            vc.leaveTipButton.isEnabled = true
-            vc.leaveTipButton.setTitle(priceString, for: .normal)
+            vc.tipProducts = results.retrievedProducts
+            vc.displayTipPrices()
         }
     }
     
-    @IBAction func buyPressed(_ sender: Any) {
-        guard let tipProduct = tipProduct else { return }
-        SwiftyStoreKit.purchaseProduct(tipProduct) { [weak self] result in
+    func displayTipPrices() {
+        guard let tipProducts = tipProducts else { return }
+
+        let priceFormatter = NumberFormatter()
+        priceFormatter.formatterBehavior = .behavior10_4
+        priceFormatter.numberStyle = .currency
+        priceFormatter.locale = tipProducts.first!.priceLocale
+        
+        for product in tipProducts {
+            guard let priceString = priceFormatter.string(from: product.price) else { continue }
+            let button: UIButton
+            switch product.productIdentifier {
+            case Tip.smallTipId: button = smallTip
+            case Tip.mediumTipId: button = mediumTip
+            case Tip.largeTipId: button = largeTip
+            default: continue
+            }
+            
+            button.isHidden = false
+            button.isEnabled = true
+            button.setTitle(priceString, for: .normal)
+        }
+    }
+    
+    @IBAction func tipPressed(_ sender: UIButton) {
+        guard let tipProducts = tipProducts else { return }
+        
+        let productId: String
+        if sender == smallTip { productId = Tip.smallTipId }
+        else if sender == mediumTip { productId = Tip.mediumTipId }
+        else if sender == largeTip { productId = Tip.largeTipId }
+        else { return }
+        
+        guard let product = tipProducts.first(where: {$0.productIdentifier == productId}) else { return }
+        
+        SwiftyStoreKit.purchaseProduct(product) { [weak self] result in
             switch result {
             case .success:
-                self?.explanationLabel.text = "Thanks for supporting Reading List! ❤️"
-                self?.leaveTipButton.isHidden = true
+                guard let vc = self else { return }
+                vc.explanationLabel.text = "Thanks for supporting Reading List! ❤️"
+                vc.smallTip.isHidden = true
+                vc.mediumTip.isHidden = true
+                vc.largeTip.isHidden = true
             
             case .error(let error):
                 guard error.code != .paymentCancelled else { return }
