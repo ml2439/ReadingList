@@ -96,6 +96,7 @@ class BookDetails: UIViewController {
     @IBOutlet weak var descriptionHeader: UILabel!
     @IBOutlet weak var descriptionStack: UIStackView!
     @IBOutlet weak var descriptionTextView: UILabel!
+    @IBOutlet weak var descriptionSeeMore: UIButton!
     
     @IBOutlet weak var readingLogHeadingSeparator: UIView!
     @IBOutlet weak var readingLogStack: UIStackView!
@@ -153,6 +154,14 @@ class BookDetails: UIViewController {
             case .finished:
                 changeReadState.isHidden = true
             }
+        }
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        if descriptionSeeMore.isHidden == descriptionTextView.isTruncated {
+            descriptionSeeMore.isHidden = !descriptionTextView.isTruncated
+            descriptionStack.superview!.layoutIfNeeded()
         }
     }
     
@@ -286,6 +295,13 @@ class BookDetails: UIViewController {
         }
         
         self.present(optionsAlert, animated: true, completion: nil)
+    }
+
+    @IBAction func seeMoreDescriptionPressed(_ sender: UIButton) {
+        guard descriptionTextView.isTruncated else { return }
+        descriptionTextView.numberOfLines = 0
+        descriptionSeeMore.isHidden = true
+        descriptionStack.superview!.layoutIfNeeded()
     }
 
     override var previewActionItems: [UIPreviewActionItem] {
