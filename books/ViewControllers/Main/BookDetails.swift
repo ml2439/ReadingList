@@ -159,9 +159,11 @@ class BookDetails: UIViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        // If the seeMore button has been pressed, is will be disabled now which means it should be hidden at this point
+        guard descriptionSeeMore.isEnabled else { descriptionSeeMore.isHidden = true; return }
+        
         if descriptionSeeMore.isHidden == descriptionTextView.isTruncated {
             descriptionSeeMore.isHidden = !descriptionTextView.isTruncated
-            descriptionStack.superview!.layoutIfNeeded()
         }
     }
     
@@ -298,9 +300,13 @@ class BookDetails: UIViewController {
     }
 
     @IBAction func seeMoreDescriptionPressed(_ sender: UIButton) {
-        guard descriptionTextView.isTruncated else { return }
+        // We use the Enabled state to indicate whether the control should be shown or not. We cannot just set isHidden to true, because
+        // we cannot be sure whether the relayout will be called before or after the description label starts reporting isTruncated = false.
+        // Instead, store the knowledge that the button should be hidden here; when layout is called, if the button is disabled it will be hidden.
+        descriptionSeeMore.isEnabled = false
         descriptionTextView.numberOfLines = 0
-        descriptionSeeMore.isHidden = true
+
+        // Relaying out the stackview is required to adjust the space between the separator and the description label
         descriptionStack.superview!.layoutIfNeeded()
     }
 
