@@ -130,19 +130,25 @@ class BookTable: AutoUpdatingTableViewController {
     
     override func setEditing(_ editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: animated)
+        let leftButton, rightButton: UIBarButtonItem
         if editing {
-            // If we're editing, the right button should become an "edit action" button
-            let actionButton = UIBarButtonItem(image: #imageLiteral(resourceName: "MoreFilledIcon"), style: .plain, target: self, action: #selector(editActionButtonPressed(_:)))
-            actionButton.isEnabled = false
-            navigationItem.rightBarButtonItem = actionButton
-            navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(editWasPressed(_:)))
+            // If we're editing, the right button should become an "edit action" button, but be disabled until any books are selected
+            leftButton = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(editWasPressed(_:)))
+            rightButton = UIBarButtonItem(image: #imageLiteral(resourceName: "MoreFilledIcon"), style: .plain, target: self, action: #selector(editActionButtonPressed(_:)))
+            rightButton.isEnabled = false
         }
         else {
             // If we're not editing, the right button should revert back to being an Add button, and the title should be reset
             navigationItem.title = navigationItemTitle
-            navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Edit", style: .plain, target: self, action: #selector(editWasPressed(_:)))
-            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addWasPressed(_:)))
+            leftButton = UIBarButtonItem(title: "Edit", style: .plain, target: self, action: #selector(editWasPressed(_:)))
+            rightButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addWasPressed(_:)))
         }
+        
+        // The edit state may be updated after the emptydataset is shown; the left button should be hidden when empty
+        leftButton.toggleHidden(hidden: tableView.isEmptyDataSetVisible)
+        
+        navigationItem.leftBarButtonItem = leftButton
+        navigationItem.rightBarButtonItem = rightButton
     }
     
     @objc func bookSortChanged() {
