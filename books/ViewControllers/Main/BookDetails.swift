@@ -96,6 +96,7 @@ class BookDetails: UIViewController {
     @IBOutlet weak var descriptionHeader: UILabel!
     @IBOutlet weak var descriptionStack: UIStackView!
     @IBOutlet weak var descriptionTextView: UILabel!
+    @IBOutlet weak var descriptionSeeMore: UIButton!
     
     @IBOutlet weak var readingLogHeadingSeparator: UIView!
     @IBOutlet weak var readingLogStack: UIStackView!
@@ -154,6 +155,16 @@ class BookDetails: UIViewController {
             case .finished:
                 changeReadState.isHidden = true
             }
+        }
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        // If the seeMore button has been pressed, is will be disabled now which means it should be hidden at this point
+        guard descriptionSeeMore.isEnabled else { descriptionSeeMore.isHidden = true; return }
+        
+        if descriptionSeeMore.isHidden == descriptionTextView.isTruncated {
+            descriptionSeeMore.isHidden = !descriptionTextView.isTruncated
         }
     }
     
@@ -287,6 +298,17 @@ class BookDetails: UIViewController {
         }
         
         self.present(optionsAlert, animated: true, completion: nil)
+    }
+
+    @IBAction func seeMoreDescriptionPressed(_ sender: UIButton) {
+        // We use the Enabled state to indicate whether the control should be shown or not. We cannot just set isHidden to true, because
+        // we cannot be sure whether the relayout will be called before or after the description label starts reporting isTruncated = false.
+        // Instead, store the knowledge that the button should be hidden here; when layout is called, if the button is disabled it will be hidden.
+        descriptionSeeMore.isEnabled = false
+        descriptionTextView.numberOfLines = 0
+
+        // Relaying out the stackview is required to adjust the space between the separator and the description label
+        descriptionStack.superview!.layoutIfNeeded()
     }
 
     override var previewActionItems: [UIPreviewActionItem] {

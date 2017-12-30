@@ -35,6 +35,10 @@ class About: UITableViewController {
 }
 
 class Attributions: UITableViewController {
+    
+    override func viewDidLoad() {
+        tableView.rowHeight = UITableViewAutomaticDimension
+    }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard indexPath.section == 0 else { return }

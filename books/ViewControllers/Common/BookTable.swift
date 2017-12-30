@@ -74,6 +74,9 @@ class BookTable: AutoUpdatingTableViewController {
     var readStates: [BookReadState]!
     var searchController: UISearchController!
     
+    // Should be overriden by subclasses
+    var navigationItemTitle: String { get { return "" } }
+    
     var parentSplitViewController: SplitViewController {
         get { return splitViewController as! SplitViewController }
     }
@@ -97,10 +100,12 @@ class BookTable: AutoUpdatingTableViewController {
         }
         else {
             searchController.searchBar.backgroundColor = tableView.backgroundColor!
-            searchController.hidesNavigationBarDuringPresentation = false
             tableView.tableHeaderView = searchController.searchBar
             tableView.setContentOffset(CGPoint(x: 0, y: searchController.searchBar.frame.height), animated: false)
         }
+        
+        // Set the nav bar title
+        navigationItem.title = navigationItemTitle
         
         // Set the table footer text
         tableFooter.text = footerText()
@@ -109,9 +114,6 @@ class BookTable: AutoUpdatingTableViewController {
         // Set the DZN data set source
         tableView.emptyDataSetSource = self
         tableView.emptyDataSetDelegate = self
-        
-        // The left button should be an edit button
-        navigationItem.leftBarButtonItem = editButtonItem
 
         // Watch for changes in book sort order
         NotificationCenter.default.addObserver(self, selector: #selector(bookSortChanged), name: NSNotification.Name.onBookSortOrderChanged, object: nil)
@@ -128,14 +130,25 @@ class BookTable: AutoUpdatingTableViewController {
     
     override func setEditing(_ editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: animated)
+        let leftButton, rightButton: UIBarButtonItem
         if editing {
-            let actionButton = UIBarButtonItem(image: #imageLiteral(resourceName: "MoreFilledIcon"), style: .plain, target: self, action: #selector(editActionButtonPressed(_:)))
-            actionButton.isEnabled = false
-            navigationItem.rightBarButtonItem = actionButton
+            // If we're editing, the right button should become an "edit action" button, but be disabled until any books are selected
+            leftButton = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(editWasPressed(_:)))
+            rightButton = UIBarButtonItem(image: #imageLiteral(resourceName: "MoreFilledIcon"), style: .plain, target: self, action: #selector(editActionButtonPressed(_:)))
+            rightButton.isEnabled = false
         }
         else {
-            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addWasPressed(_:)))
+            // If we're not editing, the right button should revert back to being an Add button, and the title should be reset
+            navigationItem.title = navigationItemTitle
+            leftButton = UIBarButtonItem(title: "Edit", style: .plain, target: self, action: #selector(editWasPressed(_:)))
+            rightButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addWasPressed(_:)))
         }
+        
+        // The edit state may be updated after the emptydataset is shown; the left button should be hidden when empty
+        leftButton.toggleHidden(hidden: tableView.isEmptyDataSetVisible)
+        
+        navigationItem.leftBarButtonItem = leftButton
+        navigationItem.rightBarButtonItem = rightButton
     }
     
     @objc func bookSortChanged() {
@@ -146,12 +159,18 @@ class BookTable: AutoUpdatingTableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard isEditing else { return }
         navigationItem.rightBarButtonItem!.isEnabled = true
+        navigationItem.title = "\(tableView.indexPathsForSelectedRows!.count) Selected"
     }
     
     override func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
         guard isEditing else { return }
+        // If this deselection was deselecting the only selected row, disable the edit action button and reset the title
         if tableView.indexPathsForSelectedRows?.isEmpty ?? true {
             navigationItem.rightBarButtonItem!.isEnabled = false
+            navigationItem.title = navigationItemTitle
+        }
+        else {
+            navigationItem.title = "\(tableView.indexPathsForSelectedRows!.count) Selected"
         }
     }
     
@@ -258,7 +277,7 @@ class BookTable: AutoUpdatingTableViewController {
         searchController.dimsBackgroundDuringPresentation = false
         searchController.searchBar.returnKeyType = .done
         searchController.searchBar.placeholder = "Your Library"
-        searchController.searchBar.searchBarStyle = .minimal
+        searchController.searchBar.searchBarStyle = .default
         tableView.keyboardDismissMode = .onDrag
     }
     
@@ -341,7 +360,14 @@ class BookTable: AutoUpdatingTableViewController {
             editReadStateController.bookToEdit = book
         }
     }
-
+    
+    @objc @IBAction func editWasPressed(_ sender: UIBarButtonItem) {
+        // The search bar should be disabled iff editing: searches will clear selections in edit mode,
+        // so it's probably better to just prevent searches from occuring.
+        searchController.searchBar.setIsActive(isEditing)
+        setEditing(!isEditing, animated: true)
+    }
+    
     @IBAction func addWasPressed(_ sender: UIBarButtonItem) {
     
         func storyboardAction(title: String, storyboard: UIStoryboard) -> UIAlertAction {
@@ -504,18 +530,21 @@ extension BookTable : DZNEmptyDataSetSource {
 }
 
 extension BookTable: DZNEmptyDataSetDelegate {
-    // We want to hide the Edit button when there are no items on the screen; show it when there are
-    // items on the screen.
+    
+    // We want to hide the Edit button when there are no items on the screen; show it when there are items on the screen.
     // We want to hide the Search Bar when there are no items, but not due to a search filtering everything out.
+
     func emptyDataSetDidAppear(_ scrollView: UIScrollView!) {
         if !resultsFilterer.showingSearchResults {
-            self.searchController.searchBar.isHidden = true
+            // Deactivate the search controller so that clearing a search term cannot hide an active search bar
+            if searchController.isActive { searchController.isActive = false }
+            searchController.searchBar.setActiveOrVisible(false)
         }
         navigationItem.leftBarButtonItem!.toggleHidden(hidden: true)
     }
     
     func emptyDataSetDidDisappear(_ scrollView: UIScrollView!) {
-        self.searchController.searchBar.isHidden = false
+        searchController.searchBar.setActiveOrVisible(true)
         navigationItem.leftBarButtonItem!.toggleHidden(hidden: false)
     }
 }

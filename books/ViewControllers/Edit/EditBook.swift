@@ -32,7 +32,7 @@ class EditBook: BookMetadataForm {
         }
         else {
             updateRow.onCellSelection { [unowned self] _,_ in
-                self.presentUpdateAltert()
+                self.presentUpdateAlert()
             }
         }
         
@@ -78,7 +78,14 @@ class EditBook: BookMetadataForm {
         }
     }
     
-    func presentUpdateAltert() {
+    func presentUpdateAlert() {
+        let areYouSure = UIAlertController(title: "Confirm Update", message: "Updating from Google Books will overwrite any book metadata changes you have made manually. Are you sure you wish to proceed?", preferredStyle: .alert)
+        areYouSure.addAction(UIAlertAction(title: "Update", style: .default){[unowned self] _ in self.updateBookFromGoogle()})
+        areYouSure.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        present(areYouSure, animated: true)
+    }
+        
+    func updateBookFromGoogle() {
         SVProgressHUD.show(withStatus: "Downloading...")
         GoogleBooks.fetch(googleBooksId: bookToEdit.googleBooksId!) { [unowned self] fetchResultPage in
             DispatchQueue.main.async {

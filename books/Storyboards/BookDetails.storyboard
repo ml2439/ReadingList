@@ -26,10 +26,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WOs-nU-bp0">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="672"/>
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="628"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Qxc-PW-YFe" userLabel="ContentView">
-                                        <rect key="frame" x="0.0" y="0.0" width="414" height="518"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="547"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Keep the Aspidistra Flying" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Bmm-uv-eym">
                                                 <rect key="frame" x="14" y="12.000000000000002" width="386" height="28.666666666666671"/>
@@ -75,7 +75,7 @@
                                                 </connections>
                                             </button>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="EYL-bM-ed6">
-                                                <rect key="frame" x="0.0" y="243" width="414" height="267"/>
+                                                <rect key="frame" x="0.0" y="243" width="414" height="296"/>
                                                 <subviews>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="J6f-k6-BSf" userLabel="Separator View">
                                                         <rect key="frame" x="0.0" y="0.0" width="414" height="1"/>
@@ -121,7 +121,7 @@
                                                         </constraints>
                                                     </view>
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="NHz-ha-h8l">
-                                                        <rect key="frame" x="14" y="100.66666666666669" width="386" height="102.33333333333331"/>
+                                                        <rect key="frame" x="14" y="100.6666666666667" width="386" height="131.33333333333337"/>
                                                         <subviews>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Description" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3sM-fZ-EBZ">
                                                                 <rect key="frame" x="0.0" y="0.0" width="386" height="19.666666666666668"/>
@@ -136,17 +136,25 @@
                                                                 <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
+                                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1jK-1z-1e2">
+                                                                <rect key="frame" x="0.0" y="104.33333333333331" width="386" height="27"/>
+                                                                <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
+                                                                <state key="normal" title="See More"/>
+                                                                <connections>
+                                                                    <action selector="seeMoreDescriptionPressed:" destination="svF-c1-e4g" eventType="touchUpInside" id="QE2-Z5-Wbc"/>
+                                                                </connections>
+                                                            </button>
                                                         </subviews>
                                                     </stackView>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fRM-jc-KD8" userLabel="Separator View">
-                                                        <rect key="frame" x="0.0" y="211" width="414" height="1"/>
+                                                        <rect key="frame" x="0.0" y="240" width="414" height="1"/>
                                                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="1" id="SD2-Sv-VMv" customClass="HairlineConstraint" customModule="Reading_List" customModuleProvider="target"/>
                                                         </constraints>
                                                     </view>
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="BiL-Wy-pMy">
-                                                        <rect key="frame" x="14" y="220" width="386" height="38"/>
+                                                        <rect key="frame" x="14" y="249" width="386" height="38"/>
                                                         <subviews>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Reading Log" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PPC-ji-WGD">
                                                                 <rect key="frame" x="0.0" y="0.0" width="386" height="19.666666666666668"/>
@@ -163,7 +171,7 @@
                                                         </subviews>
                                                     </stackView>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dol-WZ-YFM" userLabel="Separator View">
-                                                        <rect key="frame" x="0.0" y="266" width="414" height="1"/>
+                                                        <rect key="frame" x="0.0" y="295" width="414" height="1"/>
                                                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="1" id="okE-ux-Iqf" customClass="HairlineConstraint" customModule="Reading_List" customModuleProvider="target"/>
@@ -249,6 +257,9 @@
                         <viewLayoutGuide key="safeArea" id="1jO-Uv-G2z"/>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
+                    <toolbarItems>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="D9K-uo-IAl"/>
+                    </toolbarItems>
                     <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="YRx-69-dRa">
                         <rightBarButtonItems>
                             <barButtonItem systemItem="edit" id="ysf-NA-q2m">
@@ -264,11 +275,13 @@
                         </rightBarButtonItems>
                     </navigationItem>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="authorsLabel" destination="pRN-sy-kyO" id="QOF-UZ-N2x"/>
                         <outlet property="changeReadState" destination="UsS-JI-U2z" id="mva-4H-xoS"/>
                         <outlet property="descriptionHeader" destination="3sM-fZ-EBZ" id="A3x-Ad-wOv"/>
                         <outlet property="descriptionHeadingSeparator" destination="Dge-Ol-Iu3" id="ugf-87-tsu"/>
+                        <outlet property="descriptionSeeMore" destination="1jK-1z-1e2" id="Xkv-GS-w9q"/>
                         <outlet property="descriptionStack" destination="NHz-ha-h8l" id="dgJ-9I-Ryc"/>
                         <outlet property="descriptionTextView" destination="HLi-FL-4vx" id="Mew-ZK-4yU"/>
                         <outlet property="imageView" destination="YTX-8q-xHR" id="zj3-Wi-8EJ"/>

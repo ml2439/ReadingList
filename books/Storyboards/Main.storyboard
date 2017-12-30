@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="C9v-sl-9fR">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="C9v-sl-9fR">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13527"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Segues with Peek and Pop" minToolsVersion="7.1"/>
@@ -152,7 +152,11 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="To Read" id="L1D-Rs-V49">
-                        <barButtonItem key="leftBarButtonItem" systemItem="edit" id="nhd-kN-wZw"/>
+                        <barButtonItem key="leftBarButtonItem" systemItem="edit" id="nhd-kN-wZw">
+                            <connections>
+                                <action selector="editWasPressed:" destination="4HX-WC-tQz" id="1Xw-ie-QH6"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="xwc-GG-HVK">
                             <connections>
                                 <action selector="addWasPressed:" destination="4HX-WC-tQz" id="Xci-Dd-kOE"/>
@@ -349,7 +353,11 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Finished" id="o0h-MY-3OW">
-                        <barButtonItem key="leftBarButtonItem" systemItem="edit" id="HjT-nZ-fEX"/>
+                        <barButtonItem key="leftBarButtonItem" systemItem="edit" id="HjT-nZ-fEX">
+                            <connections>
+                                <action selector="editWasPressed:" destination="aQe-Q1-yJv" id="d3F-CA-WET"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="XMH-PT-dLc">
                             <connections>
                                 <action selector="addWasPressed:" destination="aQe-Q1-yJv" id="KTu-Ak-IJk"/>

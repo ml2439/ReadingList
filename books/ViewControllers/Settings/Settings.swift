@@ -14,6 +14,7 @@ import MessageUI
 class Settings: UITableViewController, MFMailComposeViewControllerDelegate {
 
     static let appStoreAddress = "itunes.apple.com/gb/app/reading-list-book-tracker/id1217139955"
+    static let feedbackEmailAddress = "feedback@readinglistapp.xyz"
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -44,26 +45,35 @@ class Settings: UITableViewController, MFMailComposeViewControllerDelegate {
     }
     
     func contact() {
-        let toEmail = "feedback@readinglistapp.xyz"
-        guard MFMailComposeViewController.canSendMail() else {
-            let alert = UIAlertController(title: "Can't send email", message: "Couldn't find any email accounts. If you want to give feedback, email \(toEmail)", preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .default))
-            present(alert, animated: true)
-            return
+        let canSendEmail = MFMailComposeViewController.canSendMail()
+
+        let alert = UIAlertController(title: "Send Feedback?", message: "If you have any questions, comments or suggestions, please email me\(canSendEmail ? "." : " at \(Settings.feedbackEmailAddress).") I'll do my best to respond.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default){ [unowned self] _ in
+            if canSendEmail {
+                self.presentMailComposeWindow()
+            }
+        })
+        if canSendEmail {
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         }
-        
+        present(alert, animated: true)
+    }
+    
+    func presentMailComposeWindow() {
         let mailComposer = MFMailComposeViewController()
         mailComposer.mailComposeDelegate = self
-        mailComposer.setToRecipients(["Reading List Developer <\(toEmail)>"])
+        mailComposer.setToRecipients(["Reading List Developer <\(Settings.feedbackEmailAddress)>"])
         mailComposer.setSubject("Reading List Feedback")
         let messageBody = """
+        Your Message Here:
         
         
         
-        ----
-        App Version: \(appDelegate.appVersion) (\(appDelegate.appBuildNumber))
-        iOS Version: \(UIDevice.current.systemVersion)
-        Device: \(UIDevice.current.modelIdentifier)
+        
+        Extra Info:
+          App Version: \(appDelegate.appVersion) (\(appDelegate.appBuildNumber))
+          iOS Version: \(UIDevice.current.systemVersion)
+          Device: \(UIDevice.current.modelName)
         """
         mailComposer.setMessageBody(messageBody, isHTML: false)
         present(mailComposer, animated: true)
