@@ -136,7 +136,7 @@ class BookDetails: UIViewController {
             
             descriptionHeadingSeparator.isHidden = viewModel.book.bookDescription == nil
             descriptionStack.isHidden = viewModel.book.bookDescription == nil
-            descriptionTextView.text = viewModel.book.bookDescription! + "\n\n" + viewModel.book.collectionsArray.map{$0.name}.joined(separator: "; ")
+            descriptionTextView.text = viewModel.book.bookDescription! + "\n\n" + viewModel.book.listsArray.map{$0.name}.joined(separator: "; ")
             
             
             readingLogHeadingSeparator.isHidden = viewModel.book.notes == nil

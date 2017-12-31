@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="13533" systemVersion="" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="13772" systemVersion="17C88" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Author" representedClassName="Author" syncable="YES">
         <attribute name="firstNames" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="lastName" attributeType="String" syncable="YES"/>
@@ -25,7 +25,7 @@
         <attribute name="startedReading" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="title" attributeType="String" syncable="YES"/>
         <relationship name="authors" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Author" inverseName="book" inverseEntity="Author" syncable="YES"/>
-        <relationship name="collections" toMany="YES" deletionRule="Nullify" destinationEntity="Collection" inverseName="books" inverseEntity="Collection" syncable="YES"/>
+        <relationship name="lists" toMany="YES" deletionRule="Nullify" destinationEntity="List" inverseName="books" inverseEntity="List" syncable="YES"/>
         <relationship name="subjects" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Subject" inverseName="books" inverseEntity="Subject" syncable="YES"/>
         <fetchIndex name="byCreatedWhenIndex">
             <fetchIndexElement property="createdWhen" type="Binary" order="ascending"/>
@@ -46,9 +46,13 @@
             <fetchIndexElement property="title" type="Binary" order="ascending"/>
         </fetchIndex>
     </entity>
-    <entity name="Collection" representedClassName="Collection" syncable="YES">
+    <entity name="List" representedClassName="List" syncable="YES">
         <attribute name="name" attributeType="String" minValueString="1" maxValueString="100" syncable="YES"/>
-        <relationship name="books" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Book" inverseName="collections" inverseEntity="Book" syncable="YES"/>
+        <attribute name="type" attributeType="Integer 32" usesScalarValueType="YES" syncable="YES"/>
+        <relationship name="books" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Book" inverseName="lists" inverseEntity="Book" syncable="YES"/>
+        <fetchIndex name="byTypeIndex">
+            <fetchIndexElement property="type" type="Binary" order="ascending"/>
+        </fetchIndex>
     </entity>
     <entity name="Subject" representedClassName="Subject" syncable="YES">
         <attribute name="name" attributeType="String" syncable="YES"/>
@@ -60,7 +64,7 @@
     <elements>
         <element name="Author" positionX="-54" positionY="108" width="128" height="90"/>
         <element name="Book" positionX="-63" positionY="-18" width="128" height="315"/>
+        <element name="List" positionX="-54" positionY="117" width="128" height="90"/>
         <element name="Subject" positionX="-63" positionY="90" width="128" height="75"/>
-        <element name="Collection" positionX="-54" positionY="117" width="128" height="75"/>
     </elements>
 </model>

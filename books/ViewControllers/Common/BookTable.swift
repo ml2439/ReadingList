@@ -204,9 +204,10 @@ class BookTable: AutoUpdatingTableViewController {
             })
         }
         
-        optionsAlert.addAction(UIAlertAction(title: "Add Collection", style: .default){ [unowned self] _ in
-            let collection = appDelegate.booksStore.createCollection(name: "New collection")
-            collection.books = NSOrderedSet(array: selectedRows.map{ [unowned self] in
+        // TEMP: testing List functionality
+        optionsAlert.addAction(UIAlertAction(title: "Add List", style: .default){ [unowned self] _ in
+            let list = appDelegate.booksStore.createList(name: "New list", type: .series)
+            list.books = NSOrderedSet(array: selectedRows.map{ [unowned self] in
                 self.resultsController.object(at: $0)
             })
             appDelegate.booksStore.save()

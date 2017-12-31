@@ -50,7 +50,7 @@ public class Book: NSManagedObject {
     // Relationships
     @NSManaged var subjects: NSOrderedSet
     @NSManaged var authors: NSOrderedSet
-    @NSManaged var collections: NSSet
+    @NSManaged var lists: NSSet
     
     var subjectsArray: [Subject] {
         get { return subjects.array.map{($0 as! Subject)} }
@@ -60,8 +60,8 @@ public class Book: NSManagedObject {
         get { return authors.array.map{($0 as! Author)} }
     }
     
-    var collectionsArray: [Collection] {
-        get { return collections.map{($0 as! Collection)} }
+    var listsArray: [List] {
+        get { return lists.map{($0 as! List)} }
     }
     
     var authorsFirstLast: String {
@@ -83,6 +83,7 @@ public class Book: NSManagedObject {
 
 }
 
+// TODO: rename to "tag"
 @objc(Subject)
 public class Subject: NSManagedObject {
     @NSManaged public var name: String
@@ -96,14 +97,25 @@ public class Subject: NSManagedObject {
     }
 }
 
-/// A 'Collection' is a named ordered set of books
-@objc(Collection)
-public class Collection: NSManagedObject {
+/// A 'List' is an ordered set of books
+@objc(List)
+public class List: NSManagedObject {
     @NSManaged var name: String
     @NSManaged var books: NSOrderedSet
+    @NSManaged var type: ListType
     
     var booksArray: [Book] {
         get { return books.array.map{($0 as! Book)} }
+    }
+}
+
+@objc enum ListType: Int32, CustomStringConvertible {
+    case series = 1
+    
+    var description: String {
+        switch self {
+        case .series: return "Series"
+        }
     }
 }
 
@@ -115,12 +127,9 @@ public class Collection: NSManagedObject {
     
     var description: String {
         switch self{
-        case .reading:
-            return "Reading"
-        case .toRead:
-            return "To Read"
-        case .finished:
-            return "Finished"
+        case .reading: return "Reading"
+        case .toRead: return "To Read"
+        case .finished: return "Finished"
         }
     }
 }

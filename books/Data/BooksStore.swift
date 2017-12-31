@@ -15,7 +15,7 @@ class BooksStore {
     private let bookEntityName = "Book"
     private let authorEntityName = "Author"
     private let subjectEntityName = "Subject"
-    private let collectionEntityName = "Collection"
+    private let listEntityName = "List"
     
     private let coreDataStack: CoreDataStack
     private let coreSpotlightStack: CoreSpotlightStack
@@ -215,10 +215,11 @@ class BooksStore {
         return author
     }
     
-    func createCollection(name: String) -> Collection {
-        let collection = coreDataStack.createNew(entity: collectionEntityName) as! Collection
-        collection.name = name
-        return collection
+    func createList(name: String, type: ListType) -> List {
+        let list = coreDataStack.createNew(entity: listEntityName) as! List
+        list.name = name
+        list.type = type
+        return list
     }
     
     /**
