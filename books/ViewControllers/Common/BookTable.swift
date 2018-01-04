@@ -20,9 +20,9 @@ class BookTableViewCell: UITableViewCell, ConfigurableCell {
     typealias ResultType = Book
     
     func configureFrom(_ book: Book) {
-        titleLabel.font = Fonts.gillSans(forTextStyle: .headline)
+        /*titleLabel.font = Fonts.gillSans(forTextStyle: .headline)
         authorsLabel.font = Fonts.gillSans(forTextStyle: .subheadline)
-        readTimeLabel.font = Fonts.gillSans(forTextStyle: .footnote)
+        readTimeLabel.font = Fonts.gillSans(forTextStyle: .footnote)*/
         
         titleLabel.text = book.title
         authorsLabel.text = book.authorsFirstLast
@@ -314,7 +314,7 @@ class BookTable: AutoUpdatingTableViewController {
             
             // If there is a detail view presented, update the book
             if parentSplitViewController.detailIsPresented {
-                (parentSplitViewController.displayedDetailViewController as? BookDetails)?.viewModel = BookDetailsViewModel(book: book)
+                (parentSplitViewController.displayedDetailViewController as? BookDetails)?.book =  book
             }
             else {
                 // Segue to the details view, with the cell corresponding to the book as the sender.
@@ -339,10 +339,10 @@ class BookTable: AutoUpdatingTableViewController {
             if let cell = sender as? UITableViewCell,
                 let selectedIndex = self.tableView.indexPath(for: cell) {
          
-                detailsViewController.viewModel = BookDetailsViewModel(book: self.resultsController.object(at: selectedIndex))
+                detailsViewController.book = self.resultsController.object(at: selectedIndex)
             }
             else if let book = sender as? Book {
-                detailsViewController.viewModel = BookDetailsViewModel(book: book)
+                detailsViewController.book = book
             }
         }
         else if let editBookController = navController?.viewControllers.first as? EditBook, let book = sender as? Book {

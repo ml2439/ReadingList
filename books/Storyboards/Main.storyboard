@@ -36,22 +36,6 @@
             </objects>
             <point key="canvasLocation" x="-10036" y="48"/>
         </scene>
-        <!--Previewing Navigation Controller-->
-        <scene sceneID="lvK-Wv-T4G">
-            <objects>
-                <navigationController id="ZEu-kC-V58" customClass="PreviewingNavigationController" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="0wU-A3-g5t">
-                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <connections>
-                        <segue destination="myb-KF-3dK" kind="relationship" relationship="rootViewController" id="Wra-Xs-YJl"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="iDG-MJ-197" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-7746" y="-89"/>
-        </scene>
         <!--Navigation Controller-->
         <scene sceneID="lTw-9q-5OW">
             <objects>
@@ -139,9 +123,9 @@
                                     <outlet property="bookCover" destination="W0a-Sj-pXu" id="Kbr-pi-g7x"/>
                                     <outlet property="readTimeLabel" destination="mH8-23-2mb" id="EmP-Ih-8JY"/>
                                     <outlet property="titleLabel" destination="6yM-Y4-3b7" id="zyK-Hd-LL6"/>
-                                    <segue destination="ZEu-kC-V58" kind="showDetail" identifier="showDetail" id="Na9-6W-gDW">
-                                        <segue key="commit" inheritsFrom="parent" id="WCu-mr-8rA"/>
-                                        <segue key="preview" inheritsFrom="commit" id="gr1-gZ-0yj"/>
+                                    <segue destination="myb-KF-3dK" kind="showDetail" id="O0W-JG-BmM">
+                                        <segue key="commit" inheritsFrom="parent" id="Kf9-FP-NdB"/>
+                                        <segue key="preview" inheritsFrom="commit" id="dIz-fH-nGe"/>
                                     </segue>
                                 </connections>
                             </tableViewCell>
@@ -180,7 +164,7 @@
                     <tabBarItem key="tabBarItem" title="To Read" image="courses" selectedImage="courses-filled" id="Vnb-bn-KUT"/>
                     <connections>
                         <segue destination="BJH-LT-6o4" kind="relationship" relationship="masterViewController" id="4g6-O6-K7z"/>
-                        <segue destination="ZEu-kC-V58" kind="relationship" relationship="detailViewController" id="kjk-Kz-aZ6"/>
+                        <segue destination="myb-KF-3dK" kind="relationship" relationship="detailViewController" id="Uat-sc-yvW"/>
                     </connections>
                 </splitViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rUu-6c-OoI" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -230,28 +214,12 @@
                     <tabBarItem key="tabBarItem" tag="1" title="Finished" image="to-do" selectedImage="to-do-filled" id="t7h-K7-cDo"/>
                     <connections>
                         <segue destination="bsS-hB-Stk" kind="relationship" relationship="masterViewController" id="EFh-qy-SGP"/>
-                        <segue destination="nhn-Ez-MVZ" kind="relationship" relationship="detailViewController" id="Nby-6z-xHm"/>
+                        <segue destination="tXC-jl-tV3" kind="relationship" relationship="detailViewController" id="FqQ-dX-4He"/>
                     </connections>
                 </splitViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cBY-4f-qU7" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-8542" y="557"/>
-        </scene>
-        <!--Previewing Navigation Controller-->
-        <scene sceneID="vTw-Rx-83p">
-            <objects>
-                <navigationController id="nhn-Ez-MVZ" customClass="PreviewingNavigationController" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Bpn-wy-KJE">
-                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <connections>
-                        <segue destination="tXC-jl-tV3" kind="relationship" relationship="rootViewController" id="xSv-S6-d3a"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="fng-vB-yrv" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-8460" y="1558"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="k8d-HE-GN7">
@@ -295,7 +263,7 @@
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iem-qK-ntp">
                                             <rect key="frame" x="63" y="11" width="224" height="20"/>
                                             <accessibility key="accessibilityConfiguration" identifier="title"/>
-                                            <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="17"/>
+                                            <fontDescription key="fontDescription" type="system" weight="medium" pointSize="16"/>
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
@@ -306,17 +274,17 @@
                                             </constraints>
                                         </imageView>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Authors" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fw2-GX-5Wy">
-                                            <rect key="frame" x="63" y="31" width="304" height="17.5"/>
-                                            <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="15"/>
-                                            <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                            <rect key="frame" x="63" y="31" width="304" height="14.5"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
+                                            <color key="textColor" white="0.33333333329999998" alpha="1" colorSpace="calibratedWhite"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="30 Oct " textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Eig-6y-bh0">
-                                            <rect key="frame" x="287" y="13" width="80" height="17.5"/>
+                                            <rect key="frame" x="287" y="13" width="80" height="13.5"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" relation="lessThanOrEqual" constant="80" id="X2N-hT-DbQ"/>
                                             </constraints>
-                                            <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="15"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleCaption2"/>
                                             <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                             <nil key="highlightedColor"/>
                                         </label>
@@ -340,9 +308,9 @@
                                     <outlet property="bookCover" destination="oGg-u4-5Nb" id="oaz-tV-c3x"/>
                                     <outlet property="readTimeLabel" destination="Eig-6y-bh0" id="Ubd-hu-MQf"/>
                                     <outlet property="titleLabel" destination="iem-qK-ntp" id="BfD-1K-57b"/>
-                                    <segue destination="nhn-Ez-MVZ" kind="showDetail" identifier="showDetail" id="ORf-W5-Eln">
-                                        <segue key="commit" inheritsFrom="parent" id="8al-V9-crY"/>
-                                        <segue key="preview" inheritsFrom="commit" id="dr8-2Z-AsX"/>
+                                    <segue destination="tXC-jl-tV3" kind="showDetail" id="3Ys-bx-yfh">
+                                        <segue key="commit" inheritsFrom="parent" id="dlx-MB-dzY"/>
+                                        <segue key="preview" inheritsFrom="commit" id="Ck0-Hf-8aF"/>
                                     </segue>
                                 </connections>
                             </tableViewCell>
@@ -408,7 +376,7 @@
         <image name="to-do-filled" width="25" height="25"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="dr8-2Z-AsX"/>
-        <segue reference="gr1-gZ-0yj"/>
+        <segue reference="3Ys-bx-yfh"/>
+        <segue reference="O0W-JG-BmM"/>
     </inferredMetricsTieBreakers>
 </document>
