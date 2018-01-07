@@ -7,6 +7,7 @@
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -29,10 +30,10 @@
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qHr-le-Bwg" userLabel="Content View">
-                                        <rect key="frame" x="0.0" y="0.0" width="414" height="714.66666666666663"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="668.66666666666663"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="bhg-kb-dQx" userLabel="Main Stack View">
-                                                <rect key="frame" x="18" y="18" width="378" height="696.66666666666663"/>
+                                                <rect key="frame" x="18" y="18" width="378" height="650.66666666666663"/>
                                                 <subviews>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yhn-N0-bz4" userLabel="CoverAndTitle">
                                                         <rect key="frame" x="0.0" y="0.0" width="378" height="120"/>
@@ -105,10 +106,13 @@
                                                         </constraints>
                                                     </view>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iOb-q7-6nl" userLabel="Description">
-                                                        <rect key="frame" x="0.0" y="137" width="378" height="107"/>
+                                                        <rect key="frame" x="0.0" y="137" width="378" height="61"/>
                                                         <subviews>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3dC-9n-NG8" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
-                                                                <rect key="frame" x="0.0" y="0.0" width="378" height="82.666666666666671"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="378" height="61"/>
+                                                                <constraints>
+                                                                    <constraint firstAttribute="height" constant="61" placeholder="YES" id="DkW-1d-yPY"/>
+                                                                </constraints>
                                                                 <string key="text">The setting is a world dominated by the Magisterium, also commonly called "the Church", an international theocracy which actively suppresses heresy. In this world, humans' souls naturally exist outside of their bodies in the form of sentient "dæmons", in animal form which accompany, aid, and comfort their humans. Children's dæmons can freely and instantaneously change their appearance into that of any real or mythical creature. When puberty is reached, their dæmons settle into one permanent form.</string>
                                                                 <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
                                                                 <color key="textColor" red="0.33333333333333331" green="0.3333333432674408" blue="0.3333333432674408" alpha="1" colorSpace="calibratedRGB"/>
@@ -117,37 +121,44 @@
                                                                     <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Subhead"/>
                                                                 </userDefinedRuntimeAttributes>
                                                             </label>
-                                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hbo-Jy-1cV">
-                                                                <rect key="frame" x="324" y="83" width="54" height="24"/>
-                                                                <constraints>
-                                                                    <constraint firstAttribute="height" constant="24" id="iOT-i0-spx"/>
-                                                                </constraints>
-                                                                <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
-                                                                <state key="normal" title="See more"/>
-                                                                <connections>
-                                                                    <action selector="seeMoreDescriptionPressed:" destination="7uR-tE-cQd" eventType="touchUpInside" id="1Oz-Xp-gRS"/>
-                                                                </connections>
-                                                            </button>
+                                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JlZ-qd-SWF" customClass="ClearToWhiteHorizontalGradientView" customModule="Reading_List" customModuleProvider="target">
+                                                                <rect key="frame" x="321.33333333333331" y="46" width="56.666666666666686" height="15"/>
+                                                            </view>
+                                                            <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="more" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DXS-Q8-6wT" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
+                                                                <rect key="frame" x="349" y="46" width="28.333333333333314" height="15"/>
+                                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                                <gestureRecognizers/>
+                                                                <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
+                                                                <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                                <nil key="highlightedColor"/>
+                                                                <userDefinedRuntimeAttributes>
+                                                                    <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Subhead"/>
+                                                                </userDefinedRuntimeAttributes>
+                                                            </label>
                                                         </subviews>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <constraints>
-                                                            <constraint firstItem="hbo-Jy-1cV" firstAttribute="top" secondItem="3dC-9n-NG8" secondAttribute="bottom" id="P3p-30-VP7"/>
+                                                            <constraint firstAttribute="bottom" secondItem="JlZ-qd-SWF" secondAttribute="bottom" id="Bg0-gx-8LE"/>
+                                                            <constraint firstItem="DXS-Q8-6wT" firstAttribute="bottom" secondItem="3dC-9n-NG8" secondAttribute="bottom" id="ENk-aS-hCb"/>
+                                                            <constraint firstAttribute="bottom" secondItem="3dC-9n-NG8" secondAttribute="bottom" id="Pxz-BK-QEA"/>
+                                                            <constraint firstAttribute="trailing" secondItem="JlZ-qd-SWF" secondAttribute="trailing" id="Vki-9K-QTT"/>
                                                             <constraint firstAttribute="trailing" secondItem="3dC-9n-NG8" secondAttribute="trailing" id="dCH-SO-02P"/>
                                                             <constraint firstItem="3dC-9n-NG8" firstAttribute="top" secondItem="iOb-q7-6nl" secondAttribute="top" id="g3Q-YO-kZd"/>
-                                                            <constraint firstAttribute="bottom" secondItem="hbo-Jy-1cV" secondAttribute="bottom" id="pbk-ac-gPa"/>
-                                                            <constraint firstItem="hbo-Jy-1cV" firstAttribute="trailing" secondItem="3dC-9n-NG8" secondAttribute="trailing" id="vps-lp-EdA"/>
+                                                            <constraint firstItem="JlZ-qd-SWF" firstAttribute="width" secondItem="DXS-Q8-6wT" secondAttribute="width" multiplier="2" id="jBh-Ze-DLO"/>
+                                                            <constraint firstItem="DXS-Q8-6wT" firstAttribute="trailing" secondItem="3dC-9n-NG8" secondAttribute="trailing" id="oGJ-aO-dMT"/>
+                                                            <constraint firstItem="DXS-Q8-6wT" firstAttribute="height" secondItem="JlZ-qd-SWF" secondAttribute="height" id="pGx-kV-WLw"/>
                                                             <constraint firstItem="3dC-9n-NG8" firstAttribute="leading" secondItem="iOb-q7-6nl" secondAttribute="leading" id="w2n-hN-3hx"/>
                                                         </constraints>
                                                     </view>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VZx-ih-0hi" userLabel="Separator">
-                                                        <rect key="frame" x="0.0" y="252" width="378" height="1"/>
+                                                        <rect key="frame" x="0.0" y="206" width="378" height="1"/>
                                                         <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="1" id="YQZ-Es-BVd" customClass="HairlineConstraint" customModule="Reading_List" customModuleProvider="target"/>
                                                         </constraints>
                                                     </view>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gRJ-ie-674" userLabel="ReadingLog">
-                                                        <rect key="frame" x="0.0" y="261" width="378" height="154"/>
+                                                        <rect key="frame" x="0.0" y="215" width="378" height="154"/>
                                                         <subviews>
                                                             <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="V5A-Yl-fPa" userLabel="ReadingLogHeader">
                                                                 <rect key="frame" x="0.0" y="0.0" width="378" height="72"/>
@@ -271,21 +282,21 @@
                                                         </constraints>
                                                     </view>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Hgp-ED-CTm">
-                                                        <rect key="frame" x="0.0" y="423" width="378" height="8"/>
+                                                        <rect key="frame" x="0.0" y="377" width="378" height="8"/>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="8" id="wlO-rx-22l"/>
                                                         </constraints>
                                                     </view>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fsn-PM-mKs" userLabel="Separator">
-                                                        <rect key="frame" x="0.0" y="439" width="378" height="1"/>
+                                                        <rect key="frame" x="0.0" y="393" width="378" height="1"/>
                                                         <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="1" id="1qr-1E-Rlc" customClass="HairlineConstraint" customModule="Reading_List" customModuleProvider="target"/>
                                                         </constraints>
                                                     </view>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QOx-2O-enh" userLabel="Information">
-                                                        <rect key="frame" x="0.0" y="448.00000000000006" width="378" height="190.66666666666669"/>
+                                                        <rect key="frame" x="0.0" y="402" width="378" height="190.66666666666663"/>
                                                         <subviews>
                                                             <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="loZ-xh-6l1" userLabel="InformationHeader">
                                                                 <rect key="frame" x="0.0" y="0.0" width="378" height="81"/>
@@ -439,7 +450,7 @@
                                                         </constraints>
                                                     </view>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bXg-L9-Ksa" userLabel="Space">
-                                                        <rect key="frame" x="0.0" y="646.66666666666663" width="378" height="50"/>
+                                                        <rect key="frame" x="0.0" y="600.66666666666663" width="378" height="50"/>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="50" id="viW-yK-I60"/>
@@ -474,6 +485,7 @@
                             </scrollView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <gestureRecognizers/>
                         <constraints>
                             <constraint firstItem="Ba7-1L-1L0" firstAttribute="trailing" secondItem="bTb-kP-Eva" secondAttribute="trailing" id="8mH-pg-2tS"/>
                             <constraint firstAttribute="bottom" secondItem="bTb-kP-Eva" secondAttribute="bottom" id="EO0-Dq-1ca"/>
@@ -491,7 +503,6 @@
                         <outlet property="categories" destination="gsg-pv-YoQ" id="c5I-Iy-MAE"/>
                         <outlet property="changeReadStateButton" destination="xYF-nW-8G6" id="yN3-e9-bhf"/>
                         <outlet property="cover" destination="3DD-HK-Aea" id="2gC-KM-MtG"/>
-                        <outlet property="descriptionSeeMore" destination="hbo-Jy-1cV" id="sJM-vu-lyf"/>
                         <outlet property="isbn" destination="DCP-uO-NzK" id="nRm-ey-OI2"/>
                         <outlet property="pageCount" destination="3tB-aD-sL9" id="Shr-nB-HiA"/>
                         <outlet property="published" destination="SOY-65-lbe" id="fVa-0X-eUG"/>
@@ -500,7 +511,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5dX-S1-jhF" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-3695.1999999999998" y="1646.6266866566718"/>
+            <point key="canvasLocation" x="-3695.652173913044" y="1645.9239130434785"/>
         </scene>
         <!--EditReadState-->
         <scene sceneID="7bM-8u-lMf">

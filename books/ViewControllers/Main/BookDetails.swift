@@ -21,9 +21,9 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     @IBOutlet weak var categories: UILabel!
     @IBOutlet weak var readStateLabel: UILabel!
     @IBOutlet weak var changeReadStateButton: StartFinishButton!
-    @IBOutlet weak var descriptionSeeMore: UIButton!
 
     var didShowNavigationItemTitle = false
+    var shouldTruncateLongDescriptions = true
     
     var parentSplitViewController: SplitViewController? {
         get { return appDelegate.tabBarController.selectedViewController as? SplitViewController }
@@ -97,7 +97,9 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         // shown without any books being selected.
         setViewEnabled(enabled: false)
         
-        //isbn.font = UIFont.monospacedDigitSystemFont(ofSize: isbn.font.pointSize, weight: .regular)
+        // Listen for taps on the book description, which should remove any truncation
+        let tap = UITapGestureRecognizer(target: self, action: #selector(seeMoreDescription))
+        bookDescription.superview!.addGestureRecognizer(tap)
         
         // A custom title view is required for animation
         navigationItem.titleView = UINavigationBarLabel()
@@ -109,11 +111,17 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        // If the seeMore button has been pressed, is will be disabled now which means it should be hidden at this point
-        guard descriptionSeeMore.isEnabled else { descriptionSeeMore.isHidden = true; return }
+        let truncationViews = bookDescription.siblings
         
-        if descriptionSeeMore.isHidden == bookDescription.isTruncated {
-            descriptionSeeMore.isHidden = !bookDescription.isTruncated
+        // If we should not be truncating long descriptions, hide the siblings of the description label (which are the see more
+        // button and a spacer view)
+        guard shouldTruncateLongDescriptions else {
+            truncationViews.forEach{$0.isHidden = true}
+            return
+        }
+        
+        if truncationViews.first!.isHidden == bookDescription.isTruncated {
+            truncationViews.forEach{$0.isHidden = !bookDescription.isTruncated}
         }
     }
     
@@ -127,15 +135,17 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         }
     }
     
-    @IBAction func seeMoreDescriptionPressed(_ sender: UIButton) {
-        // We use the Enabled state to indicate whether the control should be shown or not. We cannot just set isHidden to true, because
-        // we cannot be sure whether the relayout will be called before or after the description label starts reporting isTruncated = false.
+    @objc func seeMoreDescription() {
+        guard shouldTruncateLongDescriptions else { return }
+        
+        // We cannot just set isHidden to true here, because we cannot be sure whether the relayout will be called before or after
+        // the description label starts reporting isTruncated = false.
         // Instead, store the knowledge that the button should be hidden here; when layout is called, if the button is disabled it will be hidden.
-        descriptionSeeMore.isEnabled = false
+        shouldTruncateLongDescriptions = false
         bookDescription.numberOfLines = 0
         
         // Relaying out the parent stackview is required to adjust the space between the separator and the description label
-        bookDescription.superview!.superview!.layoutIfNeeded()
+        (bookDescription.superview!.superview as! UIStackView).layoutIfNeeded()
     }
     
     @objc func bookChanged(_ notification: Notification) {
@@ -241,6 +251,13 @@ extension UIView {
             let thisIndex = views.index(of: self)!
             guard thisIndex + 1 < views.count else { return nil }
             return views[thisIndex + 1]
+        }
+    }
+    
+    var siblings: [UIView] {
+        get {
+            guard let views = superview?.subviews else { return [] }
+            return views.filter{ $0 != self }
         }
     }
 }
