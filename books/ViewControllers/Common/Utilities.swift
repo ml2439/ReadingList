@@ -191,3 +191,56 @@ extension UILabel {
         return labelTextSize.height > bounds.size.height
     }
 }
+
+@IBDesignable class DynamicUILabel: UILabel {
+    @IBInspectable var dynamicFontSize: String = "Title1" {
+        didSet {
+            font = Fonts.scaledFont(font, forTextStyle: UIFontTextStyle("UICTFontTextStyle\(dynamicFontSize)"))
+        }
+    }
+}
+
+@IBDesignable class RoundedImageView: UIImageView {
+    @IBInspectable var cornerRadius: CGFloat {
+        get {
+            return layer.cornerRadius
+        }
+        set {
+            layer.cornerRadius = newValue
+            layer.masksToBounds = newValue > 0
+        }
+    }
+}
+
+class UINavigationBarLabel: UILabel {
+    init() {
+        super.init(frame: CGRect.zero)
+        backgroundColor = .clear
+        textAlignment = .center
+        textColor = UINavigationBar.appearance().tintColor
+        font = UIFont.boldSystemFont(ofSize: 16)
+    }
+    
+    func setTitle(_ title: String?) {
+        text = title
+        sizeToFit()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+}
+
+extension UIScrollView {
+    var univeralContentInset: UIEdgeInsets {
+        get {
+            if #available(iOS 11.0, *) {
+                return adjustedContentInset
+            }
+            else {
+                return contentInset
+            }
+        }
+    }
+}
+

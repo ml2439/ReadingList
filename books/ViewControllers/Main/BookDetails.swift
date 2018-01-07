@@ -20,9 +20,9 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     @IBOutlet weak var published: UILabel!
     @IBOutlet weak var categories: UILabel!
     @IBOutlet weak var readStateLabel: UILabel!
-    @IBOutlet weak var changeReadStateButton: BorderedButton!
+    @IBOutlet weak var changeReadStateButton: StartFinishButton!
     @IBOutlet weak var descriptionSeeMore: UIButton!
-    
+
     var didShowNavigationItemTitle = false
     
     var parentSplitViewController: SplitViewController? {
@@ -55,38 +55,41 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         }
 
         bookTitle.text = book.title
-        let titleLabel = (navigationItem.titleView as! UILabel)
-        titleLabel.text = book.title
-        titleLabel.sizeToFit()
+        (navigationItem.titleView as! UINavigationBarLabel).setTitle(book.title)
 
+        func setTextOrHideParentAndNext(_ label: UILabel, _ string: String?) {
+            label.text = string
+            label.superview!.isHidden = string == nil
+            label.superview!.nextSibling?.isHidden = string == nil
+        }
+        
         author.text = book.authorsFirstLast
-        bookDescription.setTextOrHideParent(book.bookDescription)
+        setTextOrHideParentAndNext(bookDescription, book.bookDescription)
         
         // Reading Log
         switch book.readState {
         case .toRead:
             readStateLabel.text = "📚 To Read"
-            changeReadStateButton.isHidden = false
-            changeReadStateButton.setColor(UIColor.buttonBlue)
-            changeReadStateButton.setTitle("START", for: .normal)
+            changeReadStateButton.setState(.start)
         case .reading:
             readStateLabel.text = "📖 Currently Reading"
-            changeReadStateButton.isHidden = false
-            changeReadStateButton.setColor(UIColor.flatGreen)
-            changeReadStateButton.setTitle("FINISH", for: .normal)
+            changeReadStateButton.setState(.finish)
         case .finished:
             readStateLabel.text = "🎉 Finished"
-            changeReadStateButton.isHidden = true
+            changeReadStateButton.setState(.none)
         }
         
         // Information table
-        pageCount.setTextOrHideParent(book.pageCount?.stringValue)
-        isbn.setTextOrHideParent(book.isbn13)
-        published.setTextOrHideParent(book.publicationDate?.toPrettyString())
-        categories.setTextOrHideParent(nil)
+        setTextOrHideParentAndNext(pageCount, book.pageCount?.stringValue)
+        setTextOrHideParentAndNext(isbn, book.isbn13)
+        setTextOrHideParentAndNext(published, book.publicationDate?.toPrettyString())
+        setTextOrHideParentAndNext(categories, book.subjectsArray.map{$0.name}.joined(separator: "; "))
     }
     
     override func viewDidLoad() {
+        
+        super.viewDidLoad()
+        
         view.backgroundColor = UIColor.white
         
         // Initialise the view so that by default a blank page is shown.
@@ -94,18 +97,11 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         // shown without any books being selected.
         setViewEnabled(enabled: false)
         
-        // Set rounded corners on the book cover image
-        cover.layer.cornerRadius = 4
-        cover.layer.masksToBounds = true
+        //isbn.font = UIFont.monospacedDigitSystemFont(ofSize: isbn.font.pointSize, weight: .regular)
         
         // A custom title view is required for animation
-        let titleLabelView = UILabel(frame: CGRect.zero)
-        titleLabelView.backgroundColor = .clear
-        titleLabelView.textAlignment = .center
-        titleLabelView.textColor = UINavigationBar.appearance().tintColor
-        titleLabelView.font = UIFont.boldSystemFont(ofSize: 16)
-        titleLabelView.isHidden = true
-        navigationItem.titleView = titleLabelView
+        navigationItem.titleView = UINavigationBarLabel()
+        navigationItem.titleView!.isHidden = true
 
         // Watch for changes in the managed object context
         NotificationCenter.default.addObserver(self, selector: #selector(bookChanged(_:)), name: NSNotification.Name.NSManagedObjectContextDidSave, object: appDelegate.booksStore.managedObjectContext)
@@ -178,16 +174,9 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         
         // 18 is the padding between the main stack view and the top. This should be determined programatically
         // if any of the layout constraints from the title to the top become more complex
-        var threshold: CGFloat = bookTitle.frame.maxY + 18
-        if #available(iOS 11.0, *) {
-            threshold -= scrollView.adjustedContentInset.top
-        }
-        else {
-            threshold -= scrollView.contentInset.top
-        }
+        let threshold = bookTitle.frame.maxY + 18 - scrollView.univeralContentInset.top
 
-        let titleIsBelowNav = scrollView.contentOffset.y >= threshold
-        if titleIsBelowNav != didShowNavigationItemTitle {
+        if didShowNavigationItemTitle != (scrollView.contentOffset.y >= threshold) {
             // Changes to the title view are to be animated
             let fadeTextAnimation = CATransition()
             fadeTextAnimation.duration = 0.2
@@ -222,9 +211,36 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     }
 }
 
-fileprivate extension UILabel {
-    func setTextOrHideParent(_ string: String?) {
-        text = string
-        superview!.isHidden = string == nil
+class StartFinishButton: BorderedButton {
+    enum State {
+        case start
+        case finish
+        case none
+    }
+    
+    func setState(_ state: State) {
+        switch state {
+        case .start:
+            isHidden = false
+            setColor(UIColor.buttonBlue)
+            setTitle("START", for: .normal)
+        case .finish:
+            isHidden = false
+            setColor(UIColor.flatGreen)
+            setTitle("FINISH", for: .normal)
+        case .none:
+            isHidden = true
+        }
+    }
+}
+
+extension UIView {
+    var nextSibling: UIView? {
+        get {
+            guard let views = superview?.subviews else { return nil }
+            let thisIndex = views.index(of: self)!
+            guard thisIndex + 1 < views.count else { return nil }
+            return views[thisIndex + 1]
+        }
     }
 }
