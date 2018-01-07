@@ -52,8 +52,8 @@
                                                                 </userDefinedRuntimeAttributes>
                                                             </imageView>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="La Belle Sauvage" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KUv-Qb-XLN" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
-                                                                <rect key="frame" x="92" y="0.0" width="286" height="1.3333333333333333"/>
-                                                                <fontDescription key="fontDescription" name="GillSans-SemiBold" family="Gill Sans" pointSize="1"/>
+                                                                <rect key="frame" x="92" y="0.0" width="286" height="21.666666666666668"/>
+                                                                <fontDescription key="fontDescription" name="GillSans-SemiBold" family="Gill Sans" pointSize="18"/>
                                                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                                 <nil key="highlightedColor"/>
                                                                 <userDefinedRuntimeAttributes>
@@ -61,8 +61,8 @@
                                                                 </userDefinedRuntimeAttributes>
                                                             </label>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Phillip Pullman" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Uvq-kK-HxE" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
-                                                                <rect key="frame" x="92" y="3.3333333333333321" width="286" height="1.333333333333333"/>
-                                                                <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="1"/>
+                                                                <rect key="frame" x="92" y="23.666666666666664" width="286" height="18.666666666666664"/>
+                                                                <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="16"/>
                                                                 <color key="textColor" white="0.33333333329999998" alpha="1" colorSpace="calibratedWhite"/>
                                                                 <nil key="highlightedColor"/>
                                                                 <userDefinedRuntimeAttributes>
@@ -70,7 +70,7 @@
                                                                 </userDefinedRuntimeAttributes>
                                                             </label>
                                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xYF-nW-8G6" customClass="StartFinishButton" customModule="Reading_List" customModuleProvider="target">
-                                                                <rect key="frame" x="92" y="16.666666666666664" width="64" height="25"/>
+                                                                <rect key="frame" x="92" y="54.333333333333329" width="64" height="25"/>
                                                                 <constraints>
                                                                     <constraint firstAttribute="width" constant="64" id="Zow-Kx-gcs"/>
                                                                     <constraint firstAttribute="height" constant="25" id="p26-Nk-Wkh"/>
@@ -110,7 +110,7 @@
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3dC-9n-NG8" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
                                                                 <rect key="frame" x="0.0" y="0.0" width="378" height="82.666666666666671"/>
                                                                 <string key="text">The setting is a world dominated by the Magisterium, also commonly called "the Church", an international theocracy which actively suppresses heresy. In this world, humans' souls naturally exist outside of their bodies in the form of sentient "dæmons", in animal form which accompany, aid, and comfort their humans. Children's dæmons can freely and instantaneously change their appearance into that of any real or mythical creature. When puberty is reached, their dæmons settle into one permanent form.</string>
-                                                                <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="1"/>
+                                                                <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
                                                                 <color key="textColor" red="0.33333333333333331" green="0.3333333432674408" blue="0.3333333432674408" alpha="1" colorSpace="calibratedRGB"/>
                                                                 <nil key="highlightedColor"/>
                                                                 <userDefinedRuntimeAttributes>
@@ -154,7 +154,7 @@
                                                                 <subviews>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="249" verticalHuggingPriority="251" text="Reading Log" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="REb-8M-mxE" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
                                                                         <rect key="frame" x="0.0" y="0.0" width="348" height="72"/>
-                                                                        <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="1"/>
+                                                                        <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="16"/>
                                                                         <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                         <nil key="highlightedColor"/>
                                                                         <userDefinedRuntimeAttributes>
@@ -292,7 +292,7 @@
                                                                 <subviews>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="249" verticalHuggingPriority="251" text="Information" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dfL-v3-CrR" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
                                                                         <rect key="frame" x="0.0" y="0.0" width="348" height="81"/>
-                                                                        <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="1"/>
+                                                                        <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="16"/>
                                                                         <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                         <nil key="highlightedColor"/>
                                                                         <userDefinedRuntimeAttributes>
