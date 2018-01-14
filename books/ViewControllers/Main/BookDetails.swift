@@ -15,13 +15,19 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     @IBOutlet weak var bookTitle: UILabel!
     @IBOutlet weak var author: UILabel!
     @IBOutlet weak var bookDescription: UILabel!
-    @IBOutlet weak var pageCount: UILabel!
+    /*@IBOutlet weak var pageCount: UILabel!
     @IBOutlet weak var isbn: UILabel!
     @IBOutlet weak var published: UILabel!
-    @IBOutlet weak var categories: UILabel!
+    @IBOutlet weak var categories: UILabel!*/
     @IBOutlet weak var readStateLabel: UILabel!
+    @IBOutlet weak var readTimeLabel: UILabel!
+    @IBOutlet weak var dateAdded: UILabel!
+    
+    @IBOutlet weak var dateStarted: UILabel!
+    @IBOutlet weak var dateFinished: UILabel!
+    
     @IBOutlet weak var changeReadStateButton: StartFinishButton!
-
+    
     var didShowNavigationItemTitle = false
     var shouldTruncateLongDescriptions = true
     
@@ -66,24 +72,49 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         author.text = book.authorsFirstLast
         setTextOrHideParentAndNext(bookDescription, book.bookDescription)
         
+        let dayCount = book.readState == .toRead ? 0 : (NSCalendar.current.dateComponents([.day], from: book.startedReading!.startOfDay(), to: (book.finishedReading ?? Date()).startOfDay()).day ?? 0)
+        let readTime: String
+        if dayCount <= 0 && book.readState == .finished {
+            readTime = "Within\na day"
+        }
+        else if dayCount == 1 {
+            readTime =  "1 day"
+        }
+        else {
+            readTime = "\(dayCount) days"
+        }
+        
         // Reading Log
         switch book.readState {
         case .toRead:
-            readStateLabel.text = "📚 To Read"
+            readStateLabel.text = "To Read"
             changeReadStateButton.setState(.start)
         case .reading:
-            readStateLabel.text = "📖 Currently Reading"
+            readStateLabel.text = "Currently\nReading"
             changeReadStateButton.setState(.finish)
         case .finished:
-            readStateLabel.text = "🎉 Finished"
+            readStateLabel.text = "Finished"
             changeReadStateButton.setState(.none)
+        }
+        //readStateLabel.superview!.sizeToFit()
+        
+        if book.readState == .toRead {
+            readTimeLabel.superview!.isHidden = true
+        }
+        else {
+            readTimeLabel.text = readTime
+            readTimeLabel.superview!.isHidden = false
+            readTimeLabel.superview!.layoutSubviews()
+            
+            
+            //readTimeLabel.superview!.sizeToFit()
         }
         
         // Information table
-        setTextOrHideParentAndNext(pageCount, book.pageCount?.stringValue)
+        /*setTextOrHideParentAndNext(pageCount, book.pageCount?.stringValue)
         setTextOrHideParentAndNext(isbn, book.isbn13)
         setTextOrHideParentAndNext(published, book.publicationDate?.toPrettyString())
-        setTextOrHideParentAndNext(categories, book.subjectsArray.map{$0.name}.joined(separator: "; "))
+        setTextOrHideParentAndNext(categories, book.subjectsArray.map{$0.name}.joined(separator: "; "))*/
     }
     
     override func viewDidLoad() {
