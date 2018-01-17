@@ -1,319 +1,258 @@
 //
-//  BookDetailsViewController.swift
+//  BookDetails.swift
 //  books
 //
-//  Created by Andrew Bennet on 09/11/2015.
-//  Copyright © 2015 Andrew Bennet. All rights reserved.
+//  Created by Andrew Bennet on 01/01/2018.
+//  Copyright © 2018 Andrew Bennet. All rights reserved.
 //
 
+import Foundation
 import UIKit
 import CoreData
-import CoreSpotlight
-import SVProgressHUD
 
-class BookDetailsViewModel {
-    let book: Book
-    let readState: String
-    let readDates: String
-    let cover: UIImage
+class BookDetails: UIViewController, UIScrollViewDelegate {
+    @IBOutlet weak var cover: UIImageView!
+
+    @IBOutlet weak var bookDescription: UILabel!
+    @IBOutlet weak var titleAndAuthorStack: UIStackView!
+    @IBOutlet weak var changeReadStateButton: StartFinishButton!
     
-    init(book: Book) {
-        self.book = book
+    @IBOutlet weak var readState: UILabel!
+    @IBOutlet weak var dateStarted: UILabel!
+    @IBOutlet weak var dateFinished: UILabel!
+    @IBOutlet weak var readTime: UILabel!
+    @IBOutlet weak var notes: UILabel!
+    
+    @IBOutlet weak var isbn: UILabel!
+    @IBOutlet weak var pages: UILabel!
+    @IBOutlet weak var published: UILabel!
+    @IBOutlet weak var subjects: UILabel!
 
-        // Read state
-        switch book.readState {
-        case .toRead:
-            readState = "📚 To Read"
-            break
-        case .reading:
-            readState = "📖 Currently Reading"
-            break
-        case .finished:
-            readState = "🎉 Finished"
-            break
-        }
-        
-        // Read dates
-        var readDatesPieces = [String]()
-        if book.readState == .toRead {
-            readDatesPieces.append("Added: \(book.createdWhen.toPrettyString(short: false))")
-        }
-        if let started = book.startedReading {
-            readDatesPieces.append("Started: \(started.toPrettyString(short: false))")
-        }
-        if let finished = book.finishedReading {
-            readDatesPieces.append("Finished: \(finished.toPrettyString(short: false))")
-        }
-        if book.readState != .toRead,
-            let dayCount = NSCalendar.current.dateComponents([.day], from: book.startedReading!.startOfDay(), to: (book.finishedReading ?? Date()).startOfDay()).day{
-            // Don't bother including the read time if currently reading and started today
-            if dayCount <= 0 && book.readState == .finished {
-                readDatesPieces.append("Read Time: within a day")
-            }
-            else if dayCount == 1 {
-                readDatesPieces.append("Read Time: 1 day")
-            }
-            else if dayCount > 1 {
-                readDatesPieces.append("Read Time: \(dayCount) days")
-            }
-        }
-        if let currentPage = book.currentPage {
-            readDatesPieces.append("Current Page: \(currentPage)")
-        }
-        readDates = readDatesPieces.joined(separator: "\n")
-        
-        if let coverData = book.coverImage, let image = UIImage(data: coverData) {
-            cover = image
-        }
-        else {
-           cover = #imageLiteral(resourceName: "CoverPlaceholder")
-        }
-    }
-}
-
-class BookDetails: UIViewController {
+    @IBOutlet weak var googleBooks: UILabel!
+    @IBOutlet weak var amazon: UILabel!
+    
+    var didShowNavigationItemTitle = false
+    var shouldTruncateLongDescriptions = true
+    
     var parentSplitViewController: SplitViewController? {
         get { return appDelegate.tabBarController.selectedViewController as? SplitViewController }
     }
     
-    @IBOutlet weak var shareButton: UIBarButtonItem!
-    @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var authorsLabel: UILabel!
-    
-    @IBOutlet weak var imageView: UIImageView!
-    @IBOutlet weak var readStateLabel: UILabel!
-    @IBOutlet weak var readDatesLabel: UILabel!
-    @IBOutlet weak var changeReadState: BorderedButton!
-    
-    @IBOutlet weak var informationHeadingSeparator: UIView!
-    @IBOutlet weak var informationStack: UIStackView!
-    @IBOutlet weak var informationHeader: UILabel!
-    @IBOutlet weak var pagesLabel: UILabel!
-    @IBOutlet weak var publishedLabel: UILabel!
-    @IBOutlet weak var subjectsLabel: UILabel!
-    
-    @IBOutlet weak var descriptionHeadingSeparator: UIView!
-    @IBOutlet weak var descriptionHeader: UILabel!
-    @IBOutlet weak var descriptionStack: UIStackView!
-    @IBOutlet weak var descriptionTextView: UILabel!
-    @IBOutlet weak var descriptionSeeMore: UIButton!
-    
-    @IBOutlet weak var readingLogHeadingSeparator: UIView!
-    @IBOutlet weak var readingLogStack: UIStackView!
-    @IBOutlet weak var readingLogHeader: UILabel!
-    @IBOutlet weak var readingLogNotes: UILabel!
-    
-    var viewModel: BookDetailsViewModel? {
-        didSet {
-            guard let viewModel = viewModel else {
-                // Hide the whole view and nav bar buttons
-                view.isHidden = true
-                navigationItem.rightBarButtonItem?.toggleHidden(hidden: true)
-                shareButton.toggleHidden(hidden: true)
-                return
-            }
-            
-            // Show the whole view and nav bar buttons
-            view.isHidden = false
-            navigationItem.rightBarButtonItem?.toggleHidden(hidden: false)
-            shareButton.toggleHidden(hidden: false)
-            
-            titleLabel.text = viewModel.book.title
-            authorsLabel.text = viewModel.book.authorsFirstLast
-            
-            readStateLabel.text = viewModel.readState
-            readDatesLabel.text = viewModel.readDates
-            
-            let hideInfoStack = viewModel.book.pageCount == nil && viewModel.book.publicationDate == nil && viewModel.book.subjects.count == 0
-            informationHeadingSeparator.isHidden = hideInfoStack
-            informationStack.isHidden = hideInfoStack
-            pagesLabel.isHidden = viewModel.book.pageCount == nil
-            pagesLabel.text = "Pages: \(viewModel.book.pageCount ?? 0)"
-            publishedLabel.isHidden = viewModel.book.publicationDate == nil
-            publishedLabel.text = "Published: \(viewModel.book.publicationDate?.toPrettyString() ?? "")"
-            subjectsLabel.isHidden = viewModel.book.subjects.count == 0
-            subjectsLabel.text = "Subjects: " + viewModel.book.subjectsArray.map{$0.name}.joined(separator: "; ")
-            
-            descriptionHeadingSeparator.isHidden = viewModel.book.bookDescription == nil
-            descriptionStack.isHidden = viewModel.book.bookDescription == nil
-            descriptionTextView.text = viewModel.book.bookDescription! + "\n\n" + viewModel.book.listsArray.map{$0.name}.joined(separator: "; ")
-            
-            
-            readingLogHeadingSeparator.isHidden = viewModel.book.notes == nil
-            readingLogStack.isHidden = viewModel.book.notes == nil
-            readingLogNotes.text = viewModel.book.notes
-            
-            imageView.image = viewModel.cover
-            changeReadState.isHidden = viewModel.book.readState == .finished
-            switch viewModel.book.readState {
-            case .toRead:
-                changeReadState.setColor(UIColor.buttonBlue)
-                changeReadState.setTitle("START", for: .normal)
-            case .reading:
-                changeReadState.setColor(UIColor.flatGreen)
-                changeReadState.setTitle("FINISH", for: .normal)
-            case .finished:
-                changeReadState.isHidden = true
-            }
-        }
+    func setViewEnabled(enabled: Bool) {
+        // Show the whole view and nav bar buttons
+        view.isHidden = !enabled
+        navigationItem.rightBarButtonItems?.forEach({$0.toggleHidden(hidden: !enabled)})
     }
     
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        // If the seeMore button has been pressed, is will be disabled now which means it should be hidden at this point
-        guard descriptionSeeMore.isEnabled else { descriptionSeeMore.isHidden = true; return }
-        
-        if descriptionSeeMore.isHidden == descriptionTextView.isTruncated {
-            descriptionSeeMore.isHidden = !descriptionTextView.isTruncated
-        }
+    var book: Book? {
+        didSet { setupViewFromBook() }
     }
     
-    @IBAction func readStateButtonPressed(_ sender: BorderedButton) {
-        guard let viewModel = viewModel else { return }
-        let readState = viewModel.book.readState
-        guard readState == .toRead || readState == .reading else { return }
+    func setupViewFromBook() {
+        // Hide the whole view and nav bar buttons if there's no book
+        guard let book = book else { setViewEnabled(enabled: false); return }
+        setViewEnabled(enabled: true)
         
-        let readingInfo: BookReadingInformation
-        if readState == .toRead {
-            readingInfo = BookReadingInformation.reading(started: Date(), currentPage: nil)
+        cover.image = UIImage(optionalData: book.coverImage) ?? #imageLiteral(resourceName: "CoverPlaceholder")
+        
+        // There are 2 title and 2 author labels, one for Regular display (iPad) and one for other displays
+        titleAndAuthorStack.subviews[0...1].forEach{($0 as! UILabel).text = book.title}
+        titleAndAuthorStack.subviews[2...3].forEach{($0 as! UILabel).text = book.authorsFirstLast}
+        (navigationItem.titleView as! UINavigationBarLabel).setTitle(book.title)
+        
+        switch book.readState {
+        case .toRead:
+            changeReadStateButton.setState(.start)
+        case .reading:
+            changeReadStateButton.setState(.finish)
+        case .finished:
+            changeReadStateButton.setState(.none)
+        }
+        
+        bookDescription.text = book.bookDescription
+        bookDescription.superview!.isHidden = book.bookDescription == nil
+        bookDescription.superview!.nextSibling!.isHidden = book.bookDescription == nil
+        
+        func setTextOrHideLine(_ label: UILabel, _ string: String?) {
+            // The detail labels are arranged in the following hierachy:
+            /*
+             vertical-stack
+                horizontal-stack
+                    property label
+                    property value view
+                        property value label
+            */
+            // If a property is nil, we should hide the enclosing horizontal stack
+            label.text = string
+            label.superview!.superview!.isHidden = string == nil
+        }
+        // Read state is always present
+        readState.text = book.readState.longDescription
+        setTextOrHideLine(dateStarted, book.startedReading?.toPrettyString(short: false))
+        setTextOrHideLine(dateFinished, book.finishedReading?.toPrettyString(short: false))
+        
+        let readTimeText: String?
+        if book.readState == .toRead {
+            readTimeText = nil
         }
         else {
-            readingInfo = BookReadingInformation.finished(started: viewModel.book.startedReading!, finished: Date())
+            let dayCount = NSCalendar.current.dateComponents([.day], from: book.startedReading!.startOfDay(), to: (book.finishedReading ?? Date()).startOfDay()).day ?? 0
+            if dayCount <= 0 && book.readState == .finished {
+                readTimeText = "Within a day"
+            }
+            else if dayCount == 1 {
+                readTimeText =  "1 day"
+            }
+            else {
+                readTimeText = "\(dayCount) days"
+            }
         }
-        appDelegate.booksStore.update(book: viewModel.book, withReadingInformation: readingInfo)
+        setTextOrHideLine(readTime, readTimeText)
+        setTextOrHideLine(notes, book.notes)
+
+        setTextOrHideLine(isbn, book.isbn13)
+        setTextOrHideLine(pages, book.pageCount?.stringValue)
+        setTextOrHideLine(published, book.publicationDate?.toPrettyString(short: false))
+        setTextOrHideLine(subjects, book.subjectsArray.count == 0 ? nil : book.subjectsArray.map{$0.name}.joined(separator: ", "))
         
-        UserEngagement.logEvent(.transitionReadState)
-        UserEngagement.onReviewTrigger()
+        googleBooks.isHidden = book.googleBooksId == nil
     }
     
     override func viewDidLoad() {
+        
         super.viewDidLoad()
-
+        
         view.backgroundColor = UIColor.white
         
-        // Initialise the view, so that by default a blank page is shown.
+        // Initialise the view so that by default a blank page is shown.
         // This is required for starting the app in split-screen mode, where this view is
         // shown without any books being selected.
-        view.isHidden = true
-        navigationItem.rightBarButtonItem?.toggleHidden(hidden: true)
-        shareButton.toggleHidden(hidden: true)
+        setViewEnabled(enabled: false)
         
-        if let uiImage = imageView.image,
-            let imageViewHeight = (imageView.constraints.filter{$0.firstAttribute == .height}).first?.constant,
-            let widthConstraint = (imageView.constraints.filter{$0.firstAttribute == .width}).first {
-            widthConstraint.constant = (imageViewHeight / uiImage.size.height) * uiImage.size.width
-        }
+        // Listen for taps on the book description, which should remove any truncation
+        let tap = UITapGestureRecognizer(target: self, action: #selector(seeMoreDescription))
+        bookDescription.superview!.addGestureRecognizer(tap)
         
-        titleLabel.font = Fonts.gillSansSemiBold(forTextStyle: .title1)
-        authorsLabel.font = Fonts.gillSans(forTextStyle: .title2)
+        // Listen for taps on the Google and Amazon labels, which should act like buttons and open the relevant webpage
+        amazon.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(amazonButtonPressed)))
+        googleBooks.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(googleBooksButtonPressed)))
         
-        let headline = Fonts.gillSans(forTextStyle: .headline)
-        readStateLabel.font = headline
-        informationHeader.font = headline
-        descriptionHeader.font = headline
-        readingLogHeader.font = headline
-        
-        let subheadline = Fonts.gillSans(forTextStyle: .subheadline)
-        readDatesLabel.font = subheadline
-        pagesLabel.font = subheadline
-        subjectsLabel.font = subheadline
-        publishedLabel.font = subheadline
-        descriptionTextView.font = subheadline
-        readingLogNotes.font = subheadline
+        // A custom title view is required for animation
+        navigationItem.titleView = UINavigationBarLabel()
+        navigationItem.titleView!.isHidden = true
 
         // Watch for changes in the managed object context
         NotificationCenter.default.addObserver(self, selector: #selector(bookChanged(_:)), name: NSNotification.Name.NSManagedObjectContextDidSave, object: appDelegate.booksStore.managedObjectContext)
     }
     
-    @objc private func bookChanged(_ notification: Notification) {
-        guard let viewModel = viewModel, let userInfo = (notification as NSNotification).userInfo else { return }
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
         
-        if let updatedObjects = userInfo[NSUpdatedObjectsKey] as? NSSet, updatedObjects.contains(viewModel.book) {
-            // If the book was updated, update this page.
-            self.viewModel = BookDetailsViewModel(book: viewModel.book)
-        }
-        else if let deletedObjects = userInfo[NSDeletedObjectsKey] as? NSSet, deletedObjects.contains(viewModel.book) {
-            // If the book was deleted, set our book to nil and update this page
-            self.viewModel = nil
-
-            // Pop back to the book table if necessary
-            parentSplitViewController?.masterNavigationController.popToRootViewController(animated: false)
-        }
-    }
-    
-    @IBAction func editPressed(_ sender: UIBarButtonItem) {
-        let optionsAlert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        // If we should not be truncating long descriptions, hide the siblings of the description label (which are the see more
+        // button and a spacer view)
+        let truncationViews = bookDescription.siblings
+        guard shouldTruncateLongDescriptions else { truncationViews.forEach{$0.isHidden = true}; return }
         
-        optionsAlert.addAction(UIAlertAction(title: "Edit Reading Log", style: .default) { [unowned self] _ in
-            self.performSegue(withIdentifier: "editReadStateSegue", sender: self)
-        })
-        optionsAlert.addAction(UIAlertAction(title: "Edit Book Details", style: .default) { [unowned self] _ in
-            self.performSegue(withIdentifier: "editBookSegue", sender: self)
-        })
-        optionsAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        
-        // For iPad, set the popover presentation controller's source
-        if let popPresenter = optionsAlert.popoverPresentationController {
-            popPresenter.barButtonItem = sender
+        // In "regular" size classed devices, the description text should be less truncated
+        if sizeClass() == (.regular, .regular) {
+            bookDescription.numberOfLines = 8
         }
         
-        self.present(optionsAlert, animated: true, completion: nil)
+        if truncationViews.first!.isHidden == bookDescription.isTruncated {
+            truncationViews.forEach{$0.isHidden = !bookDescription.isTruncated}
+        }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let navController = segue.destination as? UINavigationController
         if let editBookController = navController?.viewControllers.first as? EditBook {
-            editBookController.bookToEdit = viewModel?.book
+            editBookController.bookToEdit = book
         }
         else if let changeReadState = navController?.viewControllers.first as? EditReadState {
-            changeReadState.bookToEdit = viewModel?.book
+            changeReadState.bookToEdit = book
         }
     }
     
-    @IBAction func shareButtonPressed(_ sender: UIBarButtonItem) {
-        guard let book = viewModel?.book else { return }
+    @objc func seeMoreDescription() {
+        guard shouldTruncateLongDescriptions else { return }
         
-        let optionsAlert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        
-        // Open on Google Books
-        if let googleBooksId = book.googleBooksId {
-            optionsAlert.addAction(UIAlertAction(title: "Open on Google Books", style: .default) { _ in
-                UIApplication.shared.openURL(GoogleBooks.Request.webpage(googleBooksId).url)
-            })
-        }
-        
-        // Find on Amazon
-        let amazonUrl = "https://www.amazon.com/s?url=search-alias%3Dstripbooks&field-author=\(viewModel!.book.authorsArray.first?.displayFirstLast ?? "")&field-title=\(viewModel!.book.title)"
-        optionsAlert.addAction(UIAlertAction(title: "Find on Amazon", style: .default) { _ in
-            // Use https://bestazon.io/#WebService to localize Amazon links
-            let azonUrl = "http://lnks.io/r.php?Conf_Source=API&destURL=\(amazonUrl.urlEncoded())&Amzn_AfiliateID_GB=readinglistap-21"
-            UIApplication.shared.openURL(URL(string: azonUrl)!)
-        })
-
-        optionsAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        
-        // For iPad, set the popover presentation controller's source
-        if let popPresenter = optionsAlert.popoverPresentationController {
-            popPresenter.barButtonItem = sender
-        }
-        
-        self.present(optionsAlert, animated: true, completion: nil)
-    }
-
-    @IBAction func seeMoreDescriptionPressed(_ sender: UIButton) {
-        // We use the Enabled state to indicate whether the control should be shown or not. We cannot just set isHidden to true, because
-        // we cannot be sure whether the relayout will be called before or after the description label starts reporting isTruncated = false.
+        // We cannot just set isHidden to true here, because we cannot be sure whether the relayout will be called before or after
+        // the description label starts reporting isTruncated = false.
         // Instead, store the knowledge that the button should be hidden here; when layout is called, if the button is disabled it will be hidden.
-        descriptionSeeMore.isEnabled = false
-        descriptionTextView.numberOfLines = 0
-
-        // Relaying out the stackview is required to adjust the space between the separator and the description label
-        descriptionStack.superview!.layoutIfNeeded()
+        shouldTruncateLongDescriptions = false
+        bookDescription.numberOfLines = 0
+        
+        // Relaying out the parent stackview is required to adjust the space between the separator and the description label
+        (bookDescription.superview!.superview as! UIStackView).layoutIfNeeded()
+    }
+    
+    @objc func bookChanged(_ notification: Notification) {
+        guard let book = book, let userInfo = (notification as NSNotification).userInfo else { return }
+        
+        if let updatedObjects = userInfo[NSUpdatedObjectsKey] as? NSSet, updatedObjects.contains(book) {
+            // If the book was updated, update this page.
+            setupViewFromBook()
+        }
+        else if let deletedObjects = userInfo[NSDeletedObjectsKey] as? NSSet, deletedObjects.contains(book) {
+            // If the book was deleted, set our book to nil and update this page
+            self.book = nil
+            
+            // Pop back to the book table if necessary
+            parentSplitViewController?.masterNavigationController.popToRootViewController(animated: false)
+        }
     }
 
+    @IBAction func changeReadStateButtonWasPressed(_ sender: BorderedButton) {
+        guard let book = book, book.readState == .toRead || book.readState == .reading else { return }
+
+        let readingInfo: BookReadingInformation
+        if book.readState == .toRead {
+            readingInfo = BookReadingInformation.reading(started: Date(), currentPage: nil)
+        }
+        else {
+            readingInfo = BookReadingInformation.finished(started: book.startedReading!, finished: Date())
+        }
+        appDelegate.booksStore.update(book: book, withReadingInformation: readingInfo)
+        
+        UserEngagement.logEvent(.transitionReadState)
+        UserEngagement.onReviewTrigger()
+    }
+    
+    @objc func amazonButtonPressed() {
+        guard let book = book else { return }
+        let amazonUrl = "https://www.amazon.com/s?url=search-alias%3Dstripbooks&field-author=\(book.authorsArray.first?.displayFirstLast ?? "")&field-title=\(book.title)"
+        
+        // Use https://bestazon.io/#WebService to localize Amazon links
+        let azonUrl = "http://lnks.io/r.php?Conf_Source=API&destURL=\(amazonUrl.urlEncoded())&Amzn_AfiliateID_GB=readinglistap-21"
+        UIApplication.shared.openURL(URL(string: azonUrl)!)
+    }
+    
+    @objc func googleBooksButtonPressed() {
+        guard let googleBooksId = book?.googleBooksId else { return }
+        UIApplication.shared.openURL(GoogleBooks.Request.webpage(googleBooksId).url)
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        
+        // 18 is the padding between the main stack view and the top. This should be determined programatically
+        // if any of the layout constraints from the title to the top become more complex
+        let threshold = titleAndAuthorStack.subviews.first(where: {!$0.isHidden})!.frame.maxY + 18 - scrollView.universalContentInset.top
+
+        if didShowNavigationItemTitle != (scrollView.contentOffset.y >= threshold) {
+            // Changes to the title view are to be animated
+            let fadeTextAnimation = CATransition()
+            fadeTextAnimation.duration = 0.2
+            fadeTextAnimation.type = kCATransitionFade
+            
+            navigationItem.titleView!.layer.add(fadeTextAnimation, forKey: nil)
+            (navigationItem.titleView as! UILabel).isHidden = didShowNavigationItemTitle
+            didShowNavigationItemTitle = !didShowNavigationItemTitle
+        }
+    }
+    
     override var previewActionItems: [UIPreviewActionItem] {
         get {
-            guard let book = viewModel?.book else { return [UIPreviewActionItem]() }
+            guard let book = book else { return [UIPreviewActionItem]() }
             
             var previewActions = [UIPreviewActionItem]()
             if book.readState == .toRead {
@@ -330,6 +269,48 @@ class BookDetails: UIViewController {
                 book.delete()
             })
             return previewActions
+        }
+    }
+}
+
+class StartFinishButton: BorderedButton {
+    enum State {
+        case start
+        case finish
+        case none
+    }
+    
+    func setState(_ state: State) {
+        switch state {
+        case .start:
+            isHidden = false
+            setColor(UIColor.buttonBlue)
+            setTitle("START", for: .normal)
+        case .finish:
+            isHidden = false
+            setColor(UIColor.flatGreen)
+            setTitle("FINISH", for: .normal)
+        case .none:
+            isHidden = true
+        }
+    }
+}
+
+extension UIView {
+
+    var nextSibling: UIView? {
+        get {
+            guard let views = superview?.subviews else { return nil }
+            let thisIndex = views.index(of: self)!
+            guard thisIndex + 1 < views.count else { return nil }
+            return views[thisIndex + 1]
+        }
+    }
+    
+    var siblings: [UIView] {
+        get {
+            guard let views = superview?.subviews else { return [] }
+            return views.filter{ $0 != self }
         }
     }
 }

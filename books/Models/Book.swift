@@ -132,6 +132,17 @@ public class List: NSManagedObject {
         case .finished: return "Finished"
         }
     }
+    
+    var longDescription: String {
+        switch self {
+        case .toRead:
+            return "📚 To Read"
+        case .reading:
+            return "📖 Currently Reading"
+        case .finished:
+            return "🎉 Finished"
+        }
+    }
 }
 
 

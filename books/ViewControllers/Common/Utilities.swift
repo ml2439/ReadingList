@@ -21,6 +21,12 @@ class PreviewingNavigationController: UINavigationController {
     }
 }
 
+extension UIViewController {
+    func sizeClass() -> (UIUserInterfaceSizeClass, UIUserInterfaceSizeClass) {
+        return (self.traitCollection.horizontalSizeClass, self.traitCollection.verticalSizeClass)
+    }
+}
+
 
 class HairlineConstraint: NSLayoutConstraint {
     override func awakeFromNib() {
@@ -189,5 +195,102 @@ extension UILabel {
             attributes: [NSAttributedStringKey.font: font],
             context: nil).size
         return labelTextSize.height > bounds.size.height
+    }
+}
+
+class DynamicUILabel: UILabel {
+    @IBInspectable var dynamicFontSize: String = "Title1" {
+        didSet {
+            font = Fonts.scaledFont(font, forTextStyle: UIFontTextStyle("UICTFontTextStyle\(dynamicFontSize)"))
+        }
+    }
+}
+
+@IBDesignable class RoundedImageView: UIImageView {
+    @IBInspectable var cornerRadius: CGFloat {
+        get {
+            return layer.cornerRadius
+        }
+        set {
+            layer.cornerRadius = newValue
+            layer.masksToBounds = newValue > 0
+        }
+    }
+}
+
+@IBDesignable class RoundedView: UIView {
+    @IBInspectable var cornerRadius: CGFloat {
+        get {
+            return layer.cornerRadius
+        }
+        set {
+            layer.cornerRadius = newValue
+            layer.masksToBounds = newValue > 0
+        }
+    }
+}
+
+class UINavigationBarLabel: UILabel {
+    init() {
+        super.init(frame: CGRect.zero)
+        backgroundColor = .clear
+        textAlignment = .center
+        textColor = UINavigationBar.appearance().tintColor
+        font = UIFont.boldSystemFont(ofSize: 16)
+    }
+    
+    func setTitle(_ title: String?) {
+        text = title
+        sizeToFit()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+}
+
+extension UIScrollView {
+    var universalContentInset: UIEdgeInsets {
+        get {
+            if #available(iOS 11.0, *) {
+                return adjustedContentInset
+            }
+            else {
+                return contentInset
+            }
+        }
+    }
+}
+
+
+@IBDesignable class ClearToWhiteHorizontalGradientView: UIView {
+    
+    @IBInspectable var whitePosition: NSNumber = 0.4 {
+        didSet {
+            setupGradient()
+        }
+    }
+
+    var gradient = CAGradientLayer()
+    
+    func setupGradient() {
+        let white = UIColor.white.withAlphaComponent(1.0)
+        let clear = UIColor.white.withAlphaComponent(0.0)
+        gradient.colors = [clear.cgColor, white.cgColor]
+        gradient.locations = [0.0, whitePosition]
+        gradient.startPoint = CGPoint(x: 0, y: 0)
+        gradient.endPoint = CGPoint(x: 1, y: 0)
+        gradient.frame = bounds
+    }
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        setupGradient()
+        layer.insertSublayer(gradient, at: 0)
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        gradient.frame = bounds
     }
 }
