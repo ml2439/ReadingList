@@ -21,6 +21,12 @@ class PreviewingNavigationController: UINavigationController {
     }
 }
 
+extension UIViewController {
+    func sizeClass() -> (UIUserInterfaceSizeClass, UIUserInterfaceSizeClass) {
+        return (self.traitCollection.horizontalSizeClass, self.traitCollection.verticalSizeClass)
+    }
+}
+
 
 class HairlineConstraint: NSLayoutConstraint {
     override func awakeFromNib() {
@@ -244,7 +250,7 @@ class UINavigationBarLabel: UILabel {
 }
 
 extension UIScrollView {
-    var univeralContentInset: UIEdgeInsets {
+    var universalContentInset: UIEdgeInsets {
         get {
             if #available(iOS 11.0, *) {
                 return adjustedContentInset

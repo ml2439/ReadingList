@@ -12,21 +12,24 @@ import CoreData
 
 class BookDetails: UIViewController, UIScrollViewDelegate {
     @IBOutlet weak var cover: UIImageView!
-    @IBOutlet weak var bookTitle: UILabel!
-    @IBOutlet weak var author: UILabel!
+
     @IBOutlet weak var bookDescription: UILabel!
-    /*@IBOutlet weak var pageCount: UILabel!
-    @IBOutlet weak var isbn: UILabel!
-    @IBOutlet weak var published: UILabel!
-    @IBOutlet weak var categories: UILabel!*/
-    @IBOutlet weak var readStateLabel: UILabel!
-    @IBOutlet weak var readTimeLabel: UILabel!
-    @IBOutlet weak var dateAdded: UILabel!
+    @IBOutlet weak var titleAndAuthorStack: UIStackView!
+    @IBOutlet weak var changeReadStateButton: StartFinishButton!
     
+    @IBOutlet weak var readState: UILabel!
     @IBOutlet weak var dateStarted: UILabel!
     @IBOutlet weak var dateFinished: UILabel!
+    @IBOutlet weak var readTime: UILabel!
+    @IBOutlet weak var notes: UILabel!
     
-    @IBOutlet weak var changeReadStateButton: StartFinishButton!
+    @IBOutlet weak var isbn: UILabel!
+    @IBOutlet weak var pages: UILabel!
+    @IBOutlet weak var published: UILabel!
+    @IBOutlet weak var subjects: UILabel!
+
+    @IBOutlet weak var googleBooks: UILabel!
+    @IBOutlet weak var amazon: UILabel!
     
     var didShowNavigationItemTitle = false
     var shouldTruncateLongDescriptions = true
@@ -38,7 +41,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     func setViewEnabled(enabled: Bool) {
         // Show the whole view and nav bar buttons
         view.isHidden = !enabled
-        //navigationItem.rightBarButtonItems?.forEach({$0.toggleHidden(hidden: true)})
+        navigationItem.rightBarButtonItems?.forEach({$0.toggleHidden(hidden: !enabled)})
     }
     
     var book: Book? {
@@ -46,75 +49,73 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     }
     
     func setupViewFromBook() {
-        guard let book = book else {
-            // Hide the whole view and nav bar buttons
-            setViewEnabled(enabled: false); return
-        }
-        
+        // Hide the whole view and nav bar buttons if there's no book
+        guard let book = book else { setViewEnabled(enabled: false); return }
         setViewEnabled(enabled: true)
         
-        if let coverData = book.coverImage, let image = UIImage(data: coverData) {
-            cover.image = image
-        }
-        else {
-            cover.image = #imageLiteral(resourceName: "CoverPlaceholder")
-        }
-
-        bookTitle.text = book.title
+        cover.image = UIImage(optionalData: book.coverImage) ?? #imageLiteral(resourceName: "CoverPlaceholder")
+        
+        // There are 2 title and 2 author labels, one for Regular display (iPad) and one for other displays
+        titleAndAuthorStack.subviews[0...1].forEach{($0 as! UILabel).text = book.title}
+        titleAndAuthorStack.subviews[2...3].forEach{($0 as! UILabel).text = book.authorsFirstLast}
         (navigationItem.titleView as! UINavigationBarLabel).setTitle(book.title)
-
-        func setTextOrHideParentAndNext(_ label: UILabel, _ string: String?) {
-            label.text = string
-            label.superview!.isHidden = string == nil
-            label.superview!.nextSibling?.isHidden = string == nil
-        }
         
-        author.text = book.authorsFirstLast
-        setTextOrHideParentAndNext(bookDescription, book.bookDescription)
-        
-        let dayCount = book.readState == .toRead ? 0 : (NSCalendar.current.dateComponents([.day], from: book.startedReading!.startOfDay(), to: (book.finishedReading ?? Date()).startOfDay()).day ?? 0)
-        let readTime: String
-        if dayCount <= 0 && book.readState == .finished {
-            readTime = "Within\na day"
-        }
-        else if dayCount == 1 {
-            readTime =  "1 day"
-        }
-        else {
-            readTime = "\(dayCount) days"
-        }
-        
-        // Reading Log
         switch book.readState {
         case .toRead:
-            readStateLabel.text = "To Read"
             changeReadStateButton.setState(.start)
         case .reading:
-            readStateLabel.text = "Currently\nReading"
             changeReadStateButton.setState(.finish)
         case .finished:
-            readStateLabel.text = "Finished"
             changeReadStateButton.setState(.none)
         }
-        //readStateLabel.superview!.sizeToFit()
         
+        bookDescription.text = book.bookDescription
+        bookDescription.superview!.isHidden = book.bookDescription == nil
+        bookDescription.superview!.nextSibling!.isHidden = book.bookDescription == nil
+        
+        func setTextOrHideLine(_ label: UILabel, _ string: String?) {
+            // The detail labels are arranged in the following hierachy:
+            /*
+             vertical-stack
+                horizontal-stack
+                    property label
+                    property value view
+                        property value label
+            */
+            // If a property is nil, we should hide the enclosing horizontal stack
+            label.text = string
+            label.superview!.superview!.isHidden = string == nil
+        }
+        // Read state is always present
+        readState.text = book.readState.longDescription
+        setTextOrHideLine(dateStarted, book.startedReading?.toPrettyString(short: false))
+        setTextOrHideLine(dateFinished, book.finishedReading?.toPrettyString(short: false))
+        
+        let readTimeText: String?
         if book.readState == .toRead {
-            readTimeLabel.superview!.isHidden = true
+            readTimeText = nil
         }
         else {
-            readTimeLabel.text = readTime
-            readTimeLabel.superview!.isHidden = false
-            readTimeLabel.superview!.layoutSubviews()
-            
-            
-            //readTimeLabel.superview!.sizeToFit()
+            let dayCount = NSCalendar.current.dateComponents([.day], from: book.startedReading!.startOfDay(), to: (book.finishedReading ?? Date()).startOfDay()).day ?? 0
+            if dayCount <= 0 && book.readState == .finished {
+                readTimeText = "Within a day"
+            }
+            else if dayCount == 1 {
+                readTimeText =  "1 day"
+            }
+            else {
+                readTimeText = "\(dayCount) days"
+            }
         }
+        setTextOrHideLine(readTime, readTimeText)
+        setTextOrHideLine(notes, book.notes)
+
+        setTextOrHideLine(isbn, book.isbn13)
+        setTextOrHideLine(pages, book.pageCount?.stringValue)
+        setTextOrHideLine(published, book.publicationDate?.toPrettyString(short: false))
+        setTextOrHideLine(subjects, book.subjectsArray.count == 0 ? nil : book.subjectsArray.map{$0.name}.joined(separator: ", "))
         
-        // Information table
-        /*setTextOrHideParentAndNext(pageCount, book.pageCount?.stringValue)
-        setTextOrHideParentAndNext(isbn, book.isbn13)
-        setTextOrHideParentAndNext(published, book.publicationDate?.toPrettyString())
-        setTextOrHideParentAndNext(categories, book.subjectsArray.map{$0.name}.joined(separator: "; "))*/
+        googleBooks.isHidden = book.googleBooksId == nil
     }
     
     override func viewDidLoad() {
@@ -132,6 +133,10 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         let tap = UITapGestureRecognizer(target: self, action: #selector(seeMoreDescription))
         bookDescription.superview!.addGestureRecognizer(tap)
         
+        // Listen for taps on the Google and Amazon labels, which should act like buttons and open the relevant webpage
+        amazon.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(amazonButtonPressed)))
+        googleBooks.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(googleBooksButtonPressed)))
+        
         // A custom title view is required for animation
         navigationItem.titleView = UINavigationBarLabel()
         navigationItem.titleView!.isHidden = true
@@ -142,13 +147,15 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        let truncationViews = bookDescription.siblings
         
         // If we should not be truncating long descriptions, hide the siblings of the description label (which are the see more
         // button and a spacer view)
-        guard shouldTruncateLongDescriptions else {
-            truncationViews.forEach{$0.isHidden = true}
-            return
+        let truncationViews = bookDescription.siblings
+        guard shouldTruncateLongDescriptions else { truncationViews.forEach{$0.isHidden = true}; return }
+        
+        // In "regular" size classed devices, the description text should be less truncated
+        if sizeClass() == (.regular, .regular) {
+            bookDescription.numberOfLines = 8
         }
         
         if truncationViews.first!.isHidden == bookDescription.isTruncated {
@@ -211,11 +218,25 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         UserEngagement.onReviewTrigger()
     }
     
+    @objc func amazonButtonPressed() {
+        guard let book = book else { return }
+        let amazonUrl = "https://www.amazon.com/s?url=search-alias%3Dstripbooks&field-author=\(book.authorsArray.first?.displayFirstLast ?? "")&field-title=\(book.title)"
+        
+        // Use https://bestazon.io/#WebService to localize Amazon links
+        let azonUrl = "http://lnks.io/r.php?Conf_Source=API&destURL=\(amazonUrl.urlEncoded())&Amzn_AfiliateID_GB=readinglistap-21"
+        UIApplication.shared.openURL(URL(string: azonUrl)!)
+    }
+    
+    @objc func googleBooksButtonPressed() {
+        guard let googleBooksId = book?.googleBooksId else { return }
+        UIApplication.shared.openURL(GoogleBooks.Request.webpage(googleBooksId).url)
+    }
+    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
         // 18 is the padding between the main stack view and the top. This should be determined programatically
         // if any of the layout constraints from the title to the top become more complex
-        let threshold = bookTitle.frame.maxY + 18 - scrollView.univeralContentInset.top
+        let threshold = titleAndAuthorStack.subviews.first(where: {!$0.isHidden})!.frame.maxY + 18 - scrollView.universalContentInset.top
 
         if didShowNavigationItemTitle != (scrollView.contentOffset.y >= threshold) {
             // Changes to the title view are to be animated
@@ -276,6 +297,7 @@ class StartFinishButton: BorderedButton {
 }
 
 extension UIView {
+
     var nextSibling: UIView? {
         get {
             guard let views = superview?.subviews else { return nil }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="n9u-1T-KRj">
-    <device id="retina5_5" orientation="portrait">
+    <device id="ipad9_7" orientation="landscape">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
@@ -23,23 +23,23 @@
             <objects>
                 <viewController id="7uR-tE-cQd" customClass="BookDetails" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8ct-o2-5pB">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bTb-kP-Eva">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                                <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qHr-le-Bwg" userLabel="Content View">
-                                        <rect key="frame" x="0.0" y="0.0" width="414" height="624.33333333333337"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="1024" height="684.5"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="12" translatesAutoresizingMaskIntoConstraints="NO" id="bhg-kb-dQx" userLabel="Main Stack View">
-                                                <rect key="frame" x="18.666666666666657" y="18" width="378" height="606.33333333333337"/>
+                                                <rect key="frame" x="24" y="24" width="976" height="636.5"/>
                                                 <subviews>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yhn-N0-bz4" userLabel="CoverAndTitle">
-                                                        <rect key="frame" x="0.0" y="0.0" width="378" height="120"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="976" height="180"/>
                                                         <subviews>
                                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="CoverPlaceholder" translatesAutoresizingMaskIntoConstraints="NO" id="3DD-HK-Aea" customClass="RoundedImageView" customModule="Reading_List" customModuleProvider="target">
-                                                                <rect key="frame" x="0.0" y="0.0" width="80" height="120"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="120" height="180"/>
                                                                 <constraints>
                                                                     <constraint firstAttribute="width" secondItem="3DD-HK-Aea" secondAttribute="height" multiplier="2:3" id="Kpn-kd-B7x"/>
                                                                     <constraint firstAttribute="width" constant="80" id="vTU-uk-RYr">
@@ -52,26 +52,54 @@
                                                                     </userDefinedRuntimeAttribute>
                                                                 </userDefinedRuntimeAttributes>
                                                             </imageView>
-                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="La Belle Sauvage" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KUv-Qb-XLN" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
-                                                                <rect key="frame" x="91.333333333333314" y="0.0" width="286" height="21.666666666666668"/>
-                                                                <fontDescription key="fontDescription" name="GillSans-SemiBold" family="Gill Sans" pointSize="18"/>
-                                                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                                                <nil key="highlightedColor"/>
-                                                                <userDefinedRuntimeAttributes>
-                                                                    <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Title2"/>
-                                                                </userDefinedRuntimeAttributes>
-                                                            </label>
-                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Phillip Pullman" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Uvq-kK-HxE" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
-                                                                <rect key="frame" x="91.333333333333314" y="23.666666666666664" width="286" height="18.666666666666664"/>
-                                                                <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="16"/>
-                                                                <color key="textColor" red="0.40784313725490196" green="0.40784313725490196" blue="0.40784313725490196" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                                <nil key="highlightedColor"/>
-                                                                <userDefinedRuntimeAttributes>
-                                                                    <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Title3"/>
-                                                                </userDefinedRuntimeAttributes>
-                                                            </label>
+                                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="Idg-j1-qMK" userLabel="TitleAndAuthorStack">
+                                                                <rect key="frame" x="140" y="0.0" width="836" height="55.5"/>
+                                                                <subviews>
+                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="La Belle Sauvage" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KUv-Qb-XLN" userLabel="BookTitle" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
+                                                                        <fontDescription key="fontDescription" name="GillSans-SemiBold" family="Gill Sans" pointSize="18"/>
+                                                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                                        <nil key="highlightedColor"/>
+                                                                        <userDefinedRuntimeAttributes>
+                                                                            <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Title2"/>
+                                                                        </userDefinedRuntimeAttributes>
+                                                                        <variation key="heightClass=regular-widthClass=regular" hidden="YES"/>
+                                                                    </label>
+                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="La Belle Sauvage" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="C2L-xq-Kuz" userLabel="BookTitleIpad">
+                                                                        <rect key="frame" x="0.0" y="0.0" width="836" height="29"/>
+                                                                        <fontDescription key="fontDescription" name="GillSans-SemiBold" family="Gill Sans" pointSize="24"/>
+                                                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                                        <nil key="highlightedColor"/>
+                                                                        <userDefinedRuntimeAttributes>
+                                                                            <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Title2"/>
+                                                                        </userDefinedRuntimeAttributes>
+                                                                        <variation key="heightClass=compact" hidden="YES"/>
+                                                                        <variation key="widthClass=compact" hidden="YES"/>
+                                                                    </label>
+                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Phillip Pullman" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Uvq-kK-HxE" userLabel="Author" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
+                                                                        <rect key="frame" x="0.0" y="30" width="0.0" height="0.0"/>
+                                                                        <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="16"/>
+                                                                        <color key="textColor" red="0.40784313725490196" green="0.40784313725490196" blue="0.40784313725490196" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                                        <nil key="highlightedColor"/>
+                                                                        <userDefinedRuntimeAttributes>
+                                                                            <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Title3"/>
+                                                                        </userDefinedRuntimeAttributes>
+                                                                        <variation key="heightClass=regular-widthClass=regular" hidden="YES"/>
+                                                                    </label>
+                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Phillip Pullman" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3hQ-oK-vkl" userLabel="AuthorIpad">
+                                                                        <rect key="frame" x="0.0" y="31" width="836" height="24.5"/>
+                                                                        <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="21"/>
+                                                                        <color key="textColor" red="0.40784313729999999" green="0.40784313729999999" blue="0.40784313729999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                                        <nil key="highlightedColor"/>
+                                                                        <userDefinedRuntimeAttributes>
+                                                                            <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Title3"/>
+                                                                        </userDefinedRuntimeAttributes>
+                                                                        <variation key="heightClass=compact" hidden="YES"/>
+                                                                        <variation key="widthClass=compact" hidden="YES"/>
+                                                                    </label>
+                                                                </subviews>
+                                                            </stackView>
                                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xYF-nW-8G6" customClass="StartFinishButton" customModule="Reading_List" customModuleProvider="target">
-                                                                <rect key="frame" x="91.333333333333329" y="54.333333333333329" width="63.999999999999986" height="25"/>
+                                                                <rect key="frame" x="140" y="67.5" width="64" height="25"/>
                                                                 <constraints>
                                                                     <constraint firstAttribute="width" constant="64" id="Zow-Kx-gcs"/>
                                                                     <constraint firstAttribute="height" constant="25" id="p26-Nk-Wkh"/>
@@ -85,31 +113,30 @@
                                                         </subviews>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <constraints>
-                                                            <constraint firstItem="xYF-nW-8G6" firstAttribute="leading" secondItem="KUv-Qb-XLN" secondAttribute="leading" id="5UK-qa-uKD"/>
-                                                            <constraint firstItem="KUv-Qb-XLN" firstAttribute="leading" secondItem="3DD-HK-Aea" secondAttribute="trailing" constant="12" id="7Qj-5g-JVQ"/>
-                                                            <constraint firstItem="xYF-nW-8G6" firstAttribute="top" secondItem="Uvq-kK-HxE" secondAttribute="bottom" constant="12" id="8Bm-4V-tkS"/>
-                                                            <constraint firstItem="Uvq-kK-HxE" firstAttribute="top" secondItem="KUv-Qb-XLN" secondAttribute="bottom" constant="2" id="NZY-Fg-Sjj"/>
-                                                            <constraint firstAttribute="trailing" secondItem="KUv-Qb-XLN" secondAttribute="trailing" id="SgA-Zl-0fh"/>
+                                                            <constraint firstItem="Idg-j1-qMK" firstAttribute="top" secondItem="yhn-N0-bz4" secondAttribute="top" id="Xr2-gy-4Zn"/>
                                                             <constraint firstAttribute="bottom" secondItem="3DD-HK-Aea" secondAttribute="bottom" id="aS8-A4-d2d"/>
                                                             <constraint firstItem="3DD-HK-Aea" firstAttribute="top" secondItem="yhn-N0-bz4" secondAttribute="top" id="bXV-XI-H39"/>
-                                                            <constraint firstItem="Uvq-kK-HxE" firstAttribute="leading" secondItem="KUv-Qb-XLN" secondAttribute="leading" id="cbA-4P-po2"/>
+                                                            <constraint firstItem="xYF-nW-8G6" firstAttribute="leading" secondItem="Idg-j1-qMK" secondAttribute="leading" id="dJK-sM-6Ns"/>
                                                             <constraint firstItem="3DD-HK-Aea" firstAttribute="leading" secondItem="yhn-N0-bz4" secondAttribute="leading" id="hQd-vn-I8k"/>
-                                                            <constraint firstItem="KUv-Qb-XLN" firstAttribute="top" secondItem="3DD-HK-Aea" secondAttribute="top" id="hpk-Ys-NvS"/>
-                                                            <constraint firstItem="Uvq-kK-HxE" firstAttribute="trailing" secondItem="KUv-Qb-XLN" secondAttribute="trailing" id="tID-AN-dDc"/>
+                                                            <constraint firstItem="xYF-nW-8G6" firstAttribute="top" secondItem="Idg-j1-qMK" secondAttribute="bottom" constant="12" id="nzg-ry-BCv"/>
+                                                            <constraint firstAttribute="trailing" secondItem="Idg-j1-qMK" secondAttribute="trailing" id="smK-18-UQc"/>
+                                                            <constraint firstItem="Idg-j1-qMK" firstAttribute="leading" secondItem="3DD-HK-Aea" secondAttribute="trailing" constant="12" id="ulX-0b-jJu">
+                                                                <variation key="heightClass=regular-widthClass=regular" constant="20"/>
+                                                            </constraint>
                                                         </constraints>
                                                     </view>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="XWs-sG-Z2Z" userLabel="Separator">
-                                                        <rect key="frame" x="0.0" y="132" width="378" height="1"/>
-                                                        <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        <rect key="frame" x="0.0" y="192" width="976" height="1"/>
+                                                        <color key="backgroundColor" white="0.75" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="1" id="ngb-Bt-YD4" customClass="HairlineConstraint" customModule="Reading_List" customModuleProvider="target"/>
                                                         </constraints>
                                                     </view>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iOb-q7-6nl" userLabel="Description">
-                                                        <rect key="frame" x="0.0" y="145" width="378" height="61"/>
+                                                        <rect key="frame" x="0.0" y="205" width="976" height="61"/>
                                                         <subviews>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3dC-9n-NG8" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
-                                                                <rect key="frame" x="0.0" y="0.0" width="378" height="61"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="976" height="61"/>
                                                                 <constraints>
                                                                     <constraint firstAttribute="height" constant="61" placeholder="YES" id="DkW-1d-yPY"/>
                                                                 </constraints>
@@ -122,10 +149,10 @@
                                                                 </userDefinedRuntimeAttributes>
                                                             </label>
                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JlZ-qd-SWF" customClass="ClearToWhiteHorizontalGradientView" customModule="Reading_List" customModuleProvider="target">
-                                                                <rect key="frame" x="320.66666666666663" y="46" width="56.666666666666686" height="15"/>
+                                                                <rect key="frame" x="877" y="46" width="99" height="15"/>
                                                             </view>
-                                                            <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="more" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DXS-Q8-6wT" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
-                                                                <rect key="frame" x="349.66666666666663" y="46" width="28.333333333333314" height="15"/>
+                                                            <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="see more" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DXS-Q8-6wT" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
+                                                                <rect key="frame" x="926.5" y="46" width="49.5" height="15"/>
                                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                 <gestureRecognizers/>
                                                                 <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
@@ -151,372 +178,499 @@
                                                         </constraints>
                                                     </view>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VZx-ih-0hi" userLabel="Separator">
-                                                        <rect key="frame" x="0.0" y="218" width="378" height="1"/>
-                                                        <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        <rect key="frame" x="0.0" y="278" width="976" height="1"/>
+                                                        <color key="backgroundColor" white="0.75" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="1" id="YQZ-Es-BVd" customClass="HairlineConstraint" customModule="Reading_List" customModuleProvider="target"/>
                                                         </constraints>
                                                     </view>
-                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="H1q-B2-Luy" userLabel="Reading Log">
-                                                        <rect key="frame" x="0.0" y="231" width="378" height="232.33333333333337"/>
+                                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="dK7-Qi-TIg">
+                                                        <rect key="frame" x="0.0" y="291" width="976" height="146"/>
                                                         <subviews>
-                                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="dK7-Qi-TIg">
-                                                                <rect key="frame" x="0.0" y="0.0" width="378" height="232.33333333333334"/>
+                                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KgY-4c-9LI" userLabel="ReadingLogTitle">
+                                                                <rect key="frame" x="0.0" y="0.0" width="976" height="30"/>
                                                                 <subviews>
-                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KgY-4c-9LI" userLabel="ReadingLogTitle">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="378" height="30"/>
-                                                                        <subviews>
-                                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Reading Log" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6j3-21-YIa" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
-                                                                                <rect key="frame" x="0.0" y="0.0" width="83.666666666666671" height="30"/>
-                                                                                <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="17"/>
-                                                                                <nil key="textColor"/>
-                                                                                <nil key="highlightedColor"/>
-                                                                                <userDefinedRuntimeAttributes>
-                                                                                    <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Title3"/>
-                                                                                </userDefinedRuntimeAttributes>
-                                                                            </label>
-                                                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="k1X-lP-rpw">
-                                                                                <rect key="frame" x="329.33333333333331" y="0.0" width="48" height="30"/>
-                                                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                                                <state key="normal" title="Update"/>
-                                                                                <connections>
-                                                                                    <segue destination="Ifx-rC-wIl" kind="presentation" modalPresentationStyle="formSheet" id="Eno-0z-FCI"/>
-                                                                                </connections>
-                                                                            </button>
-                                                                        </subviews>
-                                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                                        <constraints>
-                                                                            <constraint firstItem="6j3-21-YIa" firstAttribute="top" secondItem="KgY-4c-9LI" secondAttribute="top" id="4Dp-lj-UhZ"/>
-                                                                            <constraint firstItem="6j3-21-YIa" firstAttribute="leading" secondItem="KgY-4c-9LI" secondAttribute="leading" id="CGt-b8-XkV"/>
-                                                                            <constraint firstAttribute="trailing" secondItem="k1X-lP-rpw" secondAttribute="trailing" id="FRQ-4R-WL5"/>
-                                                                            <constraint firstAttribute="height" constant="30" placeholder="YES" id="e5a-fz-c3a"/>
-                                                                            <constraint firstItem="k1X-lP-rpw" firstAttribute="top" secondItem="KgY-4c-9LI" secondAttribute="top" id="f9c-75-nTN"/>
-                                                                            <constraint firstAttribute="bottom" secondItem="6j3-21-YIa" secondAttribute="bottom" id="vqO-Br-49b"/>
-                                                                            <constraint firstAttribute="bottom" secondItem="k1X-lP-rpw" secondAttribute="bottom" id="wGN-sS-Zcc"/>
-                                                                        </constraints>
-                                                                    </view>
-                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="R4A-R9-J0f" userLabel="ReadingLogDetails">
-                                                                        <rect key="frame" x="0.0" y="37.999999999999993" width="378" height="85.333333333333314"/>
-                                                                        <subviews>
-                                                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" alignment="top" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="nc5-gP-v7R">
-                                                                                <rect key="frame" x="101.33333333333331" y="8" width="174" height="69.333333333333329"/>
-                                                                                <subviews>
-                                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FnJ-UB-TmB" userLabel="ReadState">
-                                                                                        <rect key="frame" x="0.0" y="0.0" width="83" height="56"/>
-                                                                                        <subviews>
-                                                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Read State" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="g2v-Md-Y90" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
-                                                                                                <rect key="frame" x="15.666666666666657" y="0.0" width="52" height="14.333333333333334"/>
-                                                                                                <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="12"/>
-                                                                                                <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                                                                <nil key="highlightedColor"/>
-                                                                                                <userDefinedRuntimeAttributes>
-                                                                                                    <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Caption1"/>
-                                                                                                </userDefinedRuntimeAttributes>
-                                                                                            </label>
-                                                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Currently Reading" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wx7-aW-va8" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
-                                                                                                <rect key="frame" x="8" y="16.333333333333318" width="67" height="39.333333333333343"/>
-                                                                                                <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="17"/>
-                                                                                                <nil key="textColor"/>
-                                                                                                <nil key="highlightedColor"/>
-                                                                                                <userDefinedRuntimeAttributes>
-                                                                                                    <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Title3"/>
-                                                                                                </userDefinedRuntimeAttributes>
-                                                                                            </label>
-                                                                                        </subviews>
-                                                                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                                                        <constraints>
-                                                                                            <constraint firstItem="g2v-Md-Y90" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="FnJ-UB-TmB" secondAttribute="leading" id="60s-mY-j4S"/>
-                                                                                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="g2v-Md-Y90" secondAttribute="trailing" id="6Ei-kb-5O9"/>
-                                                                                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="wx7-aW-va8" secondAttribute="trailing" id="9cy-s4-DDe"/>
-                                                                                            <constraint firstAttribute="bottom" secondItem="wx7-aW-va8" secondAttribute="bottom" id="UTu-mX-qsa"/>
-                                                                                            <constraint firstItem="g2v-Md-Y90" firstAttribute="centerX" secondItem="FnJ-UB-TmB" secondAttribute="centerX" id="fo9-kg-sUn"/>
-                                                                                            <constraint firstItem="g2v-Md-Y90" firstAttribute="top" secondItem="FnJ-UB-TmB" secondAttribute="top" id="g4r-kN-qF0"/>
-                                                                                            <constraint firstItem="wx7-aW-va8" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="FnJ-UB-TmB" secondAttribute="leading" id="lxa-4g-hL2"/>
-                                                                                            <constraint firstItem="wx7-aW-va8" firstAttribute="centerX" secondItem="FnJ-UB-TmB" secondAttribute="centerX" id="n7g-U1-9qQ"/>
-                                                                                            <constraint firstItem="wx7-aW-va8" firstAttribute="top" secondItem="g2v-Md-Y90" secondAttribute="bottom" constant="2" id="na3-BD-jlq"/>
-                                                                                        </constraints>
-                                                                                    </view>
-                                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DxV-nB-S3S" userLabel="ReadTime">
-                                                                                        <rect key="frame" x="113" y="0.0" width="61" height="50"/>
-                                                                                        <subviews>
-                                                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Read Time" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Gzk-Bi-svs" userLabel="Read Time" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
-                                                                                                <rect key="frame" x="5" y="0.0" width="51" height="28.333333333333332"/>
-                                                                                                <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="12"/>
-                                                                                                <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                                                                <nil key="highlightedColor"/>
-                                                                                                <userDefinedRuntimeAttributes>
-                                                                                                    <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Caption1"/>
-                                                                                                </userDefinedRuntimeAttributes>
-                                                                                            </label>
-                                                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="12 days" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XlY-xV-Lyc" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
-                                                                                                <rect key="frame" x="5" y="30.333333333333314" width="51" height="19.666666666666671"/>
-                                                                                                <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="17"/>
-                                                                                                <nil key="textColor"/>
-                                                                                                <nil key="highlightedColor"/>
-                                                                                                <userDefinedRuntimeAttributes>
-                                                                                                    <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Title3"/>
-                                                                                                </userDefinedRuntimeAttributes>
-                                                                                            </label>
-                                                                                        </subviews>
-                                                                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                                                        <constraints>
-                                                                                            <constraint firstItem="XlY-xV-Lyc" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="DxV-nB-S3S" secondAttribute="leading" id="4Xl-4G-mTJ"/>
-                                                                                            <constraint firstItem="Gzk-Bi-svs" firstAttribute="centerX" secondItem="DxV-nB-S3S" secondAttribute="centerX" id="9nf-HC-QG5"/>
-                                                                                            <constraint firstItem="XlY-xV-Lyc" firstAttribute="centerX" secondItem="DxV-nB-S3S" secondAttribute="centerX" id="ARS-3K-ct1"/>
-                                                                                            <constraint firstItem="Gzk-Bi-svs" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="DxV-nB-S3S" secondAttribute="leading" id="CnK-AM-lQU"/>
-                                                                                            <constraint firstAttribute="bottom" secondItem="XlY-xV-Lyc" secondAttribute="bottom" id="Fy9-6V-2A8"/>
-                                                                                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="XlY-xV-Lyc" secondAttribute="trailing" id="Qgx-oj-hOl"/>
-                                                                                            <constraint firstItem="Gzk-Bi-svs" firstAttribute="top" secondItem="DxV-nB-S3S" secondAttribute="top" id="XdR-ji-tXk"/>
-                                                                                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="Gzk-Bi-svs" secondAttribute="trailing" id="fKs-ZA-oJj"/>
-                                                                                            <constraint firstItem="XlY-xV-Lyc" firstAttribute="top" secondItem="Gzk-Bi-svs" secondAttribute="bottom" constant="2" id="vNv-UK-4j5"/>
-                                                                                        </constraints>
-                                                                                    </view>
-                                                                                </subviews>
-                                                                            </stackView>
-                                                                        </subviews>
-                                                                        <constraints>
-                                                                            <constraint firstAttribute="bottom" secondItem="nc5-gP-v7R" secondAttribute="bottom" constant="8" id="950-b2-D6j"/>
-                                                                            <constraint firstItem="nc5-gP-v7R" firstAttribute="top" secondItem="R4A-R9-J0f" secondAttribute="top" constant="8" id="irP-v3-Ydo"/>
-                                                                            <constraint firstItem="nc5-gP-v7R" firstAttribute="centerX" secondItem="R4A-R9-J0f" secondAttribute="centerX" id="wBz-KH-qyf"/>
-                                                                        </constraints>
-                                                                        <userDefinedRuntimeAttributes>
-                                                                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                                                                                <real key="value" value="10"/>
-                                                                            </userDefinedRuntimeAttribute>
-                                                                        </userDefinedRuntimeAttributes>
-                                                                    </view>
-                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yvp-G5-fUZ" userLabel="Separator">
-                                                                        <rect key="frame" x="0.0" y="131.33333333333331" width="378" height="1"/>
-                                                                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
-                                                                        <constraints>
-                                                                            <constraint firstAttribute="height" constant="1" id="Py5-6R-jv3" customClass="HairlineConstraint" customModule="Reading_List" customModuleProvider="target"/>
-                                                                        </constraints>
-                                                                    </view>
-                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YU5-0I-nXa">
-                                                                        <rect key="frame" x="0.0" y="140.33333333333331" width="378" height="60"/>
-                                                                        <subviews>
-                                                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="1" translatesAutoresizingMaskIntoConstraints="NO" id="N5M-Wm-FPL">
-                                                                                <rect key="frame" x="0.0" y="0.0" width="378" height="60"/>
-                                                                                <subviews>
-                                                                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="r2F-jS-YGp">
-                                                                                        <rect key="frame" x="0.0" y="0.0" width="378" height="25.333333333333332"/>
-                                                                                        <subviews>
-                                                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Added" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qBi-xQ-tgW">
-                                                                                                <rect key="frame" x="0.0" y="0.0" width="113.66666666666667" height="25.333333333333332"/>
-                                                                                                <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="14"/>
-                                                                                                <color key="textColor" red="0.33333333329999998" green="0.33333333329999998" blue="0.33333333329999998" alpha="1" colorSpace="calibratedRGB"/>
-                                                                                                <nil key="highlightedColor"/>
-                                                                                            </label>
-                                                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="17 October 2017" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="C2b-q9-jdf">
-                                                                                                <rect key="frame" x="129.66666666666669" y="0.0" width="248.33333333333331" height="25.333333333333332"/>
-                                                                                                <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="14"/>
-                                                                                                <nil key="textColor"/>
-                                                                                                <nil key="highlightedColor"/>
-                                                                                            </label>
-                                                                                        </subviews>
-                                                                                    </stackView>
-                                                                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="TaT-cO-Ajt">
-                                                                                        <rect key="frame" x="0.0" y="26.333333333333371" width="378" height="16.333333333333329"/>
-                                                                                        <subviews>
-                                                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Started" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="P2K-eW-MG3">
-                                                                                                <rect key="frame" x="0.0" y="0.0" width="113.66666666666667" height="16.333333333333332"/>
-                                                                                                <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="14"/>
-                                                                                                <color key="textColor" red="0.33333333329999998" green="0.33333333329999998" blue="0.33333333329999998" alpha="1" colorSpace="calibratedRGB"/>
-                                                                                                <nil key="highlightedColor"/>
-                                                                                            </label>
-                                                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="21 October 2017" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5Uy-g8-ebh">
-                                                                                                <rect key="frame" x="129.66666666666669" y="0.0" width="248.33333333333331" height="16.333333333333332"/>
-                                                                                                <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="14"/>
-                                                                                                <nil key="textColor"/>
-                                                                                                <nil key="highlightedColor"/>
-                                                                                            </label>
-                                                                                        </subviews>
-                                                                                    </stackView>
-                                                                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="Imw-NJ-V8f">
-                                                                                        <rect key="frame" x="0.0" y="43.666666666666686" width="378" height="16.333333333333329"/>
-                                                                                        <subviews>
-                                                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Finished" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yOE-CV-AC0">
-                                                                                                <rect key="frame" x="0.0" y="0.0" width="113.66666666666667" height="16.333333333333332"/>
-                                                                                                <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="14"/>
-                                                                                                <color key="textColor" red="0.33333333329999998" green="0.33333333329999998" blue="0.33333333329999998" alpha="1" colorSpace="calibratedRGB"/>
-                                                                                                <nil key="highlightedColor"/>
-                                                                                            </label>
-                                                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="4 December 2017" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xk7-zc-gjj">
-                                                                                                <rect key="frame" x="129.66666666666669" y="0.0" width="248.33333333333331" height="16.333333333333332"/>
-                                                                                                <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="14"/>
-                                                                                                <nil key="textColor"/>
-                                                                                                <nil key="highlightedColor"/>
-                                                                                            </label>
-                                                                                        </subviews>
-                                                                                    </stackView>
-                                                                                </subviews>
-                                                                                <constraints>
-                                                                                    <constraint firstItem="yOE-CV-AC0" firstAttribute="trailing" secondItem="P2K-eW-MG3" secondAttribute="trailing" id="NN7-zs-2Ta"/>
-                                                                                    <constraint firstItem="P2K-eW-MG3" firstAttribute="trailing" secondItem="qBi-xQ-tgW" secondAttribute="trailing" id="w7Q-2s-IfO"/>
-                                                                                </constraints>
-                                                                            </stackView>
-                                                                        </subviews>
-                                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                                        <constraints>
-                                                                            <constraint firstItem="qBi-xQ-tgW" firstAttribute="width" secondItem="YU5-0I-nXa" secondAttribute="width" multiplier="0.3" id="7sn-vc-N9k"/>
-                                                                            <constraint firstItem="N5M-Wm-FPL" firstAttribute="leading" secondItem="YU5-0I-nXa" secondAttribute="leading" id="94Z-ku-9L8"/>
-                                                                            <constraint firstItem="N5M-Wm-FPL" firstAttribute="top" secondItem="YU5-0I-nXa" secondAttribute="top" id="nC0-Ox-cqG"/>
-                                                                            <constraint firstAttribute="trailing" secondItem="N5M-Wm-FPL" secondAttribute="trailing" id="qVC-3g-vJZ"/>
-                                                                            <constraint firstAttribute="bottom" secondItem="N5M-Wm-FPL" secondAttribute="bottom" id="yi0-hJ-exZ"/>
-                                                                        </constraints>
-                                                                    </view>
-                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="XV2-1z-f3e" userLabel="Separator">
-                                                                        <rect key="frame" x="0.0" y="208.33333333333331" width="378" height="1"/>
-                                                                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
-                                                                        <constraints>
-                                                                            <constraint firstAttribute="height" constant="1" id="DYU-Ar-y9c" customClass="HairlineConstraint" customModule="Reading_List" customModuleProvider="target"/>
-                                                                        </constraints>
-                                                                    </view>
-                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Reading log notes go here" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OX5-ir-nV6" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
-                                                                        <rect key="frame" x="0.0" y="217.33333333333331" width="378" height="15"/>
-                                                                        <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
-                                                                        <color key="textColor" red="0.33333333333333331" green="0.33333333333333331" blue="0.33333333333333331" alpha="1" colorSpace="calibratedRGB"/>
-                                                                        <nil key="highlightedColor"/>
-                                                                        <userDefinedRuntimeAttributes>
-                                                                            <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Subhead"/>
-                                                                        </userDefinedRuntimeAttributes>
-                                                                    </label>
-                                                                </subviews>
-                                                            </stackView>
-                                                        </subviews>
-                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                        <constraints>
-                                                            <constraint firstAttribute="bottom" secondItem="dK7-Qi-TIg" secondAttribute="bottom" id="Iyl-jZ-e8q"/>
-                                                            <constraint firstItem="dK7-Qi-TIg" firstAttribute="top" secondItem="H1q-B2-Luy" secondAttribute="top" id="Ssp-YU-qmR"/>
-                                                            <constraint firstAttribute="trailing" secondItem="dK7-Qi-TIg" secondAttribute="trailing" id="uYD-Ki-wJO"/>
-                                                            <constraint firstItem="dK7-Qi-TIg" firstAttribute="leading" secondItem="H1q-B2-Luy" secondAttribute="leading" id="vrF-JI-E8k"/>
-                                                        </constraints>
-                                                    </view>
-                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Deh-by-9gG" userLabel="Separator">
-                                                        <rect key="frame" x="0.0" y="475.33333333333331" width="378" height="1"/>
-                                                        <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                        <constraints>
-                                                            <constraint firstAttribute="height" constant="1" id="04A-kY-Xjd" customClass="HairlineConstraint" customModule="Reading_List" customModuleProvider="target"/>
-                                                        </constraints>
-                                                    </view>
-                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ad9-En-srF" userLabel="Book Details">
-                                                        <rect key="frame" x="0.0" y="488.33333333333326" width="378" height="118"/>
-                                                        <subviews>
-                                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="B21-bN-rym">
-                                                                <rect key="frame" x="0.0" y="0.0" width="378" height="118"/>
-                                                                <subviews>
-                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Information" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="99I-cB-Z3L" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="378" height="19.666666666666668"/>
-                                                                        <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="17"/>
+                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Reading Log" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6j3-21-YIa" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
+                                                                        <rect key="frame" x="0.0" y="0.0" width="79" height="30"/>
+                                                                        <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="16"/>
                                                                         <nil key="textColor"/>
                                                                         <nil key="highlightedColor"/>
                                                                         <userDefinedRuntimeAttributes>
-                                                                            <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Title3"/>
+                                                                            <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Body"/>
                                                                         </userDefinedRuntimeAttributes>
                                                                     </label>
-                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hVc-ih-CUg">
-                                                                        <rect key="frame" x="0.0" y="27.666666666666679" width="378" height="90.333333333333314"/>
+                                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="k1X-lP-rpw">
+                                                                        <rect key="frame" x="928" y="0.0" width="48" height="30"/>
+                                                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                                        <state key="normal" title="Update"/>
+                                                                        <connections>
+                                                                            <segue destination="Ifx-rC-wIl" kind="presentation" modalPresentationStyle="formSheet" id="Eno-0z-FCI"/>
+                                                                        </connections>
+                                                                    </button>
+                                                                </subviews>
+                                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                                <constraints>
+                                                                    <constraint firstItem="6j3-21-YIa" firstAttribute="top" secondItem="KgY-4c-9LI" secondAttribute="top" id="4Dp-lj-UhZ"/>
+                                                                    <constraint firstItem="6j3-21-YIa" firstAttribute="leading" secondItem="KgY-4c-9LI" secondAttribute="leading" id="CGt-b8-XkV"/>
+                                                                    <constraint firstAttribute="trailing" secondItem="k1X-lP-rpw" secondAttribute="trailing" id="FRQ-4R-WL5"/>
+                                                                    <constraint firstAttribute="height" constant="30" placeholder="YES" id="NHF-eT-tuj"/>
+                                                                    <constraint firstItem="k1X-lP-rpw" firstAttribute="top" secondItem="KgY-4c-9LI" secondAttribute="top" id="f9c-75-nTN"/>
+                                                                    <constraint firstAttribute="bottom" secondItem="6j3-21-YIa" secondAttribute="bottom" id="vqO-Br-49b"/>
+                                                                    <constraint firstAttribute="bottom" secondItem="k1X-lP-rpw" secondAttribute="bottom" id="wGN-sS-Zcc"/>
+                                                                </constraints>
+                                                            </view>
+                                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gtb-h2-j2n">
+                                                                <rect key="frame" x="0.0" y="38" width="976" height="108"/>
+                                                                <subviews>
+                                                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="e0v-jg-F1e">
+                                                                        <rect key="frame" x="32" y="0.0" width="944" height="108"/>
                                                                         <subviews>
-                                                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="1" translatesAutoresizingMaskIntoConstraints="NO" id="oW2-3F-lwK">
-                                                                                <rect key="frame" x="0.0" y="0.0" width="378" height="90.333333333333329"/>
+                                                                            <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="4lf-x5-qUh">
+                                                                                <rect key="frame" x="0.0" y="0.0" width="944" height="20"/>
                                                                                 <subviews>
-                                                                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="f4S-Ar-Zco">
-                                                                                        <rect key="frame" x="0.0" y="0.0" width="378" height="16.333333333333332"/>
+                                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Read State" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hoh-H9-zYK" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
+                                                                                        <rect key="frame" x="0.0" y="0.0" width="56.5" height="15"/>
+                                                                                        <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
+                                                                                        <color key="textColor" red="0.33333333329999998" green="0.33333333329999998" blue="0.33333333329999998" alpha="1" colorSpace="calibratedRGB"/>
+                                                                                        <nil key="highlightedColor"/>
+                                                                                        <userDefinedRuntimeAttributes>
+                                                                                            <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Subhead"/>
+                                                                                        </userDefinedRuntimeAttributes>
+                                                                                    </label>
+                                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Vle-Xn-aLf">
+                                                                                        <rect key="frame" x="72.5" y="0.0" width="871.5" height="20"/>
                                                                                         <subviews>
-                                                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Pages" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iB4-j7-ylc">
-                                                                                                <rect key="frame" x="0.0" y="0.0" width="113.66666666666667" height="16.333333333333332"/>
-                                                                                                <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="14"/>
-                                                                                                <color key="textColor" red="0.33333333329999998" green="0.33333333329999998" blue="0.33333333329999998" alpha="1" colorSpace="calibratedRGB"/>
+                                                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Finished" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="P98-Ye-gdn" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
+                                                                                                <rect key="frame" x="0.0" y="0.0" width="871.5" height="20"/>
+                                                                                                <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
+                                                                                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                                                                 <nil key="highlightedColor"/>
-                                                                                            </label>
-                                                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="367" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VOy-RS-1AN">
-                                                                                                <rect key="frame" x="129.66666666666669" y="0.0" width="248.33333333333331" height="16.333333333333332"/>
-                                                                                                <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="14"/>
-                                                                                                <nil key="textColor"/>
-                                                                                                <nil key="highlightedColor"/>
+                                                                                                <userDefinedRuntimeAttributes>
+                                                                                                    <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Subhead"/>
+                                                                                                </userDefinedRuntimeAttributes>
                                                                                             </label>
                                                                                         </subviews>
-                                                                                    </stackView>
-                                                                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="uAc-MN-77P">
-                                                                                        <rect key="frame" x="0.0" y="17.333333333333371" width="378" height="16.333333333333329"/>
+                                                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                                                        <constraints>
+                                                                                            <constraint firstItem="P98-Ye-gdn" firstAttribute="leading" secondItem="Vle-Xn-aLf" secondAttribute="leading" id="8wt-Hj-3Dp"/>
+                                                                                            <constraint firstItem="P98-Ye-gdn" firstAttribute="top" secondItem="Vle-Xn-aLf" secondAttribute="top" id="Aju-Nj-DNe"/>
+                                                                                            <constraint firstAttribute="bottom" secondItem="P98-Ye-gdn" secondAttribute="bottom" id="Vp6-Bx-IGP"/>
+                                                                                            <constraint firstAttribute="trailing" secondItem="P98-Ye-gdn" secondAttribute="trailing" id="hEJ-Du-E39"/>
+                                                                                        </constraints>
+                                                                                    </view>
+                                                                                </subviews>
+                                                                                <constraints>
+                                                                                    <constraint firstAttribute="height" constant="20" placeholder="YES" id="xs0-3b-nT3"/>
+                                                                                </constraints>
+                                                                            </stackView>
+                                                                            <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="TkP-k5-Du8">
+                                                                                <rect key="frame" x="0.0" y="22" width="944" height="20"/>
+                                                                                <subviews>
+                                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Started" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XDm-mx-SgA" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
+                                                                                        <rect key="frame" x="0.0" y="0.0" width="56.5" height="15"/>
+                                                                                        <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
+                                                                                        <color key="textColor" red="0.33333333329999998" green="0.33333333329999998" blue="0.33333333329999998" alpha="1" colorSpace="calibratedRGB"/>
+                                                                                        <nil key="highlightedColor"/>
+                                                                                        <userDefinedRuntimeAttributes>
+                                                                                            <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Subhead"/>
+                                                                                        </userDefinedRuntimeAttributes>
+                                                                                    </label>
+                                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HRm-Pj-Aeh">
+                                                                                        <rect key="frame" x="72.5" y="0.0" width="871.5" height="20"/>
                                                                                         <subviews>
-                                                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Subjects" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rGd-RX-eV5">
-                                                                                                <rect key="frame" x="0.0" y="0.0" width="113.66666666666667" height="16.333333333333332"/>
-                                                                                                <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="14"/>
-                                                                                                <color key="textColor" red="0.33333333329999998" green="0.33333333329999998" blue="0.33333333329999998" alpha="1" colorSpace="calibratedRGB"/>
+                                                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="19 December 2017" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6aZ-t0-uXB" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
+                                                                                                <rect key="frame" x="0.0" y="0.0" width="871.5" height="20"/>
+                                                                                                <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
+                                                                                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                                                                 <nil key="highlightedColor"/>
-                                                                                            </label>
-                                                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Fiction, Fantasy, Science Fiction, Children's, Magic" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7nW-Gq-TnW">
-                                                                                                <rect key="frame" x="129.66666666666669" y="0.0" width="248.33333333333331" height="16.333333333333332"/>
-                                                                                                <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="14"/>
-                                                                                                <nil key="textColor"/>
-                                                                                                <nil key="highlightedColor"/>
+                                                                                                <userDefinedRuntimeAttributes>
+                                                                                                    <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Subhead"/>
+                                                                                                </userDefinedRuntimeAttributes>
                                                                                             </label>
                                                                                         </subviews>
-                                                                                    </stackView>
-                                                                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="wT3-9O-QgY">
-                                                                                        <rect key="frame" x="0.0" y="34.666666666666629" width="378" height="16.333333333333329"/>
+                                                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                                                        <constraints>
+                                                                                            <constraint firstAttribute="bottom" secondItem="6aZ-t0-uXB" secondAttribute="bottom" id="AeA-nE-h7r"/>
+                                                                                            <constraint firstAttribute="trailing" secondItem="6aZ-t0-uXB" secondAttribute="trailing" id="EgL-qO-OQv"/>
+                                                                                            <constraint firstItem="6aZ-t0-uXB" firstAttribute="leading" secondItem="HRm-Pj-Aeh" secondAttribute="leading" id="II9-Z2-vL8"/>
+                                                                                            <constraint firstItem="6aZ-t0-uXB" firstAttribute="top" secondItem="HRm-Pj-Aeh" secondAttribute="top" id="c5Y-SX-R1X"/>
+                                                                                        </constraints>
+                                                                                    </view>
+                                                                                </subviews>
+                                                                                <constraints>
+                                                                                    <constraint firstAttribute="height" constant="20" placeholder="YES" id="wNd-mt-ebZ"/>
+                                                                                </constraints>
+                                                                            </stackView>
+                                                                            <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="5vF-J0-AYM">
+                                                                                <rect key="frame" x="0.0" y="44" width="944" height="20"/>
+                                                                                <subviews>
+                                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Finished" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GZy-9B-WfN" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
+                                                                                        <rect key="frame" x="0.0" y="0.0" width="56.5" height="15"/>
+                                                                                        <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
+                                                                                        <color key="textColor" red="0.33333333329999998" green="0.33333333329999998" blue="0.33333333329999998" alpha="1" colorSpace="calibratedRGB"/>
+                                                                                        <nil key="highlightedColor"/>
+                                                                                        <userDefinedRuntimeAttributes>
+                                                                                            <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Subhead"/>
+                                                                                        </userDefinedRuntimeAttributes>
+                                                                                    </label>
+                                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aks-wW-Y9j">
+                                                                                        <rect key="frame" x="72.5" y="0.0" width="871.5" height="20"/>
                                                                                         <subviews>
-                                                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="ISBN" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lNX-bm-7HO">
-                                                                                                <rect key="frame" x="0.0" y="0.0" width="113.66666666666667" height="16.333333333333332"/>
-                                                                                                <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="14"/>
-                                                                                                <color key="textColor" red="0.33333333329999998" green="0.33333333329999998" blue="0.33333333329999998" alpha="1" colorSpace="calibratedRGB"/>
+                                                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2 January 2018" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UR9-Oj-q8e" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
+                                                                                                <rect key="frame" x="0.0" y="0.0" width="871.5" height="20"/>
+                                                                                                <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
+                                                                                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                                                                 <nil key="highlightedColor"/>
-                                                                                            </label>
-                                                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="9781354637442" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rbm-dG-b5b">
-                                                                                                <rect key="frame" x="129.66666666666669" y="0.0" width="248.33333333333331" height="16.333333333333332"/>
-                                                                                                <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="14"/>
-                                                                                                <nil key="textColor"/>
-                                                                                                <nil key="highlightedColor"/>
+                                                                                                <userDefinedRuntimeAttributes>
+                                                                                                    <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Subhead"/>
+                                                                                                </userDefinedRuntimeAttributes>
                                                                                             </label>
                                                                                         </subviews>
-                                                                                    </stackView>
-                                                                                    <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="8KV-gY-CkY">
-                                                                                        <rect key="frame" x="0.0" y="52" width="378" height="38.333333333333343"/>
+                                                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                                                        <constraints>
+                                                                                            <constraint firstItem="UR9-Oj-q8e" firstAttribute="leading" secondItem="aks-wW-Y9j" secondAttribute="leading" id="HSy-bH-6Yq"/>
+                                                                                            <constraint firstItem="UR9-Oj-q8e" firstAttribute="top" secondItem="aks-wW-Y9j" secondAttribute="top" id="W8z-1x-Ar4"/>
+                                                                                            <constraint firstAttribute="bottom" secondItem="UR9-Oj-q8e" secondAttribute="bottom" id="bhV-en-gAN"/>
+                                                                                            <constraint firstAttribute="trailing" secondItem="UR9-Oj-q8e" secondAttribute="trailing" id="qJP-mX-69j"/>
+                                                                                        </constraints>
+                                                                                    </view>
+                                                                                </subviews>
+                                                                                <constraints>
+                                                                                    <constraint firstAttribute="height" constant="20" placeholder="YES" id="W1J-mW-bin"/>
+                                                                                </constraints>
+                                                                            </stackView>
+                                                                            <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="V8L-zn-Idd">
+                                                                                <rect key="frame" x="0.0" y="66" width="944" height="20"/>
+                                                                                <subviews>
+                                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Read Time" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cah-EW-cNv" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
+                                                                                        <rect key="frame" x="0.0" y="0.0" width="56.5" height="15"/>
+                                                                                        <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
+                                                                                        <color key="textColor" red="0.33333333329999998" green="0.33333333329999998" blue="0.33333333329999998" alpha="1" colorSpace="calibratedRGB"/>
+                                                                                        <nil key="highlightedColor"/>
+                                                                                        <userDefinedRuntimeAttributes>
+                                                                                            <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Subhead"/>
+                                                                                        </userDefinedRuntimeAttributes>
+                                                                                    </label>
+                                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PM7-bq-oyd">
+                                                                                        <rect key="frame" x="72.5" y="0.0" width="871.5" height="20"/>
                                                                                         <subviews>
-                                                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Online" textAlignment="right" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SrS-dC-vk4">
-                                                                                                <rect key="frame" x="0.0" y="0.0" width="113.66666666666667" height="16.333333333333332"/>
-                                                                                                <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="14"/>
-                                                                                                <color key="textColor" red="0.33333333329999998" green="0.33333333329999998" blue="0.33333333329999998" alpha="1" colorSpace="calibratedRGB"/>
+                                                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="32 days" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mtG-OO-VDn" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
+                                                                                                <rect key="frame" x="0.0" y="0.0" width="871.5" height="20"/>
+                                                                                                <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
+                                                                                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                                                                 <nil key="highlightedColor"/>
+                                                                                                <userDefinedRuntimeAttributes>
+                                                                                                    <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Subhead"/>
+                                                                                                </userDefinedRuntimeAttributes>
                                                                                             </label>
-                                                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Google Books Amazon" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Q5H-QU-XGG">
-                                                                                                <rect key="frame" x="129.66666666666669" y="0.0" width="248.33333333333331" height="32.333333333333336"/>
-                                                                                                <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="14"/>
+                                                                                        </subviews>
+                                                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                                                        <constraints>
+                                                                                            <constraint firstItem="mtG-OO-VDn" firstAttribute="top" secondItem="PM7-bq-oyd" secondAttribute="top" id="0cl-JS-puJ"/>
+                                                                                            <constraint firstItem="mtG-OO-VDn" firstAttribute="leading" secondItem="PM7-bq-oyd" secondAttribute="leading" id="6do-JZ-nIl"/>
+                                                                                            <constraint firstAttribute="trailing" secondItem="mtG-OO-VDn" secondAttribute="trailing" id="hoQ-4g-tSD"/>
+                                                                                            <constraint firstAttribute="bottom" secondItem="mtG-OO-VDn" secondAttribute="bottom" id="pIV-yg-K3x"/>
+                                                                                        </constraints>
+                                                                                    </view>
+                                                                                </subviews>
+                                                                                <constraints>
+                                                                                    <constraint firstAttribute="height" constant="20" placeholder="YES" id="zbG-Ce-dET"/>
+                                                                                </constraints>
+                                                                            </stackView>
+                                                                            <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="P6K-rY-yTR">
+                                                                                <rect key="frame" x="0.0" y="88" width="944" height="20"/>
+                                                                                <subviews>
+                                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Notes" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8HH-zh-C9L" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
+                                                                                        <rect key="frame" x="0.0" y="0.0" width="56.5" height="15"/>
+                                                                                        <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
+                                                                                        <color key="textColor" red="0.33333333329999998" green="0.33333333329999998" blue="0.33333333329999998" alpha="1" colorSpace="calibratedRGB"/>
+                                                                                        <nil key="highlightedColor"/>
+                                                                                        <userDefinedRuntimeAttributes>
+                                                                                            <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Subhead"/>
+                                                                                        </userDefinedRuntimeAttributes>
+                                                                                    </label>
+                                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eF0-WB-afL">
+                                                                                        <rect key="frame" x="72.5" y="0.0" width="871.5" height="20"/>
+                                                                                        <subviews>
+                                                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="If you have any notes, they will be shown here, even if they are more than 1 lines long..." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1lx-c8-Jjp" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
+                                                                                                <rect key="frame" x="0.0" y="0.0" width="871.5" height="20"/>
+                                                                                                <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
+                                                                                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                                                                <nil key="highlightedColor"/>
+                                                                                                <userDefinedRuntimeAttributes>
+                                                                                                    <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Subhead"/>
+                                                                                                </userDefinedRuntimeAttributes>
+                                                                                            </label>
+                                                                                        </subviews>
+                                                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                                                        <constraints>
+                                                                                            <constraint firstItem="1lx-c8-Jjp" firstAttribute="leading" secondItem="eF0-WB-afL" secondAttribute="leading" id="OS5-9m-BMp"/>
+                                                                                            <constraint firstItem="1lx-c8-Jjp" firstAttribute="top" secondItem="eF0-WB-afL" secondAttribute="top" id="PqL-ZR-8el"/>
+                                                                                            <constraint firstAttribute="bottom" secondItem="1lx-c8-Jjp" secondAttribute="bottom" id="gVo-kz-WRd"/>
+                                                                                            <constraint firstAttribute="trailing" secondItem="1lx-c8-Jjp" secondAttribute="trailing" id="pcR-fa-0bX"/>
+                                                                                        </constraints>
+                                                                                    </view>
+                                                                                </subviews>
+                                                                                <constraints>
+                                                                                    <constraint firstAttribute="height" constant="20" placeholder="YES" id="r2M-0w-kF8"/>
+                                                                                </constraints>
+                                                                            </stackView>
+                                                                        </subviews>
+                                                                        <constraints>
+                                                                            <constraint firstItem="cah-EW-cNv" firstAttribute="trailing" secondItem="hoh-H9-zYK" secondAttribute="trailing" id="2eG-O1-ayI"/>
+                                                                            <constraint firstItem="GZy-9B-WfN" firstAttribute="trailing" secondItem="hoh-H9-zYK" secondAttribute="trailing" id="LpY-9e-VfW"/>
+                                                                            <constraint firstItem="8HH-zh-C9L" firstAttribute="trailing" secondItem="hoh-H9-zYK" secondAttribute="trailing" id="jw5-hu-XNd"/>
+                                                                            <constraint firstItem="XDm-mx-SgA" firstAttribute="trailing" secondItem="hoh-H9-zYK" secondAttribute="trailing" id="pI5-Gx-Utd"/>
+                                                                        </constraints>
+                                                                    </stackView>
+                                                                </subviews>
+                                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                                <constraints>
+                                                                    <constraint firstAttribute="bottom" secondItem="e0v-jg-F1e" secondAttribute="bottom" id="CkU-3m-LAE"/>
+                                                                    <constraint firstItem="e0v-jg-F1e" firstAttribute="top" secondItem="gtb-h2-j2n" secondAttribute="top" id="DGM-y4-4DI"/>
+                                                                    <constraint firstItem="e0v-jg-F1e" firstAttribute="leading" secondItem="gtb-h2-j2n" secondAttribute="leading" constant="16" id="d3z-aE-0LG">
+                                                                        <variation key="heightClass=regular-widthClass=regular" constant="32"/>
+                                                                    </constraint>
+                                                                    <constraint firstAttribute="trailing" secondItem="e0v-jg-F1e" secondAttribute="trailing" id="srl-H6-mcg"/>
+                                                                </constraints>
+                                                            </view>
+                                                        </subviews>
+                                                    </stackView>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Vo9-bZ-62H" userLabel="Separator">
+                                                        <rect key="frame" x="0.0" y="449" width="976" height="1"/>
+                                                        <color key="backgroundColor" white="0.75" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="1" id="ZtI-Rq-Ofe" customClass="HairlineConstraint" customModule="Reading_List" customModuleProvider="target"/>
+                                                        </constraints>
+                                                    </view>
+                                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="bza-Z5-QWk">
+                                                        <rect key="frame" x="0.0" y="462" width="976" height="174.5"/>
+                                                        <subviews>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Book Details" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fse-UJ-qbK" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
+                                                                <rect key="frame" x="0.0" y="0.0" width="976" height="18.5"/>
+                                                                <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="16"/>
+                                                                <nil key="textColor"/>
+                                                                <nil key="highlightedColor"/>
+                                                                <userDefinedRuntimeAttributes>
+                                                                    <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Body"/>
+                                                                </userDefinedRuntimeAttributes>
+                                                            </label>
+                                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="46D-I0-I2V">
+                                                                <rect key="frame" x="0.0" y="26.5" width="976" height="148"/>
+                                                                <subviews>
+                                                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="iAd-Xj-pGQ">
+                                                                        <rect key="frame" x="16" y="0.0" width="960" height="148"/>
+                                                                        <subviews>
+                                                                            <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="eeC-fd-cO4">
+                                                                                <rect key="frame" x="0.0" y="0.0" width="960" height="20"/>
+                                                                                <subviews>
+                                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="ISBN" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HIO-ZT-2aY" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
+                                                                                        <rect key="frame" x="0.0" y="0.0" width="72.5" height="15"/>
+                                                                                        <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
+                                                                                        <color key="textColor" red="0.33333333329999998" green="0.33333333329999998" blue="0.33333333329999998" alpha="1" colorSpace="calibratedRGB"/>
+                                                                                        <nil key="highlightedColor"/>
+                                                                                        <userDefinedRuntimeAttributes>
+                                                                                            <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Subhead"/>
+                                                                                        </userDefinedRuntimeAttributes>
+                                                                                    </label>
+                                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="p0y-Zd-LuG">
+                                                                                        <rect key="frame" x="88.5" y="0.0" width="871.5" height="20"/>
+                                                                                        <subviews>
+                                                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="9781476781105" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9xr-Xs-NDK" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
+                                                                                                <rect key="frame" x="0.0" y="0.0" width="871.5" height="20"/>
+                                                                                                <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
+                                                                                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                                                                <nil key="highlightedColor"/>
+                                                                                                <userDefinedRuntimeAttributes>
+                                                                                                    <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Subhead"/>
+                                                                                                </userDefinedRuntimeAttributes>
+                                                                                            </label>
+                                                                                        </subviews>
+                                                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                                                        <constraints>
+                                                                                            <constraint firstAttribute="trailing" secondItem="9xr-Xs-NDK" secondAttribute="trailing" id="CdY-7H-67w"/>
+                                                                                            <constraint firstItem="9xr-Xs-NDK" firstAttribute="leading" secondItem="p0y-Zd-LuG" secondAttribute="leading" id="Nim-FN-c5s"/>
+                                                                                            <constraint firstAttribute="bottom" secondItem="9xr-Xs-NDK" secondAttribute="bottom" id="suz-Gz-iKa"/>
+                                                                                            <constraint firstItem="9xr-Xs-NDK" firstAttribute="top" secondItem="p0y-Zd-LuG" secondAttribute="top" id="tdm-kb-gjW"/>
+                                                                                        </constraints>
+                                                                                    </view>
+                                                                                </subviews>
+                                                                                <constraints>
+                                                                                    <constraint firstAttribute="height" constant="20" placeholder="YES" id="rZ3-AB-2b3"/>
+                                                                                </constraints>
+                                                                            </stackView>
+                                                                            <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="hmH-PD-tAR">
+                                                                                <rect key="frame" x="0.0" y="22" width="960" height="20"/>
+                                                                                <subviews>
+                                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Pages" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wgT-jX-mIH" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
+                                                                                        <rect key="frame" x="0.0" y="0.0" width="72.5" height="15"/>
+                                                                                        <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
+                                                                                        <color key="textColor" red="0.33333333329999998" green="0.33333333329999998" blue="0.33333333329999998" alpha="1" colorSpace="calibratedRGB"/>
+                                                                                        <nil key="highlightedColor"/>
+                                                                                        <userDefinedRuntimeAttributes>
+                                                                                            <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Subhead"/>
+                                                                                        </userDefinedRuntimeAttributes>
+                                                                                    </label>
+                                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qMZ-YG-lgd">
+                                                                                        <rect key="frame" x="88.5" y="0.0" width="871.5" height="20"/>
+                                                                                        <subviews>
+                                                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="480" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cXF-BD-6WQ" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
+                                                                                                <rect key="frame" x="0.0" y="0.0" width="871.5" height="20"/>
+                                                                                                <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
+                                                                                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                                                                <nil key="highlightedColor"/>
+                                                                                                <userDefinedRuntimeAttributes>
+                                                                                                    <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Subhead"/>
+                                                                                                </userDefinedRuntimeAttributes>
+                                                                                            </label>
+                                                                                        </subviews>
+                                                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                                                        <constraints>
+                                                                                            <constraint firstItem="cXF-BD-6WQ" firstAttribute="leading" secondItem="qMZ-YG-lgd" secondAttribute="leading" id="CcF-oP-q1S"/>
+                                                                                            <constraint firstAttribute="trailing" secondItem="cXF-BD-6WQ" secondAttribute="trailing" id="j1C-nJ-lBq"/>
+                                                                                            <constraint firstItem="cXF-BD-6WQ" firstAttribute="top" secondItem="qMZ-YG-lgd" secondAttribute="top" id="nBa-19-NRP"/>
+                                                                                            <constraint firstAttribute="bottom" secondItem="cXF-BD-6WQ" secondAttribute="bottom" id="pE6-EB-aWV"/>
+                                                                                        </constraints>
+                                                                                    </view>
+                                                                                </subviews>
+                                                                                <constraints>
+                                                                                    <constraint firstAttribute="height" constant="20" placeholder="YES" id="r7e-Au-fi9"/>
+                                                                                </constraints>
+                                                                            </stackView>
+                                                                            <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="dv8-c5-g18">
+                                                                                <rect key="frame" x="0.0" y="44" width="960" height="20"/>
+                                                                                <subviews>
+                                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Published" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5Ob-tP-Vww" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
+                                                                                        <rect key="frame" x="0.0" y="0.0" width="72.5" height="15"/>
+                                                                                        <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
+                                                                                        <color key="textColor" red="0.33333333329999998" green="0.33333333329999998" blue="0.33333333329999998" alpha="1" colorSpace="calibratedRGB"/>
+                                                                                        <nil key="highlightedColor"/>
+                                                                                        <userDefinedRuntimeAttributes>
+                                                                                            <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Subhead"/>
+                                                                                        </userDefinedRuntimeAttributes>
+                                                                                    </label>
+                                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="w9y-V6-uj4">
+                                                                                        <rect key="frame" x="88.5" y="0.0" width="871.5" height="20"/>
+                                                                                        <subviews>
+                                                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2 November 2017" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zoz-3C-YU5" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
+                                                                                                <rect key="frame" x="0.0" y="0.0" width="871.5" height="20"/>
+                                                                                                <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
+                                                                                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                                                                <nil key="highlightedColor"/>
+                                                                                                <userDefinedRuntimeAttributes>
+                                                                                                    <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Subhead"/>
+                                                                                                </userDefinedRuntimeAttributes>
+                                                                                            </label>
+                                                                                        </subviews>
+                                                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                                                        <constraints>
+                                                                                            <constraint firstItem="zoz-3C-YU5" firstAttribute="top" secondItem="w9y-V6-uj4" secondAttribute="top" id="41I-e3-bBM"/>
+                                                                                            <constraint firstAttribute="bottom" secondItem="zoz-3C-YU5" secondAttribute="bottom" id="Nle-wS-dln"/>
+                                                                                            <constraint firstItem="zoz-3C-YU5" firstAttribute="leading" secondItem="w9y-V6-uj4" secondAttribute="leading" id="d1T-A4-E90"/>
+                                                                                            <constraint firstAttribute="trailing" secondItem="zoz-3C-YU5" secondAttribute="trailing" id="hWo-Od-Ds4"/>
+                                                                                        </constraints>
+                                                                                    </view>
+                                                                                </subviews>
+                                                                                <constraints>
+                                                                                    <constraint firstAttribute="height" constant="20" placeholder="YES" id="Su6-bj-o2X"/>
+                                                                                </constraints>
+                                                                            </stackView>
+                                                                            <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="6ES-NX-Rgl">
+                                                                                <rect key="frame" x="0.0" y="66" width="960" height="20"/>
+                                                                                <subviews>
+                                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Subjects" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="d0F-Jj-4CA" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
+                                                                                        <rect key="frame" x="0.0" y="0.0" width="72.5" height="15"/>
+                                                                                        <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
+                                                                                        <color key="textColor" red="0.33333333329999998" green="0.33333333329999998" blue="0.33333333329999998" alpha="1" colorSpace="calibratedRGB"/>
+                                                                                        <nil key="highlightedColor"/>
+                                                                                        <userDefinedRuntimeAttributes>
+                                                                                            <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Subhead"/>
+                                                                                        </userDefinedRuntimeAttributes>
+                                                                                    </label>
+                                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fes-hP-75S">
+                                                                                        <rect key="frame" x="88.5" y="0.0" width="871.5" height="20"/>
+                                                                                        <subviews>
+                                                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Fiction, Fantasy &amp; Magic, Action &amp; Adventure, Young Adult" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="i89-sm-QGQ" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
+                                                                                                <rect key="frame" x="0.0" y="0.0" width="871.5" height="20"/>
+                                                                                                <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
+                                                                                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                                                                <nil key="highlightedColor"/>
+                                                                                                <userDefinedRuntimeAttributes>
+                                                                                                    <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Subhead"/>
+                                                                                                </userDefinedRuntimeAttributes>
+                                                                                            </label>
+                                                                                        </subviews>
+                                                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                                                        <constraints>
+                                                                                            <constraint firstItem="i89-sm-QGQ" firstAttribute="leading" secondItem="fes-hP-75S" secondAttribute="leading" id="ALb-Y5-clg"/>
+                                                                                            <constraint firstAttribute="trailing" secondItem="i89-sm-QGQ" secondAttribute="trailing" id="QIy-ly-Dx6"/>
+                                                                                            <constraint firstAttribute="bottom" secondItem="i89-sm-QGQ" secondAttribute="bottom" id="dat-xF-kNP"/>
+                                                                                            <constraint firstItem="i89-sm-QGQ" firstAttribute="top" secondItem="fes-hP-75S" secondAttribute="top" id="uM8-0V-AyQ"/>
+                                                                                        </constraints>
+                                                                                    </view>
+                                                                                </subviews>
+                                                                                <constraints>
+                                                                                    <constraint firstAttribute="height" constant="20" placeholder="YES" id="DZQ-to-dgV"/>
+                                                                                </constraints>
+                                                                            </stackView>
+                                                                            <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="Wsg-wK-pbA">
+                                                                                <rect key="frame" x="0.0" y="88" width="960" height="60"/>
+                                                                                <subviews>
+                                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Online" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ogo-6q-uuN" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
+                                                                                        <rect key="frame" x="0.0" y="0.0" width="72.5" height="15"/>
+                                                                                        <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
+                                                                                        <color key="textColor" red="0.33333333329999998" green="0.33333333329999998" blue="0.33333333329999998" alpha="1" colorSpace="calibratedRGB"/>
+                                                                                        <nil key="highlightedColor"/>
+                                                                                        <userDefinedRuntimeAttributes>
+                                                                                            <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Subhead"/>
+                                                                                        </userDefinedRuntimeAttributes>
+                                                                                    </label>
+                                                                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="ghC-oq-svx">
+                                                                                        <rect key="frame" x="88.5" y="0.0" width="871.5" height="34"/>
+                                                                                        <subviews>
+                                                                                            <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Google Books" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NOF-Yd-fv3" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
+                                                                                                <rect key="frame" x="0.0" y="0.0" width="871.5" height="15"/>
+                                                                                                <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
                                                                                                 <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                                                 <nil key="highlightedColor"/>
+                                                                                                <userDefinedRuntimeAttributes>
+                                                                                                    <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Subhead"/>
+                                                                                                </userDefinedRuntimeAttributes>
+                                                                                            </label>
+                                                                                            <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Amazon" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kFh-Vj-XIY" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
+                                                                                                <rect key="frame" x="0.0" y="19" width="871.5" height="15"/>
+                                                                                                <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
+                                                                                                <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                                                                <nil key="highlightedColor"/>
+                                                                                                <userDefinedRuntimeAttributes>
+                                                                                                    <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Subhead"/>
+                                                                                                </userDefinedRuntimeAttributes>
                                                                                             </label>
                                                                                         </subviews>
                                                                                     </stackView>
                                                                                 </subviews>
-                                                                                <constraints>
-                                                                                    <constraint firstItem="SrS-dC-vk4" firstAttribute="trailing" secondItem="lNX-bm-7HO" secondAttribute="trailing" id="5i3-Mh-1g1"/>
-                                                                                    <constraint firstItem="lNX-bm-7HO" firstAttribute="trailing" secondItem="rGd-RX-eV5" secondAttribute="trailing" id="SxF-hs-lsA"/>
-                                                                                    <constraint firstItem="rGd-RX-eV5" firstAttribute="trailing" secondItem="iB4-j7-ylc" secondAttribute="trailing" id="WMW-Ej-mOe"/>
-                                                                                </constraints>
                                                                             </stackView>
                                                                         </subviews>
-                                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                                        <constraints>
-                                                                            <constraint firstAttribute="trailing" secondItem="oW2-3F-lwK" secondAttribute="trailing" id="BIF-5H-VVS"/>
-                                                                            <constraint firstItem="oW2-3F-lwK" firstAttribute="top" secondItem="hVc-ih-CUg" secondAttribute="top" id="Dqk-FH-S6o"/>
-                                                                            <constraint firstAttribute="bottom" secondItem="oW2-3F-lwK" secondAttribute="bottom" id="LLi-VQ-eMw"/>
-                                                                            <constraint firstItem="oW2-3F-lwK" firstAttribute="leading" secondItem="hVc-ih-CUg" secondAttribute="leading" id="SM6-Eo-9Ca"/>
-                                                                            <constraint firstItem="iB4-j7-ylc" firstAttribute="width" secondItem="hVc-ih-CUg" secondAttribute="width" multiplier="0.3" id="g7R-sx-s1S"/>
-                                                                        </constraints>
-                                                                    </view>
+                                                                    </stackView>
                                                                 </subviews>
-                                                            </stackView>
+                                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                                <constraints>
+                                                                    <constraint firstAttribute="bottom" secondItem="iAd-Xj-pGQ" secondAttribute="bottom" id="3B3-11-fwj"/>
+                                                                    <constraint firstItem="iAd-Xj-pGQ" firstAttribute="leading" secondItem="46D-I0-I2V" secondAttribute="leading" constant="16" id="3Xj-bo-l0g"/>
+                                                                    <constraint firstAttribute="trailing" secondItem="iAd-Xj-pGQ" secondAttribute="trailing" id="Kau-YC-VfQ"/>
+                                                                    <constraint firstItem="iAd-Xj-pGQ" firstAttribute="top" secondItem="46D-I0-I2V" secondAttribute="top" id="Kca-RR-Iam"/>
+                                                                </constraints>
+                                                            </view>
                                                         </subviews>
-                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                        <constraints>
-                                                            <constraint firstItem="B21-bN-rym" firstAttribute="leading" secondItem="ad9-En-srF" secondAttribute="leading" id="CLZ-p7-Hhv"/>
-                                                            <constraint firstItem="B21-bN-rym" firstAttribute="top" secondItem="ad9-En-srF" secondAttribute="top" id="cGM-Wf-lEP"/>
-                                                            <constraint firstAttribute="bottom" secondItem="B21-bN-rym" secondAttribute="bottom" id="nhr-D3-iSY"/>
-                                                            <constraint firstAttribute="trailing" secondItem="B21-bN-rym" secondAttribute="trailing" id="x5e-MR-N0X"/>
-                                                        </constraints>
-                                                    </view>
+                                                    </stackView>
                                                 </subviews>
+                                                <constraints>
+                                                    <constraint firstItem="d0F-Jj-4CA" firstAttribute="trailing" secondItem="hoh-H9-zYK" secondAttribute="trailing" id="7BU-KS-tRb"/>
+                                                    <constraint firstItem="wgT-jX-mIH" firstAttribute="trailing" secondItem="hoh-H9-zYK" secondAttribute="trailing" id="cav-dJ-ArK"/>
+                                                    <constraint firstItem="HIO-ZT-2aY" firstAttribute="trailing" secondItem="hoh-H9-zYK" secondAttribute="trailing" id="sQC-yu-6uB"/>
+                                                    <constraint firstItem="5Ob-tP-Vww" firstAttribute="trailing" secondItem="hoh-H9-zYK" secondAttribute="trailing" id="sf8-IS-fqo"/>
+                                                    <constraint firstItem="ogo-6q-uuN" firstAttribute="trailing" secondItem="hoh-H9-zYK" secondAttribute="trailing" id="ytU-6t-C5J"/>
+                                                </constraints>
                                             </stackView>
                                         </subviews>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -524,11 +678,15 @@
                                             <constraint firstAttribute="trailing" secondItem="bhg-kb-dQx" secondAttribute="trailing" constant="18" id="5EX-8r-hL2">
                                                 <variation key="heightClass=regular-widthClass=regular" constant="24"/>
                                             </constraint>
-                                            <constraint firstAttribute="bottom" secondItem="bhg-kb-dQx" secondAttribute="bottom" id="KmB-LU-ncd"/>
+                                            <constraint firstAttribute="bottom" secondItem="bhg-kb-dQx" secondAttribute="bottom" constant="18" id="KmB-LU-ncd">
+                                                <variation key="heightClass=regular-widthClass=regular" constant="24"/>
+                                            </constraint>
                                             <constraint firstItem="bhg-kb-dQx" firstAttribute="leading" secondItem="qHr-le-Bwg" secondAttribute="leading" constant="18" id="UKv-Wz-ICO">
                                                 <variation key="heightClass=regular-widthClass=regular" constant="24"/>
                                             </constraint>
-                                            <constraint firstItem="bhg-kb-dQx" firstAttribute="top" secondItem="qHr-le-Bwg" secondAttribute="top" constant="18" id="ocf-Yc-u0g"/>
+                                            <constraint firstItem="bhg-kb-dQx" firstAttribute="top" secondItem="qHr-le-Bwg" secondAttribute="top" constant="18" id="ocf-Yc-u0g">
+                                                <variation key="heightClass=regular-widthClass=regular" constant="24"/>
+                                            </constraint>
                                         </constraints>
                                     </view>
                                 </subviews>
@@ -563,16 +721,21 @@
                     </navigationItem>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
-                        <outlet property="author" destination="Uvq-kK-HxE" id="4fh-SY-hQk"/>
+                        <outlet property="amazon" destination="kFh-Vj-XIY" id="bjc-vs-P9G"/>
                         <outlet property="bookDescription" destination="3dC-9n-NG8" id="Dh4-fp-OAy"/>
-                        <outlet property="bookTitle" destination="KUv-Qb-XLN" id="9En-Bp-g5j"/>
                         <outlet property="changeReadStateButton" destination="xYF-nW-8G6" id="yN3-e9-bhf"/>
                         <outlet property="cover" destination="3DD-HK-Aea" id="2gC-KM-MtG"/>
-                        <outlet property="dateAdded" destination="C2b-q9-jdf" id="YlV-UK-Ecw"/>
-                        <outlet property="dateFinished" destination="xk7-zc-gjj" id="h9F-ua-mdv"/>
-                        <outlet property="dateStarted" destination="5Uy-g8-ebh" id="54h-ud-oIW"/>
-                        <outlet property="readStateLabel" destination="wx7-aW-va8" id="I5r-Dv-1RX"/>
-                        <outlet property="readTimeLabel" destination="XlY-xV-Lyc" id="dxg-P0-ShK"/>
+                        <outlet property="dateFinished" destination="UR9-Oj-q8e" id="gfn-3P-uup"/>
+                        <outlet property="dateStarted" destination="6aZ-t0-uXB" id="Bmn-m2-0yr"/>
+                        <outlet property="googleBooks" destination="NOF-Yd-fv3" id="AFe-29-WxD"/>
+                        <outlet property="isbn" destination="9xr-Xs-NDK" id="2TO-xe-poV"/>
+                        <outlet property="notes" destination="1lx-c8-Jjp" id="CUm-uY-Cj2"/>
+                        <outlet property="pages" destination="cXF-BD-6WQ" id="JeP-7B-MqX"/>
+                        <outlet property="published" destination="zoz-3C-YU5" id="e9M-31-XBk"/>
+                        <outlet property="readState" destination="P98-Ye-gdn" id="uOF-N4-yBg"/>
+                        <outlet property="readTime" destination="mtG-OO-VDn" id="Tzy-if-zBW"/>
+                        <outlet property="subjects" destination="i89-sm-QGQ" id="Eye-rB-Wrq"/>
+                        <outlet property="titleAndAuthorStack" destination="Idg-j1-qMK" id="ffl-uz-Fpq"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5dX-S1-jhF" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -600,7 +763,7 @@
             <objects>
                 <navigationController id="n9u-1T-KRj" customClass="PreviewingNavigationController" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="7qb-2f-sZb">
-                        <rect key="frame" x="0.0" y="20" width="414" height="44"/>
+                        <rect key="frame" x="0.0" y="20" width="1024" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>

@@ -141,6 +141,7 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="To Read" id="L1D-Rs-V49">
+                        <barButtonItem key="backBarButtonItem" title="To Read" id="PiS-zg-Eqa"/>
                         <barButtonItem key="leftBarButtonItem" systemItem="edit" id="nhd-kN-wZw">
                             <connections>
                                 <action selector="editWasPressed:" destination="4HX-WC-tQz" id="1Xw-ie-QH6"/>
