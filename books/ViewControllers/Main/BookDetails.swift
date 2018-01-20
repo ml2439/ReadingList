@@ -27,7 +27,10 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     @IBOutlet weak var pages: UILabel!
     @IBOutlet weak var published: UILabel!
     @IBOutlet weak var subjects: UILabel!
-
+    
+    @IBOutlet weak var listName: DynamicUILabel!
+    @IBOutlet weak var addToList: DynamicUILabel!
+    
     @IBOutlet weak var googleBooks: UILabel!
     @IBOutlet weak var amazon: UILabel!
     
@@ -115,6 +118,8 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         setTextOrHideLine(published, book.publicationDate?.toPrettyString(short: false))
         setTextOrHideLine(subjects, book.subjectsArray.count == 0 ? nil : book.subjectsArray.map{$0.name}.joined(separator: ", "))
         
+        listName.text = book.listsArray.map{$0.name}.joined(separator: ", ")
+        
         googleBooks.isHidden = book.googleBooksId == nil
     }
     
@@ -136,6 +141,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         // Listen for taps on the Google and Amazon labels, which should act like buttons and open the relevant webpage
         amazon.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(amazonButtonPressed)))
         googleBooks.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(googleBooksButtonPressed)))
+        addToList.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(addToListPressed)))
         
         // A custom title view is required for animation
         navigationItem.titleView = UINavigationBarLabel()
@@ -170,9 +176,6 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         }
         else if let changeReadState = navController?.viewControllers.first as? EditReadState {
             changeReadState.bookToEdit = book
-        }
-        else if let listController = navController?.viewControllers.first as? AddToList {
-            listController.books = [book!]
         }
     }
     
@@ -233,6 +236,12 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     @objc func googleBooksButtonPressed() {
         guard let googleBooksId = book?.googleBooksId else { return }
         UIApplication.shared.openURL(GoogleBooks.Request.webpage(googleBooksId).url)
+    }
+    
+    @objc func addToListPressed() {
+        let rootAddToList = Storyboard.AddToList.instantiateRoot(withStyle: .formSheet) as! UINavigationController
+        (rootAddToList.viewControllers[0] as! AddToList).books = [book!]
+        present(rootAddToList, animated: true)
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
