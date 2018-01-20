@@ -39,13 +39,12 @@ class books_UITests: XCTestCase {
         app.tables.staticTexts["Add Author"].tap()
         app.tables.textFields["First Name(s)"].tap()
         app.typeText("J.D.")
-
         app.tables.textFields["Last Name"].tap()
         app.typeText("Salinger")
+        app.navigationBars.element(boundBy: 0).buttons["Add Manually"].tap()
         
-        app.topNavBar.buttons["Add Manually"].tap()
-        app.topNavBar.buttons["Next"].tap()
-        app.topNavBar.buttons["Done"].tap()
+        app.navigationBars.element(boundBy: 0).buttons["Next"].tap()
+        app.navigationBars.element(boundBy: 0).buttons["Done"].tap()
         
         sleep(1)
         XCTAssertEqual(app.tables.cells.count, initialNumberOfCells + 1)
@@ -56,12 +55,11 @@ class books_UITests: XCTestCase {
         
         app.clickTab(.toRead)
         app.tables.cells.element(boundBy: 0).tap()
-        app.navigationBars.matching(identifier: "Reading_List.BookDetails").buttons["Edit"].tap()
-        app.sheets.buttons.element(boundBy: 1).tap()
+        app.topNavBar.buttons["Edit"].tap()
         
         app.tables.textFields.element(boundBy: 0).tap()
         app.typeText("changed!")
-        app.topNavBar.buttons["Done"].tap()
+        app.navigationBars.matching(identifier: "Edit Book").buttons["Done"].tap()
     }
     
     func testDeleteBook() {
@@ -71,8 +69,7 @@ class books_UITests: XCTestCase {
         let bookCount = Int(app.tables.element(boundBy: 0).cells.count)
         
         app.tables.cells.element(boundBy: 0).tap()
-        app.navigationBars.matching(identifier: "Reading_List.BookDetails").buttons["Edit"].tap()
-        app.sheets.buttons.element(boundBy: 1).tap()
+        app.topNavBar.buttons["Edit"].tap()
         
         app.tables.staticTexts["Delete"].tap()
         app.sheets.buttons["Delete"].tap()
@@ -111,7 +108,7 @@ class books_UITests: XCTestCase {
         // Normal mode
         scanBarcode(app: app, mode: .normal)
         sleep(1)
-        app.topNavBar.buttons["Cancel"].tap()
+        app.navigationBars.element(boundBy: 0).buttons["Cancel"].tap()
     }
     
     func testBarcodeScannerNoPermissions() {
@@ -132,7 +129,7 @@ class books_UITests: XCTestCase {
         // Valid ISBN
         scanBarcode(app: app, mode: .validIsbn)
         sleep(5)
-        app.topNavBar.buttons["Done"].tap()
+        app.navigationBars.element(boundBy: 0).buttons["Done"].tap()
         
     }
     
@@ -146,7 +143,7 @@ class books_UITests: XCTestCase {
         let noMatchAlert = app.alerts.element(boundBy: 0)
         XCTAssertEqual("No Exact Match", noMatchAlert.label)
         noMatchAlert.buttons["No"].tap()
-        app.topNavBar.buttons["Cancel"].tap()
+        app.navigationBars.element(boundBy: 0).buttons["Cancel"].tap()
         
     }
     
@@ -160,6 +157,6 @@ class books_UITests: XCTestCase {
         let duplicateAlert = app.alerts.element(boundBy: 0)
         XCTAssertEqual("Book Already Added", duplicateAlert.label)
         duplicateAlert.buttons["Cancel"].tap()
-        app.topNavBar.buttons["Cancel"].tap()
+        app.navigationBars.element(boundBy: 0).buttons["Cancel"].tap()
     }
 }
