@@ -70,6 +70,11 @@ class SearchOnline: ArrayBackedTableController<GoogleBooks.SearchResult>, UISear
             navigationController!.setToolbarHidden(false, animated: true)
         }
     }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        emptyDatasetView.setTopDistance(tableView.universalContentInset.top + 20)
+    }
 
     @IBAction func cancelWasPressed(_ sender: Any) {
         searchController.isActive = false
@@ -263,7 +268,8 @@ class SearchOnline: ArrayBackedTableController<GoogleBooks.SearchResult>, UISear
 class SearchBooksEmptyDataset: UIView {
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var descriptionLabel: UILabel!
-    
+    @IBOutlet weak var topConstraint: NSLayoutConstraint!
+
     enum EmptySetReason {
         case noSearch
         case noResults
@@ -274,6 +280,11 @@ class SearchBooksEmptyDataset: UIView {
         self.reason = reason
         titleLabel.text = title
         descriptionLabel.text = descriptionString
+    }
+    
+    func setTopDistance(_ distance: CGFloat) {
+        topConstraint.constant = distance
+        self.layoutIfNeeded()
     }
     
     private var reason = EmptySetReason.noSearch
