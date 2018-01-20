@@ -179,6 +179,14 @@ class BookTable: AutoUpdatingTableViewController {
         let selectedReadStates = selectedRows.map{$0.section}.distinct().map{readStateForSection($0)}
         
         let optionsAlert = UIAlertController(title: "Edit \(selectedRows.count) book\(selectedRows.count == 1 ? "" : "s")", message: nil, preferredStyle: .actionSheet)
+
+        optionsAlert.addAction(UIAlertAction(title: "Add to List", style: .default){ [unowned self] _ in
+            let addToListVc = Storyboard.AddToList.instantiateRoot(withStyle: UIModalPresentationStyle.formSheet) as! UINavigationController
+            (addToListVc.viewControllers.first as! AddToList).books = selectedRows.map{ [unowned self] in
+                self.resultsController.object(at: $0)
+            }
+            self.present(addToListVc, animated: true) { self.setEditing(false, animated: true) }
+        })
         
         if selectedReadStates.count == 1 && selectedReadStates.first! != .finished {
             let readState = selectedReadStates.first!
@@ -203,15 +211,6 @@ class BookTable: AutoUpdatingTableViewController {
                 UserEngagement.onReviewTrigger()
             })
         }
-        
-        // TEMP: testing List functionality
-        optionsAlert.addAction(UIAlertAction(title: "Add List", style: .default){ [unowned self] _ in
-            let list = appDelegate.booksStore.createList(name: "New list", type: .series)
-            list.books = NSOrderedSet(array: selectedRows.map{ [unowned self] in
-                self.resultsController.object(at: $0)
-            })
-            appDelegate.booksStore.save()
-        })
         
         optionsAlert.addAction(UIAlertAction(title: "Delete\(selectedRows.count > 1 ? " All" : "")", style: .destructive) { [unowned self] _ in
             // Are you sure?

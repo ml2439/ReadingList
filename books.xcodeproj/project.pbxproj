@@ -11,6 +11,9 @@
 		1C4765931FB8F012005F6AEC /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1C4765921FB8F012005F6AEC /* GoogleService-Info.plist */; };
 		1C4765941FB8F012005F6AEC /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1C4765921FB8F012005F6AEC /* GoogleService-Info.plist */; };
 		1C4765951FB8F012005F6AEC /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1C4765921FB8F012005F6AEC /* GoogleService-Info.plist */; };
+		1C5CDF2620113A3900A757A3 /* AddToList.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1C5CDF2520113A3900A757A3 /* AddToList.storyboard */; };
+		1C5CDF2920113B3300A757A3 /* AddToList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5CDF2820113B3300A757A3 /* AddToList.swift */; };
+		1C5CDF2B20114D9E00A757A3 /* ListPredicate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5CDF2A20114D9E00A757A3 /* ListPredicate.swift */; };
 		1C60922A1F922A0D0055AC5E /* Storyboards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6092291F922A0D0055AC5E /* Storyboards.swift */; };
 		1C668F8A1FFD87490012FDE5 /* CopyableLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C668F891FFD87490012FDE5 /* CopyableLabel.swift */; };
 		1C6CC34F1F8A25B7001B54A1 /* NoCancelButtonSearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6CC34E1F8A25B7001B54A1 /* NoCancelButtonSearchBar.swift */; };
@@ -110,9 +113,12 @@
 
 /* Begin PBXFileReference section */
 		04FA98AC358B690592A17857 /* Pods_books_books_UnitTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_books_books_UnitTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		1C40B38D1FDD91F500AD5A3B /* books_8.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = books_8.xcdatamodel; sourceTree = "<group>"; };
 		1C1C887E1FE05A9D00A20402 /* Tip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tip.swift; sourceTree = "<group>"; };
+		1C40B38D1FDD91F500AD5A3B /* books_8.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = books_8.xcdatamodel; sourceTree = "<group>"; };
 		1C4765921FB8F012005F6AEC /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		1C5CDF2520113A3900A757A3 /* AddToList.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = AddToList.storyboard; sourceTree = "<group>"; };
+		1C5CDF2820113B3300A757A3 /* AddToList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddToList.swift; sourceTree = "<group>"; };
+		1C5CDF2A20114D9E00A757A3 /* ListPredicate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListPredicate.swift; sourceTree = "<group>"; };
 		1C6092291F922A0D0055AC5E /* Storyboards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storyboards.swift; sourceTree = "<group>"; };
 		1C668F891FFD87490012FDE5 /* CopyableLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopyableLabel.swift; sourceTree = "<group>"; };
 		1C6CC34E1F8A25B7001B54A1 /* NoCancelButtonSearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoCancelButtonSearchBar.swift; sourceTree = "<group>"; };
@@ -258,6 +264,14 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		1C5CDF2720113B2900A757A3 /* Lists */ = {
+			isa = PBXGroup;
+			children = (
+				1C5CDF2820113B3300A757A3 /* AddToList.swift */,
+			);
+			path = Lists;
+			sourceTree = "<group>";
+		};
 		1CC18FA61FA6276A000FB7E5 /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -324,6 +338,7 @@
 				49D0FAAA1F2B284000101EE1 /* UserEngagement.swift */,
 				49B8D8E01F499A5300D4C4EF /* UserSettings.swift */,
 				1C8D13771F88F224004A7F18 /* MD5.swift */,
+				1C5CDF2A20114D9E00A757A3 /* ListPredicate.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -340,6 +355,7 @@
 				492710551F362E7E00286352 /* Settings.storyboard */,
 				4942348B1E70AFA100CEEB4C /* ScanBarcode.storyboard */,
 				4942348A1E70AFA100CEEB4C /* SearchOnline.storyboard */,
+				1C5CDF2520113A3900A757A3 /* AddToList.storyboard */,
 			);
 			path = Storyboards;
 			sourceTree = "<group>";
@@ -417,6 +433,7 @@
 		495C5D441BF14C4B00E00C07 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				1C5CDF2720113B2900A757A3 /* Lists */,
 				49BDCC6D1CD614E600F20AAE /* AddBook */,
 				491C84311CF6305700894313 /* Common */,
 				491C84301CF6287100894313 /* Edit */,
@@ -651,6 +668,7 @@
 				494D65D51EB906CB00764DC1 /* examplebooks.csv in Resources */,
 				4936B5841D2C3A2C00600562 /* AddManually.storyboard in Resources */,
 				1CA61FF61F861AAB00DD88F1 /* EditReadState.storyboard in Resources */,
+				1C5CDF2620113A3900A757A3 /* AddToList.storyboard in Resources */,
 				49043DB71EBF1E0B00E74370 /* SearchBooksEmptyDataset.xib in Resources */,
 				1CC18FA51FA4AC02000FB7E5 /* SettingsHeader.xib in Resources */,
 				4968A2B21CB3E0BF00CBF3F0 /* LaunchScreen.storyboard in Resources */,
@@ -909,6 +927,7 @@
 				1C6EA18C1FFAEBCC0013EE5C /* BookDetails.swift in Sources */,
 				491C84351CF6519800894313 /* EditBook.swift in Sources */,
 				49C5339F1DB281A10043E50E /* BookPredicateBuilder.swift in Sources */,
+				1C5CDF2920113B3300A757A3 /* AddToList.swift in Sources */,
 				491C84281CF5027800894313 /* ReadStateForm.swift in Sources */,
 				495FDC2E1CF8C676006DCF2E /* Extensions.swift in Sources */,
 				49812BB41CA95F0600A49EBA /* BookPredicate.swift in Sources */,
@@ -944,6 +963,7 @@
 				1C60922A1F922A0D0055AC5E /* Storyboards.swift in Sources */,
 				1CF5C9D61F9D37B300F389CE /* HTTP.swift in Sources */,
 				49D93AA51CAB16F800AE6611 /* CoreSpotlightStack.swift in Sources */,
+				1C5CDF2B20114D9E00A757A3 /* ListPredicate.swift in Sources */,
 				4994706A1DB42067008CB06E /* ReadingTable.swift in Sources */,
 				49FE2ED51D6F675D00F04239 /* SearchOnline.swift in Sources */,
 				4937A1481E9E1FB900A3B0D1 /* DebugSettings.swift in Sources */,

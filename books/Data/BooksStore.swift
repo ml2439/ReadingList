@@ -53,6 +53,19 @@ class BooksStore {
     }
     
     /**
+     Creates a NSFetchedResultsController to retrieve all Lists in order of name.
+    */
+    func fetchedListsController() -> NSFetchedResultsController<List> {
+        let fetchRequest = NSFetchRequest<List>(entityName: listEntityName)
+        fetchRequest.fetchBatchSize = 100
+        fetchRequest.sortDescriptors = [ListPredicate.nameSort]
+        return NSFetchedResultsController(fetchRequest: fetchRequest,
+            managedObjectContext: self.coreDataStack.managedObjectContext,
+            sectionNameKeyPath: nil,
+            cacheName: nil)
+    }
+    
+    /**
      Retrieves the specified Book, if it exists.
      */
     func get(bookIdUrl: URL) -> Book? {

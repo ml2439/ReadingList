@@ -110,10 +110,12 @@ public class List: NSManagedObject {
 }
 
 @objc enum ListType: Int32, CustomStringConvertible {
-    case series = 1
+    case customList = 1
+    case series = 2
     
     var description: String {
         switch self {
+        case .customList: return "List"
         case .series: return "Series"
         }
     }

@@ -171,6 +171,9 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         else if let changeReadState = navController?.viewControllers.first as? EditReadState {
             changeReadState.bookToEdit = book
         }
+        else if let listController = navController?.viewControllers.first as? AddToList {
+            listController.books = [book!]
+        }
     }
     
     @objc func seeMoreDescription() {
