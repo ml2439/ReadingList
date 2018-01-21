@@ -47,9 +47,9 @@ class BookTableViewCell: UITableViewCell, ConfigurableCell {
 
 class BookTableUpdater: TableUpdater<Book, BookTableViewCell> {
     
-    let onChange: (() -> ())
+    let onChange: (() -> ())?
     
-    init(table: UITableView, controller: NSFetchedResultsController<Book>, onChange: @escaping (() -> ())) {
+    init(table: UITableView, controller: NSFetchedResultsController<Book>, onChange: (() -> ())? = nil) {
         self.onChange = onChange
         super.init(table: table, controller: controller)
     }
@@ -57,13 +57,13 @@ class BookTableUpdater: TableUpdater<Book, BookTableViewCell> {
     override func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange object: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?)  {
         super.controller(controller, didChange: object, at: indexPath, for: type, newIndexPath: newIndexPath)
         
-        onChange()
+        onChange?()
     }
     
     override func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
         super.controller(controller, didChange: sectionInfo, atSectionIndex: sectionIndex, for: type)
         
-        onChange()
+        onChange?()
     }
 }
 

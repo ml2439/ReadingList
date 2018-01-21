@@ -228,7 +228,7 @@ class BooksStore {
         return author
     }
     
-    func createList(name: String, type: ListType) -> List {
+    @discardableResult func createList(name: String, type: ListType) -> List {
         let list = coreDataStack.createNew(entity: listEntityName) as! List
         list.name = name
         list.type = type

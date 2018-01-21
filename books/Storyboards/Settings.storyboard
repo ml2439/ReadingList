@@ -31,7 +31,7 @@
         <scene sceneID="ixr-i2-ceR">
             <objects>
                 <splitViewController id="DTX-v0-0zO" customClass="SplitViewController" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" tag="2" title="Settings" image="settings" selectedImage="settings-filled" id="ykJ-TP-cgy"/>
+                    <tabBarItem key="tabBarItem" tag="3" title="Settings" image="settings" selectedImage="settings-filled" id="ykJ-TP-cgy"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <segue destination="vFY-Rx-QFE" kind="relationship" relationship="masterViewController" id="9f9-tE-EKG"/>

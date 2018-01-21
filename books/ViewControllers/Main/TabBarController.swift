@@ -15,7 +15,8 @@ class TabBarController: UITabBarController {
     enum TabOption : Int {
         case toRead = 0
         case finished = 1
-        case settings = 2
+        case organise = 2
+        case settings = 3
     }
     
     func selectTab(_ tab: TabOption) {
