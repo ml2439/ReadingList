@@ -231,8 +231,8 @@ class DynamicUILabel: UILabel {
 }
 
 class UINavigationBarLabel: UILabel {
-    init() {
-        super.init(frame: CGRect.zero)
+    convenience init() {
+        self.init(frame: CGRect.zero)
         backgroundColor = .clear
         textAlignment = .center
         textColor = UINavigationBar.appearance().tintColor
@@ -242,10 +242,6 @@ class UINavigationBarLabel: UILabel {
     func setTitle(_ title: String?) {
         text = title
         sizeToFit()
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
     }
 }
 

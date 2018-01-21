@@ -19,11 +19,7 @@ class BookTableViewCell: UITableViewCell, ConfigurableCell {
     
     typealias ResultType = Book
     
-    func configureFrom(_ book: Book) {
-        /*titleLabel.font = Fonts.gillSans(forTextStyle: .headline)
-        authorsLabel.font = Fonts.gillSans(forTextStyle: .subheadline)
-        readTimeLabel.font = Fonts.gillSans(forTextStyle: .footnote)*/
-        
+    func configureFrom(_ book: Book) {        
         titleLabel.text = book.title
         authorsLabel.text = book.authorsFirstLast
         bookCover.image = UIImage(optionalData: book.coverImage) ?? #imageLiteral(resourceName: "CoverPlaceholder")
@@ -109,7 +105,6 @@ class BookTable: AutoUpdatingTableViewController {
         
         // Set the table footer text
         tableFooter.text = footerText()
-        tableFooter.font = Fonts.gillSans(forTextStyle: .subheadline)
         
         // Set the DZN data set source
         tableView.emptyDataSetSource = self
@@ -131,9 +126,9 @@ class BookTable: AutoUpdatingTableViewController {
     override func setEditing(_ editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: animated)
         
-        // The search bar should be disabled iff editing: searches will clear selections in edit mode,
+        // The search bar should be disabled if editing: searches will clear selections in edit mode,
         // so it's probably better to just prevent searches from occuring.
-        searchController.searchBar.setIsActive(!editing)
+        searchController.searchBar.isActive = !editing
         
         let leftButton, rightButton: UIBarButtonItem
         if editing {
@@ -540,13 +535,13 @@ extension BookTable: DZNEmptyDataSetDelegate {
         if !resultsFilterer.showingSearchResults {
             // Deactivate the search controller so that clearing a search term cannot hide an active search bar
             if searchController.isActive { searchController.isActive = false }
-            searchController.searchBar.setActiveOrVisible(false)
+            searchController.searchBar.isActiveOrVisible = false
         }
         navigationItem.leftBarButtonItem!.toggleHidden(hidden: true)
     }
     
     func emptyDataSetDidDisappear(_ scrollView: UIScrollView!) {
-        searchController.searchBar.setActiveOrVisible(true)
+        searchController.searchBar.isActiveOrVisible = true
         navigationItem.leftBarButtonItem!.toggleHidden(hidden: false)
     }
 }
