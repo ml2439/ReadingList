@@ -349,13 +349,7 @@ class SearchResultCell: ArrayBackedTableCell<GoogleBooks.SearchResult> {
     @IBOutlet weak var imageOutlet: UIImageView!
     
     private var coverImageRequest: HTTP.Request?
-    
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        titleOutlet.font = Fonts.gillSans(forTextStyle: .headline)
-        authorOutlet.font = Fonts.gillSans(forTextStyle: .subheadline)
-    }
-    
+
     override func prepareForReuse() {
         super.prepareForReuse()
         
