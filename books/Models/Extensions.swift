@@ -194,6 +194,10 @@ extension Array where Element: Equatable {
         }
         return uniqueValues
     }
+    
+    func any(where whereFunc: (Element) -> Bool) -> Bool {
+        return first(where: whereFunc) != nil
+    }
 }
 
 extension String.SubSequence {

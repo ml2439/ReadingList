@@ -10,12 +10,16 @@ import Foundation
 import UIKit
 import CoreData
 
-class NewListAlertController: UIAlertController {
-    convenience init(onOK: @escaping (String) -> ()) {
-        self.init(title: "Add New List", message: "Enter a name for your list", preferredStyle: .alert)
-
+/**
+ A UIAlertController with a single text field input, and an OK and Cancel action. The OK button is disabled
+ when the text box is empty or whitespace.
+ */
+class TextBoxAlertController: UIAlertController {
+    convenience init(title: String, message: String, placeholder: String, onOK: @escaping (String) -> ()) {
+        self.init(title: title, message: message, preferredStyle: .alert)
+        
         addTextField{ [unowned self] textField in
-            textField.placeholder = "Enter list name"
+            textField.placeholder = placeholder
             textField.addTarget(self, action: #selector(self.textFieldDidChange), for: .editingChanged)
         }
         addAction(UIAlertAction(title: "Cancel", style: .cancel))
@@ -28,8 +32,13 @@ class NewListAlertController: UIAlertController {
     }
     
     @objc func textFieldDidChange(_ textField: UITextField) {
-        // TODO: Disallow duplicate list names?
         actions[1].isEnabled = textField.text?.isEmptyOrWhitespace == false
+    }
+}
+
+class NewListAlertController: TextBoxAlertController {
+    convenience init(onOK: @escaping (String) -> ()) {
+        self.init(title: "Add New List", message: "Enter a name for your list", placeholder: "Enter list name", onOK: onOK)
     }
 }
 
@@ -62,7 +71,8 @@ class AddToList: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return "Add to \(section == 1 ? "new" : "an existing") list"
+        if section == 0 { return "Add to an existing list" }
+        return "Or add to a new list"
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

@@ -15,7 +15,7 @@ class BookTableViewCell: UITableViewCell, ConfigurableCell {
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var authorsLabel: UILabel!
     @IBOutlet weak var bookCover: UIImageView!
-    @IBOutlet weak var readTimeLabel: UILabel!
+    @IBOutlet weak var readTimeLabel: UILabel?
     
     typealias ResultType = Book
     
@@ -24,13 +24,13 @@ class BookTableViewCell: UITableViewCell, ConfigurableCell {
         authorsLabel.text = book.authorsFirstLast
         bookCover.image = UIImage(optionalData: book.coverImage) ?? #imageLiteral(resourceName: "CoverPlaceholder")
         if book.readState == .reading {
-            readTimeLabel.text = book.startedReading!.toPrettyString()
+            readTimeLabel?.text = book.startedReading!.toPrettyString()
         }
         else if book.readState == .finished {
-            readTimeLabel.text = book.finishedReading!.toPrettyString()
+            readTimeLabel?.text = book.finishedReading!.toPrettyString()
         }
         else {
-            readTimeLabel.text = nil
+            readTimeLabel?.text = nil
         }
         
         #if DEBUG

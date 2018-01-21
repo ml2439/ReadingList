@@ -195,16 +195,23 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     @objc func bookChanged(_ notification: Notification) {
         guard let book = book, let userInfo = (notification as NSNotification).userInfo else { return }
         
-        if let updatedObjects = userInfo[NSUpdatedObjectsKey] as? NSSet, updatedObjects.contains(book) {
+        let deletedObjects = userInfo[NSDeletedObjectsKey] as? NSSet ?? NSSet()
+        guard deletedObjects.contains(book) != true else {
+            // If the book was deleted, set our book to nil and update this page. Pop back to the book table if necessary
+            self.book = nil
+            parentSplitViewController?.masterNavigationController.popToRootViewController(animated: false)
+            return
+        }
+        
+        let updatedObjects = userInfo[NSUpdatedObjectsKey] as? NSSet ?? NSSet()
+        let createdObjects = userInfo[NSInsertedObjectsKey] as? NSSet ?? NSSet()
+        func setContainsRelatedList(_ set: NSSet) -> Bool {
+           return set.flatMap({$0 as? List}).any(where: {$0.booksArray.contains(book)})
+        }
+        
+        if updatedObjects.contains(book) || setContainsRelatedList(deletedObjects) || setContainsRelatedList(updatedObjects) || setContainsRelatedList(createdObjects) {
             // If the book was updated, update this page.
             setupViewFromBook()
-        }
-        else if let deletedObjects = userInfo[NSDeletedObjectsKey] as? NSSet, deletedObjects.contains(book) {
-            // If the book was deleted, set our book to nil and update this page
-            self.book = nil
-            
-            // Pop back to the book table if necessary
-            parentSplitViewController?.masterNavigationController.popToRootViewController(animated: false)
         }
     }
 

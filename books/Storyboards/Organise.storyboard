@@ -6,8 +6,16 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="Segues with Peek and Pop" minToolsVersion="7.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
+    <customFonts key="customFonts">
+        <array key="GillSans.ttc">
+            <string>GillSans</string>
+        </array>
+    </customFonts>
     <scenes>
         <!--BookDetails-->
         <scene sceneID="ajH-QG-QxI">
@@ -50,7 +58,10 @@
                                     </subviews>
                                 </tableViewCellContentView>
                                 <connections>
-                                    <segue destination="ggN-hf-l8Q" kind="show" id="QZG-yd-ESl"/>
+                                    <segue destination="ggN-hf-l8Q" kind="show" identifier="selectList" id="QZG-yd-ESl">
+                                        <segue key="commit" inheritsFrom="parent" id="lDA-ec-R01"/>
+                                        <segue key="preview" inheritsFrom="commit" id="Hak-Xx-6IN"/>
+                                    </segue>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -72,22 +83,74 @@
             </objects>
             <point key="canvasLocation" x="-9174" y="1374"/>
         </scene>
-        <!--Table View Controller-->
+        <!--My List-->
         <scene sceneID="31O-I5-KfZ">
             <objects>
-                <tableViewController id="ggN-hf-l8Q" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="gO0-S4-wGF">
+                <tableViewController title="My List" id="ggN-hf-l8Q" customClass="ListBookTable" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="92" sectionHeaderHeight="18" sectionFooterHeight="18" id="gO0-S4-wGF">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="FJy-8j-7bm">
-                                <rect key="frame" x="0.0" y="55.5" width="375" height="44"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="FJy-8j-7bm" id="GHn-JJ-IQM">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="0.0" reuseIdentifier="BookTableViewCell" rowHeight="92" id="9uo-s6-ruj" customClass="BookTableViewCell" customModule="Reading_List" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="55.5" width="375" height="92"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="9uo-s6-ruj" id="0Z2-Yu-tSJ">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="91.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aYb-WF-cH7" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
+                                            <rect key="frame" x="67" y="11" width="300" height="20"/>
+                                            <accessibility key="accessibilityConfiguration" identifier="title"/>
+                                            <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="17"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Headline"/>
+                                            </userDefinedRuntimeAttributes>
+                                        </label>
+                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="CoverPlaceholder" translatesAutoresizingMaskIntoConstraints="NO" id="Prb-Ge-gIA" customClass="RoundedImageView" customModule="Reading_List" customModuleProvider="target">
+                                            <rect key="frame" x="6" y="6" width="53" height="79.5"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" secondItem="Prb-Ge-gIA" secondAttribute="height" multiplier="1:1.5" id="oRb-N6-140"/>
+                                            </constraints>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                    <real key="value" value="2"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                        </imageView>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Authors" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OGT-1m-I00" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
+                                            <rect key="frame" x="67" y="31" width="300" height="17.5"/>
+                                            <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="15"/>
+                                            <color key="textColor" white="0.33333333329999998" alpha="1" colorSpace="calibratedWhite"/>
+                                            <nil key="highlightedColor"/>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Subhead"/>
+                                            </userDefinedRuntimeAttributes>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="OGT-1m-I00" firstAttribute="leading" secondItem="aYb-WF-cH7" secondAttribute="leading" id="38f-X7-4PJ"/>
+                                        <constraint firstItem="OGT-1m-I00" firstAttribute="trailing" secondItem="aYb-WF-cH7" secondAttribute="trailing" id="7ha-ZS-rW3"/>
+                                        <constraint firstAttribute="trailing" secondItem="aYb-WF-cH7" secondAttribute="trailing" constant="8" id="WCN-vN-RRF"/>
+                                        <constraint firstItem="Prb-Ge-gIA" firstAttribute="top" secondItem="0Z2-Yu-tSJ" secondAttribute="top" constant="6" id="WkO-lL-f0n"/>
+                                        <constraint firstAttribute="bottom" secondItem="Prb-Ge-gIA" secondAttribute="bottom" constant="6" id="iFk-3J-S6o"/>
+                                        <constraint firstItem="aYb-WF-cH7" firstAttribute="top" secondItem="0Z2-Yu-tSJ" secondAttribute="topMargin" id="mzd-pc-REv"/>
+                                        <constraint firstItem="Prb-Ge-gIA" firstAttribute="leading" secondItem="0Z2-Yu-tSJ" secondAttribute="leading" constant="6" id="qbT-jG-DeX"/>
+                                        <constraint firstItem="OGT-1m-I00" firstAttribute="top" secondItem="aYb-WF-cH7" secondAttribute="bottom" id="uCD-aG-Qel"/>
+                                        <constraint firstItem="aYb-WF-cH7" firstAttribute="leading" secondItem="Prb-Ge-gIA" secondAttribute="trailing" constant="8" id="yRV-0b-uTm"/>
+                                    </constraints>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="authorsLabel" destination="OGT-1m-I00" id="4wi-zM-YqG"/>
+                                    <outlet property="bookCover" destination="Prb-Ge-gIA" id="UWR-Ug-cdu"/>
+                                    <outlet property="titleLabel" destination="aYb-WF-cH7" id="rno-Jf-bkE"/>
+                                    <segue destination="7z6-rj-KqQ" kind="showDetail" id="VNc-E8-H9n">
+                                        <segue key="commit" inheritsFrom="parent" id="2LM-8K-0FU"/>
+                                        <segue key="preview" inheritsFrom="commit" id="DeS-bR-YpD"/>
+                                    </segue>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <sections/>
@@ -133,7 +196,12 @@
         </scene>
     </scenes>
     <resources>
+        <image name="CoverPlaceholder" width="180" height="270"/>
         <image name="organise" width="25" height="25"/>
         <image name="organise-filled" width="25" height="25"/>
     </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="QZG-yd-ESl"/>
+        <segue reference="VNc-E8-H9n"/>
+    </inferredMetricsTieBreakers>
 </document>
