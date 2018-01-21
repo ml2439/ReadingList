@@ -126,9 +126,9 @@ class BookTable: AutoUpdatingTableViewController {
     override func setEditing(_ editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: animated)
         
-        // The search bar should be disabled iff editing: searches will clear selections in edit mode,
+        // The search bar should be disabled if editing: searches will clear selections in edit mode,
         // so it's probably better to just prevent searches from occuring.
-        searchController.searchBar.setIsActive(!editing)
+        searchController.searchBar.isActive = !editing
         
         let leftButton, rightButton: UIBarButtonItem
         if editing {
@@ -527,13 +527,13 @@ extension BookTable: DZNEmptyDataSetDelegate {
         if !resultsFilterer.showingSearchResults {
             // Deactivate the search controller so that clearing a search term cannot hide an active search bar
             if searchController.isActive { searchController.isActive = false }
-            searchController.searchBar.setActiveOrVisible(false)
+            searchController.searchBar.isActiveOrVisible = false
         }
         navigationItem.leftBarButtonItem!.toggleHidden(hidden: true)
     }
     
     func emptyDataSetDidDisappear(_ scrollView: UIScrollView!) {
-        searchController.searchBar.setActiveOrVisible(true)
+        searchController.searchBar.isActiveOrVisible = true
         navigationItem.leftBarButtonItem!.toggleHidden(hidden: false)
     }
 }

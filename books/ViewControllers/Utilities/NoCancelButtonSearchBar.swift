@@ -19,19 +19,34 @@ class NoCancelButtonSearchBar: UISearchBar {
 }
 
 extension UISearchBar {
-    func setIsActive(_ active: Bool) {
-        isUserInteractionEnabled = active
-        alpha = active ? 1.0 : 0.5
-    }
-    
-    func setActiveOrVisible(_ active: Bool) {
-        // iOS >10 search bars can be made hidden without much consequence;
-        // iOS 11 search bars are part of navigation items, which makes hiding them look weird. Instead we "disable" them.
-        if #available(iOS 11.0, *) {
-            setIsActive(active)
+    var isActive: Bool {
+        get {
+            return isUserInteractionEnabled
         }
-        else {
-            isHidden = !active
+        set {
+            isUserInteractionEnabled = newValue
+            alpha = newValue ? 1.0 : 0.5
+        }
+    }
+
+    var isActiveOrVisible: Bool {
+        get {
+            if #available(iOS 11.0, *) {
+                return isActive
+            }
+            else {
+                return !isHidden
+            }
+        }
+        set {
+            // iOS >10 search bars can be made hidden without much consequence;
+            // iOS 11 search bars are part of navigation items, which makes hiding them look weird. Instead we "disable" them.
+            if #available(iOS 11.0, *) {
+                isActive = newValue
+            }
+            else {
+                isHidden = !newValue
+            }
         }
     }
 }
