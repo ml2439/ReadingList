@@ -182,9 +182,10 @@ class BookTable: AutoUpdatingTableViewController {
 
         optionsAlert.addAction(UIAlertAction(title: "Add to List", style: .default){ [unowned self] _ in
             let books = selectedRows.map(self.resultsController.object)
-            self.present(AddToList.getAppropriateViewController(booksToAdd: books), animated: true) { [unowned self] in
+            
+            self.present(AddToList.getAppropriateViewController(booksToAdd: books) { [unowned self] in
                 self.setEditing(false, animated: true)
-            }
+            }, animated: true)
         })
         
         if selectedReadStates.count == 1 && selectedReadStates.first! != .finished {

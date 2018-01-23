@@ -60,20 +60,26 @@ class AddToList: UITableViewController {
     /*
      Returns the appropriate View Controller for adding a book (or books) to a list.
      If there are no lists, this will be a UIAlertController; if there are lists, this will be a UINavigationController.
+     The completion action will run at the end of a list addition if a UIAlertController was returned.
     */
-    static func getAppropriateViewController(booksToAdd: [Book]) -> UIViewController {
+    static func getAppropriateViewController(booksToAdd: [Book], completion: (() -> ())? = nil) -> UIViewController {
         if appDelegate.booksStore.listCount() > 0 {
             let rootAddToList = Storyboard.AddToList.instantiateRoot(withStyle: .formSheet) as! UINavigationController
             (rootAddToList.viewControllers[0] as! AddToList).books = booksToAdd
             return rootAddToList
         }
         else {
-            return NewListAlertController(onOK: { title in
-                let createdList = appDelegate.booksStore.createList(name: title, type: ListType.customList)
-                createdList.books = NSOrderedSet(array: booksToAdd)
-                appDelegate.booksStore.save()
-            })
+            return AddToList.newListAlertController(booksToAdd, completion: completion)
         }
+    }
+    
+    static func newListAlertController(_ books: [Book], completion: (() -> ())? = nil) -> UIAlertController {
+        return NewListAlertController(onOK: { title in
+            let createdList = appDelegate.booksStore.createList(name: title, type: ListType.customList)
+            createdList.books = NSOrderedSet(array: books)
+            appDelegate.booksStore.save()
+            completion?()
+        })
     }
     
     override func viewDidLoad() {
@@ -123,26 +129,17 @@ class AddToList: UITableViewController {
         }
     }
     
-    func newListAlertController(_ books: [Book], completion: @escaping () -> ()) -> UIAlertController {
-        return NewListAlertController(onOK: { [unowned self] title in
-            let createdList = appDelegate.booksStore.createList(name: title, type: ListType.customList)
-            createdList.books = NSOrderedSet(array: self.books)
-            appDelegate.booksStore.save()
-            completion()
-        })
-    }
-    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 0 {
-            let list = resultsController.object(at: IndexPath(row: indexPath.row, section: 0))
-            
             // Append the books to the end of the selected list
+            let list = resultsController.object(at: IndexPath(row: indexPath.row, section: 0))
             list.books = NSOrderedSet(array: list.booksArray + books)
             appDelegate.booksStore.save()
+
             navigationController!.dismiss(animated: true)
         }
         else {
-            present(newListAlertController(books){ [unowned self] in
+            present(AddToList.newListAlertController(books) { [unowned self] in
                 self.navigationController!.dismiss(animated: true)
             }, animated: true)
         }

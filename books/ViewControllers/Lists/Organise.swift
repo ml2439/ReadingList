@@ -52,6 +52,10 @@ class Organise: AutoUpdatingTableViewController {
         confirmDelete.addAction(UIAlertAction(title: "Delete", style: .destructive){ [unowned self] _ in
             appDelegate.booksStore.deleteObject(self.resultsController.object(at: indexPath))
             appDelegate.booksStore.save()
+            // When the table goes from 1 row to 0 rows in the single section, the section header remains unless the table is reloaded
+            if self.tableView.numberOfRows(inSection: 0) == 0 {
+                self.tableView.reloadData()
+            }
             self.tableView.setEditing(false, animated: true)
         })
         confirmDelete.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
@@ -59,16 +63,10 @@ class Organise: AutoUpdatingTableViewController {
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if section == 0 && self.tableView(tableView, numberOfRowsInSection: section) != 0 {
-            // The section header seemed to be showing even when there were no rows in section 0. Protect against this.
-            // TODO Still happens
-            return "Your lists"
-        }
-        return nil
+        return "Your lists"
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        super.prepare(for: segue, sender: sender)
         if let listBookTable = segue.destination as? ListBookTable {
             listBookTable.list = resultsController.object(at: tableView.indexPath(for: (sender as! UITableViewCell))!)
         }
