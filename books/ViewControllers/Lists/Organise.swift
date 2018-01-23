@@ -63,7 +63,9 @@ class Organise: AutoUpdatingTableViewController {
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return "Your lists"
+        guard section == 0 else { return nil }
+        let listCount = resultsController.sections?[0].numberOfObjects ?? 0
+        return listCount == 0 ? nil : "Your lists"
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
