@@ -29,7 +29,7 @@
         <scene sceneID="WvJ-QL-gyx">
             <objects>
                 <tableViewController clearsSelectionOnViewWillAppear="NO" id="RiX-qo-4E3" customClass="Organise" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" allowsSelectionDuringEditing="YES" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="yuf-Gn-OLe">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="yuf-Gn-OLe">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
@@ -72,11 +72,6 @@
                     </tableView>
                     <navigationItem key="navigationItem" title="Organise" id="U1p-Q1-su7">
                         <barButtonItem key="leftBarButtonItem" systemItem="edit" id="CFa-jF-OQJ"/>
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="F7i-iU-Pza">
-                            <connections>
-                                <action selector="addWasPressed:" destination="RiX-qo-4E3" id="tZh-x3-yXr"/>
-                            </connections>
-                        </barButtonItem>
                     </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lLG-42-1Aa" userLabel="First Responder" sceneMemberID="firstResponder"/>

@@ -15,24 +15,30 @@ import CoreData
  when the text box is empty or whitespace.
  */
 class TextBoxAlertController: UIAlertController {
-    convenience init(title: String, message: String, placeholder: String, onOK: @escaping (String) -> ()) {
+    convenience init(title: String, message: String? = nil, initialValue: String? = nil, placeholder: String? = nil, onOK: @escaping (String) -> ()) {
         self.init(title: title, message: message, preferredStyle: .alert)
         
         addTextField{ [unowned self] textField in
-            textField.placeholder = placeholder
             textField.addTarget(self, action: #selector(self.textFieldDidChange), for: .editingChanged)
+            textField.autocapitalizationType = .words
+            textField.placeholder = placeholder
+            textField.text = initialValue
         }
         addAction(UIAlertAction(title: "Cancel", style: .cancel))
         let okAction = UIAlertAction(title: "OK", style: .default) { [unowned self] _ in
             onOK(self.textFields![0].text!)
         }
-        // The OK action should be disabled until there is some text
-        okAction.isEnabled = false
+        
+        okAction.isEnabled = isValidInput(initialValue)
         addAction(okAction)
     }
     
     @objc func textFieldDidChange(_ textField: UITextField) {
-        actions[1].isEnabled = textField.text?.isEmptyOrWhitespace == false
+        actions[1].isEnabled = isValidInput(textField.text)
+    }
+    
+    func isValidInput(_ input: String?) -> Bool {
+        return input?.isEmptyOrWhitespace == false
     }
 }
 
@@ -44,30 +50,48 @@ class NewListAlertController: TextBoxAlertController {
 
 class AddToList: UITableViewController {
     
+    // Since this view is only brought up as a modal dispay, it is probably not necessary to implement
+    // change detection via a NSFetchedResultsControllerDelegate.
     var resultsController: NSFetchedResultsController<List>!
     
     // Holds the books which are to be added to a list
     var books: [Book]!
+    
+    /*
+     Returns the appropriate View Controller for adding a book (or books) to a list.
+     If there are no lists, this will be a UIAlertController; if there are lists, this will be a UINavigationController.
+    */
+    static func getAppropriateViewController(booksToAdd: [Book]) -> UIViewController {
+        if appDelegate.booksStore.listCount() > 0 {
+            let rootAddToList = Storyboard.AddToList.instantiateRoot(withStyle: .formSheet) as! UINavigationController
+            (rootAddToList.viewControllers[0] as! AddToList).books = booksToAdd
+            return rootAddToList
+        }
+        else {
+            return NewListAlertController(onOK: { title in
+                let createdList = appDelegate.booksStore.createList(name: title, type: ListType.customList)
+                createdList.books = NSOrderedSet(array: booksToAdd)
+                appDelegate.booksStore.save()
+            })
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         resultsController = appDelegate.booksStore.fetchedListsController()
         try! resultsController.performFetch()
     }
-    
+
     @IBAction func cancelWasPressed(_ sender: Any) { navigationController!.dismiss(animated: true) }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 0 {
-            let listCount = resultsController.fetchedObjects!.count
-            return listCount == 0 ? 1 : listCount
-        }
-        return 1
+        if section == 1 { return 1 }
+        return resultsController.fetchedObjects!.count
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
         // One "Add new" section, one "existing" section
-        return resultsController.fetchedObjects!.count == 0 ? 1 : 2
+        return 2
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -76,50 +100,64 @@ class AddToList: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if indexPath.section == 1 || resultsController.fetchedObjects!.count == 0 {
+        if indexPath.section == 0 {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "ExistingListCell", for: indexPath) as! ListCell
+
+            let listObj = resultsController.object(at: indexPath)
+            cell.configureFrom(listObj)
+            
+            // If the books are all already in this list, disable this selection
+            let booksInSetAlready = NSSet(array: books).isSubset(of: listObj.books.set)
+            cell.isEnabled = !booksInSetAlready
+            if booksInSetAlready {
+                let alreadyAddedText = books.count == 1 ? "already added" : "all already added"
+                cell.detailTextLabel!.text = cell.detailTextLabel!.text! + " (\(alreadyAddedText))"
+            }
+            return cell
+        }
+        else {
             let cell = tableView.dequeueReusableCell(withIdentifier: "NewListCell", for: indexPath)
             cell.textLabel!.text = "Add New List"
             cell.accessoryType = .disclosureIndicator
             return cell
         }
-        else {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "ExistingListCell", for: indexPath) as! ListCell
-
-            // The fetched results from the controller are all in section 0, so adjust the provided
-            // index path (which will be for section 1).
-            let listObj = resultsController.object(at: indexPath)
-            cell.configureFrom(listObj)
-
-            // If the books are all already in this list, disable this selection
-            let booksInSetAlready = NSSet(array: books).isSubset(of: listObj.books.set)
-            cell.textLabel!.isEnabled = !booksInSetAlready
-            cell.detailTextLabel!.isEnabled = !booksInSetAlready
-            cell.isUserInteractionEnabled = !booksInSetAlready
-            return cell
-        }
+    }
+    
+    func newListAlertController(_ books: [Book], completion: @escaping () -> ()) -> UIAlertController {
+        return NewListAlertController(onOK: { [unowned self] title in
+            let createdList = appDelegate.booksStore.createList(name: title, type: ListType.customList)
+            createdList.books = NSOrderedSet(array: self.books)
+            appDelegate.booksStore.save()
+            completion()
+        })
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 0 {
             let list = resultsController.object(at: IndexPath(row: indexPath.row, section: 0))
             
-            // Append the books to the end of the selected list.
-            let mutableBooksSet = list.books.mutableCopy() as! NSMutableOrderedSet
-            mutableBooksSet.addObjects(from: books)
-            list.books = mutableBooksSet.copy() as! NSOrderedSet
+            // Append the books to the end of the selected list
+            list.books = NSOrderedSet(array: list.booksArray + books)
             appDelegate.booksStore.save()
             navigationController!.dismiss(animated: true)
         }
         else {
-            let newListAlert = NewListAlertController(onOK: { title in
-                let createdList = appDelegate.booksStore.createList(name: title, type: ListType.customList)
-                createdList.books = NSOrderedSet(array: self.books)
-                appDelegate.booksStore.save()
+            present(newListAlertController(books){ [unowned self] in
                 self.navigationController!.dismiss(animated: true)
-            })
-            present(newListAlert, animated: true){
-                tableView.deselectRow(at: indexPath, animated: true)
-            }
+            }, animated: true)
+        }
+    }
+}
+
+extension UITableViewCell {
+    var isEnabled: Bool {
+        get {
+            return isUserInteractionEnabled && textLabel?.isEnabled != false && detailTextLabel?.isEnabled != false
+        }
+        set {
+            isUserInteractionEnabled = newValue
+            textLabel?.isEnabled = newValue
+            detailTextLabel?.isEnabled = newValue
         }
     }
 }

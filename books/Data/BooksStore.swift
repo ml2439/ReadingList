@@ -342,4 +342,12 @@ class BooksStore {
         return bookCount ?? -1
     }
     
+    /**
+     Returns a count of the number of lists which exist
+     */
+    func listCount() -> Int {
+        let fetchRequest = NSFetchRequest<List>(entityName: listEntityName)
+        return (try? managedObjectContext.count(for: fetchRequest)) ?? -1
+    }
+    
 }

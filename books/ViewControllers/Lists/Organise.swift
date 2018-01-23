@@ -25,21 +25,28 @@ class Organise: AutoUpdatingTableViewController {
         
         resultsController = appDelegate.booksStore.fetchedListsController()
         tableUpdater = TableUpdater<List, ListCell>(table: tableView, controller: resultsController)
+        try! resultsController.performFetch()
         
         navigationItem.leftBarButtonItem = editButtonItem
-        try! resultsController.performFetch()
-    }
-
-    @IBAction func addWasPressed(_ sender: Any) {
-        present(NewListAlertController(onOK: {
-            appDelegate.booksStore.createList(name: $0, type: .customList)
-            appDelegate.booksStore.save()
-        }), animated: true, completion: nil)
     }
     
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        guard editingStyle == .delete else { return }
-        
+    override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        return [
+            UITableViewRowAction(style: .destructive, title: "Delete"){ [unowned self] _, indexPath in
+                self.deleteList(forRowAt: indexPath)
+            },
+            UITableViewRowAction(style: .normal, title: "Rename"){ [unowned self] _, indexPath in
+                self.setEditing(false, animated: true)
+                let list = self.resultsController.object(at: indexPath)
+                self.present(TextBoxAlertController(title: "Rename List", message: "Choose a new name for this list", initialValue: list.name, placeholder: "New List Name") { name in
+                    list.name = name
+                    appDelegate.booksStore.save()
+                }, animated: true)
+            }
+        ]
+    }
+    
+    func deleteList(forRowAt indexPath: IndexPath) {
         let confirmDelete = UIAlertController(title: "Confirm delete", message: nil, preferredStyle: .actionSheet)
             
         confirmDelete.addAction(UIAlertAction(title: "Delete", style: .destructive){ [unowned self] _ in
@@ -54,6 +61,7 @@ class Organise: AutoUpdatingTableViewController {
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if section == 0 && self.tableView(tableView, numberOfRowsInSection: section) != 0 {
             // The section header seemed to be showing even when there were no rows in section 0. Protect against this.
+            // TODO Still happens
             return "Your lists"
         }
         return nil
@@ -70,24 +78,18 @@ class Organise: AutoUpdatingTableViewController {
         // No segue in edit mode
         return !tableView.isEditing
     }
-    
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard isEditing else { return }
-        
-        present(TextBoxAlertController(title: "Rename List", message: "", placeholder: "List Name") {
-            _ in
-        }, animated: true)
-    }
 }
 
 extension Organise: DZNEmptyDataSetSource {
     
     func title(forEmptyDataSet scrollView: UIScrollView!) -> NSAttributedString! {
-        let titleText = "🗂️ Organise"
-        
-        return NSAttributedString(string: titleText, attributes: [NSAttributedStringKey.font: Fonts.gillSans(ofSize: 32), NSAttributedStringKey.foregroundColor: UIColor.gray])
+        return StandardEmptyDataset.title(withText: "🗂️ Organise")
     }
-    
+
+    func description(forEmptyDataSet scrollView: UIScrollView!) -> NSAttributedString! {
+        return StandardEmptyDataset.description(withMarkdownText: "Create your own lists to organise your books.  To create a new list, tap **Add To List** when viewing a book.")
+    }
+
     func verticalOffset(forEmptyDataSet scrollView: UIScrollView!) -> CGFloat {
         // The large titles make the empty data set look weirdly low down. Adjust this,
         // by - fairly randomly - the height of the nav bar
@@ -97,14 +99,6 @@ extension Organise: DZNEmptyDataSetSource {
         else {
             return 0
         }
-    }
-    
-    func description(forEmptyDataSet scrollView: UIScrollView!) -> NSAttributedString! {
-        let bodyFont = Fonts.gillSans(forTextStyle: .title2)
-        let boldFont = Fonts.gillSansSemiBold(forTextStyle: .title2)
-        
-        let markdown = MarkdownWriter(font: bodyFont, boldFont: boldFont)
-        return markdown.write("Create your own lists to organise your books. Any lists you create will show up here.")
     }
 }
 

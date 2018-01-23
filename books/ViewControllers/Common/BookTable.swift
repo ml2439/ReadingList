@@ -181,11 +181,10 @@ class BookTable: AutoUpdatingTableViewController {
         let optionsAlert = UIAlertController(title: "Edit \(selectedRows.count) book\(selectedRows.count == 1 ? "" : "s")", message: nil, preferredStyle: .actionSheet)
 
         optionsAlert.addAction(UIAlertAction(title: "Add to List", style: .default){ [unowned self] _ in
-            let addToListVc = Storyboard.AddToList.instantiateRoot(withStyle: UIModalPresentationStyle.formSheet) as! UINavigationController
-            (addToListVc.viewControllers.first as! AddToList).books = selectedRows.map{ [unowned self] in
-                self.resultsController.object(at: $0)
+            let books = selectedRows.map(self.resultsController.object)
+            self.present(AddToList.getAppropriateViewController(booksToAdd: books), animated: true) { [unowned self] in
+                self.setEditing(false, animated: true)
             }
-            self.present(addToListVc, animated: true) { self.setEditing(false, animated: true) }
         })
         
         if selectedReadStates.count == 1 && selectedReadStates.first! != .finished {
@@ -195,10 +194,7 @@ class BookTable: AutoUpdatingTableViewController {
                 title += " All"
             }
             optionsAlert.addAction(UIAlertAction(title: title, style: .default) { [unowned self] _ in
-                let books = selectedRows.map{ [unowned self] in
-                    self.resultsController.object(at: $0)
-                }
-                for book in books {
+                for book in selectedRows.map(self.resultsController.object) {
                     if readState == .toRead {
                         book.transistionToReading(log: false)
                     }
@@ -221,10 +217,7 @@ class BookTable: AutoUpdatingTableViewController {
             confirmDeleteAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
             confirmDeleteAlert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [unowned self] _ in
                 // Collect the books up-front, since the selected row indexes will change as we modify them
-                let books = selectedRows.map{ [unowned self] in
-                    self.resultsController.object(at: $0)
-                }
-                for book in books {
+                for book in selectedRows.map(self.resultsController.object) {
                     book.delete(log: false)
                 }
                 self.setEditing(false, animated: true)

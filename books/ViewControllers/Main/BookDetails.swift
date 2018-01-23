@@ -246,9 +246,8 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     }
     
     @objc func addToListPressed() {
-        let rootAddToList = Storyboard.AddToList.instantiateRoot(withStyle: .formSheet) as! UINavigationController
-        (rootAddToList.viewControllers[0] as! AddToList).books = [book!]
-        present(rootAddToList, animated: true)
+        guard let book = book else { return }
+        present(AddToList.getAppropriateViewController(booksToAdd: [book]), animated: true)
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {

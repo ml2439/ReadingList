@@ -56,7 +56,14 @@ class ListBookTable: UITableViewController {
     override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool { return list.booksArray.count > 1 }
     
     override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        // TODO
+        guard sourceIndexPath != destinationIndexPath else { return }
+
+        var books = list.booksArray
+        let movedBook = books.remove(at: sourceIndexPath.row)
+        books.insert(movedBook, at: destinationIndexPath.row)
+        
+        list.books = NSOrderedSet(array: books)
+        appDelegate.booksStore.save()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -69,16 +76,11 @@ class ListBookTable: UITableViewController {
 
 extension ListBookTable: DZNEmptyDataSetSource {
     func title(forEmptyDataSet scrollView: UIScrollView!) -> NSAttributedString! {
-        return NSAttributedString(string: "No books added", attributes: [NSAttributedStringKey.font: Fonts.gillSans(ofSize: 32),
-                                                                  NSAttributedStringKey.foregroundColor: UIColor.gray])
+        return StandardEmptyDataset.title(withText: "📂 Empty list")
     }
     
     func description(forEmptyDataSet scrollView: UIScrollView!) -> NSAttributedString! {
-        let bodyFont = Fonts.gillSans(forTextStyle: .title2)
-        let boldFont = Fonts.gillSansSemiBold(forTextStyle: .title2)
-        
-        let markdown = MarkdownWriter(font: bodyFont, boldFont: boldFont)
-        return markdown.write("The list \"\(list.name)\" is currently empty.  To add a book to it, find a book and click **Add to List**.")
+        return StandardEmptyDataset.description(withMarkdownText: "The list \"\(list.name)\" is currently empty.  To add a book to it, find a book and click **Add to List**.")
     }
 }
 

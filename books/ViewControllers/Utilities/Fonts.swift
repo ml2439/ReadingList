@@ -46,11 +46,10 @@ class MarkdownWriter {
     }
     
     func write(_ markdown: String) -> NSAttributedString {
-        let separatedByBold = markdown.components(separatedBy: "**")
-        let result = NSMutableAttributedString()
-        for (index, component) in separatedByBold.enumerated() {
-            result.append(NSAttributedString(component, withFont: index % 2 == 0 ? font : boldFont))
+        let boldedResult = NSMutableAttributedString()
+        for (index, component) in markdown.components(separatedBy: "**").enumerated() {
+            boldedResult.append(NSAttributedString(component, withFont: index % 2 == 0 ? font : boldFont))
         }
-        return result
+        return boldedResult
     }
 }
