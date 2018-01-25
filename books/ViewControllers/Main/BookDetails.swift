@@ -28,11 +28,12 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     @IBOutlet weak var published: UILabel!
     @IBOutlet weak var subjects: UILabel!
     
-    @IBOutlet weak var listName: DynamicUILabel!
-    @IBOutlet weak var addToList: DynamicUILabel!
+    @IBOutlet weak var googleBooks: DynamicUILabel!
+    @IBOutlet weak var amazon: DynamicUILabel!
     
-    @IBOutlet weak var googleBooks: UILabel!
-    @IBOutlet weak var amazon: UILabel!
+    @IBOutlet weak var listsStack: UIStackView!
+    @IBOutlet weak var listDetailsView: UIView!
+    @IBOutlet weak var noLists: DynamicUILabel!
     
     var didShowNavigationItemTitle = false
     var shouldTruncateLongDescriptions = true
@@ -118,7 +119,21 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         setTextOrHideLine(published, book.publicationDate?.toPrettyString(short: false))
         setTextOrHideLine(subjects, book.subjectsArray.count == 0 ? nil : book.subjectsArray.map{$0.name}.joined(separator: ", "))
         
-        listName.text = book.listsArray.map{$0.name}.joined(separator: ", ")
+        for existingList in listsStack.subviews {
+            existingList.removeFromSuperview()
+        }
+        
+        for list in book.listsArray {
+            let label = DynamicUILabel()
+            label.font = amazon.font
+            label.dynamicFontSize = amazon.dynamicFontSize
+            label.textColor = amazon.textColor
+            label.text = list.name
+            listsStack.addArrangedSubview(label)
+        }
+        
+        noLists.isHidden = !book.listsArray.isEmpty
+        listDetailsView.isHidden = book.listsArray.isEmpty
         
         googleBooks.isHidden = book.googleBooksId == nil
     }
@@ -141,7 +156,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         // Listen for taps on the Google and Amazon labels, which should act like buttons and open the relevant webpage
         amazon.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(amazonButtonPressed)))
         googleBooks.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(googleBooksButtonPressed)))
-        addToList.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(addToListPressed)))
+        //addToList.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(addToListPressed)))
         
         // A custom title view is required for animation
         navigationItem.titleView = UINavigationBarLabel()
@@ -245,7 +260,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         UIApplication.shared.openURL(GoogleBooks.Request.webpage(googleBooksId).url)
     }
     
-    @objc func addToListPressed() {
+    @IBAction func addToList(_ sender: Any) {
         guard let book = book else { return }
         present(AddToList.getAppropriateViewController(booksToAdd: [book]), animated: true)
     }
