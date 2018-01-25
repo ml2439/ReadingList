@@ -8,17 +8,15 @@
 
 import XCTest
 
-class books_UITests: XCTestCase {
+class books_UITests_WithData: XCTestCase {
         
     override func setUp() {
         super.setUp()
         continueAfterFailure = false
 
         let app = ReadingListApplication()
+        app.launchArguments.append("--UITests_PopulateData")
         app.launch()
-
-        // Add some test data
-        app.addTestData()
     }
     
     override func tearDown() {
@@ -158,5 +156,17 @@ class books_UITests: XCTestCase {
         XCTAssertEqual("Book Already Added", duplicateAlert.label)
         duplicateAlert.buttons["Cancel"].tap()
         app.navigationBars.element(boundBy: 0).buttons["Cancel"].tap()
+    }
+    
+    func testAddNewList() {
+        
+        let app = XCUIApplication()
+        app.scrollViews.otherElements.staticTexts["Add To List"].tap()
+        
+        let addNewListAlert = app.alerts["Add New List"]
+        addNewListAlert.collectionViews.textFields["Enter list name"].typeText("Test List")
+        addNewListAlert.buttons["OK"].tap()
+        app.tabBars.buttons["Organise"].tap()
+        
     }
 }

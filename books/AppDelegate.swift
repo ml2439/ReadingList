@@ -35,7 +35,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private static let searchOnlineActionName = "\(productBundleIdentifier).SearchBooks"
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+        configureAnalytics()
+        setupSvProgressHud()
+        completeStoreTransactions()
 
+        #if DEBUG
+            if CommandLine.arguments.contains("--UITests_PopulateData") {
+                Debug.loadTestData()
+            }
+            if CommandLine.arguments.contains("--UITests_DeleteLists") {
+                booksStore.deleteAllLists()
+            }
+        #endif
+        
+        return true
+    }
+    
+    func configureAnalytics() {
         #if !DEBUG
             if UserSettings.sendAnalytics.value {
                 FirebaseApp.configure()
@@ -44,13 +60,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 Fabric.with([Crashlytics.self])
             }
         #endif
-        
+    }
+    
+    func setupSvProgressHud() {
         // Prepare the progress display style. Switched to dark in 1.4 due to a bug in the display of light style
         SVProgressHUD.setDefaultStyle(.dark)
         SVProgressHUD.setDefaultAnimationType(.native)
         SVProgressHUD.setDefaultMaskType(.clear)
         SVProgressHUD.setMinimumDismissTimeInterval(2)
-        
+    }
+    
+    func completeStoreTransactions() {
         // Apple recommends to register a transaction observer as soon as the app starts.
         SwiftyStoreKit.completeTransactions(atomically: true) { purchases in
             for purchase in purchases {
@@ -61,8 +81,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 }
             }
         }
-
-        return true
     }
     
     func applicationDidBecomeActive(_ application: UIApplication) {

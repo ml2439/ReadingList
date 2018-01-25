@@ -42,8 +42,8 @@ class Debug: FormViewController {
         form +++ Section(header: "Test data", footer: "Import a set of data for both testing and screenshots")
             <<< ButtonRow() {
                 $0.title = "Import Test Data"
-                $0.onCellSelection { [unowned self] _,_ in
-                    self.loadTestData()
+                $0.onCellSelection { _,_ in
+                    Debug.loadTestData()
                 }
             }
         
@@ -92,7 +92,7 @@ class Debug: FormViewController {
         }
     }
     
-    func loadTestData() {
+    static func loadTestData() {
         
         appDelegate.booksStore.deleteAll()
         let csvPath = Bundle.main.url(forResource: "examplebooks", withExtension: "csv")

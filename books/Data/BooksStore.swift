@@ -317,14 +317,16 @@ class BooksStore {
     }
     
     /**
-     Deletes **all** book objects from the managed object conte][xt.
-     Deindexes all items from Spotlight if necessary.
+     Deletes **all** book and list objects from the managed object context.
+     Deindexes all books from Spotlight if necessary.
     */
     func deleteAll() {
         do {
-            let results = try coreDataStack.managedObjectContext.fetch(bookFetchRequest())
-            for result in results {
-                deleteBook(result)
+            for book in try coreDataStack.managedObjectContext.fetch(bookFetchRequest()) {
+                deleteBook(book)
+            }
+            for list in try coreDataStack.managedObjectContext.fetch(NSFetchRequest<List>(entityName: listEntityName)) {
+                deleteObject(list)
             }
             save()
         }
@@ -334,12 +336,26 @@ class BooksStore {
     }
     
     /**
+     Deletes all lists
+    */
+    func deleteAllLists() {
+        do {
+            for list in try coreDataStack.managedObjectContext.fetch(NSFetchRequest<List>(entityName: listEntityName)) {
+                deleteObject(list)
+            }
+            save()
+        }
+        catch {
+            print("Error deleting lists: \(error)")
+        }
+    }
+    
+    /**
      Returns a count of the number of books which exist
     */
     func bookCount() -> Int {
         let fetchRequest = bookFetchRequest()
-        let bookCount = try? managedObjectContext.count(for: fetchRequest)
-        return bookCount ?? -1
+        return (try? managedObjectContext.count(for: fetchRequest)) ?? -1
     }
     
     /**

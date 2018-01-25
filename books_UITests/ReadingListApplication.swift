@@ -13,7 +13,8 @@ class ReadingListApplication : XCUIApplication {
     enum tab : Int {
         case toRead = 0
         case finished = 1
-        case settings = 2
+        case organise = 2
+        case settings = 3
     }
     
     enum addMethod : Int {
@@ -38,23 +39,6 @@ class ReadingListApplication : XCUIApplication {
                 XCTAssert(false, failureMessage)
             }
             CFRunLoopRunInMode(CFRunLoopMode.defaultMode, 0.1, false)
-        }
-    }
-    
-    func addTestData() {
-        clickTab(.settings)
-        tables.cells.staticTexts["Debug"].tap()
-        
-        let isIpad = navigationBars.count == 2
-        tables.cells.staticTexts["Import Test Data"].tap()
-        
-        if isIpad {
-            waitUntilHittable(getTab(.toRead), failureMessage: "Timeout waiting for test data to import")
-        }
-        else {
-            let backButton = topNavBar.buttons["Settings"]
-            waitUntilHittable(backButton, failureMessage: "Timeout waiting for test data to import")
-            backButton.tap()
         }
     }
     

@@ -16,8 +16,8 @@ class books_Snapshot: XCTestCase {
         
         let app = ReadingListApplication()
         setupSnapshot(app)
+        app.launchArguments.append("--UITests_PopulateData")
         app.launch()
-        app.addTestData()
         
         // There's a weird glitch with the search bar when books are first added. Restart the app the fix it.
         app.terminate()
