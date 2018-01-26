@@ -101,10 +101,12 @@ class DataVC: UITableViewController, UIDocumentPickerDelegate, UIDocumentMenuDel
                 }
                 return
             }
+
             
             // Present a dialog with the resulting file (presenting it on the main thread, of course)
             let activityViewController = UIActivityViewController(activityItems: [temporaryFilePath], applicationActivities: [])
             activityViewController.excludedActivityTypes = [
+                UIActivityType.addToReadingList,
                 UIActivityType.assignToContact, UIActivityType.saveToCameraRoll, UIActivityType.postToFlickr, UIActivityType.postToVimeo,
                 UIActivityType.postToTencentWeibo, UIActivityType.postToTwitter, UIActivityType.postToFacebook, UIActivityType.openInIBooks
             ]
@@ -129,6 +131,7 @@ class DataVC: UITableViewController, UIDocumentPickerDelegate, UIDocumentMenuDel
         let confirmDelete = UIAlertController(title: "Final Warning", message: "This action is irreversible. Are you sure you want to continue?", preferredStyle: .alert)
         confirmDelete.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
             appDelegate.booksStore.deleteAll()
+            UserEngagement.logEvent(.deleteAllData)
         })
         confirmDelete.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         

@@ -36,6 +36,7 @@ class UserEngagement {
         // Data
         case csvImport = "CSV_Import"
         case csvExport = "CSV_Export"
+        case deleteAllData = "Delete_All_Data"
 
         // Modify books
         case transitionReadState = "Transition_Read_State"
