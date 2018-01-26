@@ -23,8 +23,25 @@ class ListBookTable: UITableViewController {
         
         tableView.emptyDataSetSource = self
         tableView.emptyDataSetDelegate = self
+        
+        // Watch for changes in the managed object context, in order to update the table
+        NotificationCenter.default.addObserver(self, selector: #selector(saveOccurred(_:)), name: NSNotification.Name.NSManagedObjectContextDidSave, object: appDelegate.booksStore.managedObjectContext)
     }
     
+    @objc func saveOccurred(_ notification: Notification) {
+        guard let userInfo = (notification as NSNotification).userInfo else { return }
+        
+        let deletedObjects = userInfo[NSDeletedObjectsKey] as? NSSet ?? NSSet()
+        guard deletedObjects.contains(list) != true else {
+            // If the list was deleted, pop back. This can't happen through any normal means at the moment.
+            navigationController!.popViewController(animated: false)
+            return
+        }
+        
+        // Reload the data
+        tableView.reloadData()
+    }
+        
     override func numberOfSections(in tableView: UITableView) -> Int { return 1 }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

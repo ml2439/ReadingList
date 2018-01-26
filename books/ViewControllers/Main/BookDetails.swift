@@ -26,10 +26,10 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     @IBOutlet weak var isbn: UILabel!
     @IBOutlet weak var pages: UILabel!
     @IBOutlet weak var published: UILabel!
-    @IBOutlet weak var subjects: UILabel!
+    @IBOutlet weak var subjects: DynamicUILabel!
     
-    @IBOutlet weak var googleBooks: DynamicUILabel!
-    @IBOutlet weak var amazon: DynamicUILabel!
+    @IBOutlet weak var googleBooks: UILabel!
+    @IBOutlet weak var amazon: UILabel!
     
     @IBOutlet weak var listsStack: UIStackView!
     @IBOutlet weak var listDetailsView: UIView!
@@ -118,24 +118,28 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         setTextOrHideLine(pages, book.pageCount?.stringValue)
         setTextOrHideLine(published, book.publicationDate?.toPrettyString(short: false))
         setTextOrHideLine(subjects, book.subjectsArray.count == 0 ? nil : book.subjectsArray.map{$0.name}.joined(separator: ", "))
+        googleBooks.isHidden = book.googleBooksId == nil
         
+        // Remove all the existing list labels
         for existingList in listsStack.subviews {
             existingList.removeFromSuperview()
         }
         
+        // And then add a label per list.
         for list in book.listsArray {
+            
+            // Copy the list properties from another similar label, that's easier
             let label = DynamicUILabel()
-            label.font = amazon.font
-            label.dynamicFontSize = amazon.dynamicFontSize
-            label.textColor = amazon.textColor
+            label.font = subjects.font
+            label.dynamicFontSize = subjects.dynamicFontSize
+            label.textColor = subjects.textColor
             label.text = list.name
             listsStack.addArrangedSubview(label)
         }
         
+        // There is a placeholder view for the case of no lists
         noLists.isHidden = !book.listsArray.isEmpty
         listDetailsView.isHidden = book.listsArray.isEmpty
-        
-        googleBooks.isHidden = book.googleBooksId == nil
     }
     
     override func viewDidLoad() {
@@ -150,20 +154,18 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         setViewEnabled(enabled: false)
         
         // Listen for taps on the book description, which should remove any truncation
-        let tap = UITapGestureRecognizer(target: self, action: #selector(seeMoreDescription))
-        bookDescription.superview!.addGestureRecognizer(tap)
+        bookDescription.superview!.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(seeMoreDescription)))
         
         // Listen for taps on the Google and Amazon labels, which should act like buttons and open the relevant webpage
         amazon.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(amazonButtonPressed)))
         googleBooks.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(googleBooksButtonPressed)))
-        //addToList.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(addToListPressed)))
         
         // A custom title view is required for animation
         navigationItem.titleView = UINavigationBarLabel()
         navigationItem.titleView!.isHidden = true
 
         // Watch for changes in the managed object context
-        NotificationCenter.default.addObserver(self, selector: #selector(bookChanged(_:)), name: NSNotification.Name.NSManagedObjectContextDidSave, object: appDelegate.booksStore.managedObjectContext)
+        NotificationCenter.default.addObserver(self, selector: #selector(saveOccurred(_:)), name: NSNotification.Name.NSManagedObjectContextDidSave, object: appDelegate.booksStore.managedObjectContext)
     }
     
     override func viewDidLayoutSubviews() {
@@ -174,7 +176,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         let truncationViews = bookDescription.siblings
         guard shouldTruncateLongDescriptions else { truncationViews.forEach{$0.isHidden = true}; return }
         
-        // In "regular" size classed devices, the description text should be less truncated
+        // In "regular" size classed devices, the description text can be less truncated
         if sizeClass() == (.regular, .regular) {
             bookDescription.numberOfLines = 8
         }
@@ -207,7 +209,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         (bookDescription.superview!.superview as! UIStackView).layoutIfNeeded()
     }
     
-    @objc func bookChanged(_ notification: Notification) {
+    @objc func saveOccurred(_ notification: Notification) {
         guard let book = book, let userInfo = (notification as NSNotification).userInfo else { return }
         
         let deletedObjects = userInfo[NSDeletedObjectsKey] as? NSSet ?? NSSet()
@@ -217,6 +219,8 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
             parentSplitViewController?.masterNavigationController.popToRootViewController(animated: false)
             return
         }
+        
+        // TODO: Consider whether it is worth inspecting the changes to see if they affect this book; perhaps we should just always reload?
         
         let updatedObjects = userInfo[NSUpdatedObjectsKey] as? NSSet ?? NSSet()
         let createdObjects = userInfo[NSInsertedObjectsKey] as? NSSet ?? NSSet()
