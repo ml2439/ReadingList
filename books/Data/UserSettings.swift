@@ -58,6 +58,8 @@ class UserSettings {
     static var sendAnalytics = UserSetting<Bool>(key: "sendAnalytics", defaultValue: true)
     static var sendCrashReports = UserSetting<Bool>(key: "sendCrashReports", defaultValue: true)
     static var useLargeTitles = UserSetting<Bool>(key: "useLargeTitles", defaultValue: true)
+    // This is not always true, tip functionality predates this setting...
+    static var hasEverTipped = UserSetting<Bool>(key: "hasEverTipped", defaultValue: false)
 }
 
 struct UserSetting<SettingType> {
