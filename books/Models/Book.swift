@@ -200,7 +200,17 @@ extension Book {
         CsvColumn<Book>(header: "Started Reading", cellValue: {$0.startedReading?.toString(withDateFormat: "yyyy-MM-dd")}),
         CsvColumn<Book>(header: "Finished Reading", cellValue: {$0.finishedReading?.toString(withDateFormat: "yyyy-MM-dd")}),
         CsvColumn<Book>(header: "Current Page", cellValue: {$0.currentPage == nil ? nil : String(describing: $0.currentPage!)}),
-        CsvColumn<Book>(header: "Notes", cellValue: {$0.notes})
+        CsvColumn<Book>(header: "Notes", cellValue: {$0.notes}),
+        CsvColumn<Book>(header: "Lists", cellValue: { book in
+            // For export, we describe the lists in the following string:
+            //      List 1 name (3); List 2 name (1)
+            // where (3) and (1) are the positions this books has in those lists.
+            var listsWithPosition = [String]()
+            for list in book.listsArray {
+                listsWithPosition.append(list.name + " (\(list.booksArray.index(of: book)! + 1))")// 1-based indexes
+            }
+            return listsWithPosition.joined(separator: "; ")
+        })
     )
     
     static var csvColumnHeaders: [String] {
@@ -213,6 +223,7 @@ extension Book {
 
 /// A mutable, non-persistent representation of the metadata fields of a Book object.
 /// Useful for maintaining in-creation books, or books being edited.
+// TODO: Not convinced that this class is good.
 class BookMetadata {
     let googleBooksId: String?
     var title: String?
@@ -223,6 +234,7 @@ class BookMetadata {
     var bookDescription: String?
     var isbn13: String?
     var coverImage: Data?
+    var lists = [(listName: String, bookIndex: Int)]()
     
     init(googleBooksId: String? = nil) {
         self.googleBooksId = googleBooksId
@@ -247,6 +259,7 @@ class BookMetadata {
         self.subjects = book.subjects.map{($0 as! Subject).name}
     }
     
+    // TODO: This definitely seems like the wrong place for this function
     static func csvImport(csvData: [String: String]) -> (BookMetadata, BookReadingInformation, notes: String?) {
         
         let bookMetadata = BookMetadata(googleBooksId: csvData["Google Books ID"]?.nilIfWhitespace())
@@ -272,6 +285,18 @@ class BookMetadata {
         bookMetadata.publicationDate = csvData["Publication Date"] == nil ? nil : Date(dateString: csvData["Publication Date"]!)
         bookMetadata.bookDescription = csvData["Description"]?.nilIfWhitespace()
         bookMetadata.subjects = csvData["Subjects"]?.components(separatedBy: ";").flatMap{$0.trimming().nilIfWhitespace()} ?? []
+        bookMetadata.lists = csvData["Lists"]?.components(separatedBy: ";")
+            .flatMap{$0.trimming().nilIfWhitespace()}
+            .flatMap{
+                let listTextRegex = "^(.+?)(?: *)\\((\\d+)\\)$"
+                guard Regex.IsMatch(pattern: listTextRegex, input: $0) else { return nil }
+                let capturedGroups = Regex.CapturedGroups(pattern: listTextRegex, input: $0)
+                guard capturedGroups.count == 2,
+                    let listName = capturedGroups[0].nilIfWhitespace(),
+                    let bookIndex = Int(string: capturedGroups[1])
+                else { return nil }
+                return (listName, bookIndex)
+        } ?? []
         
         let startedReading = Date(dateString: csvData["Started Reading"])
         let finishedReading = Date(dateString: csvData["Finished Reading"])
