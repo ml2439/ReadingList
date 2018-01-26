@@ -232,6 +232,21 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         UIApplication.shared.openURL(GoogleBooks.Request.webpage(googleBooksId).url)
     }
     
+    @IBAction func shareButtonPressed(_ sender: UIButton) {
+        guard let book = book else { return }
+
+        let activityViewController = UIActivityViewController(activityItems: ["\(book.title)\n\(book.authorsFirstLast)"], applicationActivities: nil)
+        activityViewController.popoverPresentationController?.sourceView = sender
+
+        var excludedActivityTypes: [UIActivityType] = [.assignToContact, .saveToCameraRoll, .addToReadingList, .postToFlickr, .postToVimeo, .openInIBooks]
+        if #available(iOS 11.0, *) {
+            excludedActivityTypes.append(.markupAsPDF)
+        }
+        activityViewController.excludedActivityTypes = excludedActivityTypes
+
+        present(activityViewController, animated: true, completion: nil)
+    }
+    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
         // 18 is the padding between the main stack view and the top. This should be determined programatically
