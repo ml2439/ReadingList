@@ -62,7 +62,7 @@ class AddToList: UITableViewController {
      If there are no lists, this will be a UIAlertController; if there are lists, this will be a UINavigationController.
      The completion action will run at the end of a list addition if a UIAlertController was returned.
     */
-    static func getAppropriateViewController(booksToAdd: [Book], completion: (() -> ())? = nil) -> UIViewController {
+    static func getAppropriateVcForAddingBooksToList(_ booksToAdd: [Book], completion: (() -> ())? = nil) -> UIViewController {
         if appDelegate.booksStore.listCount() > 0 {
             let rootAddToList = Storyboard.AddToList.instantiateRoot(withStyle: .formSheet) as! UINavigationController
             (rootAddToList.viewControllers[0] as! AddToList).books = booksToAdd
@@ -77,7 +77,7 @@ class AddToList: UITableViewController {
         return NewListAlertController(onOK: { title in
             let createdList = appDelegate.booksStore.createList(name: title, type: ListType.customList)
             createdList.books = NSOrderedSet(array: books)
-            appDelegate.booksStore.save()
+            appDelegate.booksStore.save()            
             completion?()
         })
     }

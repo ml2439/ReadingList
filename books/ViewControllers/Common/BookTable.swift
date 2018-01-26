@@ -183,8 +183,10 @@ class BookTable: AutoUpdatingTableViewController {
         optionsAlert.addAction(UIAlertAction(title: "Add to List", style: .default){ [unowned self] _ in
             let books = selectedRows.map(self.resultsController.object)
             
-            self.present(AddToList.getAppropriateViewController(booksToAdd: books) { [unowned self] in
+            self.present(AddToList.getAppropriateVcForAddingBooksToList(books) { [unowned self] in
                 self.setEditing(false, animated: true)
+                UserEngagement.logEvent(.bulkAddBookToList)
+                UserEngagement.onReviewTrigger()
             }, animated: true)
         })
         

@@ -52,6 +52,9 @@ class Organise: AutoUpdatingTableViewController {
         confirmDelete.addAction(UIAlertAction(title: "Delete", style: .destructive){ [unowned self] _ in
             appDelegate.booksStore.deleteObject(self.resultsController.object(at: indexPath))
             appDelegate.booksStore.save()
+            
+            UserEngagement.logEvent(.deleteList)
+
             // When the table goes from 1 row to 0 rows in the single section, the section header remains unless the table is reloaded
             if self.tableView.numberOfRows(inSection: 0) == 0 {
                 self.tableView.reloadData()

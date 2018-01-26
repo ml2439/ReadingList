@@ -27,21 +27,40 @@ class UserEngagement {
     }
     
     enum Event: String {
+        // Add books
         case searchOnline = "Search_Online"
         case scanBarcode = "Scan_Barcode"
+        case searchOnlineMultiple = "Search_Online_Multiple"
         case addManualBook = "Add_Manual_Book"
+        
+        // Data
         case csvImport = "CSV_Import"
         case csvExport = "CSV_Export"
+
+        // Modify books
         case transitionReadState = "Transition_Read_State"
         case bulkEditReadState = "Bulk_Edit_Read_State"
         case deleteBook = "Delete_Book"
         case bulkDeleteBook = "Bulk_Delete_Book"
         case editBook = "Edit_Book"
         case editReadState = "Edit_Read_State"
+        
+        // Lists
+        case createList = "Create_List"
+        case addBookToList = "Add_Book_To_List"
+        case bulkAddBookToList = "Bulk_Add_Book_To_List"
+        case removeBookFromList = "Remove_Book_From_List"
+        case reorederList = "Reorder_List"
+        case deleteList = "Delete_List"
+        
+        // Miscellaneous
+        case spotlightSearch = "Spotlight_Search"
+        
+        // Quick actions
         case searchOnlineQuickAction = "Quick_Action_Search_Online"
         case scanBarcodeQuickAction = "Quick_Action_Scan_Barcode"
-        case spotlightSearch = "Spotlight_Search"
-        case searchOnlineMultiple = "Search_Online_Multiple"
+        
+        // Settings changes
         case disableAnalytics = "Disable_Analytics"
         case enableAnalytics = "Enable_Analytics"
         case disableCrashReports = "Disable_Crash_Reports"
@@ -53,7 +72,7 @@ class UserEngagement {
     }
     
     private static func shouldTryRequestReview() -> Bool {
-        let appStartCountMinRequirement = 2
+        let appStartCountMinRequirement = 3
         let userEngagementModulo = 10
         
         let appStartCount = PersistedCounter.getCount(withKey: appStartupCountKey)

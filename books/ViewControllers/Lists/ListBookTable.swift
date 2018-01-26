@@ -56,10 +56,12 @@ class ListBookTable: UITableViewController {
     }
     
     private func removeBook(at indexPath: IndexPath) {
-        let booksCopy = list.books.mutableCopy() as! NSMutableOrderedSet
-        booksCopy.remove(list.booksArray[indexPath.row])
-        list.books = booksCopy.copy() as! NSOrderedSet
+        var books = list.booksArray
+        books.remove(at: indexPath.row)
+        list.books = NSOrderedSet(array: books)
         appDelegate.booksStore.save()
+        
+        UserEngagement.logEvent(.removeBookFromList)
     }
     
     override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
@@ -81,6 +83,8 @@ class ListBookTable: UITableViewController {
         
         list.books = NSOrderedSet(array: books)
         appDelegate.booksStore.save()
+        
+        UserEngagement.logEvent(.reorederList)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
