@@ -66,6 +66,17 @@ class BooksStore {
     }
     
     /**
+     Gets all lists.
+    */
+    func getAllLists() -> [List] {
+        let fetchRequest = NSFetchRequest<List>(entityName: listEntityName)
+        fetchRequest.fetchBatchSize = 100
+        fetchRequest.sortDescriptors = [ListPredicate.nameSort]
+        return (try? coreDataStack.managedObjectContext.fetch(fetchRequest)) ?? []
+        // TODO: Need to decide best practice for failing fetches...
+    }
+    
+    /**
      Retrieves the specified Book, if it exists.
      */
     func get(bookIdUrl: URL) -> Book? {

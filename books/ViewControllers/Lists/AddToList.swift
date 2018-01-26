@@ -15,8 +15,13 @@ import CoreData
  when the text box is empty or whitespace.
  */
 class TextBoxAlertController: UIAlertController {
-    convenience init(title: String, message: String? = nil, initialValue: String? = nil, placeholder: String? = nil, onOK: @escaping (String) -> ()) {
+    
+    var textValidator: ((String?) -> Bool)?
+    
+    convenience init(title: String, message: String? = nil, initialValue: String? = nil, placeholder: String? = nil,
+                     textValidator: ((String?) -> Bool)? = nil, onOK: @escaping (String?) -> ()) {
         self.init(title: title, message: message, preferredStyle: .alert)
+        self.textValidator = textValidator
         
         addTextField{ [unowned self] textField in
             textField.addTarget(self, action: #selector(self.textFieldDidChange), for: .editingChanged)
@@ -24,27 +29,29 @@ class TextBoxAlertController: UIAlertController {
             textField.placeholder = placeholder
             textField.text = initialValue
         }
+
         addAction(UIAlertAction(title: "Cancel", style: .cancel))
         let okAction = UIAlertAction(title: "OK", style: .default) { [unowned self] _ in
-            onOK(self.textFields![0].text!)
+            onOK(self.textFields![0].text)
         }
         
-        okAction.isEnabled = isValidInput(initialValue)
+        okAction.isEnabled = textValidator?(initialValue) ?? true
         addAction(okAction)
     }
     
     @objc func textFieldDidChange(_ textField: UITextField) {
-        actions[1].isEnabled = isValidInput(textField.text)
-    }
-    
-    func isValidInput(_ input: String?) -> Bool {
-        return input?.isEmptyOrWhitespace == false
+        actions[1].isEnabled = textValidator?(textField.text) ?? true
     }
 }
 
 class NewListAlertController: TextBoxAlertController {
+    
     convenience init(onOK: @escaping (String) -> ()) {
-        self.init(title: "Add New List", message: "Enter a name for your list", placeholder: "Enter list name", onOK: onOK)
+        let existingListNames = appDelegate.booksStore.getAllLists().map{$0.name}
+        self.init(title: "Add New List", message: "Enter a name for your list", placeholder: "Enter list name", textValidator: { listName in
+            guard let listName = listName, !listName.isEmptyOrWhitespace else { return false }
+            return !existingListNames.contains(listName)
+        }, onOK: {onOK($0!)})
     }
 }
 

@@ -38,10 +38,18 @@ class Organise: AutoUpdatingTableViewController {
             UITableViewRowAction(style: .normal, title: "Rename"){ [unowned self] _, indexPath in
                 self.setEditing(false, animated: true)
                 let list = self.resultsController.object(at: indexPath)
-                self.present(TextBoxAlertController(title: "Rename List", message: "Choose a new name for this list", initialValue: list.name, placeholder: "New List Name") { name in
-                    list.name = name
-                    appDelegate.booksStore.save()
-                }, animated: true)
+                
+                let existingListNames = appDelegate.booksStore.getAllLists().map{$0.name}
+                let renameListAlert = TextBoxAlertController(title: "Rename List", message: "Choose a new name for this list", initialValue: list.name, placeholder: "New list name", textValidator: { listName in
+                        guard let listName = listName, !listName.isEmptyOrWhitespace else { return false }
+                        return listName == list.name || !existingListNames.contains(listName)
+                    }, onOK: {
+                        list.name = $0!
+                        appDelegate.booksStore.save()
+                    }
+                )
+                
+                self.present(renameListAlert, animated: true)
             }
         ]
     }
