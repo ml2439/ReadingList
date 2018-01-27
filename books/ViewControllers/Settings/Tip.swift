@@ -78,6 +78,7 @@ class Tip: UIViewController {
                 vc.smallTip.isHidden = true
                 vc.mediumTip.isHidden = true
                 vc.largeTip.isHidden = true
+                UserSettings.hasEverTipped.value = true
             
             case .error(let error):
                 guard error.code != .paymentCancelled else { return }

@@ -827,7 +827,13 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Ba7-1L-1L0"/>
                     </view>
-                    <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="PEa-Kt-jpq"/>
+                    <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="PEa-Kt-jpq">
+                        <barButtonItem key="rightBarButtonItem" systemItem="action" id="cYa-sd-cSe">
+                            <connections>
+                                <action selector="shareButtonPressed:" destination="7uR-tE-cQd" id="oLL-lA-ww8"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="amazon" destination="kFh-Vj-XIY" id="bjc-vs-P9G"/>

@@ -272,6 +272,22 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         }, animated: true)
     }
     
+    @IBAction func shareButtonPressed(_ sender: UIBarButtonItem) {
+
+        guard let book = book else { return }
+
+        let activityViewController = UIActivityViewController(activityItems: ["\(book.title)\n\(book.authorsFirstLast)"], applicationActivities: nil)
+        activityViewController.popoverPresentationController?.barButtonItem = sender
+
+        var excludedActivityTypes: [UIActivityType] = [.assignToContact, .saveToCameraRoll, .addToReadingList, .postToFlickr, .postToVimeo, .openInIBooks]
+        if #available(iOS 11.0, *) {
+            excludedActivityTypes.append(.markupAsPDF)
+        }
+        activityViewController.excludedActivityTypes = excludedActivityTypes
+
+        present(activityViewController, animated: true, completion: nil)
+    }
+    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
         // 18 is the padding between the main stack view and the top. This should be determined programatically
