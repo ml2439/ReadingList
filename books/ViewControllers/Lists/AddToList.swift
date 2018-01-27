@@ -64,6 +64,9 @@ class AddToList: UITableViewController {
     // Holds the books which are to be added to a list
     var books: [Book]!
     
+    // When the add-to-list operation is complete, this callback will be called
+    var onCompletion: (() -> ())?
+    
     /*
      Returns the appropriate View Controller for adding a book (or books) to a list.
      If there are no lists, this will be a UIAlertController; if there are lists, this will be a UINavigationController.
@@ -72,7 +75,9 @@ class AddToList: UITableViewController {
     static func getAppropriateVcForAddingBooksToList(_ booksToAdd: [Book], completion: (() -> ())? = nil) -> UIViewController {
         if appDelegate.booksStore.listCount() > 0 {
             let rootAddToList = Storyboard.AddToList.instantiateRoot(withStyle: .formSheet) as! UINavigationController
-            (rootAddToList.viewControllers[0] as! AddToList).books = booksToAdd
+            let addToList = (rootAddToList.viewControllers[0] as! AddToList)
+            addToList.books = booksToAdd
+            addToList.onCompletion = completion
             return rootAddToList
         }
         else {
@@ -143,11 +148,11 @@ class AddToList: UITableViewController {
             list.books = NSOrderedSet(array: list.booksArray + books)
             appDelegate.booksStore.save()
 
-            navigationController!.dismiss(animated: true)
+            navigationController!.dismiss(animated: true, completion: onCompletion)
         }
         else {
             present(AddToList.newListAlertController(books) { [unowned self] in
-                self.navigationController!.dismiss(animated: true)
+                self.navigationController!.dismiss(animated: true, completion: self.onCompletion)
             }, animated: true)
         }
     }

@@ -70,6 +70,13 @@ class Organise: AutoUpdatingTableViewController {
             self.tableView.setEditing(false, animated: true)
         })
         confirmDelete.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        if let popPresenter = confirmDelete.popoverPresentationController {
+            let cell = self.tableView.cellForRow(at: indexPath)!
+            popPresenter.sourceRect = cell.frame
+            popPresenter.sourceView = self.tableView
+            popPresenter.permittedArrowDirections = .any
+        }
         present(confirmDelete, animated: true, completion: nil)
     }
     
