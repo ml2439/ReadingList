@@ -61,8 +61,13 @@ class AddToList: UITableViewController {
     // change detection via a NSFetchedResultsControllerDelegate.
     var resultsController: NSFetchedResultsController<List>!
     
-    // Holds the books which are to be added to a list
-    var books: [Book]!
+    // Holds the books which are to be added to a list. The set form is just for convenience.
+    var books: [Book]! {
+        didSet {
+            booksSet = NSSet(array: books)
+        }
+    }
+    var booksSet: NSSet!
     
     // When the add-to-list operation is complete, this callback will be called
     var onCompletion: (() -> ())?
@@ -123,12 +128,24 @@ class AddToList: UITableViewController {
 
             let listObj = resultsController.object(at: indexPath)
             cell.configureFrom(listObj)
+            let booksInThisList = listObj.books.set
             
-            // If the books are all already in this list, disable this selection
-            let booksInSetAlready = NSSet(array: books).isSubset(of: listObj.books.set)
-            cell.isEnabled = !booksInSetAlready
-            if booksInSetAlready {
-                let alreadyAddedText = books.count == 1 ? "already added" : "all already added"
+            // If any of the books are already in this list:
+            if booksSet.intersects(booksInThisList) {
+                var alreadyAddedText: String
+                
+                // Disable the cell is they are *all* already in the list
+                let allAlreadyAdded = booksSet.isSubset(of: booksInThisList)
+                cell.isEnabled = !allAlreadyAdded
+                if allAlreadyAdded {
+                    alreadyAddedText = books.count == 1 ? "already added" : "all already added"
+                }
+                else {
+                    let overlapSet = booksSet.mutableCopy() as! NSMutableSet
+                    overlapSet.intersect(booksInThisList)
+                    alreadyAddedText = "\(overlapSet.count) already added" // TODO: think of better wording?
+                }
+                
                 cell.detailTextLabel!.text = cell.detailTextLabel!.text! + " (\(alreadyAddedText))"
             }
             return cell

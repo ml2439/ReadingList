@@ -24,8 +24,18 @@ class ListBookTable: UITableViewController {
         tableView.emptyDataSetSource = self
         tableView.emptyDataSetDelegate = self
         
+        registerForSaveNotifications()
+    }
+    
+    func registerForSaveNotifications() {
         // Watch for changes in the managed object context, in order to update the table
         NotificationCenter.default.addObserver(self, selector: #selector(saveOccurred(_:)), name: NSNotification.Name.NSManagedObjectContextDidSave, object: appDelegate.booksStore.managedObjectContext)
+    }
+    
+    func withoutAutomaticUpdates(_ code: () -> ()) {
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.NSManagedObjectContextDidSave, object: nil)
+        code()
+        registerForSaveNotifications()
     }
     
     @objc func saveOccurred(_ notification: Notification) {
@@ -66,7 +76,10 @@ class ListBookTable: UITableViewController {
     
     override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         return [UITableViewRowAction(style: .destructive, title: "Remove") { [unowned self] _, indexPath in
-            self.removeBook(at: indexPath)
+            self.withoutAutomaticUpdates {
+                self.removeBook(at: indexPath)
+            }
+
             self.tableView.deleteRows(at: [indexPath], with: .automatic)
             self.tableView.reloadEmptyDataSet()
         }]
@@ -80,9 +93,10 @@ class ListBookTable: UITableViewController {
         var books = list.booksArray
         let movedBook = books.remove(at: sourceIndexPath.row)
         books.insert(movedBook, at: destinationIndexPath.row)
-        
         list.books = NSOrderedSet(array: books)
-        appDelegate.booksStore.save()
+        withoutAutomaticUpdates {
+            appDelegate.booksStore.save()
+        }
         
         UserEngagement.logEvent(.reorederList)
     }
