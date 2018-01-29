@@ -72,7 +72,8 @@ class DataVC: UITableViewController, UIDocumentPickerDelegate, UIDocumentMenuDel
         UserEngagement.logEvent(.csvExport)
         SVProgressHUD.show(withStatus: "Generating...")
         
-        let exporter = CsvExporter(csvExport: Book.csvExport)
+        let listNames = appDelegate.booksStore.getAllLists().map{$0.name}
+        let exporter = CsvExporter(csvExport: Book.BuildCsvExport(withLists: listNames))
         
         appDelegate.booksStore.getAllBooksAsync(callback: {
             exporter.addData($0)

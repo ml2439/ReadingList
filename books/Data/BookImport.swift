@@ -216,7 +216,7 @@ class CsvColumn<TData> {
 class CsvExport<TData> {
     let columns: [CsvColumn<TData>]
     
-    init(columns: CsvColumn<TData>...) {
+    init(columns: [CsvColumn<TData>]) {
         self.columns = columns
     }
     

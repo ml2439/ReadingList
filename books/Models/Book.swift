@@ -188,34 +188,35 @@ extension Book {
         }
     }
     
-    static let csvExport = CsvExport<Book>(columns:
-        CsvColumn<Book>(header: "ISBN-13", cellValue: {$0.isbn13}),
-        CsvColumn<Book>(header: "Google Books ID", cellValue: {$0.googleBooksId}),
-        CsvColumn<Book>(header: "Title", cellValue: {$0.title}),
-        CsvColumn<Book>(header: "Authors", cellValue: {$0.authorsArray.map{$0.displayLastCommaFirst}.joined(separator: "; ")}),
-        CsvColumn<Book>(header: "Page Count", cellValue: {$0.pageCount == nil ? nil : String(describing: $0.pageCount!)}),
-        CsvColumn<Book>(header: "Publication Date", cellValue: {$0.publicationDate == nil ? nil : $0.publicationDate!.toString(withDateFormat: "yyyy-MM-dd")}),
-        CsvColumn<Book>(header: "Description", cellValue: {$0.bookDescription}),
-        CsvColumn<Book>(header: "Subjects", cellValue: {$0.subjectsArray.map{$0.name}.joined(separator: "; ")}),
-        CsvColumn<Book>(header: "Started Reading", cellValue: {$0.startedReading?.toString(withDateFormat: "yyyy-MM-dd")}),
-        CsvColumn<Book>(header: "Finished Reading", cellValue: {$0.finishedReading?.toString(withDateFormat: "yyyy-MM-dd")}),
-        CsvColumn<Book>(header: "Current Page", cellValue: {$0.currentPage == nil ? nil : String(describing: $0.currentPage!)}),
-        CsvColumn<Book>(header: "Notes", cellValue: {$0.notes}),
-        CsvColumn<Book>(header: "Lists", cellValue: { book in
-            // For export, we describe the lists in the following string:
-            //      List 1 name (3); List 2 name (1)
-            // where (3) and (1) are the positions this books has in those lists.
-            var listsWithPosition = [String]()
-            for list in book.listsArray {
-                listsWithPosition.append(list.name + " (\(list.booksArray.index(of: book)! + 1))")// 1-based indexes
-            }
-            return listsWithPosition.joined(separator: "; ")
+    static func BuildCsvExport(withLists lists: [String]) -> CsvExport<Book> {
+        var columns = [
+            CsvColumn<Book>(header: "ISBN-13", cellValue: {$0.isbn13}),
+            CsvColumn<Book>(header: "Google Books ID", cellValue: {$0.googleBooksId}),
+            CsvColumn<Book>(header: "Title", cellValue: {$0.title}),
+            CsvColumn<Book>(header: "Authors", cellValue: {$0.authorsArray.map{$0.displayLastCommaFirst}.joined(separator: "; ")}),
+            CsvColumn<Book>(header: "Page Count", cellValue: {$0.pageCount == nil ? nil : String(describing: $0.pageCount!)}),
+            CsvColumn<Book>(header: "Publication Date", cellValue: {$0.publicationDate == nil ? nil : $0.publicationDate!.toString(withDateFormat: "yyyy-MM-dd")}),
+            CsvColumn<Book>(header: "Description", cellValue: {$0.bookDescription}),
+            CsvColumn<Book>(header: "Subjects", cellValue: {$0.subjectsArray.map{$0.name}.joined(separator: "; ")}),
+            CsvColumn<Book>(header: "Started Reading", cellValue: {$0.startedReading?.toString(withDateFormat: "yyyy-MM-dd")}),
+            CsvColumn<Book>(header: "Finished Reading", cellValue: {$0.finishedReading?.toString(withDateFormat: "yyyy-MM-dd")}),
+            CsvColumn<Book>(header: "Current Page", cellValue: {$0.currentPage == nil ? nil : String(describing: $0.currentPage!)}),
+            CsvColumn<Book>(header: "Notes", cellValue: {$0.notes})
+        ]
+        
+        columns.append(contentsOf: lists.map{ listName in
+            CsvColumn<Book>(header: listName, cellValue: { book in
+                guard let list = book.listsArray.first(where: {$0.name == listName}) else { return nil }
+                return String(describing: list.books.index(of: book) + 1) // we use 1-based indexes
+            })
         })
-    )
+        
+        return CsvExport<Book>(columns: columns)
+    }
     
     static var csvColumnHeaders: [String] {
         get {
-            return csvExport.columns.map{$0.header}
+            return BuildCsvExport(withLists: []).columns.map{$0.header}
         }
     }
 }
