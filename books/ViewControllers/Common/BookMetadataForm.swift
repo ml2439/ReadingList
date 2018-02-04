@@ -61,7 +61,7 @@ class BookMetadataForm: FormViewController {
         
         // Title
         form +++ Section(header: "Title", footer: "")
-            <<< TextRow(titleKey) {
+            <<< NameRow(titleKey) {
                 $0.placeholder = "Title"
                 $0.add(rule: RuleRequired())
                 $0.validationOptions = .validatesOnChange
@@ -177,8 +177,8 @@ class BookMetadataForm: FormViewController {
         get { return form.rowBy(tag: isbnKey) as! TextRow }
     }
     
-    var titleField: TextRow {
-        get { return form.rowBy(tag: titleKey) as! TextRow }
+    var titleField: NameRow {
+        get { return form.rowBy(tag: titleKey) as! NameRow }
     }
     
     var authorsSection: AuthorMultivaluedSection {
@@ -279,11 +279,11 @@ class BookAuthorForm: FormViewController {
         super.viewDidLoad()
         
         form +++ Section(header: "Author Name", footer: "")
-            <<< TextRow(firstNameTag) {
+            <<< NameRow(firstNameTag) {
                 $0.placeholder = "First Name(s)"
                 $0.value = firstNames
             }
-            <<< TextRow(lastNameTag) {
+            <<< NameRow(lastNameTag) {
                 $0.placeholder = "Last Name"
                 $0.value = lastName
             }
@@ -291,8 +291,8 @@ class BookAuthorForm: FormViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         // Update the name properties, and set them on the source button
-        firstNames = (form.rowBy(tag: firstNameTag) as! TextRow).value?.trimming()
-        lastName = (form.rowBy(tag: lastNameTag) as! TextRow).value?.trimming()
+        firstNames = (form.rowBy(tag: firstNameTag) as! NameRow).value?.trimming()
+        lastName = (form.rowBy(tag: lastNameTag) as! NameRow).value?.trimming()
         authorButton.authorFirstNames = firstNames
         authorButton.authorLastName = lastName
         
@@ -364,12 +364,12 @@ class BookSubjectsForm: FormViewController {
                 }
             }
             $0.multivaluedRowToInsertAt = { _ in
-                return TextRow() {
+                return NameRow() {
                     $0.placeholder = "Subject"
                 }
             }
             for subject in subjects {
-                $0 <<< TextRow() {
+                $0 <<< NameRow() {
                     $0.value = subject
                 }
             }
@@ -377,7 +377,7 @@ class BookSubjectsForm: FormViewController {
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        bookMetadataForm.subjects = form.rows.flatMap{($0 as? TextRow)?.value?.trimming().nilIfWhitespace()}.distinct()
+        bookMetadataForm.subjects = form.rows.flatMap{($0 as? NameRow)?.value?.trimming().nilIfWhitespace()}.distinct()
         bookMetadataForm.subjectsButton.updateCell()
         super.viewWillDisappear(animated)
     }
