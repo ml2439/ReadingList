@@ -235,7 +235,7 @@ class BookMetadata {
     var bookDescription: String?
     var isbn13: String?
     var coverImage: Data?
-    var lists = [(listName: String, bookIndex: Int)]()
+    //var lists = [(listName: String, bookIndex: Int)]()
     
     init(googleBooksId: String? = nil) {
         self.googleBooksId = googleBooksId
@@ -286,18 +286,6 @@ class BookMetadata {
         bookMetadata.publicationDate = csvData["Publication Date"] == nil ? nil : Date(dateString: csvData["Publication Date"]!)
         bookMetadata.bookDescription = csvData["Description"]?.nilIfWhitespace()
         bookMetadata.subjects = csvData["Subjects"]?.components(separatedBy: ";").flatMap{$0.trimming().nilIfWhitespace()} ?? []
-        bookMetadata.lists = csvData["Lists"]?.components(separatedBy: ";")
-            .flatMap{$0.trimming().nilIfWhitespace()}
-            .flatMap{
-                let listTextRegex = "^(.+?)(?: *)\\((\\d+)\\)$"
-                guard Regex.IsMatch(pattern: listTextRegex, input: $0) else { return nil }
-                let capturedGroups = Regex.CapturedGroups(pattern: listTextRegex, input: $0)
-                guard capturedGroups.count == 2,
-                    let listName = capturedGroups[0].nilIfWhitespace(),
-                    let bookIndex = Int(string: capturedGroups[1])
-                else { return nil }
-                return (listName, bookIndex)
-        } ?? []
         
         let startedReading = Date(dateString: csvData["Started Reading"])
         let finishedReading = Date(dateString: csvData["Finished Reading"])

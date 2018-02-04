@@ -16,11 +16,9 @@
 		1C5CDF2920113B3300A757A3 /* AddToList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5CDF2820113B3300A757A3 /* AddToList.swift */; };
 		1C5CDF2B20114D9E00A757A3 /* ListPredicate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5CDF2A20114D9E00A757A3 /* ListPredicate.swift */; };
 		1C60922A1F922A0D0055AC5E /* Storyboards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6092291F922A0D0055AC5E /* Storyboards.swift */; };
-		1C668F8A1FFD87490012FDE5 /* CopyableLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C668F891FFD87490012FDE5 /* CopyableLabel.swift */; };
 		1C6CC34F1F8A25B7001B54A1 /* NoCancelButtonSearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6CC34E1F8A25B7001B54A1 /* NoCancelButtonSearchBar.swift */; };
 		1C6EA18A1FFAEB6C0013EE5C /* BookDetails.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1C6EA1891FFAEB6C0013EE5C /* BookDetails.storyboard */; };
 		1C6EA18C1FFAEBCC0013EE5C /* BookDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6EA18B1FFAEBCC0013EE5C /* BookDetails.swift */; };
-		1C76C107201BDD7E000F82AF /* Regex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C76C106201BDD7E000F82AF /* Regex.swift */; };
 		1C87F5B81FAE4A5200E44043 /* About.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C87F5B71FAE4A5200E44043 /* About.swift */; };
 		1C87F5BA1FAE4AF500E44043 /* General.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C87F5B91FAE4AF500E44043 /* General.swift */; };
 		1C87F5BC1FAE582A00E44043 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C87F5BB1FAE582A00E44043 /* Data.swift */; };
@@ -126,11 +124,9 @@
 		1C5CDF2820113B3300A757A3 /* AddToList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddToList.swift; sourceTree = "<group>"; };
 		1C5CDF2A20114D9E00A757A3 /* ListPredicate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListPredicate.swift; sourceTree = "<group>"; };
 		1C6092291F922A0D0055AC5E /* Storyboards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storyboards.swift; sourceTree = "<group>"; };
-		1C668F891FFD87490012FDE5 /* CopyableLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopyableLabel.swift; sourceTree = "<group>"; };
 		1C6CC34E1F8A25B7001B54A1 /* NoCancelButtonSearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoCancelButtonSearchBar.swift; sourceTree = "<group>"; };
 		1C6EA1891FFAEB6C0013EE5C /* BookDetails.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = BookDetails.storyboard; sourceTree = "<group>"; };
 		1C6EA18B1FFAEBCC0013EE5C /* BookDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookDetails.swift; sourceTree = "<group>"; };
-		1C76C106201BDD7E000F82AF /* Regex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Regex.swift; sourceTree = "<group>"; };
 		1C87F5B71FAE4A5200E44043 /* About.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = About.swift; sourceTree = "<group>"; };
 		1C87F5B91FAE4AF500E44043 /* General.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = General.swift; sourceTree = "<group>"; };
 		1C87F5BB1FAE582A00E44043 /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
@@ -513,8 +509,6 @@
 				1C6CC34E1F8A25B7001B54A1 /* NoCancelButtonSearchBar.swift */,
 				1C6092291F922A0D0055AC5E /* Storyboards.swift */,
 				1CD83C3D1F9BC0BA00E88E31 /* NibView.swift */,
-				1C668F891FFD87490012FDE5 /* CopyableLabel.swift */,
-				1C76C106201BDD7E000F82AF /* Regex.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -955,7 +949,6 @@
 				495C5D101BF1404D00E00C07 /* AppDelegate.swift in Sources */,
 				1C87F5BC1FAE582A00E44043 /* Data.swift in Sources */,
 				491C84331CF630B600894313 /* CreateBook.swift in Sources */,
-				1C76C107201BDD7E000F82AF /* Regex.swift in Sources */,
 				1CFCD01C20150DAA00D27301 /* ListBookTable.swift in Sources */,
 				1CD83C3E1F9BC0BA00E88E31 /* NibView.swift in Sources */,
 				49160F5F1E809DFE00168FD0 /* BookImport.swift in Sources */,
@@ -970,7 +963,6 @@
 				49E95D0F1DD7D9EC00C215F8 /* GoogleBooksAPI.swift in Sources */,
 				49D0FAAB1F2B284000101EE1 /* UserEngagement.swift in Sources */,
 				495EB66A1F5AE2DD009CEF39 /* Fonts.swift in Sources */,
-				1C668F8A1FFD87490012FDE5 /* CopyableLabel.swift in Sources */,
 				49B8D8E71F4A08E700D4C4EF /* BookMappingModels.swift in Sources */,
 				493056431DB1561C0086FDAD /* TableUpdater.swift in Sources */,
 				495879651BF7E76200000131 /* CoreDataStack.swift in Sources */,
@@ -1176,7 +1168,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				INFOPLIST_FILE = books/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" \"-D\" \"DEBUG\"";
 				PRODUCT_BUNDLE_IDENTIFIER = com.andrewbennet.books;
@@ -1199,7 +1191,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer: Andrew Bennet (NSVAF8RDK6)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = books/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.andrewbennet.books;
 				PRODUCT_NAME = "Reading List";

@@ -22,7 +22,7 @@ class ScanBarcode: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
     var session: AVCaptureSession?
     var previewLayer: AVCaptureVideoPreviewLayer?
     var foundMetadata: BookMetadata?
-    let feedbackGenerator = UIFeedbackGeneratorWrapper()
+    let feedbackGenerator = UINotificationFeedbackGenerator()
     
     @IBOutlet weak var cameraPreviewView: UIView!
     @IBOutlet weak var previewOverlay: UIView!

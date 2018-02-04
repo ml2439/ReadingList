@@ -252,16 +252,16 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     
     @objc func amazonButtonPressed() {
         guard let book = book else { return }
-        let amazonUrl = "https://www.amazon.com/s?url=search-alias%3Dstripbooks&field-author=\(book.authorsArray.first?.displayFirstLast ?? "")&field-title=\(book.title)"
+        let amazonSearch = "https://www.amazon.com/s?url=search-alias%3Dstripbooks&field-author=\(book.authorsArray.first?.displayFirstLast ?? "")&field-title=\(book.title)"
         
         // Use https://bestazon.io/#WebService to localize Amazon links
-        let azonUrl = "http://lnks.io/r.php?Conf_Source=API&destURL=\(amazonUrl.urlEncoded())&Amzn_AfiliateID_GB=readinglistap-21"
-        UIApplication.shared.openURL(URL(string: azonUrl)!)
+        let localisedAffiliateAmazonSearch = URL(string: "http://lnks.io/r.php?Conf_Source=API&destURL=\(amazonSearch.urlEncoded())&Amzn_AfiliateID_GB=readinglistap-21")!
+        UIApplication.shared.open(localisedAffiliateAmazonSearch, options: [:], completionHandler: nil)
     }
     
     @objc func googleBooksButtonPressed() {
         guard let googleBooksId = book?.googleBooksId else { return }
-        UIApplication.shared.openURL(GoogleBooks.Request.webpage(googleBooksId).url)
+        UIApplication.shared.open(GoogleBooks.Request.webpage(googleBooksId).url, options: [:], completionHandler: nil)
     }
     
     @IBAction func addToList(_ sender: Any) {

@@ -20,7 +20,7 @@ class SearchOnline: ArrayBackedTableController<GoogleBooks.SearchResult>, UISear
     @IBOutlet weak var selectModeButton: UIBarButtonItem!
     
     private var searchController: UISearchController!
-    private let feedbackGenerator = UIFeedbackGeneratorWrapper()
+    private let feedbackGenerator = UINotificationFeedbackGenerator()
     private let emptyDatasetView = NibView.searchBooksEmptyDataset
 
     override func viewDidLoad() {

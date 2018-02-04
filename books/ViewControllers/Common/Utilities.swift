@@ -136,56 +136,6 @@ func ActionButton(title: String, updater: ((ButtonCellOf<String>, ButtonRow) -> 
     return ActionButton(title: title, action: {UIApplication.shared.openUrlPlatformSpecific(url: url)}, updater: updater)
 }
 
-/**
- Wraps an instance of UINotificationFeedbackGenerator (if running on iOS >= 10), so that
- a reference can be held on a VC which supports iOS < 10.
- */
-class UIFeedbackGeneratorWrapper {
-    private let _notificationGenerator: NSObject?
-
-    @available(iOS 10.0, *)
-    private var generator: UINotificationFeedbackGenerator {
-        get { return _notificationGenerator as! UINotificationFeedbackGenerator }
-    }
-
-    init() {
-        if #available(iOS 10.0, *) {
-            _notificationGenerator = UINotificationFeedbackGenerator()
-        }
-        else {
-            _notificationGenerator = nil
-        }
-    }
-    
-    func prepare() {
-        if #available(iOS 10.0, *) {
-            generator.prepare()
-        }
-    }
-    
-    func notificationOccurred(_ type: UINotificationFeedbackTypeWrapper) {
-        if #available(iOS 10.0, *) {
-            generator.notificationOccurred(type.unwrapped)
-        }
-        
-    }
-}
-
-enum UINotificationFeedbackTypeWrapper: Int {
-    case success
-    case warning
-    case error
-    
-    @available(iOS 10.0, *)
-    fileprivate var unwrapped: UINotificationFeedbackType {
-        get { switch self {
-            case .success: return .success
-            case .warning: return .warning
-            case .error: return .error
-        } }
-    }
-}
-
 extension UILabel {
     var isTruncated: Bool {
         guard let labelText = text else { return false }
