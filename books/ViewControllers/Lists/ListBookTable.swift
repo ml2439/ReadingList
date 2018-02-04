@@ -111,7 +111,7 @@ class ListBookTable: UITableViewController {
 
 extension ListBookTable: DZNEmptyDataSetSource {
     func title(forEmptyDataSet scrollView: UIScrollView!) -> NSAttributedString! {
-        return StandardEmptyDataset.title(withText: "📂 Empty list")
+        return StandardEmptyDataset.title(withText: /*🕳️*/"✨ Empty List")
     }
     
     func description(forEmptyDataSet scrollView: UIScrollView!) -> NSAttributedString! {
