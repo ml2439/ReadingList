@@ -76,6 +76,18 @@ class BooksStore {
         // TODO: Need to decide best practice for failing fetches...
     }
     
+    func getList(withName name: String) -> List? {
+        let fetchRequest = NSFetchRequest<List>(entityName: listEntityName)
+        fetchRequest.predicate = NSPredicate(stringFieldName: "name", equalTo: name)
+        fetchRequest.fetchLimit = 1
+        return (try? coreDataStack.managedObjectContext.fetch(fetchRequest))?.first
+    }
+    
+    @discardableResult func getOrCreateList(withName name: String) -> List {
+        guard let existingList = getList(withName: name) else { return createList(name: name, type: .customList) }
+        return existingList
+    }
+    
     /**
      Retrieves the specified Book, if it exists.
      */

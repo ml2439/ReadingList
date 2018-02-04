@@ -9,6 +9,7 @@
 import Foundation
 import SwiftyJSON
 import CHCSVParser
+import CoreData
 
 class CsvImporter: NSObject, CHCSVParserDelegate {
     
@@ -103,6 +104,12 @@ class BookImporter {
     // Keep track of the potentially numerous calls
     private let dispatchGroup = DispatchGroup()
     
+    // The default headers - not including any list names
+    private let defaultHeaders = Book.BuildCsvExport(withLists: []).headers()
+    
+    // List mappings
+    private var listMappings = [String: [(bookId: NSManagedObjectID, index: Int)]]()
+    
     init(csvFileUrl: URL, supplementBookCover: Bool = true, missingHeadersCallback: @escaping () -> Void,
          supplementBookCallback: ((Book, DispatchGroup) -> Void)? = nil, callback: @escaping (Int, Int, Int) -> Void) {
         self.fileUrl = csvFileUrl
@@ -122,10 +129,24 @@ class BookImporter {
         if !headers.contains("Title") || !headers.contains("Author") {
             missingHeadersCallback()
         }
+        let extraHeaders = headers.map{$0.trimming()}.filter{!defaultHeaders.contains($0)}
+        for headerName in extraHeaders {
+            // create all the lists which should exist
+            appDelegate.booksStore.getOrCreateList(withName: headerName)
+        }
     }
     
     func onCompletion() {
-        dispatchGroup.notify(queue: .main) {
+        dispatchGroup.notify(queue: .main) { [unowned self] in
+            for listMapping in self.listMappings {
+                let list = appDelegate.booksStore.getOrCreateList(withName: listMapping.key)
+                let orderedBooks = listMapping.value.sorted(by: {$0.1 < $1.1})
+                    .map{appDelegate.booksStore.managedObjectContext.object(with: $0.bookId) as! Book}
+                    .filter{!list.books.contains($0)}
+                list.books = NSOrderedSet(array: list.booksArray + orderedBooks)
+                appDelegate.booksStore.save()
+            }
+            
             self.callback(self.importedBookCount, self.duplicateBookCount, self.invalidCount)
         }
     }
@@ -155,18 +176,29 @@ class BookImporter {
             specifiedSort = nil
         }
         
+        func recordListMembership(bookId: NSManagedObjectID) {
+            for listEntry in cellValues.filter({!defaultHeaders.contains($0.key.trimming())}) {//.flatMap{ (key: String, value: String) -> (String, Int)? in
+                guard let bookPosition = Int(listEntry.value) else { continue }
+                if listMappings[listEntry.0] == nil { listMappings[listEntry.0] = [] }
+                listMappings[listEntry.0]!.append((bookId, bookPosition))
+            }
+        }
+
         dispatchGroup.enter()
         
         if supplementBookCover {
-            BookImporter.supplementBook(parsedData.0) {
+            BookImporter.supplementBook(parsedData.0) { [unowned self] in
                 let book = appDelegate.booksStore.create(from: parsedData.0, readingInformation: parsedData.1, bookSort: specifiedSort, readingNotes: parsedData.2)
+                
+                recordListMembership(bookId: book.objectID)
                 self.supplementBookCallback?(book, self.dispatchGroup)
                 self.importedBookCount += 1
                 self.dispatchGroup.leave()
             }
         }
         else {
-            appDelegate.booksStore.create(from: parsedData.0, readingInformation: parsedData.1, bookSort: specifiedSort, readingNotes: parsedData.2)
+            let book = appDelegate.booksStore.create(from: parsedData.0, readingInformation: parsedData.1, bookSort: specifiedSort, readingNotes: parsedData.2)
+            recordListMembership(bookId: book.objectID)
             importedBookCount += 1
             dispatchGroup.leave()
         }
