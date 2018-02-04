@@ -14,6 +14,10 @@ import Firebase
 import SVProgressHUD
 import SwiftyStoreKit
 
+#if DEBUG
+import SimulatorStatusMagic
+#endif
+
 let productBundleIdentifier = "com.andrewbennet.books"
 
 var appDelegate: AppDelegate {
@@ -51,17 +55,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             if CommandLine.arguments.contains("--UITests_DeleteLists") {
                 booksStore.deleteAllLists()
             }
+            if CommandLine.arguments.contains("--UITests_PrettyStatusBar") {
+                SDStatusBarManager.sharedInstance().enableOverrides()
+            }
+            DebugSettings.useFixedBarcodeScanImage = CommandLine.arguments.contains("--UITests_FixedBarcodeScanImage")
         #endif
     }
     
     func configureAnalytics() {
         #if !DEBUG
-            if UserSettings.sendAnalytics.value {
-                FirebaseApp.configure()
-            }
-            if UserSettings.sendCrashReports.value {
-                Fabric.with([Crashlytics.self])
-            }
+            if UserSettings.sendAnalytics.value { FirebaseApp.configure() }
+            if UserSettings.sendCrashReports.value { Fabric.with([Crashlytics.self]) }
         #endif
     }
     

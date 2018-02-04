@@ -18,27 +18,6 @@ class Debug: FormViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        form +++ Section(header: "Screenshot helpers", footer: "Useful toggles for generating screenshots.")
-            <<< SwitchRow() {
-                $0.title = "Show Fixed Image"
-                $0.value = DebugSettings.useFixedBarcodeScanImage
-                $0.onChange {
-                    DebugSettings.useFixedBarcodeScanImage = $0.value!
-                }
-            }
-            <<< SwitchRow() {
-                $0.title = "Pretty Status Bar"
-                $0.value = SDStatusBarManager.sharedInstance().usingOverrides
-                $0.onChange {
-                    if $0.value! {
-                        SDStatusBarManager.sharedInstance().enableOverrides()
-                    }
-                    else {
-                        SDStatusBarManager.sharedInstance().disableOverrides()
-                    }
-                }
-            }
-        
         form +++ Section(header: "Test data", footer: "Import a set of data for both testing and screenshots")
             <<< ButtonRow() {
                 $0.title = "Import Test Data"

@@ -52,26 +52,6 @@ class ReadingListApplication : XCUIApplication {
         }
     }
     
-    func togglePrettyStatusBar() {
-        clickTab(.settings)
-        tables.cells.staticTexts["Debug"].tap()
-        
-        tables.cells.switches["Pretty Status Bar"].tap()
-        if navigationBars.count == 1 {
-            topNavBar.buttons["Settings"].tap()
-        }
-    }
-    
-    func toggleBarcodeScanFixedImage() {
-        clickTab(.settings)
-        tables.cells.staticTexts["Debug"].tap()
-        
-        tables.cells.switches["Show Fixed Image"].tap()
-        if navigationBars.count == 1 {
-            topNavBar.buttons["Settings"].tap()
-        }
-    }
-    
     func clickAddButton(addMethod: addMethod) {
         navigationBars.element(boundBy: 0).buttons["Add"].tap()
         sheets.buttons.element(boundBy: addMethod.rawValue).tap()
