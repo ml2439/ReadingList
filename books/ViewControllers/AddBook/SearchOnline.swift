@@ -73,7 +73,15 @@ class SearchOnline: ArrayBackedTableController<GoogleBooks.SearchResult>, UISear
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        emptyDatasetView.setTopDistance(tableView.universalContentInset.top + 20)
+        
+        let navigationHeaderHeight: CGFloat
+        if #available(iOS 11.0, *) {
+            navigationHeaderHeight = tableView.universalContentInset.top
+        }
+        else {
+            navigationHeaderHeight = tableView.universalContentInset.top + searchController.searchBar.frame.height
+        }
+        emptyDatasetView.setTopDistance(navigationHeaderHeight + 20)
     }
 
     @IBAction func cancelWasPressed(_ sender: Any) {
