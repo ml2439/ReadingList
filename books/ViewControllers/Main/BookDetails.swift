@@ -22,6 +22,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     @IBOutlet weak var dateFinished: UILabel!
     @IBOutlet weak var readTime: UILabel!
     @IBOutlet weak var notes: UILabel!
+    @IBOutlet weak var pageNumber: UILabel!
     
     @IBOutlet weak var isbn: UILabel!
     @IBOutlet weak var pages: UILabel!
@@ -112,6 +113,19 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
             }
         }
         setTextOrHideLine(readTime, readTimeText)
+        let pageNumberText: String?
+        if let currentPage = book.currentPage {
+            if let totalPages = book.pageCount, currentPage.intValue <= totalPages.intValue,
+                currentPage.intValue > 0 {
+                pageNumberText = currentPage.stringValue + " (\(100 * currentPage.intValue/totalPages.intValue)% complete)"
+            }
+            else {
+                pageNumberText = currentPage.stringValue
+            }
+        }
+        else { pageNumberText = nil }
+        
+        setTextOrHideLine(pageNumber, pageNumberText)
         setTextOrHideLine(notes, book.notes)
 
         setTextOrHideLine(isbn, book.isbn13)

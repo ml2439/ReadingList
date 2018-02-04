@@ -30,10 +30,10 @@
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qHr-le-Bwg" userLabel="Content View">
-                                        <rect key="frame" x="0.0" y="0.0" width="414" height="848"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="870"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="12" translatesAutoresizingMaskIntoConstraints="NO" id="bhg-kb-dQx" userLabel="Main Stack View">
-                                                <rect key="frame" x="18" y="18" width="378" height="812"/>
+                                                <rect key="frame" x="18" y="18" width="378" height="834"/>
                                                 <subviews>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yhn-N0-bz4" userLabel="CoverAndTitle">
                                                         <rect key="frame" x="0.0" y="0.0" width="378" height="120"/>
@@ -186,7 +186,7 @@
                                                         </constraints>
                                                     </view>
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="dK7-Qi-TIg">
-                                                        <rect key="frame" x="0.0" y="231" width="378" height="146"/>
+                                                        <rect key="frame" x="0.0" y="231" width="378" height="168"/>
                                                         <subviews>
                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KgY-4c-9LI" userLabel="ReadingLogTitle">
                                                                 <rect key="frame" x="0.0" y="0.0" width="378" height="30"/>
@@ -221,10 +221,10 @@
                                                                 </constraints>
                                                             </view>
                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gtb-h2-j2n">
-                                                                <rect key="frame" x="0.0" y="38" width="378" height="108"/>
+                                                                <rect key="frame" x="0.0" y="38" width="378" height="130"/>
                                                                 <subviews>
                                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="e0v-jg-F1e">
-                                                                        <rect key="frame" x="16" y="0.0" width="362" height="108"/>
+                                                                        <rect key="frame" x="16" y="0.0" width="362" height="130"/>
                                                                         <subviews>
                                                                             <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="4lf-x5-qUh">
                                                                                 <rect key="frame" x="0.0" y="0.0" width="362" height="20"/>
@@ -378,8 +378,46 @@
                                                                                     <constraint firstAttribute="height" constant="20" placeholder="YES" id="zbG-Ce-dET"/>
                                                                                 </constraints>
                                                                             </stackView>
-                                                                            <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="P6K-rY-yTR">
+                                                                            <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="nSe-W3-8DO">
                                                                                 <rect key="frame" x="0.0" y="88" width="362" height="20"/>
+                                                                                <subviews>
+                                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Page" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QwM-ug-90X" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
+                                                                                        <rect key="frame" x="0.0" y="0.0" width="56.333333333333336" height="15"/>
+                                                                                        <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
+                                                                                        <color key="textColor" red="0.33333333329999998" green="0.33333333329999998" blue="0.33333333329999998" alpha="1" colorSpace="calibratedRGB"/>
+                                                                                        <nil key="highlightedColor"/>
+                                                                                        <userDefinedRuntimeAttributes>
+                                                                                            <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Subhead"/>
+                                                                                        </userDefinedRuntimeAttributes>
+                                                                                    </label>
+                                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="63S-Ui-SPZ">
+                                                                                        <rect key="frame" x="72.333333333333343" y="0.0" width="289.66666666666663" height="20"/>
+                                                                                        <subviews>
+                                                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="27" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CiQ-Tc-gbA" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
+                                                                                                <rect key="frame" x="0.0" y="0.0" width="289.66666666666669" height="20"/>
+                                                                                                <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
+                                                                                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                                                                <nil key="highlightedColor"/>
+                                                                                                <userDefinedRuntimeAttributes>
+                                                                                                    <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Subhead"/>
+                                                                                                </userDefinedRuntimeAttributes>
+                                                                                            </label>
+                                                                                        </subviews>
+                                                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                                                        <constraints>
+                                                                                            <constraint firstAttribute="trailing" secondItem="CiQ-Tc-gbA" secondAttribute="trailing" id="JV9-Hi-x92"/>
+                                                                                            <constraint firstItem="CiQ-Tc-gbA" firstAttribute="top" secondItem="63S-Ui-SPZ" secondAttribute="top" id="JX4-pK-J4q"/>
+                                                                                            <constraint firstItem="CiQ-Tc-gbA" firstAttribute="leading" secondItem="63S-Ui-SPZ" secondAttribute="leading" id="XAE-GS-sqn"/>
+                                                                                            <constraint firstAttribute="bottom" secondItem="CiQ-Tc-gbA" secondAttribute="bottom" id="lBb-Xa-G2j"/>
+                                                                                        </constraints>
+                                                                                    </view>
+                                                                                </subviews>
+                                                                                <constraints>
+                                                                                    <constraint firstAttribute="height" constant="20" placeholder="YES" id="YqT-Lx-Hfd"/>
+                                                                                </constraints>
+                                                                            </stackView>
+                                                                            <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="P6K-rY-yTR">
+                                                                                <rect key="frame" x="0.0" y="110" width="362" height="20"/>
                                                                                 <subviews>
                                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Notes" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8HH-zh-C9L" customClass="DynamicUILabel" customModule="Reading_List" customModuleProvider="target">
                                                                                         <rect key="frame" x="0.0" y="0.0" width="56.333333333333336" height="15"/>
@@ -419,6 +457,7 @@
                                                                         </subviews>
                                                                         <constraints>
                                                                             <constraint firstItem="cah-EW-cNv" firstAttribute="trailing" secondItem="hoh-H9-zYK" secondAttribute="trailing" id="2eG-O1-ayI"/>
+                                                                            <constraint firstItem="QwM-ug-90X" firstAttribute="trailing" secondItem="hoh-H9-zYK" secondAttribute="trailing" id="Df6-vT-1aR"/>
                                                                             <constraint firstItem="GZy-9B-WfN" firstAttribute="trailing" secondItem="hoh-H9-zYK" secondAttribute="trailing" id="LpY-9e-VfW"/>
                                                                             <constraint firstItem="8HH-zh-C9L" firstAttribute="trailing" secondItem="hoh-H9-zYK" secondAttribute="trailing" id="jw5-hu-XNd"/>
                                                                             <constraint firstItem="XDm-mx-SgA" firstAttribute="trailing" secondItem="hoh-H9-zYK" secondAttribute="trailing" id="pI5-Gx-Utd"/>
@@ -438,14 +477,14 @@
                                                         </subviews>
                                                     </stackView>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Vo9-bZ-62H" userLabel="Separator">
-                                                        <rect key="frame" x="0.0" y="389" width="378" height="1"/>
+                                                        <rect key="frame" x="0.0" y="411" width="378" height="1"/>
                                                         <color key="backgroundColor" white="0.75" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="1" id="ZtI-Rq-Ofe" customClass="HairlineConstraint" customModule="Reading_List" customModuleProvider="target"/>
                                                         </constraints>
                                                     </view>
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="bza-Z5-QWk">
-                                                        <rect key="frame" x="0.0" y="402" width="378" height="166"/>
+                                                        <rect key="frame" x="0.0" y="424" width="378" height="166"/>
                                                         <subviews>
                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7hf-Cy-beu" userLabel="OrganiseTitle">
                                                                 <rect key="frame" x="0.0" y="0.0" width="378" height="30"/>
@@ -691,14 +730,14 @@
                                                         </subviews>
                                                     </stackView>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ldU-QI-O4q" userLabel="Separator">
-                                                        <rect key="frame" x="0.0" y="580" width="378" height="1"/>
+                                                        <rect key="frame" x="0.0" y="602" width="378" height="1"/>
                                                         <color key="backgroundColor" white="0.75" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="1" id="BtD-V8-1bx" customClass="HairlineConstraint" customModule="Reading_List" customModuleProvider="target"/>
                                                         </constraints>
                                                     </view>
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="2Jl-qN-QRH">
-                                                        <rect key="frame" x="0.0" y="593" width="378" height="219"/>
+                                                        <rect key="frame" x="0.0" y="615" width="378" height="219"/>
                                                         <subviews>
                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vmf-Me-0Kl" userLabel="OrganiseTitle">
                                                                 <rect key="frame" x="0.0" y="0.0" width="378" height="30"/>
@@ -848,6 +887,7 @@
                         <outlet property="listsStack" destination="cqY-si-z1C" id="Heq-fV-egF"/>
                         <outlet property="noLists" destination="DsS-u3-Ynr" id="MVX-JU-4ZW"/>
                         <outlet property="notes" destination="1lx-c8-Jjp" id="CUm-uY-Cj2"/>
+                        <outlet property="pageNumber" destination="CiQ-Tc-gbA" id="bOd-zq-r8W"/>
                         <outlet property="pages" destination="cXF-BD-6WQ" id="JeP-7B-MqX"/>
                         <outlet property="published" destination="zoz-3C-YU5" id="e9M-31-XBk"/>
                         <outlet property="readState" destination="P98-Ye-gdn" id="uOF-N4-yBg"/>
