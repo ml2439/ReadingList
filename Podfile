@@ -1,5 +1,5 @@
 # Uncomment the next line to define a global platform for your project
-platform :ios, '9.2'
+platform :ios, '10.0'
 
 target 'books' do
   use_frameworks!
