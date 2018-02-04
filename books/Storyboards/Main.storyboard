@@ -141,7 +141,7 @@
                                     <outlet property="bookCover" destination="dET-ZE-M3H" id="7Od-y6-BL9"/>
                                     <outlet property="readTimeLabel" destination="pGZ-CF-qFS" id="d5S-6J-g33"/>
                                     <outlet property="titleLabel" destination="Pbv-iH-mB7" id="H3l-a5-DvJ"/>
-                                    <segue destination="myb-KF-3dK" kind="showDetail" id="FJ4-wK-Tvz">
+                                    <segue destination="myb-KF-3dK" kind="showDetail" identifier="showDetail" id="FJ4-wK-Tvz">
                                         <segue key="commit" inheritsFrom="parent" id="Ej8-uR-qF3"/>
                                         <segue key="preview" inheritsFrom="commit" id="yzB-e3-IGS"/>
                                     </segue>
@@ -344,7 +344,7 @@
                                     <outlet property="bookCover" destination="oGg-u4-5Nb" id="oaz-tV-c3x"/>
                                     <outlet property="readTimeLabel" destination="Eig-6y-bh0" id="Ubd-hu-MQf"/>
                                     <outlet property="titleLabel" destination="iem-qK-ntp" id="BfD-1K-57b"/>
-                                    <segue destination="tXC-jl-tV3" kind="showDetail" id="3Ys-bx-yfh">
+                                    <segue destination="tXC-jl-tV3" kind="showDetail" identifier="showDetail" id="3Ys-bx-yfh">
                                         <segue key="commit" inheritsFrom="parent" id="dlx-MB-dzY"/>
                                         <segue key="preview" inheritsFrom="commit" id="Ck0-Hf-8aF"/>
                                     </segue>

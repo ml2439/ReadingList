@@ -38,7 +38,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         configureAnalytics()
         setupSvProgressHud()
         completeStoreTransactions()
+        applyCommandLineArgs()
 
+        return true
+    }
+    
+    func applyCommandLineArgs() {
         #if DEBUG
             if CommandLine.arguments.contains("--UITests_PopulateData") {
                 Debug.loadTestData()
@@ -47,8 +52,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 booksStore.deleteAllLists()
             }
         #endif
-        
-        return true
     }
     
     func configureAnalytics() {
