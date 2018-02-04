@@ -184,9 +184,16 @@ class GoogleBooks {
             // This string may contain some HTML. We want to remove them, but first we might as well replace the "<br>"s with '\n's
             // and the "<p>"s with "\n\n".
             var description = fetchResult["volumeInfo","description"].string
-            description = description?.components(separatedBy: "<br>").map{$0.trimming()}.joined(separator: "\n")
-            description = description?.components(separatedBy: "<p>").map{$0.trimming()}.joined(separator: "\n\n")
-            description = description?.replacingOccurrences(of: "</p>", with: "")
+            
+            description = description?.components(separatedBy: "<br>")
+                .flatMap{$0.trimming().nilIfWhitespace()}
+                .joined(separator: "\n")
+
+            description = description?.components(separatedBy: "<p>")
+                .flatMap{$0.components(separatedBy: "</p>")}
+                .flatMap{$0.trimming().nilIfWhitespace()}
+                .joined(separator: "\n\n")
+            
             description = description?.replacingOccurrences(of: "<[^>]+>", with: "", options: .regularExpression, range: nil)
             description = description?.trimmingCharacters(in: .whitespacesAndNewlines)
             result.description = description
