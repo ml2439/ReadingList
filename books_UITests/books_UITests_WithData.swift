@@ -50,10 +50,10 @@ class books_UITests_WithData: XCTestCase {
     
     func testEditBook() {
         let app = ReadingListApplication()
-        
+
         app.clickTab(.toRead)
         app.tables.cells.element(boundBy: 0).tap()
-        app.topNavBar.buttons["Edit"].tap()
+        app.scrollViews.otherElements.buttons["Edit"].tap()
         
         app.tables.textFields.element(boundBy: 0).tap()
         app.typeText("changed!")
@@ -67,7 +67,7 @@ class books_UITests_WithData: XCTestCase {
         let bookCount = Int(app.tables.element(boundBy: 0).cells.count)
         
         app.tables.cells.element(boundBy: 0).tap()
-        app.topNavBar.buttons["Edit"].tap()
+        app.scrollViews.otherElements.buttons["Edit"].tap()
         
         app.tables.staticTexts["Delete"].tap()
         app.sheets.buttons["Delete"].tap()
@@ -156,17 +156,5 @@ class books_UITests_WithData: XCTestCase {
         XCTAssertEqual("Book Already Added", duplicateAlert.label)
         duplicateAlert.buttons["Cancel"].tap()
         app.navigationBars.element(boundBy: 0).buttons["Cancel"].tap()
-    }
-    
-    func testAddNewList() {
-        
-        let app = XCUIApplication()
-        app.scrollViews.otherElements.staticTexts["Add To List"].tap()
-        
-        let addNewListAlert = app.alerts["Add New List"]
-        addNewListAlert.collectionViews.textFields["Enter list name"].typeText("Test List")
-        addNewListAlert.buttons["OK"].tap()
-        app.tabBars.buttons["Organise"].tap()
-        
     }
 }

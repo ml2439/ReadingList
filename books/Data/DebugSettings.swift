@@ -57,7 +57,7 @@ class DebugSettings {
     /**
      This string should be an ISBN which is included in the test debug import data.
     */
-    static let existingIsbn = "9781551998756"
+    static let existingIsbn = "9780547345666"
     
     static var useFixedBarcodeScanImage: Bool {
         get {
