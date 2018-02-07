@@ -1,7 +1,7 @@
 # Uncomment the next line to define a global platform for your project
 platform :ios, '10.0'
 
-target 'books' do
+target 'ReadingList' do
   use_frameworks!
 
   # Pods for books
@@ -17,12 +17,12 @@ target 'books' do
   pod 'Firebase/Core'
   pod 'SwiftyStoreKit'
   
-  target 'books_UITests' do
+  target 'ReadingList_UITests' do
     inherit! :complete
     # Pods for testing
   end
 
-  target 'books_UnitTests' do
+  target 'ReadingList_UnitTests' do
     inherit! :complete
     # Pods for testing
   end

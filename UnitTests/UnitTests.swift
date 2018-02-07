@@ -5,7 +5,7 @@ import CoreData
 import Firebase
 @testable import Reading_List
 
-class books_UnitTests: XCTestCase {
+class UnitTests: XCTestCase {
     
     var booksStore: BooksStore!
     

@@ -1,7 +1,7 @@
 import Foundation
 import XCTest
 
-class books_UITests_Lists: XCTestCase {
+class Lists: XCTestCase {
     
     override func setUp() {
         super.setUp()

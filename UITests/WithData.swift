@@ -1,6 +1,6 @@
 import XCTest
 
-class books_UITests_WithData: XCTestCase {
+class WithData: XCTestCase {
         
     override func setUp() {
         super.setUp()

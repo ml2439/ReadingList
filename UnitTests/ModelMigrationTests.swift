@@ -2,7 +2,7 @@ import XCTest
 import CoreData
 @testable import Reading_List
 
-class books_ModelMigrationTests: XCTestCase {
+class ModelMigrationTests: XCTestCase {
     
     /*
      var title: String

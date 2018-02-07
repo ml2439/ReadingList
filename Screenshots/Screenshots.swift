@@ -1,6 +1,6 @@
 import XCTest
 
-class books_Screenshots: XCTestCase {
+class Screenshots: XCTestCase {
     
     override func setUp() {
         super.setUp()
