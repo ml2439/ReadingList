@@ -16,7 +16,7 @@ class books_Screenshots: XCTestCase {
         
         let app = ReadingListApplication()
         setupSnapshot(app)
-        app.launchArguments.append(contentsOf: ["--UITests_PopulateData", "--UITests_FixedBarcodeScanImage", "--UITests_PrettyStatusBar"])
+        app.launchArguments.append(contentsOf: ["--UITests_PopulateData", "--UITests_FixedBarcodeScanImage", "--UITests_PrettyStatusBar", "-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryXL"])
         app.launch()
         sleep(5)
         app.setBarcodeSimulation(.normal)
