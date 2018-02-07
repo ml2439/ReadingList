@@ -1,11 +1,3 @@
-//
-//  BookImport.swift
-//  books
-//
-//  Created by Andrew Bennet on 20/03/2017.
-//  Copyright © 2017 Andrew Bennet. All rights reserved.
-//
-
 import Foundation
 import SwiftyJSON
 import CHCSVParser

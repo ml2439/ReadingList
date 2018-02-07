@@ -1,11 +1,3 @@
-//
-//  CoreDataStack.swift
-//  books
-//
-//  Created by Andrew Bennet on 08/11/2015.
-//  Copyright © 2015 Andrew Bennet. All rights reserved.
-//
-
 import CoreData
 import Fabric
 import Crashlytics

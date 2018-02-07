@@ -1,11 +1,3 @@
-//
-//  UserEngagement.swift
-//  books
-//
-//  Created by Andrew Bennet on 28/07/2017.
-//  Copyright © 2017 Andrew Bennet. All rights reserved.
-//
-
 import Foundation
 import StoreKit
 import Crashlytics

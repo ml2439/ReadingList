@@ -1,11 +1,3 @@
-//
-//  books_ModelMigrationTests.swift
-//  books
-//
-//  Created by Andrew Bennet on 25/08/2017.
-//  Copyright © 2017 Andrew Bennet. All rights reserved.
-//
-
 import XCTest
 import CoreData
 @testable import Reading_List

@@ -1,11 +1,3 @@
-//
-//  ReadingListApplication.swift
-//  books
-//
-//  Created by Andrew Bennet on 20/05/2017.
-//  Copyright © 2017 Andrew Bennet. All rights reserved.
-//
-
 import Foundation
 import XCTest
 

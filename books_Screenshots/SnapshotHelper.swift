@@ -1,11 +1,3 @@
-//
-//  SnapshotHelper.swift
-//  Example
-//
-//  Created by Felix Krause on 10/8/15.
-//  Copyright © 2015 Felix Krause. All rights reserved.
-//
-
 // -----------------------------------------------------
 // IMPORTANT: When modifying this file, make sure to
 //            increment the version number at the very

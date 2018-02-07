@@ -1,11 +1,3 @@
-//
-//  BookPredicateBuilder.swift
-//  books
-//
-//  Created by Andrew Bennet on 15/10/2016.
-//  Copyright © 2016 Andrew Bennet. All rights reserved.
-//
-
 import Foundation
 
 class BookPredicateBuilder : SearchPredicateBuilder {

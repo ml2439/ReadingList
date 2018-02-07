@@ -1,11 +1,3 @@
-//
-//  PrivacyViewController.swift
-//  books
-//
-//  Created by Andrew Bennet on 11/10/2017.
-//  Copyright © 2017 Andrew Bennet. All rights reserved.
-//
-
 import Foundation
 import UIKit
 

@@ -1,11 +1,3 @@
-//
-//  Nibs.swift
-//  books
-//
-//  Created by Andrew Bennet on 21/10/2017.
-//  Copyright © 2017 Andrew Bennet. All rights reserved.
-//
-
 import Foundation
 import UIKit
 

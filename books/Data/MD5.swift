@@ -1,11 +1,3 @@
-//
-//  MD5.swift
-//  books
-//
-//  Created by Andrew Bennet on 07/10/2017.
-//  Copyright © 2017 Andrew Bennet. All rights reserved.
-//
-
 import Foundation
 
 class MD5: Equatable {

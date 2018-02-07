@@ -1,11 +1,3 @@
-//
-//  HTTP.swift
-//  books
-//
-//  Created by Andrew Bennet on 22/10/2017.
-//  Copyright © 2017 Andrew Bennet. All rights reserved.
-//
-
 import Foundation
 import SwiftyJSON
 

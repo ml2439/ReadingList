@@ -1,11 +1,3 @@
-//
-//  SpotlightIndexStack.swift
-//  books
-//
-//  Created by Andrew Bennet on 29/03/2016.
-//  Copyright © 2016 Andrew Bennet. All rights reserved.
-//
-
 import CoreSpotlight
 import MobileCoreServices
 

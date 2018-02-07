@@ -1,11 +1,3 @@
-//
-//  EditBookViewController.swift
-//  books
-//
-//  Created by Andrew Bennet on 28/04/2016.
-//  Copyright © 2016 Andrew Bennet. All rights reserved.
-//
-
 import Eureka
 import UIKit
 import ImageRow

@@ -1,11 +1,3 @@
-//
-//  books_UITests_NoData.swift
-//  books_UITests
-//
-//  Created by Andrew Bennet on 24/01/2018.
-//  Copyright © 2018 Andrew Bennet. All rights reserved.
-//
-
 import Foundation
 import XCTest
 

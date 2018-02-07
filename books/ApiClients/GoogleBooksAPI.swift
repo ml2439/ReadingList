@@ -1,11 +1,3 @@
-//
-//  GoogleBooksAPI.swift
-//  books
-//
-//  Created by Andrew Bennet on 12/11/2016.
-//  Copyright © 2016 Andrew Bennet. All rights reserved.
-//
-
 import Foundation
 import SwiftyJSON
 

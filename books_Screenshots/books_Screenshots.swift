@@ -1,11 +1,3 @@
-//
-//  books_Screenshots.swift
-//  books_Screenshots
-//
-//  Created by Andrew Bennet on 04/02/2018.
-//  Copyright © 2018 Andrew Bennet. All rights reserved.
-//
-
 import XCTest
 
 class books_Screenshots: XCTestCase {

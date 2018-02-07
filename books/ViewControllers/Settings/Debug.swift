@@ -1,11 +1,3 @@
-//
-//  DebugSettingsViewController.swift
-//  books
-//
-//  Created by Andrew Bennet on 11/04/2017.
-//  Copyright © 2017 Andrew Bennet. All rights reserved.
-//
-
 #if DEBUG
     
 import Foundation

@@ -1,11 +1,3 @@
-//
-//  Preferences.swift
-//  books
-//
-//  Created by Andrew Bennet on 12/04/2017.
-//  Copyright © 2017 Andrew Bennet. All rights reserved.
-//
-
 import Foundation
 
 enum BarcodeScanSimulation: Int {

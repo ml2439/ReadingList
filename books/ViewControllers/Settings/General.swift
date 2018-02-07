@@ -1,11 +1,3 @@
-//
-//  General.swift
-//  books
-//
-//  Created by Andrew Bennet on 04/11/2017.
-//  Copyright © 2017 Andrew Bennet. All rights reserved.
-//
-
 import Foundation
 import UIKit
 
