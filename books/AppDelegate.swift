@@ -49,11 +49,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func applyCommandLineArgs() {
         #if DEBUG
+            let includeLists = !CommandLine.arguments.contains("--UITests_DeleteLists")
             if CommandLine.arguments.contains("--UITests_PopulateData") {
-                Debug.loadTestData()
-            }
-            if CommandLine.arguments.contains("--UITests_DeleteLists") {
-                booksStore.deleteAllLists()
+                Debug.loadTestData(withLists: includeLists)
             }
             if CommandLine.arguments.contains("--UITests_PrettyStatusBar") {
                 SDStatusBarManager.sharedInstance().enableOverrides()

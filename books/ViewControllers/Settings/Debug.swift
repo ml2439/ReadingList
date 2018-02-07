@@ -71,7 +71,7 @@ class Debug: FormViewController {
         }
     }
     
-    static func loadTestData() {
+    static func loadTestData(withLists: Bool = true) {
         
         appDelegate.booksStore.deleteAll()
         let csvPath = Bundle.main.url(forResource: "examplebooks", withExtension: "csv")
@@ -86,6 +86,7 @@ class Debug: FormViewController {
                 book.coverImage = UIImagePNGRepresentation(#imageLiteral(resourceName: "yourfirstswiftapp.png"))
             }
         }) { _, _, _ in
+            appDelegate.booksStore.deleteAllLists()
             SVProgressHUD.dismiss()
         }.StartImport()
     }    
