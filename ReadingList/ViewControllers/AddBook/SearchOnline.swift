@@ -1,7 +1,6 @@
 import Foundation
 import UIKit
 import SVProgressHUD
-import DZNEmptyDataSet
 import Crashlytics
 
 class SearchOnline: ArrayBackedTableController<GoogleBooks.SearchResult>, UISearchBarDelegate {
@@ -13,7 +12,7 @@ class SearchOnline: ArrayBackedTableController<GoogleBooks.SearchResult>, UISear
     
     private var searchController: UISearchController!
     private let feedbackGenerator = UINotificationFeedbackGenerator()
-    private let emptyDatasetView = NibView.searchBooksEmptyDataset
+    private let emptyDatasetView = UINib.instantiate(SearchBooksEmptyDataset.self)
 
     override func viewDidLoad() {
         super.viewDidLoad()

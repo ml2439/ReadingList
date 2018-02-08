@@ -10,16 +10,11 @@ class Fonts {
     }
     
     static func gillSans(forTextStyle textStyle: UIFontTextStyle) -> UIFont {
-        return scaledFont(gillSansFont, forTextStyle: textStyle)
+        return gillSansFont.scaled(forTextStyle: textStyle)
     }
     
     static func gillSansSemiBold(forTextStyle textStyle: UIFontTextStyle) -> UIFont {
-        return scaledFont(gillSansSemiBoldFont, forTextStyle: textStyle)
-    }
-    
-    static func scaledFont(_ font: UIFont, forTextStyle textStyle: UIFontTextStyle) -> UIFont {
-        let fontSize = UIFont.preferredFont(forTextStyle: textStyle).pointSize
-        return font.withSize(fontSize)
+        return gillSansSemiBoldFont.scaled(forTextStyle: textStyle)
     }
 }
 

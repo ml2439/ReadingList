@@ -118,10 +118,14 @@ class BookMetadataForm: FormViewController {
             <<< DateRow(publishedDateKey) {
                 $0.title = "Publication Date"
             }
-            <<< NavigationRow(title: "Subjects", segueName: "editSubjectsSegue", initialiser: { [unowned self] in
+            <<< ButtonRow(subjectsKey) {
+                $0.title = title
+                $0.presentationMode = .segueName(segueName: "editSubjectsSegue", onDismiss: nil)
                 $0.cellStyle = .value1
-                $0.tag = self.subjectsKey
-            }){ [unowned self] cell, _ in
+            }.cellUpdate{ cell, row in
+                cell.textLabel?.textAlignment = .left
+                cell.textLabel?.textColor = .black
+                cell.accessoryType = .disclosureIndicator
                 cell.detailTextLabel?.text = self.subjects.joined(separator: ", ")
             }
             <<< ImageRow(imageKey){

@@ -183,7 +183,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         guard shouldTruncateLongDescriptions else { truncationViews.forEach{$0.isHidden = true}; return }
         
         // In "regular" size classed devices, the description text can be less truncated
-        if sizeClass() == (.regular, .regular) {
+        if traitCollection.horizontalSizeClass == .regular && traitCollection.verticalSizeClass == .regular {
             bookDescription.numberOfLines = 8
         }
         

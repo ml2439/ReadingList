@@ -19,16 +19,3 @@ class Storyboard {
     }
 }
 
-extension UIStoryboard {
-    func instantiateRoot(withStyle style: UIModalPresentationStyle? = nil) -> UIViewController {
-        let vc = self.instantiateInitialViewController()!
-        if let style = style {
-            vc.modalPresentationStyle = style
-        }
-        return vc
-    }
-    
-    func rootAsFormSheet() -> UIViewController {
-        return instantiateRoot(withStyle: .formSheet)
-    }
-}

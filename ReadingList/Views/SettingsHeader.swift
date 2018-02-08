@@ -6,6 +6,6 @@ class SettingsHeader: UIView {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        versionNumber.text = "v\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as! String)"
+        versionNumber.text = "v\(appDelegate.appVersion)"
     }
 }

@@ -1,18 +1,7 @@
 import Foundation
 import UIKit
 
-class NibView {
-    static func withName(_ name: String) -> UIView {
-        return UINib(nibName: name, bundle: nil).instantiate(withOwner: nil, options: nil)[0] as! UIView
-    }
-    
-    static var searchBooksEmptyDataset: SearchBooksEmptyDataset {
-        get { return NibView.withName("SearchBooksEmptyDataset") as! SearchBooksEmptyDataset }
-    }
-}
-
 // From https://medium.com/zenchef-tech-and-product/how-to-visualize-reusable-xibs-in-storyboards-using-ibdesignable-c0488c7f525d
-//@IBDesignable
 class XibView: UIView {
     
     var contentView: UIView?
@@ -27,8 +16,7 @@ class XibView: UIView {
     func xibSetup() {
         guard let view = loadViewFromNib() else { return }
         view.frame = bounds
-        view.autoresizingMask =
-            [.flexibleWidth, .flexibleHeight]
+        view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         addSubview(view)
         contentView = view
     }
