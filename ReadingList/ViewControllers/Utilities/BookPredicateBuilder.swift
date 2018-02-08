@@ -11,7 +11,7 @@ class BookPredicateBuilder : SearchPredicateBuilder {
         var predicate = readStatePredicate
         if let searchText = searchText,
             !searchText.isEmptyOrWhitespace && searchText.trimming().count >= 2 {
-            predicate = readStatePredicate.And(BookPredicate.search(searchString: searchText))
+            predicate = NSPredicate.And([readStatePredicate, BookPredicate.search(searchString: searchText)])
         }
         return predicate
     }

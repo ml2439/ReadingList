@@ -74,7 +74,6 @@
 		495C5D3F1BF1412600E00C07 /* BookTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495C5D3E1BF1412600E00C07 /* BookTable.swift */; };
 		495C5D411BF1423900E00C07 /* Book.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495C5D401BF1423900E00C07 /* Book.swift */; };
 		495EB66A1F5AE2DD009CEF39 /* Fonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495EB6691F5AE2DD009CEF39 /* Fonts.swift */; };
-		495FDC2E1CF8C676006DCF2E /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495FDC2D1CF8C676006DCF2E /* Extensions.swift */; };
 		4962700C1DBF83840009CC3C /* WithData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4962700B1DBF83840009CC3C /* WithData.swift */; };
 		4968A2B21CB3E0BF00CBF3F0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4968A2B11CB3E0BF00CBF3F0 /* LaunchScreen.storyboard */; };
 		4973C79F1E901A6A001CFABC /* CommonUIElements.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4973C79E1E901A6A001CFABC /* CommonUIElements.swift */; };
@@ -201,7 +200,6 @@
 		495C5D3E1BF1412600E00C07 /* BookTable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookTable.swift; sourceTree = "<group>"; };
 		495C5D401BF1423900E00C07 /* Book.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Book.swift; sourceTree = "<group>"; };
 		495EB6691F5AE2DD009CEF39 /* Fonts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fonts.swift; sourceTree = "<group>"; };
-		495FDC2D1CF8C676006DCF2E /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		496270091DBF83840009CC3C /* ReadingList_UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ReadingList_UITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4962700B1DBF83840009CC3C /* WithData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WithData.swift; sourceTree = "<group>"; };
 		4962700D1DBF83840009CC3C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -447,7 +445,6 @@
 			isa = PBXGroup;
 			children = (
 				495C5D401BF1423900E00C07 /* Book.swift */,
-				495FDC2D1CF8C676006DCF2E /* Extensions.swift */,
 				4973C7A21E905A04001CFABC /* Isbn13.swift */,
 				49B8D8E61F4A08E700D4C4EF /* BookMappingModels.swift */,
 			);
@@ -1040,7 +1037,6 @@
 				49C5339F1DB281A10043E50E /* BookPredicateBuilder.swift in Sources */,
 				1C5CDF2920113B3300A757A3 /* AddToList.swift in Sources */,
 				491C84281CF5027800894313 /* ReadStateForm.swift in Sources */,
-				495FDC2E1CF8C676006DCF2E /* Extensions.swift in Sources */,
 				49812BB41CA95F0600A49EBA /* BookPredicate.swift in Sources */,
 				495C5D3F1BF1412600E00C07 /* BookTable.swift in Sources */,
 				4943DB791DBD5104004CAF30 /* Settings.swift in Sources */,

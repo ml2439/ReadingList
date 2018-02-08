@@ -1,5 +1,10 @@
 import Foundation
 
+#if DEBUG
+
+    // TODO: Move to using command line switches
+    
+    
 enum BarcodeScanSimulation: Int {
     case none = 0
     case normal = 1
@@ -53,16 +58,10 @@ class DebugSettings {
     
     static var useFixedBarcodeScanImage: Bool {
         get {
-            #if DEBUG
-                return (UserDefaults.standard.value(forKey: useFixedBarcodeScanImageKey) as? Bool) ?? false
-            #else
-                return false
-            #endif
+            return (UserDefaults.standard.value(forKey: useFixedBarcodeScanImageKey) as? Bool) ?? false
         }
         set {
-            #if DEBUG
-                UserDefaults.standard.setValue(newValue, forKey: useFixedBarcodeScanImageKey)
-            #endif
+            UserDefaults.standard.setValue(newValue, forKey: useFixedBarcodeScanImageKey)
         }
     }
     
@@ -70,17 +69,11 @@ class DebugSettings {
     
     static var barcodeScanSimulation: BarcodeScanSimulation {
         get {
-            #if DEBUG
-                guard let rawValue = UserDefaults.standard.value(forKey: barcodeScanSimulationKey) as? Int else { return .none }
-                return BarcodeScanSimulation.init(rawValue: rawValue)!
-            #else
-                return .none
-            #endif
+            guard let rawValue = UserDefaults.standard.value(forKey: barcodeScanSimulationKey) as? Int else { return .none }
+            return BarcodeScanSimulation.init(rawValue: rawValue)!
         }
         set {
-            #if DEBUG
-                UserDefaults.standard.setValue(newValue.rawValue, forKey: barcodeScanSimulationKey)
-            #endif
+            UserDefaults.standard.setValue(newValue.rawValue, forKey: barcodeScanSimulationKey)
         }
     }
     
@@ -88,16 +81,10 @@ class DebugSettings {
     
     static var showSortNumber: Bool {
         get {
-            #if DEBUG
-                return UserDefaults.standard.value(forKey: showSortNumberKey) as? Bool ?? false
-            #else
-                return false
-            #endif
+            return UserDefaults.standard.value(forKey: showSortNumberKey) as? Bool ?? false
         }
         set {
-            #if DEBUG
-                UserDefaults.standard.setValue(newValue, forKey: showSortNumberKey)
-            #endif
+            UserDefaults.standard.setValue(newValue, forKey: showSortNumberKey)
         }
     }
     
@@ -105,16 +92,10 @@ class DebugSettings {
     
     static var showCellReloadControl: Bool {
         get {
-            #if DEBUG
-                return UserDefaults.standard.value(forKey: showCellReloadControlKey) as? Bool ?? false
-            #else
-                return false
-            #endif
+            return UserDefaults.standard.value(forKey: showCellReloadControlKey) as? Bool ?? false
         }
         set {
-            #if DEBUG
-                UserDefaults.standard.setValue(newValue, forKey: showCellReloadControlKey)
-            #endif
+            UserDefaults.standard.setValue(newValue, forKey: showCellReloadControlKey)
         }
     }
     
@@ -122,17 +103,13 @@ class DebugSettings {
     
     static var quickActionSimulation: QuickAction {
         get {
-            #if DEBUG
-                guard let simulation = UserDefaults.standard.value(forKey: quickActionSimulationKey) as? Int else { return .none }
-                return QuickAction(rawValue: simulation)!
-            #else
-                return .none
-            #endif
+            guard let simulation = UserDefaults.standard.value(forKey: quickActionSimulationKey) as? Int else { return .none }
+            return QuickAction(rawValue: simulation)!
         }
         set {
-            #if DEBUG
-                UserDefaults.standard.setValue(newValue.rawValue, forKey: quickActionSimulationKey)
-            #endif
+            UserDefaults.standard.setValue(newValue.rawValue, forKey: quickActionSimulationKey)
         }
     }
 }
+
+#endif
