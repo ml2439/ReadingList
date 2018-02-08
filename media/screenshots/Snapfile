@@ -9,7 +9,7 @@ devices([
 languages([
   "en-US"
 ])
-scheme "books_Screenshots"
+scheme "ReadingList_Screenshots"
 output_directory "./"
-workspace "../../books.xcworkspace"
+workspace "../../ReadingList.xcworkspace"
 clear_previous_screenshots true
