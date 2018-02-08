@@ -46,7 +46,18 @@ class CsvExporter<TData> {
     }
     
     private static func convertToCsvLine(_ cellValues: [String]) -> String {
-        return cellValues.map{ $0.toCsvEscaped() }.joined(separator: ",") + "\n"
+        return cellValues.map{ cellValue in
+            let charactersWhichRequireWrapping = CharacterSet(charactersIn: "\n,")
+            let wrapInQuotes = cellValue.rangeOfCharacter(from: charactersWhichRequireWrapping) != nil
+            
+            // Replace " with ""
+            let escapedString = cellValue.replacingOccurrences(of: "\"", with: "\"\"")
+            
+            if wrapInQuotes {
+                return "\"\(escapedString)\""
+            }
+            return escapedString
+        }.joined(separator: ",") + "\n"
     }
     
     func write(to fileURL: URL) throws {

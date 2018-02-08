@@ -19,14 +19,14 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     @IBOutlet weak var isbn: UILabel!
     @IBOutlet weak var pages: UILabel!
     @IBOutlet weak var published: UILabel!
-    @IBOutlet weak var subjects: DynamicUILabel!
+    @IBOutlet weak var subjects: UILabel!
     
     @IBOutlet weak var googleBooks: UILabel!
     @IBOutlet weak var amazon: UILabel!
     
     @IBOutlet weak var listsStack: UIStackView!
     @IBOutlet weak var listDetailsView: UIView!
-    @IBOutlet weak var noLists: DynamicUILabel!
+    @IBOutlet weak var noLists: UILabel!
     
     var didShowNavigationItemTitle = false
     var shouldTruncateLongDescriptions = true
@@ -135,9 +135,8 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         for list in book.listsArray {
             
             // Copy the list properties from another similar label, that's easier
-            let label = DynamicUILabel()
+            let label = UILabel()
             label.font = subjects.font
-            label.dynamicFontSize = subjects.dynamicFontSize
             label.textColor = subjects.textColor
             label.text = list.name
             listsStack.addArrangedSubview(label)
@@ -261,7 +260,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         let amazonSearch = "https://www.amazon.com/s?url=search-alias%3Dstripbooks&field-author=\(book.authorsArray.first?.displayFirstLast ?? "")&field-title=\(book.title)"
         
         // Use https://bestazon.io/#WebService to localize Amazon links
-        let localisedAffiliateAmazonSearch = URL(string: "http://lnks.io/r.php?Conf_Source=API&destURL=\(amazonSearch.urlEncoded())&Amzn_AfiliateID_GB=readinglistap-21")!
+        let localisedAffiliateAmazonSearch = URL(string: "http://lnks.io/r.php?Conf_Source=API&destURL=\(amazonSearch.urlEncoding())&Amzn_AfiliateID_GB=readinglistap-21")!
         UIApplication.shared.open(localisedAffiliateAmazonSearch, options: [:], completionHandler: nil)
     }
     

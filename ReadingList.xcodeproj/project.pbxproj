@@ -93,7 +93,6 @@
 		49B8D8EB1F4CC85E00D4C4EF /* BookMapping_6_7.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 49B8D8EA1F4CC85E00D4C4EF /* BookMapping_6_7.xcmappingmodel */; };
 		49B8D8F31F509CF600D4C4EF /* ModelMigrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49B8D8F21F509CF600D4C4EF /* ModelMigrationTests.swift */; };
 		49BDCC631CD2A00F00F20AAE /* BookMetadataForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49BDCC621CD2A00F00F20AAE /* BookMetadataForm.swift */; };
-		49BDCC6C1CD6120400F20AAE /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49BDCC6B1CD6120400F20AAE /* Utilities.swift */; };
 		49C5339F1DB281A10043E50E /* BookPredicateBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C5339E1DB281A10043E50E /* BookPredicateBuilder.swift */; };
 		49CEB80A1E9D8C06003FD859 /* Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49CEB8091E9D8C06003FD859 /* Debug.swift */; };
 		49D0FAAB1F2B284000101EE1 /* UserEngagement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49D0FAAA1F2B284000101EE1 /* UserEngagement.swift */; };
@@ -224,7 +223,6 @@
 		49B8D8EA1F4CC85E00D4C4EF /* BookMapping_6_7.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = BookMapping_6_7.xcmappingmodel; sourceTree = "<group>"; };
 		49B8D8F21F509CF600D4C4EF /* ModelMigrationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelMigrationTests.swift; sourceTree = "<group>"; };
 		49BDCC621CD2A00F00F20AAE /* BookMetadataForm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookMetadataForm.swift; sourceTree = "<group>"; };
-		49BDCC6B1CD6120400F20AAE /* Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		49C5339E1DB281A10043E50E /* BookPredicateBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookPredicateBuilder.swift; sourceTree = "<group>"; };
 		49CEB8091E9D8C06003FD859 /* Debug.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Debug.swift; sourceTree = "<group>"; };
 		49D0FAAA1F2B284000101EE1 /* UserEngagement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserEngagement.swift; sourceTree = "<group>"; };
@@ -392,7 +390,6 @@
 			children = (
 				49BDCC621CD2A00F00F20AAE /* BookMetadataForm.swift */,
 				495C5D3E1BF1412600E00C07 /* BookTable.swift */,
-				49BDCC6B1CD6120400F20AAE /* Utilities.swift */,
 				491C84271CF5027800894313 /* ReadStateForm.swift */,
 			);
 			path = Common;
@@ -1094,7 +1091,6 @@
 				1C8D13781F88F224004A7F18 /* MD5.swift in Sources */,
 				49CEB80A1E9D8C06003FD859 /* Debug.swift in Sources */,
 				49B8D8EB1F4CC85E00D4C4EF /* BookMapping_6_7.xcmappingmodel in Sources */,
-				49BDCC6C1CD6120400F20AAE /* Utilities.swift in Sources */,
 				1C1C887F1FE05A9D00A20402 /* Tip.swift in Sources */,
 				1CD1D2BC202BCC0600ACA5D9 /* PreviewingNavigationController.swift in Sources */,
 			);

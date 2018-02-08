@@ -20,7 +20,7 @@ class Settings: UITableViewController, MFMailComposeViewControllerDelegate {
         
         switch (indexPath.section, indexPath.row) {
         case (0, 1): contact()
-        case (0, 2): UIApplication.shared.openUrlPlatformSpecific(url: URL(string: "itms-apps://\(Settings.appStoreAddress)?action=write-review")!)
+        case (0, 2): UIApplication.shared.open(URL(string: "itms-apps://\(Settings.appStoreAddress)?action=write-review")!, options: [:])
         default: return
         }
         tableView.deselectRow(at: indexPath, animated: true)

@@ -187,11 +187,11 @@ extension Book {
             CsvColumn<Book>(header: "Title", cellValue: {$0.title}),
             CsvColumn<Book>(header: "Authors", cellValue: {$0.authorsArray.map{$0.displayLastCommaFirst}.joined(separator: "; ")}),
             CsvColumn<Book>(header: "Page Count", cellValue: {$0.pageCount == nil ? nil : String(describing: $0.pageCount!)}),
-            CsvColumn<Book>(header: "Publication Date", cellValue: {$0.publicationDate == nil ? nil : $0.publicationDate!.toString(withDateFormat: "yyyy-MM-dd")}),
+            CsvColumn<Book>(header: "Publication Date", cellValue: {$0.publicationDate == nil ? nil : $0.publicationDate!.string(withDateFormat: "yyyy-MM-dd")}),
             CsvColumn<Book>(header: "Description", cellValue: {$0.bookDescription}),
             CsvColumn<Book>(header: "Subjects", cellValue: {$0.subjectsArray.map{$0.name}.joined(separator: "; ")}),
-            CsvColumn<Book>(header: "Started Reading", cellValue: {$0.startedReading?.toString(withDateFormat: "yyyy-MM-dd")}),
-            CsvColumn<Book>(header: "Finished Reading", cellValue: {$0.finishedReading?.toString(withDateFormat: "yyyy-MM-dd")}),
+            CsvColumn<Book>(header: "Started Reading", cellValue: {$0.startedReading?.string(withDateFormat: "yyyy-MM-dd")}),
+            CsvColumn<Book>(header: "Finished Reading", cellValue: {$0.finishedReading?.string(withDateFormat: "yyyy-MM-dd")}),
             CsvColumn<Book>(header: "Current Page", cellValue: {$0.currentPage == nil ? nil : String(describing: $0.currentPage!)}),
             CsvColumn<Book>(header: "Notes", cellValue: {$0.notes})
         ]
@@ -275,12 +275,12 @@ class BookMetadata {
         }
         bookMetadata.isbn13 = Isbn13.tryParse(inputString: csvData["ISBN-13"])
         bookMetadata.pageCount = csvData["Page Count"] == nil ? nil : Int(csvData["Page Count"]!)
-        bookMetadata.publicationDate = csvData["Publication Date"] == nil ? nil : Date(dateString: csvData["Publication Date"]!)
+        bookMetadata.publicationDate = csvData["Publication Date"] == nil ? nil : Date(iso: csvData["Publication Date"]!)
         bookMetadata.bookDescription = csvData["Description"]?.nilIfWhitespace()
         bookMetadata.subjects = csvData["Subjects"]?.components(separatedBy: ";").flatMap{$0.trimming().nilIfWhitespace()} ?? []
         
-        let startedReading = Date(dateString: csvData["Started Reading"])
-        let finishedReading = Date(dateString: csvData["Finished Reading"])
+        let startedReading = Date(iso: csvData["Started Reading"])
+        let finishedReading = Date(iso: csvData["Finished Reading"])
         let currentPage = csvData["Current Page"] == nil ? nil : Int(string: csvData["Current Page"]!)
 
         let readingInformation: BookReadingInformation

@@ -152,7 +152,13 @@ class GoogleBooks {
             
             let result = SearchResult(id: id, title: title, authors: authors.map{$0.rawString()!})
             
-            result.thumbnailCoverUrl = URL(optionalString: item["volumeInfo","imageLinks","thumbnail"].string)?.toHttps()
+            // Convert the thumbnail URL to HTTPS
+            if let thumbnailUrlString = item["volumeInfo","imageLinks","thumbnail"].string,
+                let thumbnailUrl = URL(string: thumbnailUrlString) {
+                var urlComponents = URLComponents(url: thumbnailUrl, resolvingAgainstBaseURL: false)!
+                urlComponents.scheme = "https"
+                result.thumbnailCoverUrl = urlComponents.url
+            }
             result.isbn13 = item["volumeInfo","industryIdentifiers"].array?.first(where: { json in
                 return json["type"].stringValue == "ISBN_13"
             })?["identifier"].stringValue

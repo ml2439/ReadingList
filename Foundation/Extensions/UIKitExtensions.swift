@@ -11,6 +11,18 @@ extension UINib {
     }
 }
 
+extension UIView {
+    @IBInspectable var maskedCornerRadius: CGFloat {
+        get {
+            return layer.cornerRadius
+        }
+        set {
+            layer.cornerRadius = newValue
+            layer.masksToBounds = newValue > 0
+        }
+    }
+}
+
 
 extension UIStoryboard {
     func instantiateRoot(withStyle style: UIModalPresentationStyle? = nil) -> UIViewController {
@@ -89,12 +101,60 @@ extension UILabel {
             context: nil).size
         return labelTextSize.height > bounds.size.height
     }
+    
+    func setTextOrHide(_ text: String?) {
+        self.text = text
+        self.isHidden = text == nil
+    }
+    
+    @IBInspectable var dynamicFontSize: String? {
+        get {
+            return nil
+        }
+        set {
+            guard let newValue = newValue else { return }
+            font = font.scaled(forTextStyle: UIFontTextStyle("UICTFontTextStyle\(newValue)"))
+        }
+    }
+}
+
+extension UIColor {
+    convenience init(fromHex hex: UInt32){
+        self.init(
+            red: CGFloat((hex & 0xFF0000) >> 16) / 255.0,
+            green: CGFloat((hex & 0x00FF00) >> 8) / 255.0,
+            blue: CGFloat(hex & 0x0000FF) / 255.0,
+            alpha: CGFloat(1.0)
+        )
+    }
+    
+    static let flatGreen: UIColor = UIColor(fromHex: 0x2ecc71)
+    static let darkGray: UIColor = UIColor(fromHex: 0x4A4A4A)
+    static let buttonBlue = UIColor(red: 0, green: 0.478431, blue: 1, alpha: 1)
 }
 
 extension UIFont {
     func scaled(forTextStyle textStyle: UIFontTextStyle) -> UIFont {
         let fontSize = UIFont.preferredFont(forTextStyle: textStyle).pointSize
         return self.withSize(fontSize)
+    }
+}
+
+extension UIImage {
+    convenience init?(optionalData: Data?) {
+        if let data = optionalData {
+            self.init(data: data)
+        }
+        else {
+            return nil
+        }
+    }
+}
+
+
+public extension NSAttributedString {
+    @objc public convenience init(_ string: String, withFont font: UIFont) {
+        self.init(string: string, attributes: [NSAttributedStringKey.font: font])
     }
 }
 
