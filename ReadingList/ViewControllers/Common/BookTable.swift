@@ -477,7 +477,7 @@ extension BookTable : DZNEmptyDataSetSource {
             titleText = "🎉 Finished"
         }
         
-        return NSAttributedString(string: titleText, attributes: [NSAttributedStringKey.font: Fonts.gillSans(ofSize: 32),
+        return NSAttributedString(string: titleText, attributes: [NSAttributedStringKey.font: UIFont.gillSans(ofSize: 32),
                                                                   NSAttributedStringKey.foregroundColor: UIColor.gray])
     }
     
@@ -498,18 +498,17 @@ extension BookTable : DZNEmptyDataSetSource {
     }
     
     func description(forEmptyDataSet scrollView: UIScrollView!) -> NSAttributedString! {
-        let bodyFont = Fonts.gillSans(forTextStyle: .title2)
-        let boldFont = Fonts.gillSansSemiBold(forTextStyle: .title2)
+        let bodyFont = UIFont.gillSans(forTextStyle: .title2)
+        let boldFont = UIFont.gillSansSemiBold(forTextStyle: .title2)
         
-        let markdown = MarkdownWriter(font: bodyFont, boldFont: boldFont)
         if resultsFilterer.showingSearchResults {
-            return markdown.write("Try changing your search, or add a new book by tapping the **+** button above.")
+            return NSAttributedString.createFromMarkdown("Try changing your search, or add a new book by tapping the **+** button above.", font: bodyFont, boldFont: boldFont)
         }
         if readStates.contains(.reading) {
-            return markdown.write("Books you add to your **To Read** list, or mark as currently **Reading** will show up here.\n\nAdd a book by tapping the **+** button above.")
+            return NSAttributedString.createFromMarkdown("Books you add to your **To Read** list, or mark as currently **Reading** will show up here.\n\nAdd a book by tapping the **+** button above.", font: bodyFont, boldFont: boldFont)
         }
         else {
-            return markdown.write("Books you mark as **Finished** will show up here.\n\nAdd a book by tapping the **+** button above.")
+            return NSAttributedString.createFromMarkdown("Books you mark as **Finished** will show up here.\n\nAdd a book by tapping the **+** button above.", font: bodyFont, boldFont: boldFont)
         }
     }
 }

@@ -134,6 +134,21 @@ extension UIColor {
 }
 
 extension UIFont {
+    static let gillSans = UIFont(name: "GillSans", size: 12)!
+    static let gillSansSemiBold = UIFont(name: "GillSans-Semibold", size: 12)!
+    
+    static func gillSans(ofSize: CGFloat) -> UIFont {
+        return gillSans.withSize(ofSize)
+    }
+        
+    static func gillSans(forTextStyle textStyle: UIFontTextStyle) -> UIFont {
+        return gillSans.scaled(forTextStyle: textStyle)
+    }
+        
+    static func gillSansSemiBold(forTextStyle textStyle: UIFontTextStyle) -> UIFont {
+        return gillSansSemiBold.scaled(forTextStyle: textStyle)
+    }
+    
     func scaled(forTextStyle textStyle: UIFontTextStyle) -> UIFont {
         let fontSize = UIFont.preferredFont(forTextStyle: textStyle).pointSize
         return self.withSize(fontSize)
@@ -155,6 +170,14 @@ extension UIImage {
 public extension NSAttributedString {
     @objc public convenience init(_ string: String, withFont font: UIFont) {
         self.init(string: string, attributes: [NSAttributedStringKey.font: font])
+    }
+    
+    static func createFromMarkdown(_ markdown: String, font: UIFont, boldFont: UIFont) -> NSMutableAttributedString {
+        let boldedResult = NSMutableAttributedString()
+        for (index, component) in markdown.components(separatedBy: "**").enumerated() {
+            boldedResult.append(NSAttributedString(component, withFont: index % 2 == 0 ? font : boldFont))
+        }
+        return boldedResult
     }
 }
 

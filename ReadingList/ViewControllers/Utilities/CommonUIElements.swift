@@ -22,14 +22,13 @@ func duplicateBookAlertController(goToExistingBook: @escaping () -> (), cancel: 
 class StandardEmptyDataset {
     
     static func title(withText text: String) -> NSAttributedString {
-        return NSAttributedString(string: text, attributes: [NSAttributedStringKey.font: Fonts.gillSans(ofSize: 32), NSAttributedStringKey.foregroundColor: UIColor.gray])
+        return NSAttributedString(string: text, attributes: [NSAttributedStringKey.font: UIFont.gillSans(ofSize: 32), NSAttributedStringKey.foregroundColor: UIColor.gray])
     }
     
     static func description(withMarkdownText markdownText: String) -> NSAttributedString {
-        let bodyFont = Fonts.gillSans(forTextStyle: .title2)
-        let boldFont = Fonts.gillSansSemiBold(forTextStyle: .title2)
+        let bodyFont = UIFont.gillSans(forTextStyle: .title2)
+        let boldFont = UIFont.gillSansSemiBold(forTextStyle: .title2)
         
-        let markdown = MarkdownWriter(font: bodyFont, boldFont: boldFont)
-        return markdown.write(markdownText)
+        return NSAttributedString.createFromMarkdown(markdownText, font: bodyFont, boldFont: boldFont)
     }
 }
