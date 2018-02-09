@@ -28,7 +28,7 @@
             buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "496270081DBF83840009CC3C"
+               BlueprintIdentifier = "1CD1121A202DD32900BE3E1D"
                BuildableName = "ReadingList_UITests.xctest"
                BlueprintName = "ReadingList_UITests"
                ReferencedContainer = "container:ReadingList.xcodeproj">
@@ -65,7 +65,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "496270081DBF83840009CC3C"
+               BlueprintIdentifier = "1CD1121A202DD32900BE3E1D"
                BuildableName = "ReadingList_UITests.xctest"
                BlueprintName = "ReadingList_UITests"
                ReferencedContainer = "container:ReadingList.xcodeproj">
@@ -75,7 +75,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "491612A11DCD20FA0086D7E5"
+               BlueprintIdentifier = "1CD11204202DD29500BE3E1D"
                BuildableName = "ReadingList_UnitTests.xctest"
                BlueprintName = "ReadingList_UnitTests"
                ReferencedContainer = "container:ReadingList.xcodeproj">
@@ -88,6 +88,16 @@
                BlueprintIdentifier = "1C02BC7320277E2800AAE6CC"
                BuildableName = "ReadingList_Screenshots.xctest"
                BlueprintName = "ReadingList_Screenshots"
+               ReferencedContainer = "container:ReadingList.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "1CD1122F202DD44200BE3E1D"
+               BuildableName = "ReadingList_Screenshot.xctest"
+               BlueprintName = "ReadingList_Screenshot"
                ReferencedContainer = "container:ReadingList.xcodeproj">
             </BuildableReference>
          </TestableReference>

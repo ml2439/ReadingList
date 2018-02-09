@@ -1,10 +1,6 @@
 import Foundation
 
 #if DEBUG
-
-    // TODO: Move to using command line switches
-    
-    
 enum BarcodeScanSimulation: Int {
     case none = 0
     case normal = 1
@@ -48,6 +44,7 @@ enum QuickAction: Int {
     }
 }
 
+// TODO: Move to using command line switches
 class DebugSettings {
     private static let useFixedBarcodeScanImageKey = "useFixedBarcodeScanImage"
     
