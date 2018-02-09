@@ -9,17 +9,56 @@ class BooksStore {
     private let subjectEntityName = "Subject"
     private let listEntityName = "List"
     
-    private let coreDataStack: CoreDataStack
+    //private let coreDataStack: CoreDataStack
+    private var container: NSPersistentContainer!
     private let coreSpotlightStack: CoreSpotlightStack
     var managedObjectContext: NSManagedObjectContext {
         get {
-            return coreDataStack.managedObjectContext
+            return container.viewContext
         }
     }
     
     init(storeType: CoreDataStack.PersistentStoreType) {
-        self.coreDataStack = CoreDataStack(momDirectoryName: "books", persistentStoreType: storeType)
+        //self.coreDataStack = CoreDataStack(momDirectoryName: "books", persistentStoreType: storeType)
         self.coreSpotlightStack = CoreSpotlightStack(domainIdentifier: productBundleIdentifier)
+    }
+    
+    func initalisePersistentStore(hasJustMigrated: Bool = false) {
+        container = NSPersistentContainer(name: "books")
+        let storeUrl = NSPersistentContainer.defaultDirectoryURL().appendingPathComponent("books.sqlite")
+        
+        // Old versions stored the persistent store in the documents directory. Check for existent of a file
+        // there and - if present - load the persistent container from that store. This will fail triggering
+        // the migration which will relocate the store.
+        let oldDocumentsStoreUrl = URL.documents.appendingPathComponent("books.sqlite")
+
+        let sourceStoreUrl: URL
+        if !hasJustMigrated && FileManager.default.fileExists(atPath: oldDocumentsStoreUrl.path) {
+            print("Store detected at old location")
+            sourceStoreUrl = oldDocumentsStoreUrl
+        }
+        else {
+            sourceStoreUrl = NSPersistentContainer.defaultDirectoryURL().appendingPathComponent("books.sqlite")
+        }
+        let storeDescription = NSPersistentStoreDescription(url: sourceStoreUrl)
+        storeDescription.shouldMigrateStoreAutomatically = false
+        storeDescription.shouldInferMappingModelAutomatically = false
+        container.persistentStoreDescriptions = [storeDescription]
+        
+        container.loadPersistentStores{[unowned self] _, error in
+            if error == nil {
+                print("Persistent store loaded")
+                // TODO: completion handler
+            }
+            else {
+                guard hasJustMigrated == false else { fatalError("Failed to load store after migration" ) }
+                
+                print("Store failed to load; migrating store")
+                self.container.migrateStore(from: sourceStoreUrl, to: storeUrl, versions: BooksModelVersion.self, deleteSource: true)
+                self.initalisePersistentStore(hasJustMigrated: true)
+            }
+            
+        }
     }
     
     /**
@@ -39,7 +78,7 @@ class BooksStore {
         fetchRequest.predicate = initialPredicate
         fetchRequest.sortDescriptors = initialSortDescriptors
         return NSFetchedResultsController(fetchRequest: fetchRequest,
-            managedObjectContext: self.coreDataStack.managedObjectContext,
+            managedObjectContext: self.managedObjectContext,
             sectionNameKeyPath: BookPredicate.readStateFieldName,
             cacheName: nil)
     }
@@ -52,7 +91,7 @@ class BooksStore {
         fetchRequest.fetchBatchSize = 100
         fetchRequest.sortDescriptors = [ListPredicate.nameSort]
         return NSFetchedResultsController(fetchRequest: fetchRequest,
-            managedObjectContext: self.coreDataStack.managedObjectContext,
+            managedObjectContext: self.managedObjectContext,
             sectionNameKeyPath: nil,
             cacheName: nil)
     }
@@ -64,7 +103,7 @@ class BooksStore {
         let fetchRequest = NSFetchRequest<List>(entityName: listEntityName)
         fetchRequest.fetchBatchSize = 100
         fetchRequest.sortDescriptors = [ListPredicate.nameSort]
-        return (try? coreDataStack.managedObjectContext.fetch(fetchRequest)) ?? []
+        return (try? managedObjectContext.fetch(fetchRequest)) ?? []
         // TODO: Need to decide best practice for failing fetches...
     }
     
@@ -72,7 +111,7 @@ class BooksStore {
         let fetchRequest = NSFetchRequest<List>(entityName: listEntityName)
         fetchRequest.predicate = NSPredicate(stringFieldName: "name", equalTo: name)
         fetchRequest.fetchLimit = 1
-        return (try? coreDataStack.managedObjectContext.fetch(fetchRequest))?.first
+        return (try? managedObjectContext.fetch(fetchRequest))?.first
     }
     
     @discardableResult func getOrCreateList(withName name: String) -> List {
@@ -84,8 +123,8 @@ class BooksStore {
      Retrieves the specified Book, if it exists.
      */
     func get(bookIdUrl: URL) -> Book? {
-        let bookObjectId = coreDataStack.managedObjectContext.persistentStoreCoordinator!.managedObjectID(forURIRepresentation: bookIdUrl)!
-        return coreDataStack.managedObjectContext.object(with: bookObjectId) as? Book
+        let bookObjectId = managedObjectContext.persistentStoreCoordinator!.managedObjectID(forURIRepresentation: bookIdUrl)!
+        return managedObjectContext.object(with: bookObjectId) as? Book
     }
     
     /*
@@ -96,12 +135,12 @@ class BooksStore {
         fetchRequest.predicate = NSPredicate(stringFieldName: "name", equalTo: name)
         fetchRequest.fetchLimit = 1
 
-        let existingSubject = (try? coreDataStack.managedObjectContext.fetch(fetchRequest))?.first
+        let existingSubject = (try? managedObjectContext.fetch(fetchRequest))?.first
         if let existingSubject = existingSubject {
             return existingSubject
         }
         
-        let newSubject = coreDataStack.createNew(entity: subjectEntityName) as! Subject
+        let newSubject = container.createNew(entity: subjectEntityName) as! Subject
         newSubject.name = name
         return newSubject
     }
@@ -120,7 +159,7 @@ class BooksStore {
         let isbnPredicate = isbn == nil ? NSPredicate(boolean: false) : BookPredicate.isbnEqual(to: isbn!)
         
         fetchRequest.predicate = NSPredicate.Or([googleBooksPredicate, isbnPredicate])
-        let books = try? coreDataStack.managedObjectContext.fetch(fetchRequest)
+        let books = try? managedObjectContext.fetch(fetchRequest)
         return books?.first
     }
     
@@ -131,7 +170,7 @@ class BooksStore {
         do {
             let fetchRequest = self.bookFetchRequest()
             fetchRequest.sortDescriptors = [BookPredicate.readStateSort, BookPredicate.sortIndexSort, BookPredicate.startedReadingSort, BookPredicate.finishedReadingSort]
-            try coreDataStack.managedObjectContext.execute(NSAsynchronousFetchRequest(fetchRequest: fetchRequest) {
+            try managedObjectContext.execute(NSAsynchronousFetchRequest(fetchRequest: fetchRequest) {
                 callback($0.finalResult ?? [])
             })
         }
@@ -148,7 +187,7 @@ class BooksStore {
         let fetchRequest = NSFetchRequest<Subject>(entityName: subjectEntityName)
         
         do {
-            return try coreDataStack.managedObjectContext.fetch(fetchRequest)
+            return try managedObjectContext.fetch(fetchRequest)
         }
         catch {
             print("Error fetching all subjects")
@@ -163,7 +202,7 @@ class BooksStore {
         let fetchRequest = NSFetchRequest<Author>(entityName: authorEntityName)
         
         do {
-            return try coreDataStack.managedObjectContext.fetch(fetchRequest)
+            return try managedObjectContext.fetch(fetchRequest)
         }
         catch {
             print("Error fetching all subjects")
@@ -187,7 +226,7 @@ class BooksStore {
         
         fetchRequest.sortDescriptors = [BookPredicate.sortIndexDescendingSort]
         do {
-            let books = try coreDataStack.managedObjectContext.fetch(fetchRequest)
+            let books = try managedObjectContext.fetch(fetchRequest)
             return books.first?.sort as? Int
         }
         catch {
@@ -222,7 +261,7 @@ class BooksStore {
      object context, and adds the book to the Spotlight index.
      */
     @discardableResult func create(from metadata: BookMetadata, readingInformation: BookReadingInformation, bookSort: Int? = nil, readingNotes: String? = nil) -> Book {
-        let book = coreDataStack.createNew(entity: bookEntityName) as! Book
+        let book = container.createNew(entity: bookEntityName) as! Book
         book.createdWhen = Date()
         
         populateBook(book, withMetadata: metadata)
@@ -237,14 +276,14 @@ class BooksStore {
     }
     
     func createAuthor(lastName: String, firstNames: String?) -> Author {
-        let author = coreDataStack.createNew(entity: authorEntityName) as! Author
+        let author = container.createNew(entity: authorEntityName) as! Author
         author.lastName = lastName
         author.firstNames = firstNames
         return author
     }
     
     @discardableResult func createList(name: String, type: ListType) -> List {
-        let list = coreDataStack.createNew(entity: listEntityName) as! List
+        let list = container.createNew(entity: listEntityName) as! List
         list.name = name
         list.type = type
         return list
@@ -302,7 +341,7 @@ class BooksStore {
     func save() -> Bool {
         // TODO: Find a way to make this method private, if possible
         do {
-            try coreDataStack.managedObjectContext.save()
+            try managedObjectContext.save()
             return true
         }
         catch {
@@ -337,10 +376,10 @@ class BooksStore {
     */
     func deleteAll() {
         do {
-            for book in try coreDataStack.managedObjectContext.fetch(bookFetchRequest()) {
+            for book in try managedObjectContext.fetch(bookFetchRequest()) {
                 deleteBook(book)
             }
-            for list in try coreDataStack.managedObjectContext.fetch(NSFetchRequest<List>(entityName: listEntityName)) {
+            for list in try managedObjectContext.fetch(NSFetchRequest<List>(entityName: listEntityName)) {
                 deleteObject(list)
             }
             save()
@@ -355,7 +394,7 @@ class BooksStore {
     */
     func deleteAllLists() {
         do {
-            for list in try coreDataStack.managedObjectContext.fetch(NSFetchRequest<List>(entityName: listEntityName)) {
+            for list in try managedObjectContext.fetch(NSFetchRequest<List>(entityName: listEntityName)) {
                 deleteObject(list)
             }
             save()

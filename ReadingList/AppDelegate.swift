@@ -21,7 +21,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     
-    lazy var booksStore = BooksStore(storeType: .sqlite)
+    lazy var booksStore: BooksStore = {
+        let store = BooksStore(storeType: .sqlite)
+        store.initalisePersistentStore()
+        return store
+    }()
     
     var tabBarController: TabBarController {
         return window!.rootViewController as! TabBarController

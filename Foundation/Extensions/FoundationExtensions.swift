@@ -34,6 +34,20 @@ extension String {
     }
 }
 
+extension URL {
+    static func temporary() -> URL {
+        return URL(fileURLWithPath:NSTemporaryDirectory(), isDirectory: true).appendingPathComponent(UUID().uuidString)
+    }
+
+    static var documents: URL {
+        return try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+    }
+    
+    static var applicationSupport: URL {
+        return try! FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+    }
+}
+
 extension String.SubSequence {
     func trimming() -> String {
         return self.trimmingCharacters(in: CharacterSet.whitespaces)

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="13772" systemVersion="17D47" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Author" representedClassName="Author" syncable="YES">
+        <attribute name="firstNames" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="lastName" attributeType="String" syncable="YES"/>
+        <relationship name="book" maxCount="1" deletionRule="Nullify" destinationEntity="Book" inverseName="authors" inverseEntity="Book" syncable="YES"/>
+        <fetchIndex name="byLastNameIndex">
+            <fetchIndexElement property="lastName" type="Binary" order="ascending"/>
+        </fetchIndex>
+    </entity>
+    <entity name="Book" representedClassName="Book" syncable="YES">
+        <attribute name="bookDescription" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="coverImage" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
+        <attribute name="createdWhen" attributeType="Date" defaultDateTimeInterval="504921600" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="currentPage" optional="YES" attributeType="Integer 32" minValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="finishedReading" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="firstAuthorLastName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="googleBooksId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="isbn13" optional="YES" attributeType="String" regularExpressionString="\d{13}" syncable="YES"/>
+        <attribute name="notes" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="pageCount" optional="YES" attributeType="Integer 32" minValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="publicationDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="readState" attributeType="Integer 32" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="sort" optional="YES" attributeType="Integer 32" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="startedReading" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="subjects" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="title" attributeType="String" syncable="YES"/>
+        <relationship name="authors" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Author" inverseName="book" inverseEntity="Author" syncable="YES"/>
+        <relationship name="lists" toMany="YES" deletionRule="Nullify" destinationEntity="List" inverseName="books" inverseEntity="List" syncable="YES"/>
+        <fetchIndex name="byCreatedWhenIndex">
+            <fetchIndexElement property="createdWhen" type="Binary" order="ascending"/>
+        </fetchIndex>
+        <fetchIndex name="byFirstAuthorLastNameIndex">
+            <fetchIndexElement property="firstAuthorLastName" type="Binary" order="ascending"/>
+        </fetchIndex>
+        <fetchIndex name="byIsbn13Index">
+            <fetchIndexElement property="isbn13" type="Binary" order="ascending"/>
+        </fetchIndex>
+        <fetchIndex name="byReadStateIndex">
+            <fetchIndexElement property="readState" type="Binary" order="ascending"/>
+        </fetchIndex>
+        <fetchIndex name="bySortIndex">
+            <fetchIndexElement property="sort" type="Binary" order="ascending"/>
+        </fetchIndex>
+        <fetchIndex name="byTitleIndex">
+            <fetchIndexElement property="title" type="Binary" order="ascending"/>
+        </fetchIndex>
+    </entity>
+    <entity name="List" representedClassName="List" syncable="YES">
+        <attribute name="name" attributeType="String" minValueString="1" maxValueString="100" syncable="YES"/>
+        <attribute name="type" attributeType="Integer 32" usesScalarValueType="YES" syncable="YES"/>
+        <relationship name="books" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Book" inverseName="lists" inverseEntity="Book" syncable="YES"/>
+        <fetchIndex name="byTypeIndex">
+            <fetchIndexElement property="type" type="Binary" order="ascending"/>
+        </fetchIndex>
+    </entity>
+    <elements>
+        <element name="Author" positionX="-54" positionY="108" width="128" height="90"/>
+        <element name="Book" positionX="-63" positionY="-18" width="128" height="315"/>
+        <element name="List" positionX="-54" positionY="117" width="128" height="90"/>
+    </elements>
+</model>
