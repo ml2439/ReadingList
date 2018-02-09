@@ -123,7 +123,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         setTextOrHideLine(isbn, book.isbn13)
         setTextOrHideLine(pages, book.pageCount?.stringValue)
         setTextOrHideLine(published, book.publicationDate?.toPrettyString(short: false))
-        setTextOrHideLine(subjects, book.subjectsArray.count == 0 ? nil : book.subjectsArray.map{$0.name}.joined(separator: ", "))
+        setTextOrHideLine(subjects,  book.subjects.map{($0 as! Subject).name}.joined(separator: ", ").nilIfWhitespace())
         googleBooks.isHidden = book.googleBooksId == nil
         
         // Remove all the existing list labels
@@ -132,7 +132,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         }
         
         // And then add a label per list.
-        for list in book.listsArray {
+        for list in book.lists {
             
             // Copy the list properties from another similar label, that's easier
             let label = UILabel()
@@ -143,8 +143,8 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         }
         
         // There is a placeholder view for the case of no lists
-        noLists.isHidden = !book.listsArray.isEmpty
-        listDetailsView.isHidden = book.listsArray.isEmpty
+        noLists.isHidden = !book.lists.isEmpty
+        listDetailsView.isHidden = book.lists.isEmpty
     }
     
     override func viewDidLoad() {
@@ -257,7 +257,8 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     
     @objc func amazonButtonPressed() {
         guard let book = book else { return }
-        let amazonSearch = "https://www.amazon.com/s?url=search-alias%3Dstripbooks&field-author=\(book.authorsArray.first?.displayFirstLast ?? "")&field-title=\(book.title)"
+        let authorText = (book.authors.firstObject as? Author)?.displayFirstLast
+        let amazonSearch = "https://www.amazon.com/s?url=search-alias%3Dstripbooks&field-author=\(authorText ?? "")&field-title=\(book.title)"
         
         // Use https://bestazon.io/#WebService to localize Amazon links
         let localisedAffiliateAmazonSearch = URL(string: "http://lnks.io/r.php?Conf_Source=API&destURL=\(amazonSearch.urlEncoding())&Amzn_AfiliateID_GB=readinglistap-21")!

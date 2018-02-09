@@ -209,7 +209,7 @@ class BooksStore {
         book.coverImage = metadata.coverImage
         
         // Brute force - delete and remove all authors, then create them all again
-        book.authorsArray.forEach{deleteObject($0)}
+        book.authors.forEach{deleteObject($0 as! NSManagedObject)}
         let newAuthors = metadata.authors.map{createAuthor(lastName: $0.lastName, firstNames: $0.firstNames)}
         book.authors = NSOrderedSet(array: newAuthors)
         book.firstAuthorLastName = newAuthors.first?.lastName

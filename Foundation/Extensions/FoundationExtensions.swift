@@ -56,7 +56,7 @@ extension Array where Element: Equatable {
     }
 }
 
-public extension Date {
+extension Date {
     init?(iso: String?) {
         let dateStringFormatter = DateFormatter()
         dateStringFormatter.dateFormat = "yyyy-MM-dd"

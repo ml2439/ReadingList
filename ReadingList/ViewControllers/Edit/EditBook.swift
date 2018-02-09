@@ -10,7 +10,10 @@ class EditBook: BookMetadataForm {
     @IBOutlet weak var doneButton: UIBarButtonItem!
     
     override func viewDidLoad() {
-        authors = bookToEdit.authorsArray.map{($0.firstNames, $0.lastName)}
+        authors = bookToEdit.authors.map{
+            let author = $0 as! Author
+            return (author.firstNames, author.lastName)
+        }
         subjects = bookToEdit.subjects.array.map{($0 as! Subject).name}
         
         super.viewDidLoad()

@@ -48,7 +48,7 @@ class ListBookTable: UITableViewController {
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard section == 0 else { return 0 }
-        return list.booksArray.count
+        return list.books.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -77,7 +77,7 @@ class ListBookTable: UITableViewController {
         }]
     }
     
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool { return list.booksArray.count > 1 }
+    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool { return list.books.count > 1 }
     
     override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         guard sourceIndexPath != destinationIndexPath else { return }

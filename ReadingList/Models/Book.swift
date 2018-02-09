@@ -1,21 +1,6 @@
 import Foundation
 import CoreData
 
-@objc(Author)
-public class Author: NSManagedObject {
-    @NSManaged var lastName: String
-    @NSManaged var firstNames: String?
-    @NSManaged var book: Book
-    
-    var displayFirstLast: String {
-        get { return (firstNames == nil ? "" : "\(firstNames!) ") + lastName }
-    }
-    
-    var displayLastCommaFirst: String {
-        get { return lastName + (firstNames == nil ? "" : ", \(firstNames!)") }
-    }
-}
-
 @objc(Book)
 public class Book: NSManagedObject {   
     // Book Metadata
@@ -42,23 +27,11 @@ public class Book: NSManagedObject {
     // Relationships
     @NSManaged var subjects: NSOrderedSet
     @NSManaged var authors: NSOrderedSet
-    @NSManaged var lists: NSSet
-    
-    var subjectsArray: [Subject] {
-        get { return subjects.array.map{($0 as! Subject)} }
-    }
-    
-    var authorsArray: [Author] {
-        get { return authors.array.map{($0 as! Author)} }
-    }
-    
-    var listsArray: [List] {
-        get { return lists.map{($0 as! List)} }
-    }
+    @NSManaged var lists: Set<List>
     
     var authorsFirstLast: String {
         get {
-            return authorsArray.map{$0.displayFirstLast}.joined(separator: ", ")
+            return authors.map{($0 as! Author).displayFirstLast}.joined(separator: ", ")
         }
     }
 
@@ -85,30 +58,6 @@ public class Subject: NSManagedObject {
         super.willSave()
         if !isDeleted && books.count == 0 {
             managedObjectContext?.delete(self)
-        }
-    }
-}
-
-/// A 'List' is an ordered set of books
-@objc(List)
-public class List: NSManagedObject {
-    @NSManaged var name: String
-    @NSManaged var books: NSOrderedSet
-    @NSManaged var type: ListType
-    
-    var booksArray: [Book] {
-        get { return books.array.map{($0 as! Book)} }
-    }
-}
-
-@objc enum ListType: Int32, CustomStringConvertible {
-    case customList = 1
-    case series = 2
-    
-    var description: String {
-        switch self {
-        case .customList: return "List"
-        case .series: return "Series"
         }
     }
 }
@@ -185,11 +134,11 @@ extension Book {
             CsvColumn<Book>(header: "ISBN-13", cellValue: {$0.isbn13}),
             CsvColumn<Book>(header: "Google Books ID", cellValue: {$0.googleBooksId}),
             CsvColumn<Book>(header: "Title", cellValue: {$0.title}),
-            CsvColumn<Book>(header: "Authors", cellValue: {$0.authorsArray.map{$0.displayLastCommaFirst}.joined(separator: "; ")}),
+            CsvColumn<Book>(header: "Authors", cellValue: {$0.authors.map{($0 as! Author).displayLastCommaFirst}.joined(separator: "; ")}),
             CsvColumn<Book>(header: "Page Count", cellValue: {$0.pageCount == nil ? nil : String(describing: $0.pageCount!)}),
             CsvColumn<Book>(header: "Publication Date", cellValue: {$0.publicationDate == nil ? nil : $0.publicationDate!.string(withDateFormat: "yyyy-MM-dd")}),
             CsvColumn<Book>(header: "Description", cellValue: {$0.bookDescription}),
-            CsvColumn<Book>(header: "Subjects", cellValue: {$0.subjectsArray.map{$0.name}.joined(separator: "; ")}),
+            CsvColumn<Book>(header: "Subjects", cellValue: {$0.subjects.map{($0 as! Subject).name}.joined(separator: "; ")}),
             CsvColumn<Book>(header: "Started Reading", cellValue: {$0.startedReading?.string(withDateFormat: "yyyy-MM-dd")}),
             CsvColumn<Book>(header: "Finished Reading", cellValue: {$0.finishedReading?.string(withDateFormat: "yyyy-MM-dd")}),
             CsvColumn<Book>(header: "Current Page", cellValue: {$0.currentPage == nil ? nil : String(describing: $0.currentPage!)}),
@@ -198,7 +147,7 @@ extension Book {
         
         columns.append(contentsOf: lists.map{ listName in
             CsvColumn<Book>(header: listName, cellValue: { book in
-                guard let list = book.listsArray.first(where: {$0.name == listName}) else { return nil }
+                guard let list = book.lists.first(where: {$0.name == listName}) else { return nil }
                 return String(describing: list.books.index(of: book) + 1) // we use 1-based indexes
             })
         })
