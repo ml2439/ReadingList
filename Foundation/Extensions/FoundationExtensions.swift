@@ -79,6 +79,10 @@ public extension Date {
         return Calendar.current.startOfDay(for: self)
     }
     
+    func date(byAdding dateComponents: DateComponents) -> Date? {
+        return Calendar.current.date(byAdding: dateComponents, to: self)
+    }
+    
     func compareIgnoringTime(_ other: Date) -> ComparisonResult {
         return self.startOfDay().compare(other.startOfDay())
     }
