@@ -4,12 +4,20 @@ import CoreData
 extension NSPersistentContainer {
     
     /**
-     Migrates a source store at a specified location to a target version, which is saved to the target location.
-     If deleteSource = true, deletes the source stores
+     Returns whether the store at the provided URL is the latest version of the supplied Version type.
+    */
+    public static func storeIsLatestVersion<Version: ModelVersion>(_ storeURL: URL, _ versions: Version.Type) -> Bool {
+        guard let sourceVersion = Version(storeURL: storeURL as URL) else { fatalError("unknown store version at URL \(storeURL)") }
+        return sourceVersion.migrationSteps(to: Version.latestModelVersion).count == 0
+    }
+    
+    /**
+     Migrates a source store at a specified location to the latest version of the supplied versions, and saves to the target location.
+     If deleteSource = true, deletes the source stores.
     */
     public func migrateStore<Version: ModelVersion>(from sourceURL: URL, to targetURL: URL, versions: Version.Type, deleteSource: Bool) {
         print("Migrating store at \(sourceURL.path)")
-        guard let sourceVersion = Version(storeURL: sourceURL as URL) else { fatalError("unknown store version at URL \(sourceURL)") }
+        guard let sourceVersion = Version(storeURL: sourceURL) else { fatalError("unknown store version at URL \(sourceURL)") }
         
         var currentURL = sourceURL
         let migrationSteps = sourceVersion.migrationSteps(to: Version.latestModelVersion)

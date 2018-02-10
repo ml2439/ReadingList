@@ -24,8 +24,7 @@ class BooksStore {
     }
     
     func initalisePersistentStore(hasJustMigrated: Bool = false) {
-        container = NSPersistentContainer(name: "books")
-        let storeUrl = NSPersistentContainer.defaultDirectoryURL().appendingPathComponent("books.sqlite")
+        /*let storeUrl = NSPersistentContainer.defaultDirectoryURL().appendingPathComponent("books.sqlite")
         
         // Old versions stored the persistent store in the documents directory. Check for existent of a file
         // there and - if present - load the persistent container from that store. This will fail triggering
@@ -40,24 +39,23 @@ class BooksStore {
         else {
             sourceStoreUrl = NSPersistentContainer.defaultDirectoryURL().appendingPathComponent("books.sqlite")
         }
+
         let storeDescription = NSPersistentStoreDescription(url: sourceStoreUrl)
         storeDescription.shouldMigrateStoreAutomatically = false
         storeDescription.shouldInferMappingModelAutomatically = false
-        container.persistentStoreDescriptions = [storeDescription]
-        
-        container.loadPersistentStores{[unowned self] _, error in
-            if error == nil {
-                print("Persistent store loaded")
-                // TODO: completion handler
-            }
-            else {
-                guard hasJustMigrated == false else { fatalError("Failed to load store after migration" ) }
-                
-                print("Store failed to load; migrating store")
-                self.container.migrateStore(from: sourceStoreUrl, to: storeUrl, versions: BooksModelVersion.self, deleteSource: true)
-                self.initalisePersistentStore(hasJustMigrated: true)
-            }
-            
+        //container.persistentStoreDescriptions = [storeDescription]
+
+        if !NSPersistentContainer.storeIsLatestVersion(sourceStoreUrl, BooksModelVersion.self) {
+            container.migrateStore(from: sourceStoreUrl, to: storeUrl, versions: BooksModelVersion.self, deleteSource: true)
+        }
+        container.loadPersistentStores{ _, error in
+            guard error == nil else { fatalError("Error loading store") }
+            print("Persistent store loaded")
+        }*/
+        container = NSPersistentContainer(name: "books")
+        container.loadPersistentStores{ _, error in
+            guard error == nil else { fatalError("Error loading store") }
+            print("Persistent store loaded")
         }
     }
     
