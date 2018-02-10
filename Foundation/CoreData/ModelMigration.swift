@@ -4,52 +4,61 @@ import CoreData
 extension NSPersistentContainer {
     
     /**
-     Returns whether the store at the provided URL is the latest version of the supplied Version type.
+     Creates a NSPersistentContainer with a single store description describing the store at the provided URL,
+     and with both shouldInferMappingModelAutomatically and shouldMigrateStoreAutomatically set to false.
     */
-    public static func storeIsLatestVersion<Version: ModelVersion>(_ storeURL: URL, _ versions: Version.Type) -> Bool {
-        guard let sourceVersion = Version(storeURL: storeURL as URL) else { fatalError("unknown store version at URL \(storeURL)") }
-        return sourceVersion.migrationSteps(to: Version.latestModelVersion).count == 0
+    convenience init(name: String, loadManuallyMigratedStoreAt storeURL: URL) {
+        self.init(name: name)
+        self.persistentStoreDescriptions = [{
+            let description = NSPersistentStoreDescription(url: storeURL)
+            description.shouldInferMappingModelAutomatically = false
+            description.shouldMigrateStoreAutomatically = false
+            return description
+        }()]
     }
     
     /**
-     Migrates a source store at a specified location to the latest version of the supplied versions, and saves to the target location.
-     If deleteSource = true, deletes the source stores.
+     Returns the URL of the first persistent store.
     */
-    public func migrateStore<Version: ModelVersion>(from sourceURL: URL, to targetURL: URL, versions: Version.Type, deleteSource: Bool) {
-        print("Migrating store at \(sourceURL.path)")
-        guard let sourceVersion = Version(storeURL: sourceURL) else { fatalError("unknown store version at URL \(sourceURL)") }
+    var storeURL: URL {
+        get {
+            return persistentStoreDescriptions[0].url!
+        }
+    }
+    
+    /**
+     Migrates the store to the latest version of the supplied Versions if necessary.
+    */
+    public func migrateStoreIfRequired<Version: ModelVersion>(toLatestOf versions: Version.Type) {
+        guard let sourceVersion = Version(storeURL: storeURL) else {
+            print("No current store.")
+            return
+        }
         
-        var currentURL = sourceURL
-        let migrationSteps = sourceVersion.migrationSteps(to: Version.latestModelVersion)
-        print("\(migrationSteps.count) migration steps detected")
+        let migrationSteps = sourceVersion.migrationSteps(to: Version.latest)
+        guard migrationSteps.count > 0 else { return }
+        print("Migrating store at \(storeURL.path): \(migrationSteps.count) migration steps detected")
         
         // For each migration step, migrate to a temporary URL and destroy the previous one (except for the sourceURL)
+        var currentURL = storeURL
         for step in migrationSteps {
-            let manager = NSMigrationManager(sourceModel: step.source, destinationModel: step.destination)
             let destinationURL = URL.temporary()
-            for mapping in step.mappings {
-                try! manager.migrateStore(from: currentURL, sourceType: NSSQLiteStoreType, options: nil, with: mapping, toDestinationURL: destinationURL, destinationType: NSSQLiteStoreType, destinationOptions: nil)
-            }
-            if currentURL != sourceURL {
+            
+            let manager = NSMigrationManager(sourceModel: step.source, destinationModel: step.destination)
+            try! manager.migrateStore(from: currentURL, sourceType: NSSQLiteStoreType, options: nil, with: step.mapping, toDestinationURL: destinationURL, destinationType: NSSQLiteStoreType, destinationOptions: nil)
+            
+            // Only destroy the intermediate stores - the ones in the temporary directory
+            if currentURL != storeURL {
                 persistentStoreCoordinator.destroyStore(at: currentURL)
             }
+            
             currentURL = destinationURL
             print("Migration step complete")
         }
         
         // Once all migrations are done, place the current temporary store at the target URL
-        try! persistentStoreCoordinator.replacePersistentStore(at: targetURL, destinationOptions: nil, withPersistentStoreFrom: currentURL, sourceOptions: nil, ofType: NSSQLiteStoreType)
+        try! persistentStoreCoordinator.replacePersistentStore(at: storeURL, destinationOptions: nil, withPersistentStoreFrom: currentURL, sourceOptions: nil, ofType: NSSQLiteStoreType)
         print("Persistent store replaced")
-        
-        if currentURL != sourceURL {
-            persistentStoreCoordinator.destroyStore(at: currentURL)
-        }
-
-        // Delete the original source store if requested
-        if deleteSource && targetURL != sourceURL {
-            persistentStoreCoordinator.destroyStore(at: sourceURL)
-            print("Original store destoyed")
-        }
     }
     
     // TODO: Remove

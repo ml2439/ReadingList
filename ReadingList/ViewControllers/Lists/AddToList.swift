@@ -84,7 +84,7 @@ class AddToList: UITableViewController {
     
     static func newListAlertController(_ books: [Book], completion: (() -> ())? = nil) -> UIAlertController {
         return NewListAlertController(onOK: { title in
-            let createdList = appDelegate.booksStore.createList(name: title, type: ListType.customList)
+            let createdList = appDelegate.booksStore.createList(name: title)
             createdList.books = NSOrderedSet(array: books)
             appDelegate.booksStore.save()            
             completion?()

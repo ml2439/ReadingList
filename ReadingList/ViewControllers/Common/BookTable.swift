@@ -285,7 +285,7 @@ class BookTable: AutoUpdatingTableViewController {
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         // Turn the section name into a BookReadState and use its description property
-        let sectionAsInt = Int32(self.resultsController.sections![section].name)!
+        let sectionAsInt = Int16(self.resultsController.sections![section].name)!
         return BookReadState(rawValue: sectionAsInt)!.description
     }
     

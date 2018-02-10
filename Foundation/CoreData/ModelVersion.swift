@@ -3,23 +3,24 @@ import CoreData
 
 public protocol ModelVersion: Equatable {
     static var orderedModelVersions: [Self] { get }
+    
     var name: String { get }
     var modelBundle: Bundle { get }
     var modelDirectoryName: String { get }
-    func mappingModelsToSuccessor() -> [NSMappingModel]?
 }
 
 extension ModelVersion {
     
-    public static var latestModelVersion: Self {
+    public static var latest: Self {
         get {
-            guard let lastItem = Self.orderedModelVersions.last else { fatalError("No model versions defined") }
-            return lastItem
+            return Self.orderedModelVersions.last!
         }
     }
     
     public var successor: Self? {
-        return Self.orderedModelVersions[Self.orderedModelVersions.index(of: self)! + 1]
+        let index = Self.orderedModelVersions.index(of: self)!
+        guard index != Self.orderedModelVersions.endIndex else { return nil }
+        return Self.orderedModelVersions[index + 1]
     }
     
     public init?(storeURL: URL) {
@@ -39,36 +40,31 @@ extension ModelVersion {
         return model
     }
     
-    public func mappingModelsToSuccessor() -> [NSMappingModel]? {
-        guard let mapping = mappingModelToSuccessor() else { return nil }
-        return [mapping]
-    }
-    
     public func mappingModelToSuccessor() -> NSMappingModel? {
         guard let nextVersion = successor else { return nil }
         guard let mapping = NSMappingModel(from: [modelBundle], forSourceModel: managedObjectModel(), destinationModel: nextVersion.managedObjectModel()) else {
-            fatalError("no mapping model found for \(self) to \(nextVersion)")
+            // If there is no mapping model, build an inferred one
+            return try! NSMappingModel.inferredMappingModel(forSourceModel: managedObjectModel(), destinationModel: successor!.managedObjectModel())
         }
         return mapping
     }
 
     public func migrationSteps(to version: Self) -> [MigrationStep] {
         guard self != version else { return [] }
-        guard let mappings = mappingModelsToSuccessor(), let nextVersion = successor else { fatalError("couldn't find mapping models") }
-        let step = MigrationStep(source: managedObjectModel(), destination: nextVersion.managedObjectModel(), mappings: mappings)
+        guard let mapping = mappingModelToSuccessor(), let nextVersion = successor else { fatalError("couldn't find mapping models") }
+        let step = MigrationStep(source: managedObjectModel(), destination: nextVersion.managedObjectModel(), mapping: mapping)
         return [step] + nextVersion.migrationSteps(to: version)
     }
-    
 }
 
 public final class MigrationStep {
     var source: NSManagedObjectModel
     var destination: NSManagedObjectModel
-    var mappings: [NSMappingModel]
+    var mapping: NSMappingModel
     
-    init(source: NSManagedObjectModel, destination: NSManagedObjectModel, mappings: [NSMappingModel]) {
+    init(source: NSManagedObjectModel, destination: NSManagedObjectModel, mapping: NSMappingModel) {
         self.source = source
         self.destination = destination
-        self.mappings = mappings
+        self.mapping = mapping
     }
 }

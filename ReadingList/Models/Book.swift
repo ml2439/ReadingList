@@ -63,7 +63,7 @@ public class Subject: NSManagedObject {
 }
 
 /// The availale reading progress states
-@objc enum BookReadState : Int32, CustomStringConvertible {
+@objc enum BookReadState : Int16, CustomStringConvertible {
     case reading = 1
     case toRead = 2
     case finished = 3

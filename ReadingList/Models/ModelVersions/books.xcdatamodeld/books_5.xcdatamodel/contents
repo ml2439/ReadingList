@@ -1,21 +1,39 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="12141" systemVersion="16F73" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="13772" systemVersion="17D47" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Book" representedClassName="Book" syncable="YES">
-        <attribute name="authorList" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
+        <attribute name="authorList" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="bookDescription" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="coverImage" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
-        <attribute name="createdWhen" attributeType="Date" defaultDateTimeInterval="504921600" usesScalarValueType="NO" indexed="YES" syncable="YES"/>
+        <attribute name="createdWhen" attributeType="Date" defaultDateTimeInterval="504921600" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="finishedReading" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="googleBooksId" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="isbn13" optional="YES" attributeType="String" regularExpressionString="\d{13}" indexed="YES" syncable="YES"/>
+        <attribute name="isbn13" optional="YES" attributeType="String" regularExpressionString="\d{13}" syncable="YES"/>
         <attribute name="notes" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="pageCount" optional="YES" attributeType="Integer 32" minValueString="0" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="publicationDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
-        <attribute name="readState" attributeType="Integer 32" usesScalarValueType="NO" indexed="YES" syncable="YES"/>
-        <attribute name="sort" optional="YES" attributeType="Integer 32" usesScalarValueType="NO" indexed="YES" syncable="YES"/>
+        <attribute name="readState" attributeType="Integer 32" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="sort" optional="YES" attributeType="Integer 32" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="startedReading" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
-        <attribute name="title" attributeType="String" indexed="YES" syncable="YES"/>
+        <attribute name="title" attributeType="String" syncable="YES"/>
         <relationship name="subjects" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Subject" inverseName="books" inverseEntity="Subject" syncable="YES"/>
+        <fetchIndex name="byAuthorListIndex">
+            <fetchIndexElement property="authorList" type="Binary" order="ascending"/>
+        </fetchIndex>
+        <fetchIndex name="byCreatedWhenIndex">
+            <fetchIndexElement property="createdWhen" type="Binary" order="ascending"/>
+        </fetchIndex>
+        <fetchIndex name="byIsbn13Index">
+            <fetchIndexElement property="isbn13" type="Binary" order="ascending"/>
+        </fetchIndex>
+        <fetchIndex name="byReadStateIndex">
+            <fetchIndexElement property="readState" type="Binary" order="ascending"/>
+        </fetchIndex>
+        <fetchIndex name="bySortIndex">
+            <fetchIndexElement property="sort" type="Binary" order="ascending"/>
+        </fetchIndex>
+        <fetchIndex name="byTitleIndex">
+            <fetchIndexElement property="title" type="Binary" order="ascending"/>
+        </fetchIndex>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="isbn13"/>
@@ -26,8 +44,11 @@
         </uniquenessConstraints>
     </entity>
     <entity name="Subject" representedClassName="Subject" syncable="YES">
-        <attribute name="name" attributeType="String" indexed="YES" syncable="YES"/>
+        <attribute name="name" attributeType="String" syncable="YES"/>
         <relationship name="books" toMany="YES" deletionRule="Nullify" destinationEntity="Book" inverseName="subjects" inverseEntity="Book" syncable="YES"/>
+        <fetchIndex name="byNameIndex">
+            <fetchIndexElement property="name" type="Binary" order="ascending"/>
+        </fetchIndex>
     </entity>
     <elements>
         <element name="Book" positionX="-63" positionY="-18" width="128" height="270"/>

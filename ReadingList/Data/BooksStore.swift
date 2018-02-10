@@ -9,7 +9,6 @@ class BooksStore {
     private let subjectEntityName = "Subject"
     private let listEntityName = "List"
     
-    //private let coreDataStack: CoreDataStack
     private var container: NSPersistentContainer!
     private let coreSpotlightStack: CoreSpotlightStack
     var managedObjectContext: NSManagedObjectContext {
@@ -19,40 +18,16 @@ class BooksStore {
     }
     
     init(storeType: CoreDataStack.PersistentStoreType) {
-        //self.coreDataStack = CoreDataStack(momDirectoryName: "books", persistentStoreType: storeType)
         self.coreSpotlightStack = CoreSpotlightStack(domainIdentifier: productBundleIdentifier)
     }
     
     func initalisePersistentStore(hasJustMigrated: Bool = false) {
-        /*let storeUrl = NSPersistentContainer.defaultDirectoryURL().appendingPathComponent("books.sqlite")
+        // TODO: Move the store to the Application Support directory if it is in the Documents directory
         
-        // Old versions stored the persistent store in the documents directory. Check for existent of a file
-        // there and - if present - load the persistent container from that store. This will fail triggering
-        // the migration which will relocate the store.
-        let oldDocumentsStoreUrl = URL.documents.appendingPathComponent("books.sqlite")
-
-        let sourceStoreUrl: URL
-        if !hasJustMigrated && FileManager.default.fileExists(atPath: oldDocumentsStoreUrl.path) {
-            print("Store detected at old location")
-            sourceStoreUrl = oldDocumentsStoreUrl
-        }
-        else {
-            sourceStoreUrl = NSPersistentContainer.defaultDirectoryURL().appendingPathComponent("books.sqlite")
-        }
-
-        let storeDescription = NSPersistentStoreDescription(url: sourceStoreUrl)
-        storeDescription.shouldMigrateStoreAutomatically = false
-        storeDescription.shouldInferMappingModelAutomatically = false
-        //container.persistentStoreDescriptions = [storeDescription]
-
-        if !NSPersistentContainer.storeIsLatestVersion(sourceStoreUrl, BooksModelVersion.self) {
-            container.migrateStore(from: sourceStoreUrl, to: storeUrl, versions: BooksModelVersion.self, deleteSource: true)
-        }
-        container.loadPersistentStores{ _, error in
-            guard error == nil else { fatalError("Error loading store") }
-            print("Persistent store loaded")
-        }*/
-        container = NSPersistentContainer(name: "books")
+        let storeURL = URL.documents.appendingPathComponent("books.sqlite")
+        container = NSPersistentContainer(name: "books", loadManuallyMigratedStoreAt: storeURL)
+        container.migrateStoreIfRequired(toLatestOf: BooksModelVersion.self)
+        
         container.loadPersistentStores{ _, error in
             guard error == nil else { fatalError("Error loading store") }
             print("Persistent store loaded")
@@ -113,7 +88,7 @@ class BooksStore {
     }
     
     @discardableResult func getOrCreateList(withName name: String) -> List {
-        guard let existingList = getList(withName: name) else { return createList(name: name, type: .customList) }
+        guard let existingList = getList(withName: name) else { return createList(name: name) }
         return existingList
     }
     
@@ -280,10 +255,9 @@ class BooksStore {
         return author
     }
     
-    @discardableResult func createList(name: String, type: ListType) -> List {
+    @discardableResult func createList(name: String) -> List {
         let list = container.createNew(entity: listEntityName) as! List
         list.name = name
-        list.type = type
         return list
     }
     
