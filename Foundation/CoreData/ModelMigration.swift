@@ -49,7 +49,7 @@ extension NSPersistentContainer {
             
             // Only destroy the intermediate stores - the ones in the temporary directory
             if currentURL != storeURL {
-                persistentStoreCoordinator.destroyStore(at: currentURL)
+                persistentStoreCoordinator.destroyAndDeleteStore(at: currentURL)
             }
             
             currentURL = destinationURL
@@ -74,14 +74,17 @@ extension NSPersistentContainer {
 extension NSPersistentStoreCoordinator {
     
     /**
-     Attempts to destory the store at the specified URL. If an error occurs, prints the error; does not rethrow.
+     Attempts to destory and then delete the store at the specified URL. If an error occurs, prints the error; does not rethrow.
      */
-    public func destroyStore(at url: URL) {
+    public func destroyAndDeleteStore(at url: URL) {
         do {
             try destroyPersistentStore(at: url, ofType: NSSQLiteStoreType, options: nil)
+            try FileManager.default.removeItem(at: url)
+            try FileManager.default.removeItem(at: URL(fileURLWithPath: url.path.appending("-shm")))
+            try FileManager.default.removeItem(at: URL(fileURLWithPath: url.path.appending("-wal")))
         }
         catch let e {
-            print("failed to destroy persistent store at \(url)", e)
+            print("failed to destroy or delete persistent store at \(url)", e)
         }
     }
 }

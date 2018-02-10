@@ -21,16 +21,38 @@ class BooksStore {
         self.coreSpotlightStack = CoreSpotlightStack(domainIdentifier: productBundleIdentifier)
     }
     
+    let storeFileName = "books.sqlite"
+    
     func initalisePersistentStore(hasJustMigrated: Bool = false) {
-        // TODO: Move the store to the Application Support directory if it is in the Documents directory
-        
-        let storeURL = URL.documents.appendingPathComponent("books.sqlite")
-        container = NSPersistentContainer(name: "books", loadManuallyMigratedStoreAt: storeURL)
+        let storeLocation = URL.applicationSupport.appendingPathComponent(storeFileName)
+
+        // Default location of NSPersistentContainer is in the ApplicationSupport directory;
+        // previous versions put the store in the Documents directory. Move it if necessary.
+        moveStoreFromLegacyLocationIfNecessary(toNewLocation: storeLocation)
+
+        // Initialise the container and migrate the store to the latest version if necessary.
+        container = NSPersistentContainer(name: "books", loadManuallyMigratedStoreAt: storeLocation)
         container.migrateStoreIfRequired(toLatestOf: BooksModelVersion.self)
         
         container.loadPersistentStores{ _, error in
             guard error == nil else { fatalError("Error loading store") }
             print("Persistent store loaded")
+        }
+    }
+    
+    /**
+     If a store exists in the Documents directory, copies it to the Application Support directory and destroys
+     the old store.
+    */
+    func moveStoreFromLegacyLocationIfNecessary(toNewLocation newLocation: URL) {
+        let legacyStoreLocation = URL.documents.appendingPathComponent(storeFileName)
+        if FileManager.default.fileExists(atPath: legacyStoreLocation.path) && !FileManager.default.fileExists(atPath: newLocation.path) {
+            print("Store located in Documents directory; migrating to Application Support directory")
+            let tempStoreCoordinator = NSPersistentStoreCoordinator()
+            try! tempStoreCoordinator.replacePersistentStore(at: newLocation, destinationOptions: nil, withPersistentStoreFrom: legacyStoreLocation, sourceOptions: nil, ofType: NSSQLiteStoreType)
+            
+            // Delete the old store
+            tempStoreCoordinator.destroyAndDeleteStore(at: legacyStoreLocation)
         }
     }
     
