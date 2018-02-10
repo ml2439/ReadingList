@@ -39,7 +39,7 @@ class TextBoxAlertController: UIAlertController {
 class NewListAlertController: TextBoxAlertController {
     
     convenience init(onOK: @escaping (String) -> ()) {
-        let existingListNames = appDelegate.booksStore.getAllLists().map{$0.name}
+        let existingListNames = ObjectQuery<List>().sorted(\List.name).fetch(fromContext: container.viewContext).map{$0.name}
         self.init(title: "Add New List", message: "Enter a name for your list", placeholder: "Enter list name", textValidator: { listName in
             guard let listName = listName, !listName.isEmptyOrWhitespace else { return false }
             return !existingListNames.contains(listName)
@@ -70,7 +70,7 @@ class AddToList: UITableViewController {
      The completion action will run at the end of a list addition if a UIAlertController was returned.
     */
     static func getAppropriateVcForAddingBooksToList(_ booksToAdd: [Book], completion: (() -> ())? = nil) -> UIViewController {
-        if appDelegate.booksStore.listCount() > 0 {
+        if ObjectQuery<List>().count(inContext: container.viewContext) > 0 {
             let rootAddToList = Storyboard.AddToList.instantiateRoot(withStyle: .formSheet) as! UINavigationController
             let addToList = (rootAddToList.viewControllers[0] as! AddToList)
             addToList.books = booksToAdd
@@ -84,16 +84,16 @@ class AddToList: UITableViewController {
     
     static func newListAlertController(_ books: [Book], completion: (() -> ())? = nil) -> UIAlertController {
         return NewListAlertController(onOK: { title in
-            let createdList = appDelegate.booksStore.createList(name: title)
+            let createdList = List(context: container.viewContext, name: title)
             createdList.books = NSOrderedSet(array: books)
-            appDelegate.booksStore.save()            
+            try! container.viewContext.save()
             completion?()
         })
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        resultsController = appDelegate.booksStore.fetchedListsController()
+        resultsController = ObjectQuery<List>().sorted(\List.name).fetchController(context: container.viewContext)
         try! resultsController.performFetch()
     }
 
@@ -154,8 +154,9 @@ class AddToList: UITableViewController {
         if indexPath.section == 0 {
             // Append the books to the end of the selected list
             let list = resultsController.object(at: IndexPath(row: indexPath.row, section: 0))
-            list.books = NSOrderedSet(array: list.booksArray + books)
-            appDelegate.booksStore.save()
+            list.performAndSave {
+                list.books = NSOrderedSet(array: list.booksArray + self.books)
+            }
 
             navigationController!.dismiss(animated: true, completion: onCompletion)
         }

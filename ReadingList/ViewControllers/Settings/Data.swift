@@ -64,7 +64,7 @@ class DataVC: UITableViewController, UIDocumentPickerDelegate, UIDocumentMenuDel
         UserEngagement.logEvent(.csvExport)
         SVProgressHUD.show(withStatus: "Generating...")
         
-        let listNames = appDelegate.booksStore.getAllLists().map{$0.name}
+        let listNames = ObjectQuery<List>().sorted(\List.name).fetch(fromContext: container.viewContext).map{$0.name}
         let exporter = CsvExporter(csvExport: Book.BuildCsvExport(withLists: listNames))
         
         appDelegate.booksStore.getAllBooksAsync(callback: {

@@ -65,7 +65,7 @@ class ReadingTable: BookTable {
         
         // Turn off updates while we save the object context
         tableUpdater.withoutUpdates {
-            if appDelegate.booksStore.save() {
+            if container.viewContext.saveOrRollback() {
                 do {
                     try resultsController.performFetch()
                 }

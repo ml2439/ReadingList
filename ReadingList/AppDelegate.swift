@@ -5,6 +5,7 @@ import Crashlytics
 import Firebase
 import SVProgressHUD
 import SwiftyStoreKit
+import CoreData
 
 #if DEBUG
 import SimulatorStatusMagic
@@ -16,13 +17,19 @@ var appDelegate: AppDelegate {
     return UIApplication.shared.delegate as! AppDelegate
 }
 
+var container: NSPersistentContainer {
+    get {
+        return appDelegate.booksStore.container
+    }
+}
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     
     lazy var booksStore: BooksStore = {
-        let store = BooksStore(storeType: .sqlite)
+        let store = BooksStore()
         store.initalisePersistentStore()
         return store
     }()

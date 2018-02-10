@@ -15,7 +15,7 @@ class Organise: AutoUpdatingTableViewController {
         tableView.emptyDataSetSource = self
         tableView.emptyDataSetDelegate = self
         
-        resultsController = appDelegate.booksStore.fetchedListsController()
+        resultsController = ObjectQuery<List>().sorted(\List.name).fetchController(context: container.viewContext)
         tableUpdater = TableUpdater<List, ListCell>(table: tableView, controller: resultsController)
         try! resultsController.performFetch()
         
@@ -31,13 +31,15 @@ class Organise: AutoUpdatingTableViewController {
                 self.setEditing(false, animated: true)
                 let list = self.resultsController.object(at: indexPath)
                 
-                let existingListNames = appDelegate.booksStore.getAllLists().map{$0.name}
+                let existingListNames = ObjectQuery<List>().sorted(\List.name).fetch(fromContext: container.viewContext).map{$0.name}
                 let renameListAlert = TextBoxAlertController(title: "Rename List", message: "Choose a new name for this list", initialValue: list.name, placeholder: "New list name", textValidator: { listName in
                         guard let listName = listName, !listName.isEmptyOrWhitespace else { return false }
                         return listName == list.name || !existingListNames.contains(listName)
                     }, onOK: {
-                        list.name = $0!
-                        appDelegate.booksStore.save()
+                        guard let listName = $0 else { return }
+                        list.performAndSave {
+                            list.name = listName
+                        }
                     }
                 )
                 
@@ -50,9 +52,7 @@ class Organise: AutoUpdatingTableViewController {
         let confirmDelete = UIAlertController(title: "Confirm delete", message: nil, preferredStyle: .actionSheet)
             
         confirmDelete.addAction(UIAlertAction(title: "Delete", style: .destructive){ [unowned self] _ in
-            appDelegate.booksStore.deleteObject(self.resultsController.object(at: indexPath))
-            appDelegate.booksStore.save()
-            
+            self.resultsController.object(at: indexPath).deleteAndSave()
             UserEngagement.logEvent(.deleteList)
 
             // When the table goes from 1 row to 0 rows in the single section, the section header remains unless the table is reloaded

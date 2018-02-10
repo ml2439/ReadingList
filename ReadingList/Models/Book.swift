@@ -2,7 +2,7 @@ import Foundation
 import CoreData
 
 @objc(Book)
-public class Book: NSManagedObject {   
+class Book: NSManagedObject {
     // Book Metadata
     @NSManaged var title: String
     @NSManaged var isbn13: String?
@@ -11,7 +11,6 @@ public class Book: NSManagedObject {
     @NSManaged var publicationDate: Date?
     @NSManaged var bookDescription: String?
     @NSManaged var coverImage: Data?
-    @NSManaged var firstAuthorLastName: String?
     
     // Reading Information
     @NSManaged var readState: BookReadState
@@ -29,12 +28,13 @@ public class Book: NSManagedObject {
     @NSManaged var authors: NSOrderedSet
     @NSManaged var lists: Set<List>
     
-    var authorsFirstLast: String {
-        get {
-            return authors.map{($0 as! Author).displayFirstLast}.joined(separator: ", ")
-        }
-    }
+    @NSManaged private(set) var firstAuthorLastName: String?
 
+    override func willSave() {
+        super.willSave()
+        firstAuthorLastName = (authors.firstObject as? Author)?.lastName
+    }
+    
 /*
     These functions might be useful but don't work on iOS 9
     See https://stackoverflow.com/q/7385439/5513562
@@ -46,20 +46,6 @@ public class Book: NSManagedObject {
     @NSManaged public func removeSubjects(_ values: NSSet)
 */
 
-}
-
-// TODO: rename to "tag"
-@objc(Subject)
-public class Subject: NSManagedObject {
-    @NSManaged public var name: String
-    @NSManaged public var books: NSSet
-    
-    override public func willSave() {
-        super.willSave()
-        if !isDeleted && books.count == 0 {
-            managedObjectContext?.delete(self)
-        }
-    }
 }
 
 /// The availale reading progress states
@@ -91,17 +77,17 @@ public class Subject: NSManagedObject {
 
 extension Book {
 
+    var authorsFirstLast: String {
+        get {
+            return authors.map{($0 as! Author).displayFirstLast}.joined(separator: ", ")
+        }
+    }
+    
     func populate(from readingInformation: BookReadingInformation) {
         readState = readingInformation.readState
         startedReading = readingInformation.startedReading
         finishedReading = readingInformation.finishedReading
         currentPage = readingInformation.currentPage == nil ? nil : NSNumber(integerLiteral: readingInformation.currentPage!)
-    }
-
-    func toSpotlightItem() -> SpotlightItem {
-        let spotlightTitle = "\(title) - \(authorsFirstLast)"
-        
-        return SpotlightItem(uniqueIdentifier: objectID.uriRepresentation().absoluteString, title: spotlightTitle, description: bookDescription, thumbnailImageData: coverImage)
     }
     
     func transistionToReading(log: Bool = true) {
@@ -122,11 +108,9 @@ extension Book {
         }
     }
     
-    func delete(log: Bool = true) {
-        appDelegate.booksStore.deleteBook(self)
-        if log {
-            UserEngagement.logEvent(.deleteBook)
-        }
+    func deleteAndLog() {
+        deleteAndSave()
+        UserEngagement.logEvent(.deleteBook)
     }
     
     static func BuildCsvExport(withLists lists: [String]) -> CsvExport<Book> {

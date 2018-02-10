@@ -107,7 +107,7 @@ class EditBook: BookMetadataForm {
             
             // Dismiss this modal view and then delete the book
             self.dismiss(animated: true) {
-                appDelegate.booksStore.deleteBook(self.bookToEdit)
+                self.bookToEdit.delete()
                 UserEngagement.logEvent(.deleteBook)
             }
         })

@@ -213,7 +213,7 @@ class BookTable: AutoUpdatingTableViewController {
             confirmDeleteAlert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [unowned self] _ in
                 // Collect the books up-front, since the selected row indexes will change as we modify them
                 for book in selectedRows.map(self.resultsController.object) {
-                    book.delete(log: false)
+                    book.delete()
                 }
                 self.setEditing(false, animated: true)
                 UserEngagement.logEvent(.bulkDeleteBook)

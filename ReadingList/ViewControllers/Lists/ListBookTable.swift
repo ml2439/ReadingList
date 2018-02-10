@@ -60,9 +60,9 @@ class ListBookTable: UITableViewController {
     private func removeBook(at indexPath: IndexPath) {
         var books = list.booksArray
         books.remove(at: indexPath.row)
-        list.books = NSOrderedSet(array: books)
-        appDelegate.booksStore.save()
-        
+        list.performAndSave {
+            self.list.books = NSOrderedSet(array: books)
+        }
         UserEngagement.logEvent(.removeBookFromList)
     }
     
@@ -87,7 +87,7 @@ class ListBookTable: UITableViewController {
         books.insert(movedBook, at: destinationIndexPath.row)
         list.books = NSOrderedSet(array: books)
         withoutAutomaticUpdates {
-            appDelegate.booksStore.save()
+            container.viewContext.saveOrRollback()
         }
         
         UserEngagement.logEvent(.reorederList)

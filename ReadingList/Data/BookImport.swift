@@ -121,22 +121,18 @@ class BookImporter {
         if !headers.contains("Title") || !headers.contains("Author") {
             missingHeadersCallback()
         }
-        let extraHeaders = headers.map{$0.trimming()}.filter{!defaultHeaders.contains($0)}
-        for headerName in extraHeaders {
-            // create all the lists which should exist
-            appDelegate.booksStore.getOrCreateList(withName: headerName)
-        }
     }
     
     func onCompletion() {
         dispatchGroup.notify(queue: .main) { [unowned self] in
             for listMapping in self.listMappings {
-                let list = appDelegate.booksStore.getOrCreateList(withName: listMapping.key)
+                let list = List.getOrCreate(fromContext: container.viewContext, withName: listMapping.key)
                 let orderedBooks = listMapping.value.sorted(by: {$0.1 < $1.1})
                     .map{appDelegate.booksStore.managedObjectContext.object(with: $0.bookId) as! Book}
                     .filter{!list.books.contains($0)}
-                list.books = NSOrderedSet(array: list.booksArray + orderedBooks)
-                appDelegate.booksStore.save()
+                list.performAndSave {
+                    list.books = NSOrderedSet(array: list.booksArray + orderedBooks)
+                }
             }
             
             self.callback(self.importedBookCount, self.duplicateBookCount, self.invalidCount)

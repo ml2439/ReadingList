@@ -3,15 +3,12 @@ import Foundation
 class BookPredicate {
     
     private static let titleFieldName = "title"
-    
     private static let sortFieldName = "sort"
     private static let firstAuthorLastNameFieldName = "firstAuthorLastName"
     private static let startedReadingFieldName = "startedReading"
     private static let finishedReadingFieldName = "finishedReading"
     
     static let readStateFieldName = "readState"
-    static let isbnFieldName = "isbn13"
-    private static let googleBooksIdFieldName = "googleBooksId"
     
     static func readState(equalTo readState: BookReadState) -> NSPredicate {
         return NSPredicate(intFieldName: readStateFieldName, equalTo: Int(readState.rawValue))
@@ -19,14 +16,6 @@ class BookPredicate {
     
     static func search(searchString: String) -> NSPredicate {
         return NSPredicate.wordsWithinFields(searchString, fieldNames: titleFieldName, "ANY authors.firstNames", "ANY authors.lastName", "ANY subjects.name")
-    }
-    
-    static func isbnEqual(to isbn: String) -> NSPredicate {
-        return NSPredicate(stringFieldName: isbnFieldName, equalTo: isbn)
-    }
-    
-    static func googleBooksIdEqual(to googleBooksId: String) -> NSPredicate {
-        return NSPredicate(stringFieldName: googleBooksIdFieldName, equalTo: googleBooksId)
     }
 
     static let titleSort = NSSortDescriptor(key: titleFieldName, ascending: true)

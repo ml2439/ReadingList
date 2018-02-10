@@ -1,35 +1,25 @@
 import CoreData
-import MobileCoreServices
 
-/// Interfaces with the CoreData storage of Book objects
 class BooksStore {
     
-    private let bookEntityName = "Book"
-    private let authorEntityName = "Author"
-    private let subjectEntityName = "Subject"
-    private let listEntityName = "List"
-    
-    private var container: NSPersistentContainer!
-    private let coreSpotlightStack: CoreSpotlightStack
+    var container: NSPersistentContainer!
     var managedObjectContext: NSManagedObjectContext {
         get {
             return container.viewContext
         }
     }
     
-    init(storeType: CoreDataStack.PersistentStoreType) {
-        self.coreSpotlightStack = CoreSpotlightStack(domainIdentifier: productBundleIdentifier)
-    }
-    
     let storeFileName = "books.sqlite"
     
-    func initalisePersistentStore(hasJustMigrated: Bool = false) {
+    func initalisePersistentStore() {
         let storeLocation = URL.applicationSupport.appendingPathComponent(storeFileName)
 
         // Default location of NSPersistentContainer is in the ApplicationSupport directory;
         // previous versions put the store in the Documents directory. Move it if necessary.
         moveStoreFromLegacyLocationIfNecessary(toNewLocation: storeLocation)
 
+        // TODO: Deindex spotlight results if necessary
+        
         // Initialise the container and migrate the store to the latest version if necessary.
         container = NSPersistentContainer(name: "books", loadManuallyMigratedStoreAt: storeLocation)
         container.migrateStoreIfRequired(toLatestOf: BooksModelVersion.self)
@@ -55,21 +45,13 @@ class BooksStore {
             tempStoreCoordinator.destroyAndDeleteStore(at: legacyStoreLocation)
         }
     }
-    
-    /**
-     A NSFetchRequest for the Book entities. Has a batch size of 1000 by default.
-    */
-    private func bookFetchRequest() -> NSFetchRequest<Book> {
-        let fetchRequest = NSFetchRequest<Book>(entityName: bookEntityName)
-        fetchRequest.fetchBatchSize = 1000
-        return fetchRequest
-    }
-    
+
     /**
      Creates a NSFetchedResultsController to retrieve books in the given state.
     */
     func fetchedResultsController(_ initialPredicate: NSPredicate?, initialSortDescriptors: [NSSortDescriptor]?) -> NSFetchedResultsController<Book> {
-        let fetchRequest = bookFetchRequest()
+        let fetchRequest = ObjectQuery<Book>().fetchRequest()
+        fetchRequest.fetchBatchSize = 1000
         fetchRequest.predicate = initialPredicate
         fetchRequest.sortDescriptors = initialSortDescriptors
         return NSFetchedResultsController(fetchRequest: fetchRequest,
@@ -79,83 +61,20 @@ class BooksStore {
     }
     
     /**
-     Creates a NSFetchedResultsController to retrieve all Lists in order of name.
-    */
-    func fetchedListsController() -> NSFetchedResultsController<List> {
-        let fetchRequest = NSFetchRequest<List>(entityName: listEntityName)
-        fetchRequest.fetchBatchSize = 100
-        fetchRequest.sortDescriptors = [ListPredicate.nameSort]
-        return NSFetchedResultsController(fetchRequest: fetchRequest,
-            managedObjectContext: self.managedObjectContext,
-            sectionNameKeyPath: nil,
-            cacheName: nil)
-    }
-    
-    /**
-     Gets all lists.
-    */
-    func getAllLists() -> [List] {
-        let fetchRequest = NSFetchRequest<List>(entityName: listEntityName)
-        fetchRequest.fetchBatchSize = 100
-        fetchRequest.sortDescriptors = [ListPredicate.nameSort]
-        return (try? managedObjectContext.fetch(fetchRequest)) ?? []
-        // TODO: Need to decide best practice for failing fetches...
-    }
-    
-    func getList(withName name: String) -> List? {
-        let fetchRequest = NSFetchRequest<List>(entityName: listEntityName)
-        fetchRequest.predicate = NSPredicate(stringFieldName: "name", equalTo: name)
-        fetchRequest.fetchLimit = 1
-        return (try? managedObjectContext.fetch(fetchRequest))?.first
-    }
-    
-    @discardableResult func getOrCreateList(withName name: String) -> List {
-        guard let existingList = getList(withName: name) else { return createList(name: name) }
-        return existingList
-    }
-    
-    /**
-     Retrieves the specified Book, if it exists.
-     */
-    func get(bookIdUrl: URL) -> Book? {
-        let bookObjectId = managedObjectContext.persistentStoreCoordinator!.managedObjectID(forURIRepresentation: bookIdUrl)!
-        return managedObjectContext.object(with: bookObjectId) as? Book
-    }
-    
-    /*
-     Gets a Subject with the given name, if it exists. Otherwise, creates a new Subject with the name.
-    */
-    func getOrCreateSubject(withName name: String) -> Subject {
-        let fetchRequest = NSFetchRequest<Subject>(entityName: subjectEntityName)
-        fetchRequest.predicate = NSPredicate(stringFieldName: "name", equalTo: name)
-        fetchRequest.fetchLimit = 1
-
-        let existingSubject = (try? managedObjectContext.fetch(fetchRequest))?.first
-        if let existingSubject = existingSubject {
-            return existingSubject
-        }
-        
-        let newSubject = container.createNew(entity: subjectEntityName) as! Subject
-        newSubject.name = name
-        return newSubject
-    }
-    
-    /**
      Returns the first found book with matching GoogleBooks ID or ISBN
     */
     func getIfExists(googleBooksId: String? = nil, isbn: String? = nil) -> Book? {
         // if both are nil, leave early
         guard googleBooksId != nil || isbn != nil else { return nil }
         
-        let fetchRequest = NSFetchRequest<Book>(entityName: self.bookEntityName)
-        fetchRequest.fetchLimit = 1
-        
-        let googleBooksPredicate = googleBooksId == nil ? NSPredicate(boolean: false) : BookPredicate.googleBooksIdEqual(to: googleBooksId!)
-        let isbnPredicate = isbn == nil ? NSPredicate(boolean: false) : BookPredicate.isbnEqual(to: isbn!)
-        
-        fetchRequest.predicate = NSPredicate.Or([googleBooksPredicate, isbnPredicate])
-        let books = try? managedObjectContext.fetch(fetchRequest)
-        return books?.first
+        var predicates = [NSPredicate]()
+        if let googleBooksId = googleBooksId {
+            predicates.append(NSPredicate(\Book.googleBooksId, .equals, googleBooksId))
+        }
+        if let isbn = isbn {
+            predicates.append(NSPredicate(\Book.isbn13, .equals, isbn))
+        }
+        return ObjectQuery<Book>().any(predicates).fetch(1, fromContext: container.viewContext).first
     }
     
     /**
@@ -163,8 +82,9 @@ class BooksStore {
     */
     func getAllBooksAsync(callback: @escaping (([Book]) -> Void), onFail: @escaping ((Error) -> Void)) {
         do {
-            let fetchRequest = self.bookFetchRequest()
-            fetchRequest.sortDescriptors = [BookPredicate.readStateSort, BookPredicate.sortIndexSort, BookPredicate.startedReadingSort, BookPredicate.finishedReadingSort]
+            let fetchRequest = ObjectQuery<Book>()
+                .sorted(\Book.readState).sorted(\Book.sort).sorted(\Book.startedReading).sorted(\Book.finishedReading)
+                .fetchRequest()
             try managedObjectContext.execute(NSAsynchronousFetchRequest(fetchRequest: fetchRequest) {
                 callback($0.finalResult ?? [])
             })
@@ -174,60 +94,12 @@ class BooksStore {
             onFail(error)
         }
     }
-    
-    /**
-     Gets all subjects in the store
-    */
-    func getAllSubjects() -> [Subject] {
-        let fetchRequest = NSFetchRequest<Subject>(entityName: subjectEntityName)
-        
-        do {
-            return try managedObjectContext.fetch(fetchRequest)
-        }
-        catch {
-            print("Error fetching all subjects")
-            return []
-        }
-    }
-    
-    /**
-     Gets all authors in the store
-     */
-    func getAllAuthors() -> [Author] {
-        let fetchRequest = NSFetchRequest<Author>(entityName: authorEntityName)
-        
-        do {
-            return try managedObjectContext.fetch(fetchRequest)
-        }
-        catch {
-            print("Error fetching all subjects")
-            return []
-        }
-    }
-    
-    /**
-     Adds or updates the book in the Spotlight index.
-    */
-    func updateSpotlightIndex(for book: Book) {
-        coreSpotlightStack.updateItems([book.toSpotlightItem()])
-    }
-    
+
     /**
      Gets the current maximum sort index in the books store
     */
     func maxSort() -> Int? {
-        let fetchRequest = NSFetchRequest<Book>(entityName: self.bookEntityName)
-        fetchRequest.fetchLimit = 1
-        
-        fetchRequest.sortDescriptors = [BookPredicate.sortIndexDescendingSort]
-        do {
-            let books = try managedObjectContext.fetch(fetchRequest)
-            return books.first?.sort as? Int
-        }
-        catch {
-            print("Error determining max sort")
-            return nil
-        }
+        return ObjectQuery<Book>().sorted(\Book.sort, ascending: false).fetch(1, fromContext: container.viewContext).first?.sort as? Int
     }
     
     /**
@@ -243,12 +115,10 @@ class BooksStore {
         book.coverImage = metadata.coverImage
         
         // Brute force - delete and remove all authors, then create them all again
-        book.authors.forEach{deleteObject($0 as! NSManagedObject)}
-        let newAuthors = metadata.authors.map{createAuthor(lastName: $0.lastName, firstNames: $0.firstNames)}
+        book.authors.forEach{($0 as! NSManagedObject).delete()}
+        let newAuthors = metadata.authors.map{Author(context: book.managedObjectContext!, lastName: $0.lastName, firstNames: $0.firstNames)}
         book.authors = NSOrderedSet(array: newAuthors)
-        book.firstAuthorLastName = newAuthors.first?.lastName
-        
-        book.subjects = NSOrderedSet(array: metadata.subjects.map{getOrCreateSubject(withName: $0)})
+        book.subjects = NSOrderedSet(array: metadata.subjects.map{Subject.getOrCreate(inContext: book.managedObjectContext!, withName: $0)})
     }
     
     /**
@@ -256,31 +126,18 @@ class BooksStore {
      object context, and adds the book to the Spotlight index.
      */
     @discardableResult func create(from metadata: BookMetadata, readingInformation: BookReadingInformation, bookSort: Int? = nil, readingNotes: String? = nil) -> Book {
-        let book = container.createNew(entity: bookEntityName) as! Book
-        book.createdWhen = Date()
-        
-        populateBook(book, withMetadata: metadata)
-        book.populate(from: readingInformation)
-        book.notes = readingNotes
-        
-        updateSort(book: book, requestedSort: bookSort)
-        
-        save()
-        updateSpotlightIndex(for: book)
+        var book: Book!
+        container.viewContext.performAndSaveAndWait {
+            book = Book(context: self.container.viewContext)
+            book.createdWhen = Date()
+            
+            self.populateBook(book, withMetadata: metadata)
+            book.populate(from: readingInformation)
+            book.notes = readingNotes
+            
+            self.updateSort(book: book, requestedSort: bookSort)
+        }
         return book
-    }
-    
-    func createAuthor(lastName: String, firstNames: String?) -> Author {
-        let author = container.createNew(entity: authorEntityName) as! Author
-        author.lastName = lastName
-        author.firstNames = firstNames
-        return author
-    }
-    
-    @discardableResult func createList(name: String) -> List {
-        let list = container.createNew(entity: listEntityName) as! List
-        list.name = name
-        return list
     }
     
     /**
@@ -288,10 +145,9 @@ class BooksStore {
         Saves and reindexes in spotlight.
     */
     func update(book: Book, withMetadata metadata: BookMetadata) {
-        populateBook(book, withMetadata: metadata)
-        
-        save()
-        updateSpotlightIndex(for: book)
+        book.performAndSave {
+            self.populateBook(book, withMetadata: metadata)
+        }
     }
     
     /**
@@ -305,10 +161,11 @@ class BooksStore {
         Updates the provided book with the provided reading information and the provided notes field.
      */
     func update(book: Book, withReadingInformation readingInformation: BookReadingInformation, readingNotes: String?) {
-        book.populate(from: readingInformation)
-        book.notes = readingNotes
-        updateSort(book: book)
-        save()
+        book.performAndSave {
+            book.populate(from: readingInformation)
+            book.notes = readingNotes
+            self.updateSort(book: book)
+        }
     }
     
     /**
@@ -326,57 +183,20 @@ class BooksStore {
             book.sort = NSNumber(value: maxSort + 1)
         }
     }
-    
-    /**
-     Saves the managedObjectContext and suppresses any errors.
-     Is automatically called by the Update and Create functions.
-    */
-    @discardableResult
-    func save() -> Bool {
-        // TODO: Find a way to make this method private, if possible
-        do {
-            try managedObjectContext.save()
-            return true
-        }
-        catch {
-            print("Error saving context: \(error)")
-            return false
-        }
-    }
-    
-    /**
-     Deletes the given book from the managed object context.
-     Deindexes from Spotlight if necessary.
-     */
-    func deleteBook(_ book: Book) {
-        coreSpotlightStack.deindexItems(withIdentifiers: [book.objectID.uriRepresentation().absoluteString])
-        deleteObject(book)
-        save()
-    }
-    
-    /**
-     Deletes the object and logs if in debug mode
-    */
-    func deleteObject(_ object: NSManagedObject) {
-        #if DEBUG
-            print("Deleted object with ID \(object.objectID)")
-        #endif
-        managedObjectContext.delete(object)
-    }
-    
+
     /**
      Deletes **all** book and list objects from the managed object context.
      Deindexes all books from Spotlight if necessary.
     */
     func deleteAll() {
         do {
-            for book in try managedObjectContext.fetch(bookFetchRequest()) {
-                deleteBook(book)
+            for book in try managedObjectContext.fetch(ObjectQuery<Book>().fetchRequest()) {
+                book.delete()
             }
-            for list in try managedObjectContext.fetch(NSFetchRequest<List>(entityName: listEntityName)) {
-                deleteObject(list)
+            for list in try managedObjectContext.fetch(ObjectQuery<List>().fetchRequest()) {
+                list.delete()
             }
-            save()
+            managedObjectContext.saveOrRollback()
         }
         catch {
             print("Error deleting data: \(error)")
@@ -388,30 +208,14 @@ class BooksStore {
     */
     func deleteAllLists() {
         do {
-            for list in try managedObjectContext.fetch(NSFetchRequest<List>(entityName: listEntityName)) {
-                deleteObject(list)
+            for list in try managedObjectContext.fetch(ObjectQuery<List>().fetchRequest()) {
+                list.delete()
             }
-            save()
+            managedObjectContext.saveOrRollback()
         }
         catch {
             print("Error deleting lists: \(error)")
         }
-    }
-    
-    /**
-     Returns a count of the number of books which exist
-    */
-    func bookCount() -> Int {
-        let fetchRequest = bookFetchRequest()
-        return (try? managedObjectContext.count(for: fetchRequest)) ?? -1
-    }
-    
-    /**
-     Returns a count of the number of lists which exist
-     */
-    func listCount() -> Int {
-        let fetchRequest = NSFetchRequest<List>(entityName: listEntityName)
-        return (try? managedObjectContext.count(for: fetchRequest)) ?? -1
     }
     
 }
