@@ -67,14 +67,11 @@ class DataVC: UITableViewController, UIDocumentPickerDelegate, UIDocumentMenuDel
         let listNames = ObjectQuery<List>().sorted(\List.name).fetch(fromContext: container.viewContext).map{$0.name}
         let exporter = CsvExporter(csvExport: Book.BuildCsvExport(withLists: listNames))
         
-        appDelegate.booksStore.getAllBooksAsync(callback: {
+        ObjectQuery<Book>().sorted(\Book.readState).sorted(\Book.sort).sorted(\Book.startedReading).sorted(\Book.finishedReading)
+            .fetchAsync(fromContext: container.viewContext) {
             exporter.addData($0)
             self.renderAndServeCsvExport(exporter)
-        }, onFail: {
-            Crashlytics.sharedInstance().recordError($0)
-            SVProgressHUD.dismiss()
-            SVProgressHUD.showError(withStatus: "Error collecting data.")
-        })
+        }
     }
     
     func renderAndServeCsvExport(_ exporter: CsvExporter<Book>) {
@@ -123,7 +120,10 @@ class DataVC: UITableViewController, UIDocumentPickerDelegate, UIDocumentMenuDel
         // The CONFIRM DELETE action:
         let confirmDelete = UIAlertController(title: "Final Warning", message: "This action is irreversible. Are you sure you want to continue?", preferredStyle: .alert)
         confirmDelete.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
-            appDelegate.booksStore.deleteAll()
+            container.viewContext.performAndSaveAndWait {
+                ObjectQuery<Book>().fetch(fromContext: container.viewContext).forEach{$0.delete()}
+                ObjectQuery<List>().fetch(fromContext: container.viewContext).forEach{$0.delete()}
+            }
             UserEngagement.logEvent(.deleteAllData)
         })
         confirmDelete.addAction(UIAlertAction(title: "Cancel", style: .cancel))

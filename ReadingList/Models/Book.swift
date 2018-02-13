@@ -28,24 +28,23 @@ class Book: NSManagedObject {
     @NSManaged var authors: NSOrderedSet
     @NSManaged var lists: Set<List>
     
+    @objc(addAuthors:)
+    @NSManaged func addAuthors(_ values: NSOrderedSet)
+    
+    @objc(removeAuthors:)
+    @NSManaged func removeAuthors(_ values: NSSet)
+    
+    // Calculated sort helper
     @NSManaged private(set) var firstAuthorLastName: String?
 
+    
     override func willSave() {
         super.willSave()
+        
+        // Do not set the firstAuthorLastName property if it is already correct; will lead to an infinite loop
+        guard firstAuthorLastName != (authors.firstObject as? Author)?.lastName else { return }
         firstAuthorLastName = (authors.firstObject as? Author)?.lastName
     }
-    
-/*
-    These functions might be useful but don't work on iOS 9
-    See https://stackoverflow.com/q/7385439/5513562
-
-    @objc(addSubjects:)
-    @NSManaged public func addSubjects(_ values: NSOrderedSet)
-    
-    @objc(removeSubjects:)
-    @NSManaged public func removeSubjects(_ values: NSSet)
-*/
-
 }
 
 /// The availale reading progress states
@@ -80,6 +79,35 @@ extension Book {
     var authorsFirstLast: String {
         get {
             return authors.map{($0 as! Author).displayFirstLast}.joined(separator: ", ")
+        }
+    }
+    
+    static func get(fromContext context: NSManagedObjectContext, googleBooksId: String? = nil, isbn: String? = nil) -> Book? {
+        // if both are nil, leave early
+        guard googleBooksId != nil || isbn != nil else { return nil }
+            
+        var predicates = [NSPredicate]()
+        if let googleBooksId = googleBooksId {
+            predicates.append(NSPredicate(\Book.googleBooksId, .equals, googleBooksId))
+        }
+        if let isbn = isbn {
+            predicates.append(NSPredicate(\Book.isbn13, .equals, isbn))
+        }
+        return ObjectQuery<Book>().any(predicates).fetch(1, fromContext: context).first
+    }
+    
+    enum ValidationError: Error {
+        case missingTitle
+        case invalidIsbn
+    }
+    
+    override func validateForUpdate() throws {
+        try super.validateForUpdate()
+        if title.isEmptyOrWhitespace {
+            throw ValidationError.missingTitle
+        }
+        if let isbn13 = isbn13, Isbn13.tryParse(inputString: isbn13) == nil {
+            throw ValidationError.invalidIsbn
         }
     }
     

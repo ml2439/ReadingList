@@ -147,7 +147,7 @@ class ScanBarcode: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
         session?.stopRunning()
         
         // Check that the book hasn't already been added
-        if let existingBook = appDelegate.booksStore.getIfExists(isbn: isbn) {
+        if let existingBook = Book.get(fromContext: container.viewContext, isbn: isbn) {
             feedbackGenerator.notificationOccurred(.warning)
             presentDuplicateAlert(existingBook)
         }
@@ -196,7 +196,7 @@ class ScanBarcode: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
             
             let fetchResult = resultPage.result.value!
             // We may now have a book which matches the Google Books ID (but didn't match the ISBN), so check again
-            if let existingBook = appDelegate.booksStore.getIfExists(googleBooksId: fetchResult.id) {
+            if let existingBook = Book.get(fromContext: container.viewContext, googleBooksId: fetchResult.id) {
                 vc.feedbackGenerator.notificationOccurred(.warning)
                 vc.presentDuplicateAlert(existingBook)
             }

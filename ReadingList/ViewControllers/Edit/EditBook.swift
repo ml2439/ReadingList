@@ -1,15 +1,20 @@
 import UIKit
 import SVProgressHUD
 import Eureka
+import CoreData
 
 class EditBook: BookMetadataForm {
     var bookToEdit: Book!
     var initialMetadata: BookMetadata!
     var initialCoverImageDataHash: MD5?
+    var scratchpadContext: NSManagedObjectContext!
     
     @IBOutlet weak var doneButton: UIBarButtonItem!
     
     override func viewDidLoad() {
+        scratchpadContext = bookToEdit.managedObjectContext!.childContext()
+        bookToEdit = scratchpadContext.object(with: bookToEdit.objectID) as! Book
+        
         authors = bookToEdit.authors.map{
             let author = $0 as! Author
             return (author.firstNames, author.lastName)
@@ -50,6 +55,24 @@ class EditBook: BookMetadataForm {
     }
     
     func metadataChanges() -> Bool {
+        // Load the book metadata into an object from the form values
+        let metadata = BookMetadata(book: bookToEdit)
+        populateMetadata(metadata)
+
+        bookToEdit.title = metadata.title!
+        bookToEdit.isbn13 = metadata.isbn13
+        bookToEdit.googleBooksId = metadata.googleBooksId
+        bookToEdit.pageCount = metadata.pageCount as NSNumber?
+        bookToEdit.publicationDate = metadata.publicationDate
+        bookToEdit.bookDescription = metadata.bookDescription
+        bookToEdit.coverImage = metadata.coverImage
+        
+        return bookToEdit.hasChanges
+        /*
+        
+        // Update the book
+        appDelegate.booksStore.populateBook(bookToEdit, withMetadata: newMetadata)
+        
         if initialMetadata.title != titleField.value || initialMetadata.pageCount != pageCount.value
             || initialMetadata.publicationDate != publicationDate.value || initialMetadata.bookDescription != descriptionField.value {
             return true
@@ -71,6 +94,7 @@ class EditBook: BookMetadataForm {
         else {
             return !(bookToEdit.coverImage == nil && image.value == nil)
         }
+ */
     }
     
     func presentUpdateAlert() {

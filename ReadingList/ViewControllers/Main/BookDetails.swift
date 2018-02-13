@@ -170,7 +170,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         navigationItem.titleView!.isHidden = true
 
         // Watch for changes in the managed object context
-        NotificationCenter.default.addObserver(self, selector: #selector(saveOccurred(_:)), name: NSNotification.Name.NSManagedObjectContextDidSave, object: appDelegate.booksStore.managedObjectContext)
+        NotificationCenter.default.addObserver(self, selector: #selector(saveOccurred(_:)), name: NSNotification.Name.NSManagedObjectContextDidSave, object: container.viewContext)
     }
     
     override func viewDidLayoutSubviews() {
@@ -328,7 +328,8 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
                 })
             }
             previewActions.append(UIPreviewAction(title: "Delete", style: .destructive) { _,_ in
-                book.delete()
+                book.deleteAndSave()
+                UserEngagement.logEvent(.deleteBook)
             })
             return previewActions
         }

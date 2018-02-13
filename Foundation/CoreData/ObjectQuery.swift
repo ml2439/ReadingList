@@ -56,6 +56,13 @@ class ObjectQuery<T> where T: NSManagedObject {
         return (try? context.fetch(fetchRequest(limit: count))) ?? []
     }
     
+    func fetchAsync(fromContext context: NSManagedObjectContext, callback: @escaping ([T]) -> ()) {
+        // TODO: Work out best practise for failing fetch requests
+        try! context.execute(NSAsynchronousFetchRequest(fetchRequest: fetchRequest()) {
+            callback($0.finalResult ?? [])
+        })
+    }
+    
     func count(inContext context: NSManagedObjectContext) -> Int {
         return (try? context.count(for: fetchRequest())) ?? 0
     }

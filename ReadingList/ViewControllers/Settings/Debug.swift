@@ -64,21 +64,19 @@ class Debug: FormViewController {
     }
     
     static func loadTestData(withLists: Bool = true) {
+
+        container.viewContext.performAndSaveAndWait {
+            ObjectQuery<Book>().fetch(fromContext: container.viewContext).forEach{$0.delete()}
+            ObjectQuery<List>().fetch(fromContext: container.viewContext).forEach{$0.delete()}
+        }
         
-        appDelegate.booksStore.deleteAll()
         let csvPath = Bundle.main.url(forResource: "examplebooks", withExtension: "csv")
         
         SVProgressHUD.show(withStatus: "Loading Data...")
         
         BookImporter(csvFileUrl: csvPath!, supplementBookCover: true, missingHeadersCallback: {
             print("Missing headers!")
-        }, supplementBookCallback: { book, _ in
-            // Extra supplementary details
-            if book.title == "Your First Swift App" {
-                book.coverImage = UIImagePNGRepresentation(#imageLiteral(resourceName: "yourfirstswiftapp.png"))
-            }
         }) { _, _, _ in
-            appDelegate.booksStore.deleteAllLists()
             SVProgressHUD.dismiss()
         }.StartImport()
     }    

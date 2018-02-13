@@ -21,7 +21,7 @@ class ListBookTable: UITableViewController {
     
     func registerForSaveNotifications() {
         // Watch for changes in the managed object context, in order to update the table
-        NotificationCenter.default.addObserver(self, selector: #selector(saveOccurred(_:)), name: NSNotification.Name.NSManagedObjectContextDidSave, object: appDelegate.booksStore.managedObjectContext)
+        NotificationCenter.default.addObserver(self, selector: #selector(saveOccurred(_:)), name: NSNotification.Name.NSManagedObjectContextDidSave, object: list.managedObjectContext!)
     }
     
     func withoutAutomaticUpdates(_ code: () -> ()) {

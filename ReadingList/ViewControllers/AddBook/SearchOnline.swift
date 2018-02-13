@@ -91,7 +91,7 @@ class SearchOnline: ArrayBackedTableController<GoogleBooks.SearchResult>, UISear
         let searchResult = tableItems[indexPath.row]
         
         // Duplicate check
-        if let existingBook = appDelegate.booksStore.getIfExists(googleBooksId: searchResult.id, isbn: searchResult.isbn13) {
+        if let existingBook = Book.get(fromContext: container.viewContext, googleBooksId: searchResult.id, isbn: searchResult.isbn13) {
             presentDuplicateBookAlert(book: existingBook, fromSelectedIndex: indexPath); return
         }
         

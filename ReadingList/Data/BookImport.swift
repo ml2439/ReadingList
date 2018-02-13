@@ -128,7 +128,7 @@ class BookImporter {
             for listMapping in self.listMappings {
                 let list = List.getOrCreate(fromContext: container.viewContext, withName: listMapping.key)
                 let orderedBooks = listMapping.value.sorted(by: {$0.1 < $1.1})
-                    .map{appDelegate.booksStore.managedObjectContext.object(with: $0.bookId) as! Book}
+                    .map{container.viewContext.object(with: $0.bookId) as! Book}
                     .filter{!list.books.contains($0)}
                 list.performAndSave {
                     list.books = NSOrderedSet(array: list.booksArray + orderedBooks)
@@ -149,7 +149,7 @@ class BookImporter {
         }
         
         // Check for duplicates
-        guard appDelegate.booksStore.getIfExists(googleBooksId: parsedData.0.googleBooksId, isbn: parsedData.0.isbn13) == nil else {
+        guard Book.get(fromContext: container.viewContext, googleBooksId: parsedData.0.googleBooksId, isbn: parsedData.0.isbn13) == nil else {
             duplicateBookCount += 1
             return
         }

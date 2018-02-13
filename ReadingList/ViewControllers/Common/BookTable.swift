@@ -420,7 +420,7 @@ class BookTable: AutoUpdatingTableViewController {
         }
         deleteAction.image = #imageLiteral(resourceName: "Trash")
         let editAction = UIContextualAction(style: .normal, title: "Edit") { [unowned self] _,_,callback in
-            self.performSegue(withIdentifier: "editBook", sender: self.resultsController.object(at: indexPath))
+            self.present(EditBookMetadata.inNavigationController(bookToEditId: self.resultsController.object(at: indexPath).objectID), animated: true)
             callback(true)
         }
         editAction.image = #imageLiteral(resourceName: "Literature")
