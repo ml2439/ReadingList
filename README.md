@@ -1,5 +1,5 @@
 # Reading List
-[![Build Status](https://travis-ci.org/AndrewBennet/ReadingList.svg?branch=master)](https://travis-ci.org/AndrewBennet/readinglist)
+[![Build Status](https://travis-ci.org/AndrewBennet/ReadingList.svg?branch=master)](https://travis-ci.org/AndrewBennet/ReadingList)
 [![codebeat badge](https://codebeat.co/badges/3f7723a7-8967-436e-b5e9-549e0261603c)](https://codebeat.co/projects/github-com-andrewbennet-readinglist)
 
 [Reading List](https://www.readinglistapp.xyz) is a free, open source iOS app for iPhone, iPad and iPod Touch, written in Swift. Reading List allows users to track and catalog the books they read.
