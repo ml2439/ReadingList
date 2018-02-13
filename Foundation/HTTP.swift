@@ -24,8 +24,8 @@ class HTTP {
             task = URLSession.shared.dataTask(with: request) { (data, _, error) in
                 DispatchQueue.main.async {
                     guard error == nil else { callback(Result.failure(error!)); return }
-                    guard let data = data else { callback(Result.failure(HTTPError.noJsonData)); return }
-                    callback(Result<JSON>.success(JSON(data: data)))
+                    guard let data = data, let json = try? JSON(data: data) else { callback(Result.failure(HTTPError.noJsonData)); return }
+                    callback(Result<JSON>.success(json))
                 }
             }
             task!.resume()
