@@ -1,10 +1,10 @@
 PODS:
   - CHCSVParser (2.1.0)
-  - Crashlytics (3.9.3):
-    - Fabric (~> 1.7.2)
+  - Crashlytics (3.10.0):
+    - Fabric (~> 1.7.3)
   - DZNEmptyDataSet (1.8.1)
   - Eureka (4.0.1)
-  - Fabric (1.7.2)
+  - Fabric (1.7.3)
   - Firebase/Core (4.8.2):
     - FirebaseAnalytics (= 4.0.9)
     - FirebaseCore (= 4.0.14)
@@ -28,8 +28,8 @@ PODS:
   - nanopb/decode (0.3.8)
   - nanopb/encode (0.3.8)
   - SimulatorStatusMagic (2.1)
-  - SVProgressHUD (2.2.2)
-  - SwiftyJSON (3.1.4)
+  - SVProgressHUD (2.2.3)
+  - SwiftyJSON (4.0.0)
   - SwiftyStoreKit (0.13.0)
 
 DEPENDENCIES:
@@ -42,7 +42,7 @@ DEPENDENCIES:
   - ImageRow (from `https://github.com/EurekaCommunity/ImageRow.git`)
   - SimulatorStatusMagic
   - SVProgressHUD (~> 2.2)
-  - SwiftyJSON (~> 3.1)
+  - SwiftyJSON (~> 4.0)
   - SwiftyStoreKit
 
 EXTERNAL SOURCES:
@@ -56,15 +56,15 @@ CHECKOUT OPTIONS:
     :commit: 3ee99563177e8b59c90b85516a868338212ab671
     :git: https://github.com/davedelong/CHCSVParser.git
   ImageRow:
-    :commit: a673639b85e83e5a6bd2841dc9cad948b62ed0d0
+    :commit: 80587a657cf08ad315c1630c0d88d272e991fd37
     :git: https://github.com/EurekaCommunity/ImageRow.git
 
 SPEC CHECKSUMS:
   CHCSVParser: 64da26e2b4ddbf7527f7f03120bf91d83d28f354
-  Crashlytics: dbb07d01876c171c5ccbdf7826410380189e452c
+  Crashlytics: a989ef242b66605577a425733797f810bd2725eb
   DZNEmptyDataSet: 9525833b9e68ac21c30253e1d3d7076cc828eaa7
   Eureka: c8bd5cc07143b6f66268c208d28a246c99b41955
-  Fabric: 9cd6a848efcf1b8b07497e0b6a2e7d336353ba15
+  Fabric: bb495bb9a7a7677c6d03a1f8b83d95bc49b47e41
   Firebase: 7d3b8cd837ad9fcd391657734c0d56dab8e9a5a3
   FirebaseAnalytics: 388b630c15713f5dbf364071f5f3d6077fb52f4e
   FirebaseCore: 2e0b98fb2d64ca8140136beff15772bdd14d2dd7
@@ -73,10 +73,10 @@ SPEC CHECKSUMS:
   ImageRow: 2683a3b621210ea05c1f3a2fa294d8d14342d24c
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
   SimulatorStatusMagic: 481558caf2b9ccb2ceba2cc193728d4db3dcac07
-  SVProgressHUD: 59b2d3dabacbd051576d21d32293ca7228dc18b0
-  SwiftyJSON: c2842d878f95482ffceec5709abc3d05680c0220
+  SVProgressHUD: a5eaeff664a82dda89809c409ace40183ce91523
+  SwiftyJSON: 070dabdcb1beb81b247c65ffa3a79dbbfb3b48aa
   SwiftyStoreKit: df6a58aba530128e1c5d5ae4fe7d191e5ac50d5d
 
-PODFILE CHECKSUM: d3b951ad4f146ff30dfd2a5755b6d46e9c413523
+PODFILE CHECKSUM: d1449c7174f759a4680dd8dc294b626f2ff0c693
 
 COCOAPODS: 1.4.0
