@@ -59,8 +59,9 @@ class UnitTests: XCTestCase {
         XCTAssertEqual(testBookMetadata.title, book.title)
         XCTAssertEqual(testBookMetadata.authors.count, book.authors.count)
         for (index, authorDetails) in testBookMetadata.authors.enumerated() {
-            XCTAssertEqual(authorDetails.firstNames, book.authorsArray[index].firstNames)
-            XCTAssertEqual(authorDetails.lastName, book.authorsArray[index].lastName)
+            let author = book.authors[index] as! Author
+            XCTAssertEqual(authorDetails.firstNames, author.firstNames)
+            XCTAssertEqual(authorDetails.lastName, author.lastName)
         }
         XCTAssertEqual(testBookMetadata.bookDescription, book.bookDescription)
         XCTAssertEqual(testBookMetadata.isbn13, book.isbn13)
@@ -308,9 +309,8 @@ class UnitTests: XCTestCase {
     func testAuthorObjectsUpdate() {
         let bookMetadata = getTestBookMetadata()
         let newBook = booksStore.create(from: bookMetadata, readingInformation: BookReadingInformation.toRead())
-        let newAuthors = newBook.authorsArray
-        XCTAssertGreaterThan(newAuthors.count, 0)
-        XCTAssertEqual(bookMetadata.authors.count, newAuthors.count)
+        XCTAssertGreaterThan(newBook.authors.count, 0)
+        XCTAssertEqual(bookMetadata.authors.count, newBook.authors.count)
         
         bookMetadata.authors.removeAll(keepingCapacity: true)
         booksStore.update(book: newBook, withMetadata: bookMetadata)
