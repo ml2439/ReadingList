@@ -15,6 +15,7 @@ class Subject: NSManagedObject {
     override func willSave() {
         super.willSave()
         if !isDeleted && books.count == 0 {
+            print("Orphaned subject \(name) deleted before save")
             managedObjectContext?.delete(self)
         }
     }

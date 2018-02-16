@@ -107,12 +107,11 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         setTextOrHideLine(readTime, readTimeText)
         let pageNumberText: String?
         if let currentPage = book.currentPage {
-            if let totalPages = book.pageCount, currentPage.intValue <= totalPages.intValue,
-                currentPage.intValue > 0 {
-                pageNumberText = currentPage.stringValue + " (\(100 * currentPage.intValue/totalPages.intValue)% complete)"
+            if let totalPages = book.pageCount, currentPage <= totalPages, currentPage > 0 {
+                pageNumberText = "\(currentPage) (\(100 * currentPage/totalPages)% complete)"
             }
             else {
-                pageNumberText = currentPage.stringValue
+                pageNumberText = currentPage.string
             }
         }
         else { pageNumberText = nil }
@@ -121,7 +120,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         setTextOrHideLine(notes, book.notes)
 
         setTextOrHideLine(isbn, book.isbn13)
-        setTextOrHideLine(pages, book.pageCount?.stringValue)
+        setTextOrHideLine(pages, String(describing: book.pageCount))
         setTextOrHideLine(published, book.publicationDate?.toPrettyString(short: false))
         setTextOrHideLine(subjects,  book.subjects.map{($0 as! Subject).name}.joined(separator: ", ").nilIfWhitespace())
         googleBooks.isHidden = book.googleBooksId == nil
@@ -191,14 +190,12 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         }
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let navController = segue.destination as? UINavigationController
-        if let editBookController = navController?.viewControllers.first as? EditBook {
-            editBookController.bookToEdit = book
-        }
-        else if let changeReadState = navController?.viewControllers.first as? EditReadState {
-            changeReadState.bookToEdit = book
-        }
+    @IBAction func updateReadingLogPressed(_ sender: Any) {
+        present(EditBookReadState(existingBookID: book!.objectID).inNavigationController(), animated: true)
+    }
+
+    @IBAction func editBookPressed(_ sender: Any) {
+        present(EditBookMetadata(book!.objectID).inNavigationController(), animated: true)
     }
     
     @objc func seeMoreDescription() {

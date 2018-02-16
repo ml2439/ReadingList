@@ -12,7 +12,6 @@ extension UserDefaults {
     }
 }
 
-
 extension String {
     /// Return whether the string contains any characters which are not whitespace.
     var isEmptyOrWhitespace: Bool {
@@ -31,6 +30,12 @@ extension String {
     func urlEncoding() -> String {
         let allowedCharacterSet = CharacterSet(charactersIn: "!*'();:@&=+$,/?%#[] ").inverted
         return self.addingPercentEncoding(withAllowedCharacters: allowedCharacterSet)!
+    }
+}
+
+extension Int {
+    var string: String {
+        get { return String(describing: self) }
     }
 }
 

@@ -7,20 +7,58 @@ class Book: NSManagedObject {
     @NSManaged var title: String
     @NSManaged var isbn13: String?
     @NSManaged var googleBooksId: String?
-    @NSManaged var pageCount: NSNumber?
+    
+    var pageCount: Int? {
+        get {
+            willAccessValue(forKey: "pageCount")
+            defer { didAccessValue(forKey: "pageCount") }
+            return primitivePageCount?.intValue
+        }
+        set {
+            willChangeValue(forKey: "pageCount")
+            defer { didChangeValue(forKey: "pageCount") }
+            primitivePageCount = newValue == nil ? nil : NSNumber(value: newValue!)
+        }
+    }
+    @NSManaged private var primitivePageCount: NSNumber?
+
     @NSManaged var publicationDate: Date?
     @NSManaged var bookDescription: String?
     @NSManaged var coverImage: Data?
     
-    // Reading Information
     @NSManaged var readState: BookReadState
     @NSManaged var startedReading: Date?
     @NSManaged var finishedReading: Date?
-
-    // Other Metadata
     @NSManaged var notes: String?
-    @NSManaged var currentPage: NSNumber?
-    @NSManaged var sort: NSNumber?
+    
+    var currentPage: Int? {
+        get {
+            willAccessValue(forKey: "currentPage")
+            defer { didAccessValue(forKey: "currentPage") }
+            return primitiveCurrentPage?.intValue
+        }
+        set {
+            willChangeValue(forKey: "currentPage")
+            defer { didChangeValue(forKey: "currentPage") }
+            primitiveCurrentPage = newValue == nil ? nil : NSNumber(value: newValue!)
+        }
+    }
+    @NSManaged private var primitiveCurrentPage: NSNumber?
+    
+    var sort: Int? {
+        get {
+            willAccessValue(forKey: "sort")
+            defer { didAccessValue(forKey: "sort") }
+            return primitiveSort?.intValue
+        }
+        set {
+            willChangeValue(forKey: "sort")
+            defer { didChangeValue(forKey: "sort") }
+            primitiveSort = newValue == nil ? nil : NSNumber(value: newValue!)
+        }
+    }
+    @NSManaged private var primitiveSort: NSNumber?
+
     @NSManaged var createdWhen: Date
     
     // Relationships
@@ -37,13 +75,60 @@ class Book: NSManagedObject {
     // Calculated sort helper
     @NSManaged private(set) var firstAuthorLastName: String?
 
-    
     override func willSave() {
         super.willSave()
         
+        let random = arc4random()
+        print("In willSave \(random)")
+        
         // Do not set the firstAuthorLastName property if it is already correct; will lead to an infinite loop
-        guard firstAuthorLastName != (authors.firstObject as? Author)?.lastName else { return }
-        firstAuthorLastName = (authors.firstObject as? Author)?.lastName
+        let currentFirstAuthorLastName = (authors.firstObject as? Author)?.lastName
+        if firstAuthorLastName != currentFirstAuthorLastName {
+            firstAuthorLastName = currentFirstAuthorLastName
+        }
+        
+        if readState == .toRead && sort == nil {
+            if let maxSort = appDelegate.booksStore.maxSort() {
+                print("Setting sort to \(maxSort + 1)")
+                self.sort = maxSort + 1
+            }
+        }
+        print("Finished willSave \(random)")
+    }
+    
+    convenience init(context: NSManagedObjectContext, readState: BookReadState) {
+        self.init(context: context)
+        self.readState = readState
+        if readState == .reading {
+            self.startedReading = Date()
+        }
+        if readState == .finished {
+            self.startedReading = Date()
+            self.finishedReading = Date()
+        }
+    }
+    
+    func populate(fromFetchResult fetchResult: GoogleBooks.FetchResult) {
+        googleBooksId = fetchResult.id
+        title = fetchResult.title
+        let authorNames: [(String?, String)] = fetchResult.authors.map{
+            if let range = $0.range(of: " ", options: .backwards) {
+                let firstNames = $0[..<range.upperBound].trimming()
+                let lastName = $0[range.lowerBound...].trimming()
+                
+                return (firstNames: firstNames, lastName: lastName)
+            }
+            else {
+                return (firstNames: nil, lastName: $0)
+            }
+        }
+        authors = NSOrderedSet(array: authorNames.map{Author(context: self.managedObjectContext!, lastName: $0.1, firstNames: $0.0)})
+        bookDescription = fetchResult.description
+        subjects = NSOrderedSet(array: fetchResult.subjects.map{Subject.getOrCreate(inContext: self.managedObjectContext!, withName: $0)})
+        coverImage = fetchResult.coverImage
+        pageCount = fetchResult.pageCount
+        publicationDate = fetchResult.publishedDate
+        isbn13 = fetchResult.isbn13
     }
 }
 
@@ -99,23 +184,25 @@ extension Book {
     enum ValidationError: Error {
         case missingTitle
         case invalidIsbn
+        case noAuthors
+        case invalidReadDates
     }
     
     override func validateForUpdate() throws {
         try super.validateForUpdate()
-        if title.isEmptyOrWhitespace {
-            throw ValidationError.missingTitle
-        }
-        if let isbn13 = isbn13, Isbn13.tryParse(inputString: isbn13) == nil {
-            throw ValidationError.invalidIsbn
-        }
+        if title.isEmptyOrWhitespace { throw ValidationError.missingTitle }
+        if let isbn13 = isbn13, Isbn13.tryParse(inputString: isbn13) == nil { throw ValidationError.invalidIsbn }
+        if authors.count == 0 { throw ValidationError.noAuthors }
+        if readState == .toRead && (startedReading != nil || finishedReading != nil) { throw ValidationError.invalidReadDates }
+        if readState == .reading && (startedReading == nil || finishedReading != nil) { throw ValidationError.invalidReadDates }
+        if readState == .finished && (startedReading == nil || finishedReading == nil || startedReading!.startOfDay() > finishedReading!.startOfDay()) { throw ValidationError.invalidReadDates }
     }
     
     func populate(from readingInformation: BookReadingInformation) {
         readState = readingInformation.readState
         startedReading = readingInformation.startedReading
         finishedReading = readingInformation.finishedReading
-        currentPage = readingInformation.currentPage == nil ? nil : NSNumber(integerLiteral: readingInformation.currentPage!)
+        currentPage = readingInformation.currentPage
     }
     
     func transistionToReading(log: Bool = true) {
@@ -205,7 +292,7 @@ class BookMetadata {
             return (author.firstNames, author.lastName)
         }
         self.bookDescription = book.bookDescription
-        self.pageCount = book.pageCount as? Int
+        self.pageCount = book.pageCount
         self.publicationDate = book.publicationDate
         self.coverImage = book.coverImage
         self.isbn13 = book.isbn13

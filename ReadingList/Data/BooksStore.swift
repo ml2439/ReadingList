@@ -4,7 +4,8 @@ class BooksStore {
     
     var container: NSPersistentContainer!
     
-    let storeFileName = "books.sqlite"
+    let storeName = "books"
+    var storeFileName: String { return "\(storeName).sqlite" }
     
     func initalisePersistentStore() {
         let storeLocation = URL.applicationSupport.appendingPathComponent(storeFileName)
@@ -16,7 +17,7 @@ class BooksStore {
         // TODO: Deindex spotlight results if necessary
         
         // Initialise the container and migrate the store to the latest version if necessary.
-        container = NSPersistentContainer(name: "books", loadManuallyMigratedStoreAt: storeLocation)
+        container = NSPersistentContainer(name: storeName, loadManuallyMigratedStoreAt: storeLocation)
         container.migrateStoreIfRequired(toLatestOf: BooksModelVersion.self)
         
         container.loadPersistentStores{ _, error in
@@ -59,7 +60,7 @@ class BooksStore {
      Gets the current maximum sort index in the books store
     */
     func maxSort() -> Int? {
-        return ObjectQuery<Book>().sorted(\Book.sort, ascending: false).fetch(1, fromContext: container.viewContext).first?.sort as? Int
+        return ObjectQuery<Book>().sorted(\Book.sort, ascending: false).fetch(1, fromContext: container.viewContext).first?.sort
     }
     
     /**
@@ -69,7 +70,7 @@ class BooksStore {
         book.title = metadata.title!
         book.isbn13 = metadata.isbn13
         book.googleBooksId = metadata.googleBooksId
-        book.pageCount = metadata.pageCount as NSNumber?
+        book.pageCount = metadata.pageCount
         book.publicationDate = metadata.publicationDate
         book.bookDescription = metadata.bookDescription
         book.coverImage = metadata.coverImage
@@ -136,11 +137,11 @@ class BooksStore {
         guard book.readState == .toRead else { book.sort = nil; return }
         
         if let specifiedBookSort = requestedSort {
-            book.sort = NSNumber(value: specifiedBookSort)
+            book.sort = specifiedBookSort
         }
         else if book.sort == nil {
             let maxSort = self.maxSort() ?? -1
-            book.sort = NSNumber(value: maxSort + 1)
+            book.sort = maxSort + 1
         }
     }
     

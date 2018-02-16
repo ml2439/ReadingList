@@ -255,29 +255,6 @@ class GoogleBooks {
             authors = searchResult.authors
             isbn13 = searchResult.isbn13
         }
-        
-        func toBookMetadata() -> BookMetadata {
-            let metadata = BookMetadata(googleBooksId: id)
-            metadata.title = title
-            metadata.authors = authors.map{
-                if let range = $0.range(of: " ", options: .backwards) {
-                    let firstNames = $0[..<range.upperBound].trimming()
-                    let lastName = $0[range.lowerBound...].trimming()
-                    
-                    return (firstNames: firstNames, lastName: lastName)
-                }
-                else {
-                    return (firstNames: nil, lastName: $0)
-                }
-            }
-            metadata.bookDescription = description
-            metadata.subjects = subjects
-            metadata.coverImage = coverImage
-            metadata.pageCount = pageCount
-            metadata.publicationDate = publishedDate
-            metadata.isbn13 = isbn13
-            return metadata
-        }
     }
     
     class SearchResultsPage {

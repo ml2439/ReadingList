@@ -130,40 +130,11 @@
                     <connections>
                         <outlet property="addAllButton" destination="iO7-e0-41f" id="a4a-9b-BPL"/>
                         <outlet property="selectModeButton" destination="iHn-by-0Xb" id="xJb-85-RK6"/>
-                        <segue destination="cFW-qh-Tab" kind="show" identifier="createReadStateSegue" id="cNB-hE-cSJ"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Wxv-Ar-L0i" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-1458" y="705"/>
-        </scene>
-        <!--Create Read State-->
-        <scene sceneID="P79-vK-bgP">
-            <objects>
-                <viewController id="cFW-qh-Tab" customClass="CreateReadState" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="aI9-kq-tLp"/>
-                        <viewControllerLayoutGuide type="bottom" id="hD5-rT-38U"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="yJw-pg-CxO">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                    </view>
-                    <navigationItem key="navigationItem" id="cSP-Ki-aNf">
-                        <barButtonItem key="rightBarButtonItem" style="done" systemItem="done" id="QNH-pL-Txb">
-                            <connections>
-                                <action selector="doneWasPressed:" destination="cFW-qh-Tab" id="ep6-cL-OW2"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
-                    <connections>
-                        <outlet property="doneButton" destination="QNH-pL-Txb" id="huU-pS-2eB"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="gRh-t2-GUC" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-658" y="705"/>
         </scene>
     </scenes>
     <resources>

@@ -23,7 +23,8 @@ extension NSManagedObject {
             try validateForUpdate()
             return true
         }
-        catch {
+        catch let error {
+            print(error)
             return false
         }
     }
@@ -67,7 +68,7 @@ extension NSManagedObjectContext {
     }
     
     func performAndSave(block: @escaping () -> ()) {
-        perform {
+        perform { [unowned self] in
             block()
             // TODO: weak self?
             self.saveOrRollback()
@@ -75,7 +76,7 @@ extension NSManagedObjectContext {
     }
     
     func performAndSaveAndWait(block: @escaping () -> ()) {
-        performAndWait {
+        performAndWait { [unowned self] in
             block()
             // TODO: weak self?
             self.saveOrRollback()

@@ -13,7 +13,6 @@ class ScanBarcode: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
     
     var session: AVCaptureSession?
     var previewLayer: AVCaptureVideoPreviewLayer?
-    var foundMetadata: BookMetadata?
     let feedbackGenerator = UINotificationFeedbackGenerator()
     
     @IBOutlet weak var cameraPreviewView: UIView!
@@ -207,8 +206,9 @@ class ScanBarcode: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
                 UserEngagement.logEvent(.scanBarcode)
 
                 // If there is no duplicate, we can safely go to the next page
-                vc.foundMetadata = fetchResult.toBookMetadata()
-                vc.performSegue(withIdentifier: "barcodeScanResult", sender: self)
+                let book = Book(context: container.viewContext.childContext(), readState: .toRead)
+                book.populate(fromFetchResult: fetchResult)
+                vc.navigationController!.pushViewController(EditBookReadState(newUnsavedBook: book), animated: true)
             }
         }
     }
@@ -262,12 +262,6 @@ class ScanBarcode: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
         }))
         feedbackGenerator.notificationOccurred(.error)
         present(alert, animated: true, completion: nil)
-    }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let createReadStateController = segue.destination as? CreateReadState {
-            createReadStateController.bookMetadata = foundMetadata
-        }
     }
     
     #if DEBUG

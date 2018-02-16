@@ -170,7 +170,11 @@ class SearchOnline: ArrayBackedTableController<GoogleBooks.SearchResult>, UISear
             DispatchQueue.main.async { [weak self] in
                 SVProgressHUD.dismiss()
                 if let fetchResult = resultPage.result.value {
-                    self?.performSegue(withIdentifier: "createReadStateSegue", sender: fetchResult.toBookMetadata())
+                    let editContext = container.viewContext.childContext()
+                    let book = Book(context: editContext, readState: .toRead)
+                    // TODO: make a convenience init which takes a fetch result?
+                    book.populate(fromFetchResult: fetchResult)
+                    self?.present(EditBookReadState(newUnsavedBook: book).inNavigationController(), animated: true)
                 }
                 else {
                     SVProgressHUD.showError(withStatus: "An error occurred. Please try again later.")
@@ -181,8 +185,6 @@ class SearchOnline: ArrayBackedTableController<GoogleBooks.SearchResult>, UISear
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
-        guard let createReadState = segue.destination as? CreateReadState, let bookMetadata = sender as? BookMetadata else { return }
-        createReadState.bookMetadata = bookMetadata
         navigationController!.setToolbarHidden(true, animated: true)
     }
 
@@ -212,7 +214,7 @@ class SearchOnline: ArrayBackedTableController<GoogleBooks.SearchResult>, UISear
         UserEngagement.logEvent(.searchOnlineMultiple)
         SVProgressHUD.show(withStatus: "Adding...")
         let fetches = DispatchGroup()
-        var lastAddedBook: Book?
+        var book: Book!
         var errorCount = 0
         
         // Queue up the fetches
@@ -220,8 +222,9 @@ class SearchOnline: ArrayBackedTableController<GoogleBooks.SearchResult>, UISear
             fetches.enter()
             GoogleBooks.fetch(googleBooksId: tableItems[selectedIndex.row].id) { resultPage in
                 DispatchQueue.main.async {
-                    if let metadata = resultPage.result.value?.toBookMetadata() {
-                        lastAddedBook = appDelegate.booksStore.create(from: metadata, readingInformation: BookReadingInformation.toRead())
+                    if let fetchResult = resultPage.result.value {
+                        book = Book(context: container.viewContext, readState: .toRead)
+                        book.populate(fromFetchResult: fetchResult)
                     }
                     else {
                         errorCount += 1
@@ -233,6 +236,7 @@ class SearchOnline: ArrayBackedTableController<GoogleBooks.SearchResult>, UISear
         
         // On completion, dismiss this view (or show an error if they all failed)
         fetches.notify(queue: .main) { [weak self] in
+            container.viewContext.saveOrRollback()
             SVProgressHUD.dismiss()
             guard errorCount != selectedRows.count else {
                 // If they all errored, don't dismiss - show an error
@@ -240,9 +244,9 @@ class SearchOnline: ArrayBackedTableController<GoogleBooks.SearchResult>, UISear
             }
             
             self?.presentingViewController!.dismiss(animated: true) {
-                if let lastAddedBook = lastAddedBook {
+                if let book = book {
                     // Scroll to the last added book. This is a bit random, but better than nothing probably
-                    appDelegate.tabBarController.simulateBookSelection(lastAddedBook, allowTableObscuring: false)
+                    appDelegate.tabBarController.simulateBookSelection(book, allowTableObscuring: false)
                 }
                 // Display an error if any books could not be added
                 if errorCount != 0 {

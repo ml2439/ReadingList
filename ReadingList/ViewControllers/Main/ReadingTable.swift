@@ -55,11 +55,11 @@ class ReadingTable: BookTable {
             sortIndex = 0
         }
         else {
-            sortIndex = (objectsInSection[topRow - 1] as! Book).sort!.intValue + 1
+            sortIndex = (objectsInSection[topRow - 1] as! Book).sort! + 1
         }
         for rowNumber in topRow...bottomRow {
             let book = objectsInSection[rowNumber] as! Book
-            book.sort = NSNumber(integerLiteral: sortIndex)
+            book.sort = sortIndex
             sortIndex += 1
         }
         

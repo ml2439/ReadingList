@@ -171,8 +171,6 @@
                     </navigationItem>
                     <connections>
                         <outlet property="tableFooter" destination="qjR-Ii-EZk" id="HmG-rb-hEC"/>
-                        <segue destination="OWE-eG-rNf" kind="presentation" identifier="editBook" modalPresentationStyle="formSheet" id="jO5-9m-FtQ"/>
-                        <segue destination="bV3-xR-aQg" kind="presentation" identifier="editReadState" modalPresentationStyle="formSheet" id="vo8-Ad-IJ0"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x3g-rQ-Wjw" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -192,22 +190,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rUu-6c-OoI" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-8675" y="-461"/>
-        </scene>
-        <!--EditReadState-->
-        <scene sceneID="jNu-cr-P3Z">
-            <objects>
-                <viewControllerPlaceholder storyboardName="EditReadState" id="bV3-xR-aQg" sceneMemberID="viewController"/>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="vJr-xG-U8g" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-6283" y="-1031"/>
-        </scene>
-        <!--EditBook-->
-        <scene sceneID="LUV-0R-DM6">
-            <objects>
-                <viewControllerPlaceholder storyboardName="EditBook" id="OWE-eG-rNf" sceneMemberID="viewController"/>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Yfo-NE-yYe" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-6287" y="-958"/>
         </scene>
         <!--BookDetails-->
         <scene sceneID="Nwv-F8-0xK">
@@ -376,29 +358,11 @@
                     </navigationItem>
                     <connections>
                         <outlet property="tableFooter" destination="0H8-1U-XOm" id="DsI-a6-k6L"/>
-                        <segue destination="2Rz-jC-qCX" kind="presentation" identifier="editBook" modalPresentationStyle="formSheet" id="2Bl-ye-cvk"/>
-                        <segue destination="dIz-iw-L88" kind="presentation" identifier="editReadState" modalPresentationStyle="formSheet" id="rrm-zV-yyp"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="mEs-Fh-yGM" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-6938" y="768"/>
-        </scene>
-        <!--EditReadState-->
-        <scene sceneID="fTZ-yL-u7I">
-            <objects>
-                <viewControllerPlaceholder storyboardName="EditReadState" id="dIz-iw-L88" sceneMemberID="viewController"/>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="scP-jz-jlU" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-6172" y="532"/>
-        </scene>
-        <!--EditBook-->
-        <scene sceneID="VDK-iN-vci">
-            <objects>
-                <viewControllerPlaceholder storyboardName="EditBook" id="2Rz-jC-qCX" sceneMemberID="viewController"/>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="OZp-r6-8nf" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-6119" y="610"/>
         </scene>
         <!--BookDetails-->
         <scene sceneID="zwR-8Z-ZZB">

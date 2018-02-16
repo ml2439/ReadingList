@@ -27,7 +27,7 @@ class BookTableViewCell: UITableViewCell, ConfigurableCell {
         
         #if DEBUG
             if DebugSettings.showSortNumber {
-                titleLabel.text =  "(" + (book.sort?.stringValue ?? "none") + ") " + book.title
+                titleLabel.text =  "(\(book.sort?.string ?? "none") \(book.title)"
             }
         #endif
     }
@@ -331,6 +331,7 @@ class BookTable: AutoUpdatingTableViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let navController = segue.destination as? UINavigationController
         
+        // TODO: Document and tidy
         if let detailsViewController = navController?.topViewController as? BookDetails {
             if let cell = sender as? UITableViewCell,
                 let selectedIndex = self.tableView.indexPath(for: cell) {
@@ -340,12 +341,6 @@ class BookTable: AutoUpdatingTableViewController {
             else if let book = sender as? Book {
                 detailsViewController.book = book
             }
-        }
-        else if let editBookController = navController?.viewControllers.first as? EditBook, let book = sender as? Book {
-            editBookController.bookToEdit = book
-        }
-        else if let editReadStateController = navController?.viewControllers.first as? EditReadState, let book = sender as? Book {
-            editReadStateController.bookToEdit = book
         }
     }
     
@@ -364,7 +359,9 @@ class BookTable: AutoUpdatingTableViewController {
         let optionsAlert = UIAlertController(title: "Add New Book", message: nil, preferredStyle: .actionSheet)
         optionsAlert.addAction(storyboardAction(title: "Scan Barcode", storyboard: Storyboard.ScanBarcode))
         optionsAlert.addAction(storyboardAction(title: "Search Online", storyboard: Storyboard.SearchOnline))
-        optionsAlert.addAction(storyboardAction(title: "Enter Manually", storyboard: Storyboard.AddManually))
+        optionsAlert.addAction(UIAlertAction(title: "Add Manually", style: .default){ [unowned self] _ in
+            self.present(EditBookMetadata().inNavigationController(), animated: true, completion: nil)
+        })
         optionsAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         
         // For iPad, set the popover presentation controller's source
@@ -420,7 +417,7 @@ class BookTable: AutoUpdatingTableViewController {
         }
         deleteAction.image = #imageLiteral(resourceName: "Trash")
         let editAction = UIContextualAction(style: .normal, title: "Edit") { [unowned self] _,_,callback in
-            self.present(EditBookMetadata.inNavigationController(bookToEditId: self.resultsController.object(at: indexPath).objectID), animated: true)
+            self.present(EditBookMetadata(self.resultsController.object(at: indexPath).objectID).inNavigationController(), animated: true)
             callback(true)
         }
         editAction.image = #imageLiteral(resourceName: "Literature")
@@ -432,7 +429,7 @@ class BookTable: AutoUpdatingTableViewController {
     @available(iOS 11.0, *)
     override func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let editReadStateAction = UIContextualAction(style: .normal, title: "Log") { [unowned self] _,_,callback in
-            self.performSegue(withIdentifier: "editReadState", sender: self.resultsController.object(at: indexPath))
+            self.present(EditBookReadState(existingBookID: self.resultsController.object(at: indexPath).objectID).inNavigationController(), animated: true)
             callback(true)
         }
         editReadStateAction.image = #imageLiteral(resourceName: "Timetable")

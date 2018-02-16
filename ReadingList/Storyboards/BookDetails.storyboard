@@ -202,7 +202,7 @@
                                                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                                         <state key="normal" title="Update"/>
                                                                         <connections>
-                                                                            <segue destination="Ifx-rC-wIl" kind="presentation" modalPresentationStyle="formSheet" id="Eno-0z-FCI"/>
+                                                                            <action selector="updateReadingLogPressed:" destination="7uR-tE-cQd" eventType="touchUpInside" id="zKY-mu-mbQ"/>
                                                                         </connections>
                                                                     </button>
                                                                 </subviews>
@@ -500,7 +500,7 @@
                                                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                                         <state key="normal" title="Edit"/>
                                                                         <connections>
-                                                                            <segue destination="prE-Mv-G4K" kind="presentation" modalPresentationStyle="formSheet" id="J7F-XN-Qru"/>
+                                                                            <action selector="editBookPressed:" destination="7uR-tE-cQd" eventType="touchUpInside" id="reK-xe-tbB"/>
                                                                         </connections>
                                                                     </button>
                                                                 </subviews>
@@ -896,22 +896,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5dX-S1-jhF" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-3697.5" y="1645.7746478873239"/>
-        </scene>
-        <!--EditReadState-->
-        <scene sceneID="7bM-8u-lMf">
-            <objects>
-                <viewControllerPlaceholder storyboardName="EditReadState" id="Ifx-rC-wIl" sceneMemberID="viewController"/>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="yKi-AS-FcG" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-3074" y="1572"/>
-        </scene>
-        <!--EditBook-->
-        <scene sceneID="Toc-ej-SJF">
-            <objects>
-                <viewControllerPlaceholder storyboardName="EditBook" id="prE-Mv-G4K" sceneMemberID="viewController"/>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="0SA-yn-XSs" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-3100" y="1722"/>
         </scene>
         <!--Previewing Navigation Controller-->
         <scene sceneID="uo9-El-qJ2">
