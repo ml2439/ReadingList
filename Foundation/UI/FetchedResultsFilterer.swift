@@ -5,19 +5,17 @@ import CoreData
  Manages mapping search queries to Predicates, applying the predicates to a NSFetchedResultsController,
  and updating the results displayed in a table.
 */
-class FetchedResultsFilterer<ResultType, PredicateBuilderType>: NSObject, UISearchResultsUpdating where ResultType : NSFetchRequestResult, PredicateBuilderType : SearchPredicateBuilder {
+class FetchedResultsFilterer<ResultType>: NSObject, UISearchResultsUpdating where ResultType: NSFetchRequestResult {
     let searchController: UISearchController
-    let predicateBuilder: PredicateBuilderType
     let onChange: (() -> ())?
     
     private let fetchedResultsController: NSFetchedResultsController<ResultType>
     private let tableView: UITableView
 
-    init(uiSearchController: UISearchController, tableView: UITableView, fetchedResultsController: NSFetchedResultsController<ResultType>, predicateBuilder: PredicateBuilderType, onChange: (() -> ())?) {
-        self.searchController = uiSearchController
+    init(searchController: UISearchController, tableView: UITableView, fetchedResultsController: NSFetchedResultsController<ResultType>, onChange: (() -> ())?) {
+        self.searchController = searchController
         self.fetchedResultsController = fetchedResultsController
         self.tableView = tableView
-        self.predicateBuilder = predicateBuilder
         self.onChange = onChange
         super.init()
         
@@ -27,14 +25,18 @@ class FetchedResultsFilterer<ResultType, PredicateBuilderType>: NSObject, UISear
     func updateResults() {
         updateSearchResults(for: searchController)
     }
+    
+    func predicate(forSearchText searchText: String?) -> NSPredicate {
+        fatalError("buildPredicateFrom(searchText) is not overriden")
+    }
 
     public func updateSearchResults(for searchController: UISearchController) {
-        let predicate = predicateBuilder.buildPredicateFrom(searchText: searchController.searchBar.text)
+        let predicate = self.predicate(forSearchText: searchController.searchBar.text)
         
         // We shouldn't need to do anything if the predicate is the same, given that we are tracking changes.
         if fetchedResultsController.fetchRequest.predicate != predicate {
             fetchedResultsController.fetchRequest.predicate = predicate
-            try? fetchedResultsController.performFetch()
+            try! fetchedResultsController.performFetch()
             tableView.reloadData()
             onChange?()
         }
@@ -51,8 +53,4 @@ class FetchedResultsFilterer<ResultType, PredicateBuilderType>: NSObject, UISear
         self.searchController.searchBar.showsCancelButton = false
         self.updateSearchResults(for: self.searchController)
     }
-}
-
-protocol SearchPredicateBuilder {
-    func buildPredicateFrom(searchText: String?) -> NSPredicate
 }

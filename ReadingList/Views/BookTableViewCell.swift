@@ -7,8 +7,6 @@ class BookTableViewCell: UITableViewCell {
     @IBOutlet weak var bookCover: UIImageView!
     @IBOutlet weak var readTimeLabel: UILabel?
     
-    typealias ResultType = Book
-    
     func configureFrom(_ book: Book) {
         titleLabel.text = book.title
         authorsLabel.text = book.authorsFirstLast

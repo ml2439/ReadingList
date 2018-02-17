@@ -10,16 +10,36 @@ class BookTableDataSource: TableViewDataSource<Book, BookTable> {
     }
 }
 
+class BookTableFilterer: FetchedResultsFilterer<Book> {
+    
+    let readStatePredicate: NSPredicate
+    
+    required init(searchController: UISearchController, tableView: UITableView, fetchedResultsController: NSFetchedResultsController<Book>, readStatePredicate: NSPredicate, onChange: (() -> ())?) {
+        self.readStatePredicate = readStatePredicate
+        super.init(searchController: searchController, tableView: tableView, fetchedResultsController: fetchedResultsController, onChange: onChange)
+    }
+    
+    override func predicate(forSearchText searchText: String?) -> NSPredicate {
+        var predicate = readStatePredicate
+        if let searchText = searchText,
+            !searchText.isEmptyOrWhitespace && searchText.trimming().count >= 2 {
+            let searchPredicate = NSPredicate.wordsWithinFields(searchText, fieldNames: #keyPath(Book.title), "ANY authors.firstNames", "ANY authors.lastName", "ANY subjects.name")
+            predicate = NSPredicate.And([readStatePredicate, searchPredicate])
+        }
+        return predicate
+    }
+}
+
+
 class BookTable: UITableViewController {
 
     var resultsController: NSFetchedResultsController<Book>!
     var tableViewDataSource: TableViewDataSource<Book, BookTable>!
-    var resultsFilterer: FetchedResultsFilterer<Book, BookPredicateBuilder>!
+    var resultsFilterer: BookTableFilterer!
     var readStates: [BookReadState]!
     var searchController: UISearchController!
-    
-    // Should be overriden by subclasses
-    var navigationItemTitle: String { get { return "" } }
+
+    var navigationItemTitle: String! // Should be set by subclasses
     
     var parentSplitViewController: SplitViewController {
         get { return splitViewController as! SplitViewController }
@@ -28,9 +48,8 @@ class BookTable: UITableViewController {
     @IBOutlet weak var tableFooter: UILabel!
     
     override func viewDidLoad() {
-    
-        /// The UISearchController to which this UITableViewController will be connected.
-        configureSearchController()
+        searchController = UISearchController(filterPlaceholderText: "Your Library")
+        tableView.keyboardDismissMode = .onDrag
         
         // Handle the data fetch, sort and filtering
         buildResultsController()
@@ -69,6 +88,34 @@ class BookTable: UITableViewController {
             navigationController!.navigationBar.prefersLargeTitles = UserSettings.useLargeTitles.value
         }
         super.viewWillAppear(animated)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        // Deselect selected rows, so they don't stay highlighted, but only when in non-split mode
+        if let selectedIndexPath = self.tableView.indexPathForSelectedRow, !parentSplitViewController.detailIsPresented {
+            self.tableView.deselectRow(at: selectedIndexPath, animated: animated)
+        }
+        
+        // Work around a stupid bug (https://stackoverflow.com/q/46239530/5513562)
+        if #available(iOS 11.0, *), searchController.searchBar.frame.height == 0 {
+            navigationItem.searchController?.isActive = false
+        }
+        
+        super.viewDidAppear(animated)
+    }
+    
+    func buildResultsController() {
+        let readStatePredicate = NSPredicate.Or(readStates.map{NSPredicate(\Book.readState, .equals, $0.rawValue)})
+        resultsController = ObjectQuery<Book>().filtered(readStatePredicate).sorted(UserSettings.selectedSortOrder)
+            .fetchController(sectionKeyPath: \Book.readState, context: container.viewContext)
+
+        tableViewDataSource = BookTableDataSource(tableView: tableView, cellIdentifier: "BookTableViewCell", fetchedResultsController: resultsController, delegate: self) { [unowned self] in
+            self.tableFooter.text = self.footerText()
+        }
+        
+        resultsFilterer = BookTableFilterer(searchController: searchController, tableView: tableView, fetchedResultsController: resultsController, readStatePredicate: readStatePredicate) { [unowned self] in
+            self.tableFooter.text = self.footerText()
+        }
     }
     
     override func setEditing(_ editing: Bool, animated: Bool) {
@@ -187,10 +234,7 @@ class BookTable: UITableViewController {
         self.present(optionsAlert, animated: true, completion: nil)
     }
     
-    func footerText() -> String? {
-        // Override to configure table footer label text
-        return nil
-    }
+    func footerText() -> String? { fatalError("footerText() not overriden") }
     
     func sectionIndex(forReadState readState: BookReadState) -> Int? {
         if let sectionIndex = resultsController.sections?.index(where: {$0.name == String.init(describing: readState.rawValue)}) {
@@ -202,47 +246,7 @@ class BookTable: UITableViewController {
     func readStateForSection(_ section: Int) -> BookReadState {
         return readStates.first{sectionIndex(forReadState: $0) == section}!
     }
-    
-    func buildResultsController() {
-        let readStatePredicate = NSPredicate.Or(readStates.map{BookPredicate.readState(equalTo: $0)})
-        resultsController = appDelegate.booksStore.fetchedResultsController(readStatePredicate, initialSortDescriptors: UserSettings.selectedSortOrder)
-        tableViewDataSource = BookTableDataSource(tableView: tableView, cellIdentifier: "BookTableViewCell", fetchedResultsController: resultsController, delegate: self) { [unowned self] in
-            self.tableFooter.text = self.footerText()
-        }
-        
-        let predicateBuilder = BookPredicateBuilder(readStatePredicate: readStatePredicate)
-        resultsFilterer = FetchedResultsFilterer(uiSearchController: searchController, tableView: self.tableView, fetchedResultsController: resultsController, predicateBuilder: predicateBuilder){ [unowned self] in
-            self.tableFooter.text = self.footerText()
-        }
-    }
-    
-    func configureSearchController() {
-        searchController = UISearchController(searchResultsController: nil)
-        searchController.dimsBackgroundDuringPresentation = false
-        searchController.searchBar.returnKeyType = .done
-        searchController.searchBar.placeholder = "Your Library"
-        searchController.searchBar.searchBarStyle = .default
-        tableView.keyboardDismissMode = .onDrag
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        // Deselect selected rows, so they don't stay highlighted, but only when in non-split mode
-        if let selectedIndexPath = self.tableView.indexPathForSelectedRow, !parentSplitViewController.detailIsPresented {
-            self.tableView.deselectRow(at: selectedIndexPath, animated: animated)
-        }
-        
-        // Work around a stupid bug (https://stackoverflow.com/q/46239530/5513562)
-        if #available(iOS 11.0, *), searchController.searchBar.frame.height == 0 {
-            navigationItem.searchController?.isActive = false
-        }
-        
-        super.viewDidAppear(animated)
-    }
-    
-    /**
-     allowTableObscuring determines whether the book details page should actually be shown,
-     if showing it will obscure this table
-    */
+
     func simulateBookSelection(_ book: Book, allowTableObscuring: Bool = true) {
         let indexPathOfSelectedBook = self.resultsController.indexPath(forObject: book)
         
@@ -253,6 +257,7 @@ class BookTable: UITableViewController {
             tableView.scrollToRow(at: indexPathOfSelectedBook, at: .none, animated: true)
         }
         
+        // allowTableObscuring determines whether the book details page should actually be shown, if showing it will obscure this table
         if allowTableObscuring || parentSplitViewController.isSplit {
             if let indexPathOfSelectedBook = indexPathOfSelectedBook {
                 tableView.selectRow(at: indexPathOfSelectedBook, animated: true, scrollPosition: .none)
@@ -279,18 +284,15 @@ class BookTable: UITableViewController {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let navController = segue.destination as? UINavigationController
-        
-        // TODO: Document and tidy
-        if let detailsViewController = navController?.topViewController as? BookDetails {
-            if let cell = sender as? UITableViewCell,
-                let selectedIndex = self.tableView.indexPath(for: cell) {
-         
-                detailsViewController.book = self.resultsController.object(at: selectedIndex)
-            }
-            else if let book = sender as? Book {
-                detailsViewController.book = book
-            }
+        guard let navController = segue.destination as? UINavigationController,
+            let detailsViewController = navController.topViewController as? BookDetails else { return }
+
+        if let cell = sender as? UITableViewCell, let selectedIndex = self.tableView.indexPath(for: cell) {
+            detailsViewController.book = self.resultsController.object(at: selectedIndex)
+        }
+        else {
+            // When a simulated selection triggers a segue, the sender is the Book
+            detailsViewController.book = (sender as! Book)
         }
     }
     

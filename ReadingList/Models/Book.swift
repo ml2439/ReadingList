@@ -78,9 +78,6 @@ class Book: NSManagedObject {
     override func willSave() {
         super.willSave()
         
-        let random = arc4random()
-        print("In willSave \(random)")
-        
         // Do not set the firstAuthorLastName property if it is already correct; will lead to an infinite loop
         let currentFirstAuthorLastName = (authors.firstObject as? Author)?.lastName
         if firstAuthorLastName != currentFirstAuthorLastName {
@@ -92,8 +89,11 @@ class Book: NSManagedObject {
                 print("Setting sort to \(maxSort + 1)")
                 self.sort = maxSort + 1
             }
+            else {
+                print("Setting sort to 1")
+                self.sort = 1
+            }
         }
-        print("Finished willSave \(random)")
     }
     
     convenience init(context: NSManagedObjectContext, readState: BookReadState) {

@@ -2,13 +2,10 @@ import UIKit
 import DZNEmptyDataSet
 
 class ReadingTable: BookTable {
-
-    override var navigationItemTitle: String {
-        get { return "To Read" }
-    }
     
     override func viewDidLoad() {
         readStates = [.toRead, .reading]
+        navigationItemTitle = "To Read"
         super.viewDidLoad()
     }
 

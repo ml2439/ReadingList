@@ -20,10 +20,10 @@ class TableViewDataSource<Result: NSFetchRequestResult, Delegate: TableViewDataS
         self.delegate = delegate
         self.onChange = onChange
         super.init()
-        fetchedResultsController.delegate = self
+
         try! fetchedResultsController.performFetch()
+        fetchedResultsController.delegate = self
         tableView.dataSource = self
-        tableView.reloadData()
     }
     
     fileprivate let tableView: UITableView

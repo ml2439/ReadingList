@@ -38,6 +38,16 @@ extension UIStoryboard {
     }
 }
 
+extension UISearchController {
+    convenience init(filterPlaceholderText: String) {
+        self.init(searchResultsController: nil)
+        dimsBackgroundDuringPresentation = false
+        searchBar.returnKeyType = .done
+        searchBar.placeholder = filterPlaceholderText
+        searchBar.searchBarStyle = .default
+    }
+}
+
 extension UIViewController {
     func inNavigationController(modalPresentationStyle: UIModalPresentationStyle = .formSheet) -> UINavigationController {
         let nav = UINavigationController(rootViewController: self)

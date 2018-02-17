@@ -44,20 +44,6 @@ class BooksStore {
     }
 
     /**
-     Creates a NSFetchedResultsController to retrieve books in the given state.
-    */
-    func fetchedResultsController(_ initialPredicate: NSPredicate?, initialSortDescriptors: [NSSortDescriptor]?) -> NSFetchedResultsController<Book> {
-        let fetchRequest = ObjectQuery<Book>().fetchRequest()
-        fetchRequest.fetchBatchSize = 1000
-        fetchRequest.predicate = initialPredicate
-        fetchRequest.sortDescriptors = initialSortDescriptors
-        return NSFetchedResultsController(fetchRequest: fetchRequest,
-            managedObjectContext: container.viewContext,
-            sectionNameKeyPath: BookPredicate.readStateFieldName,
-            cacheName: nil)
-    }
-
-    /**
      Gets the current maximum sort index in the books store
     */
     func maxSort() -> Int? {

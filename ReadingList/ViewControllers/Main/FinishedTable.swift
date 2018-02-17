@@ -2,13 +2,10 @@ import UIKit
 import DZNEmptyDataSet
 
 class FinishedTable: BookTable {
-
-    override var navigationItemTitle: String {
-        get { return "Finished" }
-    }
     
     override func viewDidLoad() {
         readStates = [.finished]
+        navigationItemTitle = "Finished"
         super.viewDidLoad()
     }
     

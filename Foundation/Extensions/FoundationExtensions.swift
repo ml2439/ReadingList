@@ -39,6 +39,16 @@ extension Int {
     }
 }
 
+extension NSSortDescriptor {
+    convenience init<Root, Value>(_ keyPath: KeyPath<Root, Value>, ascending: Bool = true) {
+        self.init(keyPath: keyPath, ascending: ascending)
+    }
+    
+    convenience init(_ key: String, ascending: Bool = true) {
+        self.init(key: key, ascending: ascending)
+    }
+}
+
 extension URL {
     static func temporary() -> URL {
         return URL(fileURLWithPath:NSTemporaryDirectory(), isDirectory: true).appendingPathComponent(UUID().uuidString)

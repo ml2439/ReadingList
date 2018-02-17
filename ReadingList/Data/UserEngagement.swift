@@ -46,9 +46,6 @@ class UserEngagement {
         case reorederList = "Reorder_List"
         case deleteList = "Delete_List"
         
-        // Miscellaneous
-        case spotlightSearch = "Spotlight_Search"
-        
         // Quick actions
         case searchOnlineQuickAction = "Quick_Action_Search_Online"
         case scanBarcodeQuickAction = "Quick_Action_Scan_Barcode"

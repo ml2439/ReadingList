@@ -27,7 +27,7 @@ class ObjectQuery<T> where T: NSManagedObject {
         return ObjectQuery<T>(predicates: newPredicates, sortDescriptors: newSortDescriptors)
     }
     
-    func filtered(predicate: NSPredicate) -> ObjectQuery<T> {
+    func filtered(_ predicate: NSPredicate) -> ObjectQuery<T> {
         return self.with(predicate: predicate)
     }
     
@@ -45,6 +45,10 @@ class ObjectQuery<T> where T: NSManagedObject {
     
     func sorted(_ keyPath: String, ascending: Bool = true) -> ObjectQuery<T> {
         return self.with(sortDescriptor: NSSortDescriptor(key: keyPath, ascending: ascending))
+    }
+    
+    func sorted(_ sortDescriptors: [NSSortDescriptor]) -> ObjectQuery<T> {
+        return ObjectQuery<T>(predicates: predicates, sortDescriptors: self.sortDescriptors + sortDescriptors)
     }
     
     func fetchRequest(limit: Int? = nil) -> NSFetchRequest<T> {
@@ -89,8 +93,12 @@ class ObjectQuery<T> where T: NSManagedObject {
 }
 
 extension NSPredicate {
-    convenience init<T, Value>(_ keyPath: KeyPath<T, Value>, _ comparison: PredicateComparison, _ comparisonValue: Value) {
-        self.init(format: "%K \(comparison.rawValue) %@", argumentArray: [keyPath.string, comparisonValue])
+    convenience init(_ key: String, _ comparison: PredicateComparison, _ comparisonValue: Any) {
+        self.init(format: "%K \(comparison.rawValue) %@", argumentArray: [key, comparisonValue])
+    }
+    
+    convenience init<T, Value>(_ keyPath: KeyPath<T, Value>, _ comparison: PredicateComparison, _ comparisonValue: Any) {
+        self.init(keyPath.string, comparison, comparisonValue)
     }
 }
 

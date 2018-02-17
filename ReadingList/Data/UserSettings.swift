@@ -38,14 +38,14 @@ class UserSettings {
         get { return SortOrders[UserSettings.tableSortOrder]! }
     }
     
-    private static let SortOrders = [TableSortOrder.byDate: [BookPredicate.readStateSort,
-                                                             BookPredicate.sortIndexSort,
-                                                             BookPredicate.finishedReadingDescendingSort,
-                                                             BookPredicate.startedReadingDescendingSort],
-                                     TableSortOrder.byTitle: [BookPredicate.readStateSort,
-                                                              BookPredicate.titleSort],
-                                     TableSortOrder.byAuthor: [BookPredicate.readStateSort,
-                                                               BookPredicate.authorSort]]
+    private static let SortOrders = [TableSortOrder.byDate: [NSSortDescriptor(\Book.readState),
+                                                             NSSortDescriptor("sort"),
+                                                             NSSortDescriptor(\Book.finishedReading),
+                                                             NSSortDescriptor(\Book.startedReading)],
+                                     TableSortOrder.byTitle: [NSSortDescriptor(\Book.readState),
+                                                              NSSortDescriptor(\Book.title)],
+                                     TableSortOrder.byAuthor: [NSSortDescriptor(\Book.readState),
+                                                               NSSortDescriptor(\Book.firstAuthorLastName)]]
 
     static var sendAnalytics = UserSetting<Bool>(key: "sendAnalytics", defaultValue: true)
     static var sendCrashReports = UserSetting<Bool>(key: "sendCrashReports", defaultValue: true)
