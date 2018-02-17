@@ -93,7 +93,7 @@ class BooksStore {
         Saves and reindexes in spotlight.
     */
     func update(book: Book, withMetadata metadata: BookMetadata) {
-        book.performAndSave {
+        book.managedObjectContext!.performAndSave {
             self.populateBook(book, withMetadata: metadata)
         }
     }
@@ -109,7 +109,7 @@ class BooksStore {
         Updates the provided book with the provided reading information and the provided notes field.
      */
     func update(book: Book, withReadingInformation readingInformation: BookReadingInformation, readingNotes: String?) {
-        book.performAndSave {
+        book.managedObjectContext!.performAndSave {
             book.populate(from: readingInformation)
             book.notes = readingNotes
             self.updateSort(book: book)

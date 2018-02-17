@@ -173,10 +173,10 @@ extension Book {
             
         var predicates = [NSPredicate]()
         if let googleBooksId = googleBooksId {
-            predicates.append(NSPredicate(\Book.googleBooksId, .equals, googleBooksId))
+            predicates.append(NSPredicate(format: "%K == %@", #keyPath(Book.googleBooksId), googleBooksId))
         }
         if let isbn = isbn {
-            predicates.append(NSPredicate(\Book.isbn13, .equals, isbn))
+            predicates.append(NSPredicate(format: "%K == %@", #keyPath(Book.isbn13), isbn))
         }
         return ObjectQuery<Book>().any(predicates).fetch(1, fromContext: context).first
     }
@@ -221,11 +221,6 @@ extension Book {
             UserEngagement.logEvent(.transitionReadState)
             UserEngagement.onReviewTrigger()
         }
-    }
-    
-    func deleteAndLog() {
-        deleteAndSave()
-        UserEngagement.logEvent(.deleteBook)
     }
     
     static func BuildCsvExport(withLists lists: [String]) -> CsvExport<Book> {

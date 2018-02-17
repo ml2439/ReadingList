@@ -53,15 +53,14 @@ class ListBookTable: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "BookTableViewCell") as! BookTableViewCell
-        cell.configureFrom(list.booksArray[indexPath.row])
+        cell.configureFrom(list.books.object(at: indexPath.row) as! Book)
         return cell
     }
     
     private func removeBook(at indexPath: IndexPath) {
-        var books = list.booksArray
-        books.remove(at: indexPath.row)
-        list.performAndSave {
-            self.list.books = NSOrderedSet(array: books)
+        let bookToRemove = list.books[indexPath.row]
+        list.managedObjectContext!.performAndSave {
+            self.list.removeBooks(NSSet(array: ([bookToRemove])))
         }
         UserEngagement.logEvent(.removeBookFromList)
     }
@@ -82,21 +81,20 @@ class ListBookTable: UITableViewController {
     override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         guard sourceIndexPath != destinationIndexPath else { return }
 
-        var books = list.booksArray
+        var books = list.books.array.map{($0 as! Book)}
         let movedBook = books.remove(at: sourceIndexPath.row)
         books.insert(movedBook, at: destinationIndexPath.row)
         list.books = NSOrderedSet(array: books)
         withoutAutomaticUpdates {
-            container.viewContext.saveOrRollback()
+            list.managedObjectContext!.saveIfChanged()
         }
-        
         UserEngagement.logEvent(.reorederList)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let detailsViewController = (segue.destination as? UINavigationController)?.topViewController as? BookDetails {
             let selectedIndex = tableView.indexPath(for: sender as! UITableViewCell)!
-            detailsViewController.book = list.booksArray[selectedIndex.row]
+            detailsViewController.book = (list.books.object(at: selectedIndex.row) as! Book)
         }
     }
 }

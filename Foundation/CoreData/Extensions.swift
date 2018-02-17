@@ -9,13 +9,7 @@ extension NSManagedObject {
     
     func deleteAndSave() {
         delete()
-        managedObjectContext!.saveOrRollback()
-    }
-    
-    func performAndSave(block: @escaping () -> ()){
-        self.managedObjectContext!.performAndSave {
-            block()
-        }
+        try! managedObjectContext!.save()
     }
     
     func isValidForUpdate() -> Bool {
@@ -23,8 +17,7 @@ extension NSManagedObject {
             try validateForUpdate()
             return true
         }
-        catch let error {
-            print(error)
+        catch {
             return false
         }
     }
@@ -33,18 +26,18 @@ extension NSManagedObject {
 extension NSManagedObjectContext {
     
     /**
-     Creates a child managed object context, and adds an observer to the child context's save event, triggering notification to
+     Creates a child managed object context, and adds an observer to the child context's save event in order to trigger a merge and save
     */
     func childContext(concurrencyType: NSManagedObjectContextConcurrencyType = .mainQueueConcurrencyType) -> NSManagedObjectContext {
         let childContext = NSManagedObjectContext(concurrencyType: concurrencyType)
         childContext.parent = self
         
-        NotificationCenter.default.addObserver(self, selector: #selector(mergeSave(fromChildContextDidSave:)), name: NSNotification.Name.NSManagedObjectContextDidSave, object: childContext)
+        NotificationCenter.default.addObserver(self, selector: #selector(mergeAndSave(fromChildContextDidSave:)), name: NSNotification.Name.NSManagedObjectContextDidSave, object: childContext)
         
         return childContext
     }
     
-    @objc private func mergeSave(fromChildContextDidSave notification: Notification) {
+    @objc private func mergeAndSave(fromChildContextDidSave notification: Notification) {
         self.mergeChanges(fromContextDidSave: notification)
         self.saveIfChanged()
     }
@@ -53,12 +46,11 @@ extension NSManagedObjectContext {
      With a valid URL representation of a Managed Object ID, returns the managed object.
     */
     func object(withID id: URL) -> NSManagedObject {
-        let objectID = persistentStoreCoordinator!.managedObjectID(forURIRepresentation: id)!
-        return object(with: objectID)
+        return object(with: persistentStoreCoordinator!.managedObjectID(forURIRepresentation: id)!)
     }
     
     /**
-     Saves if changes are present in the context. If an error occurs, prints the error and throws a fatalError.
+     Saves if changes are present in the context. If an error occurs, throws a fatalError.
     */
     func saveIfChanged() {
         guard hasChanges else { return }
@@ -66,45 +58,21 @@ extension NSManagedObjectContext {
             try save()
         }
         catch {
-            print("Error saving context. \(error)")
             fatalError(error.localizedDescription)
         }
-    }
-    
-    /**
-     Checks for changes. If changes are present, tries to save. Returns false if the save operation failed.
-    */
-    func trySaveIfChanged() -> Bool {
-        guard hasChanges else { return true }
-        do {
-            try save()
-            return true
-        }
-        catch {
-            print("Error saving context: \(error)")
-            return false
-        }
-    }
-
-    @discardableResult func saveOrRollback() -> Bool {
-        let didSave = trySaveIfChanged()
-        if !didSave { rollback() }
-        return didSave
     }
     
     func performAndSave(block: @escaping () -> ()) {
         perform { [unowned self] in
             block()
-            // TODO: weak self?
-            self.saveOrRollback()
+            self.saveIfChanged()
         }
     }
     
     func performAndSaveAndWait(block: @escaping () -> ()) {
         performAndWait { [unowned self] in
             block()
-            // TODO: weak self?
-            self.saveOrRollback()
+            self.saveIfChanged()
         }
     }
 }

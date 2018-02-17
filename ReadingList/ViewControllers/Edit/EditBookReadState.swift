@@ -112,7 +112,7 @@ class EditBookReadState: FormViewController {
     }
     
     func configureNavigationItem() {
-        if navigationItem.leftBarButtonItem == nil {
+        if navigationItem.leftBarButtonItem == nil && navigationController?.viewControllers.first == self {
             navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelPressed))
         }
         navigationItem.title = book.title
@@ -141,9 +141,7 @@ class EditBookReadState: FormViewController {
     }
     
     @objc func donePressed() {
-        // TODO: This prevents dismiss if save fails. Is this right? General strategy should be decided.
-        if editContext.trySaveIfChanged() {
-            dismiss(animated: true, completion: nil)
-        }
+        editContext.saveIfChanged()
+        dismiss(animated: true, completion: nil)
     }
 }

@@ -155,8 +155,8 @@ class AddToList: UITableViewController {
         if indexPath.section == 0 {
             // Append the books to the end of the selected list
             let list = resultsController.object(at: IndexPath(row: indexPath.row, section: 0))
-            list.performAndSave {
-                list.books = NSOrderedSet(array: list.booksArray + self.books)
+            list.managedObjectContext!.performAndSave {
+                list.addBooks(NSOrderedSet(array: self.books))
             }
 
             navigationController!.dismiss(animated: true, completion: onCompletion)

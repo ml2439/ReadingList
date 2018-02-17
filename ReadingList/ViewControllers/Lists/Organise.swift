@@ -37,7 +37,7 @@ class Organise: UITableViewController {
                         return listName == list.name || !existingListNames.contains(listName)
                     }, onOK: {
                         guard let listName = $0 else { return }
-                        list.performAndSave {
+                        list.managedObjectContext!.performAndSave {
                             list.name = listName
                         }
                     }

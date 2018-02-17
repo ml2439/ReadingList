@@ -105,9 +105,11 @@ class BookTable: UITableViewController {
     }
     
     func buildResultsController() {
-        let readStatePredicate = NSPredicate.Or(readStates.map{NSPredicate(\Book.readState, .equals, $0.rawValue)})
+        let readStatePredicate = NSPredicate.Or(readStates.map{
+            NSPredicate(format: "%K == %ld", #keyPath(Book.readState), $0.rawValue)
+        })
         resultsController = ObjectQuery<Book>().filtered(readStatePredicate).sorted(UserSettings.selectedSortOrder)
-            .fetchController(sectionKeyPath: \Book.readState, context: container.viewContext)
+            .fetchController(sectionKeyPath: #keyPath(Book.readState), context: container.viewContext)
 
         tableViewDataSource = BookTableDataSource(tableView: tableView, cellIdentifier: "BookTableViewCell", fetchedResultsController: resultsController, delegate: self) { [unowned self] in
             self.tableFooter.text = self.footerText()

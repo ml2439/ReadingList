@@ -199,9 +199,8 @@ class EditBookMetadata: FormViewController {
     }
     
     @objc func donePressed() {
-        if editBookContext.trySaveIfChanged() {
-            dismiss(animated: true, completion: nil)
-        }
+        editBookContext.saveIfChanged()
+        dismiss(animated: true, completion: nil)
     }
     
     @objc func presentEditReadingState() {

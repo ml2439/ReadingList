@@ -130,8 +130,8 @@ class BookImporter {
                 let orderedBooks = listMapping.value.sorted(by: {$0.1 < $1.1})
                     .map{container.viewContext.object(with: $0.bookId) as! Book}
                     .filter{!list.books.contains($0)}
-                list.performAndSave {
-                    list.books = NSOrderedSet(array: list.booksArray + orderedBooks)
+                list.managedObjectContext!.performAndSave {
+                    list.addBooks(NSOrderedSet(array: orderedBooks))
                 }
             }
             

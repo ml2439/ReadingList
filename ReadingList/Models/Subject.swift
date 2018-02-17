@@ -21,7 +21,7 @@ class Subject: NSManagedObject {
     }
     
     static func getOrCreate(inContext context: NSManagedObjectContext, withName name: String) -> Subject {
-        if let existingSubject = ObjectQuery<Subject>().filtered(\Subject.name, .equals, name).fetch(1, fromContext: context).first {
+        if let existingSubject = ObjectQuery<Subject>().filtered("%K == %@", #keyPath(Subject.name), name).fetch(1, fromContext: context).first {
             return existingSubject
         }
         return Subject(context: context, name: name)

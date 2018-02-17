@@ -62,6 +62,11 @@ class SearchOnline: ArrayBackedTableController<GoogleBooks.SearchResult>, UISear
         }
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationController!.setToolbarHidden(true, animated: true)
+    }
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
@@ -174,7 +179,7 @@ class SearchOnline: ArrayBackedTableController<GoogleBooks.SearchResult>, UISear
                     let book = Book(context: editContext, readState: .toRead)
                     // TODO: make a convenience init which takes a fetch result?
                     book.populate(fromFetchResult: fetchResult)
-                    self?.present(EditBookReadState(newUnsavedBook: book).inNavigationController(), animated: true)
+                    self?.navigationController!.pushViewController(EditBookReadState(newUnsavedBook: book), animated: true)
                 }
                 else {
                     SVProgressHUD.showError(withStatus: "An error occurred. Please try again later.")
@@ -236,7 +241,7 @@ class SearchOnline: ArrayBackedTableController<GoogleBooks.SearchResult>, UISear
         
         // On completion, dismiss this view (or show an error if they all failed)
         fetches.notify(queue: .main) { [weak self] in
-            container.viewContext.saveOrRollback()
+            container.viewContext.saveIfChanged()
             SVProgressHUD.dismiss()
             guard errorCount != selectedRows.count else {
                 // If they all errored, don't dismiss - show an error

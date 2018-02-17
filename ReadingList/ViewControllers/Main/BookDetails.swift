@@ -227,7 +227,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         let updatedObjects = userInfo[NSUpdatedObjectsKey] as? NSSet ?? NSSet()
         let createdObjects = userInfo[NSInsertedObjectsKey] as? NSSet ?? NSSet()
         func setContainsRelatedList(_ set: NSSet) -> Bool {
-           return set.flatMap({$0 as? List}).any(where: {$0.booksArray.contains(book)})
+           return set.flatMap({$0 as? List}).any(where: {$0.books.contains(book)})
         }
         
         if updatedObjects.contains(book) || setContainsRelatedList(deletedObjects) || setContainsRelatedList(updatedObjects) || setContainsRelatedList(createdObjects) {
