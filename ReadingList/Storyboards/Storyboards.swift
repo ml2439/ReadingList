@@ -13,5 +13,9 @@ class Storyboard {
     static var AddToList: UIStoryboard {
         get { return UIStoryboard(name: "AddToList", bundle: Bundle.main) }
     }
+    
+    static var Main: UIStoryboard {
+        get { return UIStoryboard(name: "Main", bundle: Bundle.main) }
+    }
 }
 

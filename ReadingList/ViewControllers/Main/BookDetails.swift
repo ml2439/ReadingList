@@ -120,7 +120,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         setTextOrHideLine(notes, book.notes)
 
         setTextOrHideLine(isbn, book.isbn13)
-        setTextOrHideLine(pages, String(describing: book.pageCount))
+        setTextOrHideLine(pages, book.pageCount?.string)
         setTextOrHideLine(published, book.publicationDate?.toPrettyString(short: false))
         setTextOrHideLine(subjects,  book.subjects.map{($0 as! Subject).name}.joined(separator: ", ").nilIfWhitespace())
         googleBooks.isHidden = book.googleBooksId == nil

@@ -7,7 +7,7 @@ class BooksStore {
     let storeName = "books"
     var storeFileName: String { return "\(storeName).sqlite" }
     
-    func initalisePersistentStore() {
+    func initalisePersistentStore(completion: @escaping () -> ()) {
         let storeLocation = URL.applicationSupport.appendingPathComponent(storeFileName)
 
         // Default location of NSPersistentContainer is in the ApplicationSupport directory;
@@ -23,6 +23,7 @@ class BooksStore {
         container.loadPersistentStores{ _, error in
             guard error == nil else { fatalError("Error loading store") }
             print("Persistent store loaded")
+            completion()
         }
     }
     

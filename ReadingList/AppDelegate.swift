@@ -28,11 +28,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     
-    lazy var booksStore: BooksStore = {
-        let store = BooksStore()
-        store.initalisePersistentStore()
-        return store
-    }()
+    var booksStore: BooksStore!
     
     var tabBarController: TabBarController {
         return window!.rootViewController as! TabBarController
@@ -46,6 +42,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupSvProgressHud()
         completeStoreTransactions()
         applyCommandLineArgs()
+        
+        booksStore = BooksStore()
+        DispatchQueue.global(qos: .userInitiated).async { [unowned self] in
+            self.booksStore.initalisePersistentStore {
+                DispatchQueue.main.async {
+                    self.window!.rootViewController = Storyboard.Main.instantiateRoot()
+                }
+            }
+        }
 
         return true
     }
@@ -81,12 +86,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func completeStoreTransactions() {
         // Apple recommends to register a transaction observer as soon as the app starts.
         SwiftyStoreKit.completeTransactions(atomically: true) { purchases in
-            for purchase in purchases {
-                if purchase.transaction.transactionState == .purchased || purchase.transaction.transactionState == .restored {
-                    if purchase.needsFinishTransaction {
-                        SwiftyStoreKit.finishTransaction(purchase.transaction)
-                    }
-                }
+            purchases.filter{($0.transaction.transactionState == .purchased || $0.transaction.transactionState == .restored) && $0.needsFinishTransaction}.forEach{
+                SwiftyStoreKit.finishTransaction($0.transaction)
             }
         }
     }
@@ -103,19 +104,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         #endif
         UserEngagement.onAppOpen()
-    }
-    
-    func application(_ application: UIApplication, willContinueUserActivityWithType userActivityType: String) -> Bool {
-        return userActivityType == CSSearchableItemActionType
-    }
-
-    func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]?) -> Void) -> Bool {
-        if userActivity.activityType == CSSearchableItemActionType && userActivity.userInfo?[CSSearchableItemActivityIdentifier] is String {
-            UserEngagement.logEvent(.spotlightSearch)
-            tabBarController.restoreUserActivityState(userActivity)
-            return true
-        }
-        return false
     }
     
     func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {

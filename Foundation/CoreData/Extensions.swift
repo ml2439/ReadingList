@@ -32,18 +32,43 @@ extension NSManagedObject {
 
 extension NSManagedObjectContext {
     
+    /**
+     Creates a child managed object context, and adds an observer to the child context's save event, triggering notification to
+    */
     func childContext(concurrencyType: NSManagedObjectContextConcurrencyType = .mainQueueConcurrencyType) -> NSManagedObjectContext {
         let childContext = NSManagedObjectContext(concurrencyType: concurrencyType)
         childContext.parent = self
         
-        NotificationCenter.default.addObserver(self, selector: #selector(mergeChanges(fromContextDidSave:)), name: NSNotification.Name.NSManagedObjectContextDidSave, object: childContext)
+        NotificationCenter.default.addObserver(self, selector: #selector(mergeSave(fromChildContextDidSave:)), name: NSNotification.Name.NSManagedObjectContextDidSave, object: childContext)
         
         return childContext
     }
     
+    @objc private func mergeSave(fromChildContextDidSave notification: Notification) {
+        self.mergeChanges(fromContextDidSave: notification)
+        self.saveIfChanged()
+    }
+    
+    /**
+     With a valid URL representation of a Managed Object ID, returns the managed object.
+    */
     func object(withID id: URL) -> NSManagedObject {
         let objectID = persistentStoreCoordinator!.managedObjectID(forURIRepresentation: id)!
         return object(with: objectID)
+    }
+    
+    /**
+     Saves if changes are present in the context. If an error occurs, prints the error and throws a fatalError.
+    */
+    func saveIfChanged() {
+        guard hasChanges else { return }
+        do {
+            try save()
+        }
+        catch {
+            print("Error saving context. \(error)")
+            fatalError(error.localizedDescription)
+        }
     }
     
     /**
