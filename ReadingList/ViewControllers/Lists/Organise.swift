@@ -3,9 +3,10 @@ import UIKit
 import CoreData
 import DZNEmptyDataSet
 
-class Organise: AutoUpdatingTableViewController {
+class Organise: UITableViewController {
 
     var resultsController: NSFetchedResultsController<List>!
+    var tableViewDataSource: TableViewDataSource<List, Organise>!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -16,8 +17,7 @@ class Organise: AutoUpdatingTableViewController {
         tableView.emptyDataSetDelegate = self
         
         resultsController = ObjectQuery<List>().sorted(\List.name).fetchController(context: container.viewContext)
-        tableUpdater = TableUpdater<List, ListCell>(table: tableView, controller: resultsController)
-        try! resultsController.performFetch()
+        tableViewDataSource = TableViewDataSource(tableView: tableView, cellIdentifier: "ListCell", fetchedResultsController: resultsController, delegate: self)
         
         navigationItem.leftBarButtonItem = editButtonItem
     }
@@ -90,6 +90,16 @@ class Organise: AutoUpdatingTableViewController {
     }
 }
 
+extension Organise: TableViewDataSourceDelegate {
+    typealias Object = List
+    typealias Cell = UITableViewCell
+    
+    func configure(_ cell: UITableViewCell, for object: List) {
+        cell.textLabel!.text = object.name
+        cell.detailTextLabel!.text = "\(object.books.count) book\(object.books.count == 1 ? "" : "s")"
+    }
+}
+
 extension Organise: DZNEmptyDataSetSource {
     
     func title(forEmptyDataSet scrollView: UIScrollView!) -> NSAttributedString! {
@@ -119,15 +129,5 @@ extension Organise: DZNEmptyDataSetDelegate {
     
     func emptyDataSetDidDisappear(_ scrollView: UIScrollView!) {
         navigationItem.leftBarButtonItem = editButtonItem
-    }
-}
-
-
-class ListCell: UITableViewCell, ConfigurableCell {
-    typealias ResultType = List
-    
-    func configureFrom(_ result: List) {
-        textLabel!.text = result.name
-        detailTextLabel!.text = "\(result.booksArray.count) book\(result.booksArray.count == 1 ? "" : "s")"
     }
 }

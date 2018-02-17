@@ -64,21 +64,9 @@ class ReadingTable: BookTable {
         }
         
         // Turn off updates while we save the object context
-        tableUpdater.withoutUpdates {
-            if container.viewContext.saveOrRollback() {
-                do {
-                    try resultsController.performFetch()
-                }
-                catch {
-                    // If the fetch failed and the cells are not in the position which the result controller thinks
-                    // they are, refresh the table. This will put the cells back where they "should" be.
-                    tableView.reloadData()
-                }
-            }
-            else {
-                // If the save failed, revert the cells
-                tableView.reloadData()
-            }
+        tableViewDataSource.withoutUpdates {
+            container.viewContext.saveIfChanged()
+            try! resultsController.performFetch()
         }
     }
     
@@ -113,12 +101,12 @@ class ReadingTable: BookTable {
     override func footerText() -> String? {
         var footerPieces = [String]()
         if let toReadSectionIndex = self.sectionIndex(forReadState: .toRead) {
-            let toReadCount = tableView(tableView, numberOfRowsInSection: toReadSectionIndex)
+            let toReadCount = tableViewDataSource.tableView(tableView, numberOfRowsInSection: toReadSectionIndex)
             footerPieces.append("To Read: \(toReadCount) book\(toReadCount == 1 ? "" : "s")")
         }
         
         if let readingSectionIndex = self.sectionIndex(forReadState: .reading) {
-            let readingCount = tableView(tableView, numberOfRowsInSection: readingSectionIndex)
+            let readingCount = tableViewDataSource.tableView(tableView, numberOfRowsInSection: readingSectionIndex)
             footerPieces.append("Reading: \(readingCount) book\(readingCount == 1 ? "" : "s")")
         }
 

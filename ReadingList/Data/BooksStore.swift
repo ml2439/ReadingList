@@ -61,7 +61,7 @@ class BooksStore {
      Gets the current maximum sort index in the books store
     */
     func maxSort() -> Int? {
-        return ObjectQuery<Book>().sorted(\Book.sort, ascending: false).fetch(1, fromContext: container.viewContext).first?.sort
+        return ObjectQuery<Book>().sorted("sort", ascending: false).fetch(1, fromContext: container.viewContext).first?.sort
     }
     
     /**

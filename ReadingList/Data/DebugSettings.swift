@@ -85,17 +85,6 @@ class DebugSettings {
         }
     }
     
-    private static let showCellReloadControlKey = "showCellReloadControl"
-    
-    static var showCellReloadControl: Bool {
-        get {
-            return UserDefaults.standard.value(forKey: showCellReloadControlKey) as? Bool ?? false
-        }
-        set {
-            UserDefaults.standard.setValue(newValue, forKey: showCellReloadControlKey)
-        }
-    }
-    
     private static let quickActionSimulationKey = "quickActionSimulation"
     
     static var quickActionSimulation: QuickAction {

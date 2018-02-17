@@ -1,63 +1,19 @@
 import UIKit
 import DZNEmptyDataSet
 import CoreData
-import CoreSpotlight
 
-class BookTableViewCell: UITableViewCell, ConfigurableCell {
-    @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var authorsLabel: UILabel!
-    @IBOutlet weak var bookCover: UIImageView!
-    @IBOutlet weak var readTimeLabel: UILabel?
-    
-    typealias ResultType = Book
-    
-    func configureFrom(_ book: Book) {        
-        titleLabel.text = book.title
-        authorsLabel.text = book.authorsFirstLast
-        bookCover.image = UIImage(optionalData: book.coverImage) ?? #imageLiteral(resourceName: "CoverPlaceholder")
-        if book.readState == .reading {
-            readTimeLabel?.text = book.startedReading!.toPrettyString()
-        }
-        else if book.readState == .finished {
-            readTimeLabel?.text = book.finishedReading!.toPrettyString()
-        }
-        else {
-            readTimeLabel?.text = nil
-        }
-        
-        #if DEBUG
-            if DebugSettings.showSortNumber {
-                titleLabel.text =  "(\(book.sort?.string ?? "none") \(book.title)"
-            }
-        #endif
+class BookTableDataSource: TableViewDataSource<Book, BookTable> {
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        // Turn the section name into a BookReadState and use its description property
+        let sectionAsInt = Int16(fetchedResultsController.sections![section].name)!
+        return BookReadState(rawValue: sectionAsInt)!.description
     }
 }
 
-class BookTableUpdater: TableUpdater<Book, BookTableViewCell> {
-    
-    let onChange: (() -> ())?
-    
-    init(table: UITableView, controller: NSFetchedResultsController<Book>, onChange: (() -> ())? = nil) {
-        self.onChange = onChange
-        super.init(table: table, controller: controller)
-    }
-    
-    override func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange object: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?)  {
-        super.controller(controller, didChange: object, at: indexPath, for: type, newIndexPath: newIndexPath)
-        
-        onChange?()
-    }
-    
-    override func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
-        super.controller(controller, didChange: sectionInfo, atSectionIndex: sectionIndex, for: type)
-        
-        onChange?()
-    }
-}
-
-class BookTable: AutoUpdatingTableViewController {
+class BookTable: UITableViewController {
 
     var resultsController: NSFetchedResultsController<Book>!
+    var tableViewDataSource: TableViewDataSource<Book, BookTable>!
     var resultsFilterer: FetchedResultsFilterer<Book, BookPredicateBuilder>!
     var readStates: [BookReadState]!
     var searchController: UISearchController!
@@ -250,7 +206,7 @@ class BookTable: AutoUpdatingTableViewController {
     func buildResultsController() {
         let readStatePredicate = NSPredicate.Or(readStates.map{BookPredicate.readState(equalTo: $0)})
         resultsController = appDelegate.booksStore.fetchedResultsController(readStatePredicate, initialSortDescriptors: UserSettings.selectedSortOrder)
-        tableUpdater = BookTableUpdater(table: tableView, controller: resultsController){ [unowned self] in
+        tableViewDataSource = BookTableDataSource(tableView: tableView, cellIdentifier: "BookTableViewCell", fetchedResultsController: resultsController, delegate: self) { [unowned self] in
             self.tableFooter.text = self.footerText()
         }
         
@@ -281,12 +237,6 @@ class BookTable: AutoUpdatingTableViewController {
         }
         
         super.viewDidAppear(animated)
-    }
-
-    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        // Turn the section name into a BookReadState and use its description property
-        let sectionAsInt = Int16(self.resultsController.sections![section].name)!
-        return BookReadState(rawValue: sectionAsInt)!.description
     }
     
     /**
@@ -397,16 +347,6 @@ class BookTable: AutoUpdatingTableViewController {
             rowActions.append(finishAction)
         }
         
-        #if DEBUG
-            if DebugSettings.showCellReloadControl {
-                let reloadCell = UITableViewRowAction(style: .default, title: "Reload") {[unowned self] _, indexPath in
-                    self.tableView.reloadRows(at: [indexPath], with: .none)
-                }
-                reloadCell.backgroundColor = UIColor.gray
-                rowActions.append(reloadCell)
-            }
-        #endif
-        
         return rowActions
     }
     
@@ -459,23 +399,27 @@ class BookTable: AutoUpdatingTableViewController {
     }
 }
 
-/// DZNEmptyDataSetSource functions
-extension BookTable : DZNEmptyDataSetSource {
+extension BookTable: TableViewDataSourceDelegate {
+    typealias Object = Book
+    typealias Cell = BookTableViewCell
+    
+    func configure(_ cell: BookTableViewCell, for object: Book) {
+        cell.configureFrom(object)
+    }
+}
+
+extension BookTable: DZNEmptyDataSetSource {
     
     func title(forEmptyDataSet scrollView: UIScrollView!) -> NSAttributedString! {
-        let titleText: String!
         if resultsFilterer.showingSearchResults {
-            titleText = "🔍 No Results"
+            return StandardEmptyDataset.title(withText: "🔍 No Results")
         }
         else if readStates.contains(.reading) {
-            titleText = "📚 To Read"
+            return StandardEmptyDataset.title(withText: "📚 To Read")
         }
         else {
-            titleText = "🎉 Finished"
+            return StandardEmptyDataset.title(withText: "🎉 Finished")
         }
-        
-        return NSAttributedString(string: titleText, attributes: [NSAttributedStringKey.font: UIFont.gillSans(ofSize: 32),
-                                                                  NSAttributedStringKey.foregroundColor: UIColor.gray])
     }
     
     func verticalOffset(forEmptyDataSet scrollView: UIScrollView!) -> CGFloat {
@@ -495,17 +439,14 @@ extension BookTable : DZNEmptyDataSetSource {
     }
     
     func description(forEmptyDataSet scrollView: UIScrollView!) -> NSAttributedString! {
-        let bodyFont = UIFont.gillSans(forTextStyle: .title2)
-        let boldFont = UIFont.gillSansSemiBold(forTextStyle: .title2)
-        
         if resultsFilterer.showingSearchResults {
-            return NSAttributedString.createFromMarkdown("Try changing your search, or add a new book by tapping the **+** button above.", font: bodyFont, boldFont: boldFont)
+            return StandardEmptyDataset.description(withMarkdownText: "Try changing your search, or add a new book by tapping the **+** button above.")
         }
         if readStates.contains(.reading) {
-            return NSAttributedString.createFromMarkdown("Books you add to your **To Read** list, or mark as currently **Reading** will show up here.\n\nAdd a book by tapping the **+** button above.", font: bodyFont, boldFont: boldFont)
+            return StandardEmptyDataset.description(withMarkdownText: "Books you add to your **To Read** list, or mark as currently **Reading** will show up here.\n\nAdd a book by tapping the **+** button above.")
         }
         else {
-            return NSAttributedString.createFromMarkdown("Books you mark as **Finished** will show up here.\n\nAdd a book by tapping the **+** button above.", font: bodyFont, boldFont: boldFont)
+            return StandardEmptyDataset.description(withMarkdownText: "Books you mark as **Finished** will show up here.\n\nAdd a book by tapping the **+** button above.")
         }
     }
 }

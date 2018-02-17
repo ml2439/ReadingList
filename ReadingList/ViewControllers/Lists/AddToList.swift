@@ -116,10 +116,11 @@ class AddToList: UITableViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "ExistingListCell", for: indexPath) as! ListCell
-
+            let cell = tableView.dequeueReusableCell(withIdentifier: "ExistingListCell", for: indexPath)
             let listObj = resultsController.object(at: indexPath)
-            cell.configureFrom(listObj)
+            cell.textLabel!.text = listObj.name
+            cell.detailTextLabel!.text = "\(listObj.books.count) book\(listObj.books.count == 1 ? "" : "s")"
+
             let booksInThisList = listObj.books.set
             
             // If any of the books are already in this list:

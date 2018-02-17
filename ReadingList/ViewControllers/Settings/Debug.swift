@@ -53,16 +53,9 @@ class Debug: FormViewController {
                 $0.onChange {
                     DebugSettings.showSortNumber = $0.value ?? false
                 }
-            }
-            <<< SwitchRow() {
-                $0.title = "Show cell reload control"
-                $0.value = DebugSettings.showCellReloadControl
-                $0.onChange {
-                    DebugSettings.showCellReloadControl = $0.value ?? false
-                }
         }
     }
-    
+
     static func loadTestData(withLists: Bool = true) {
 
         container.viewContext.performAndSaveAndWait {

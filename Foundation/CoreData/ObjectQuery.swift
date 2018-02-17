@@ -43,6 +43,10 @@ class ObjectQuery<T> where T: NSManagedObject {
         return self.with(sortDescriptor: NSSortDescriptor(keyPath: keyPath, ascending: ascending))
     }
     
+    func sorted(_ keyPath: String, ascending: Bool = true) -> ObjectQuery<T> {
+        return self.with(sortDescriptor: NSSortDescriptor(key: keyPath, ascending: ascending))
+    }
+    
     func fetchRequest(limit: Int? = nil) -> NSFetchRequest<T> {
         let request = NSFetchRequest<T>(entityName: String(describing: T.self))
         request.predicate = predicate
