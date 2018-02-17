@@ -16,7 +16,7 @@ class Organise: UITableViewController {
         tableView.emptyDataSetSource = self
         tableView.emptyDataSetDelegate = self
         
-        resultsController = ObjectQuery<List>().sorted(\List.name).fetchController(context: container.viewContext)
+        resultsController = ObjectQuery<List>().sorted(\List.name).fetchController(context: PersistentStoreManager.container.viewContext)
         tableViewDataSource = TableViewDataSource(tableView: tableView, cellIdentifier: "ListCell", fetchedResultsController: resultsController, delegate: self)
         
         navigationItem.leftBarButtonItem = editButtonItem
@@ -31,7 +31,7 @@ class Organise: UITableViewController {
                 self.setEditing(false, animated: true)
                 let list = self.resultsController.object(at: indexPath)
                 
-                let existingListNames = ObjectQuery<List>().sorted(\List.name).fetch(fromContext: container.viewContext).map{$0.name}
+                let existingListNames = ObjectQuery<List>().sorted(\List.name).fetch(fromContext: PersistentStoreManager.container.viewContext).map{$0.name}
                 let renameListAlert = TextBoxAlertController(title: "Rename List", message: "Choose a new name for this list", initialValue: list.name, placeholder: "New list name", textValidator: { listName in
                         guard let listName = listName, !listName.isEmptyOrWhitespace else { return false }
                         return listName == list.name || !existingListNames.contains(listName)

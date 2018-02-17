@@ -69,9 +69,9 @@ extension NSManagedObjectContext {
         }
     }
     
-    func performAndSaveAndWait(block: @escaping () -> ()) {
+    func performAndSaveAndWait(block: @escaping (_ context: NSManagedObjectContext) -> ()) {
         performAndWait { [unowned self] in
-            block()
+            block(self)
             self.saveIfChanged()
         }
     }

@@ -7,6 +7,13 @@ class UserEngagement {
     static let appStartupCountKey = "appStartupCount"
     static let userEngagementCountKey = "userEngagementCount"
     
+    static func initialiseUserAnalytics() {
+        #if !DEBUG
+            if UserSettings.sendAnalytics.value { FirebaseApp.configure() }
+            if UserSettings.sendCrashReports.value { Fabric.with([Crashlytics.self]) }
+        #endif
+    }
+    
     static func onReviewTrigger() {
         UserDefaults.standard.incrementCounter(withKey: userEngagementCountKey)
         if #available(iOS 10.3, *), shouldTryRequestReview() {
@@ -69,5 +76,17 @@ class UserEngagement {
         let userEngagementCount = UserDefaults.standard.getCount(withKey: userEngagementCountKey)
         
         return appStartCount >= appStartCountMinRequirement && userEngagementCount % userEngagementModulo == 0
+    }
+    
+    static var appVersion: String {
+        get {
+            return Bundle.main.infoDictionary!["CFBundleShortVersionString"] as! String
+        }
+    }
+    
+    static var appBuildNumber: String {
+        get {
+            return Bundle.main.infoDictionary!["CFBundleVersion"] as! String
+        }
     }
 }

@@ -146,7 +146,7 @@ class ScanBarcode: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
         session?.stopRunning()
         
         // Check that the book hasn't already been added
-        if let existingBook = Book.get(fromContext: container.viewContext, isbn: isbn) {
+        if let existingBook = Book.get(fromContext: PersistentStoreManager.container.viewContext, isbn: isbn) {
             feedbackGenerator.notificationOccurred(.warning)
             presentDuplicateAlert(existingBook)
         }
@@ -195,7 +195,7 @@ class ScanBarcode: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
             
             let fetchResult = resultPage.result.value!
             // We may now have a book which matches the Google Books ID (but didn't match the ISBN), so check again
-            if let existingBook = Book.get(fromContext: container.viewContext, googleBooksId: fetchResult.id) {
+            if let existingBook = Book.get(fromContext: PersistentStoreManager.container.viewContext, googleBooksId: fetchResult.id) {
                 vc.feedbackGenerator.notificationOccurred(.warning)
                 vc.presentDuplicateAlert(existingBook)
             }
@@ -206,7 +206,7 @@ class ScanBarcode: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
                 UserEngagement.logEvent(.scanBarcode)
 
                 // If there is no duplicate, we can safely go to the next page
-                let book = Book(context: container.viewContext.childContext(), readState: .toRead)
+                let book = Book(context: PersistentStoreManager.container.viewContext.childContext(), readState: .toRead)
                 book.populate(fromFetchResult: fetchResult)
                 vc.navigationController!.pushViewController(EditBookReadState(newUnsavedBook: book), animated: true)
             }

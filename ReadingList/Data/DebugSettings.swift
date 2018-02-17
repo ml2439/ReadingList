@@ -1,6 +1,8 @@
-import Foundation
-
 #if DEBUG
+
+import Foundation
+import SimulatorStatusMagic
+    
 enum BarcodeScanSimulation: Int {
     case none = 0
     case normal = 1
@@ -27,7 +29,7 @@ enum BarcodeScanSimulation: Int {
     }
 }
 
-enum QuickAction: Int {
+enum QuickActionSimulation: Int {
     case none = 0
     case barcodeScan = 1
     case searchOnline = 2
@@ -46,6 +48,18 @@ enum QuickAction: Int {
 
 // TODO: Move to using command line switches
 class DebugSettings {
+    
+    static func initialiseFromCommandLine() {
+        let includeLists = !CommandLine.arguments.contains("--UITests_DeleteLists")
+        if CommandLine.arguments.contains("--UITests_PopulateData") {
+            Debug.loadTestData(withLists: includeLists)
+        }
+        if CommandLine.arguments.contains("--UITests_PrettyStatusBar") {
+            SDStatusBarManager.sharedInstance().enableOverrides()
+        }
+        DebugSettings.useFixedBarcodeScanImage = CommandLine.arguments.contains("--UITests_FixedBarcodeScanImage")
+    }
+    
     private static let useFixedBarcodeScanImageKey = "useFixedBarcodeScanImage"
     
     /**
@@ -87,10 +101,10 @@ class DebugSettings {
     
     private static let quickActionSimulationKey = "quickActionSimulation"
     
-    static var quickActionSimulation: QuickAction {
+    static var quickActionSimulation: QuickActionSimulation {
         get {
             guard let simulation = UserDefaults.standard.value(forKey: quickActionSimulationKey) as? Int else { return .none }
-            return QuickAction(rawValue: simulation)!
+            return QuickActionSimulation(rawValue: simulation)!
         }
         set {
             UserDefaults.standard.setValue(newValue.rawValue, forKey: quickActionSimulationKey)

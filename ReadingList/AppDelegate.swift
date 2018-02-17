@@ -1,51 +1,34 @@
 import UIKit
-import CoreSpotlight
-import Fabric
-import Crashlytics
-import Firebase
 import SVProgressHUD
 import SwiftyStoreKit
-import CoreData
-
-#if DEBUG
-import SimulatorStatusMagic
-#endif
-
-let productBundleIdentifier = "com.andrewbennet.books"
 
 var appDelegate: AppDelegate {
     return UIApplication.shared.delegate as! AppDelegate
-}
-
-var container: NSPersistentContainer {
-    get {
-        return appDelegate.booksStore.container
-    }
 }
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-    
-    var booksStore: BooksStore!
-    
+
     var tabBarController: TabBarController {
         return window!.rootViewController as! TabBarController
     }
     
-    private static let barcodeScanActionName = "\(productBundleIdentifier).ScanBarcode"
-    private static let searchOnlineActionName = "\(productBundleIdentifier).SearchBooks"
-    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        configureAnalytics()
+        UserEngagement.initialiseUserAnalytics()
+
         setupSvProgressHud()
         completeStoreTransactions()
-        applyCommandLineArgs()
-        
-        booksStore = BooksStore()
+
+        #if DEBUG
+        DebugSettings.initialiseFromCommandLine()
+        #endif
+
+        // Initialise the persistent store on a background thread. The main thread will return and the LaunchScreen
+        // storyboard will remain in place until this is completed, at which point the Main storyboard will be instantiated.
         DispatchQueue.global(qos: .userInitiated).async { [unowned self] in
-            self.booksStore.initalisePersistentStore {
+            PersistentStoreManager.initalisePersistentStore {
                 DispatchQueue.main.async {
                     self.window!.rootViewController = Storyboard.Main.instantiateRoot()
                 }
@@ -53,26 +36,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         return true
-    }
-    
-    func applyCommandLineArgs() {
-        #if DEBUG
-            let includeLists = !CommandLine.arguments.contains("--UITests_DeleteLists")
-            if CommandLine.arguments.contains("--UITests_PopulateData") {
-                Debug.loadTestData(withLists: includeLists)
-            }
-            if CommandLine.arguments.contains("--UITests_PrettyStatusBar") {
-                SDStatusBarManager.sharedInstance().enableOverrides()
-            }
-            DebugSettings.useFixedBarcodeScanImage = CommandLine.arguments.contains("--UITests_FixedBarcodeScanImage")
-        #endif
-    }
-    
-    func configureAnalytics() {
-        #if !DEBUG
-            if UserSettings.sendAnalytics.value { FirebaseApp.configure() }
-            if UserSettings.sendCrashReports.value { Fabric.with([Crashlytics.self]) }
-        #endif
     }
     
     func setupSvProgressHud() {
@@ -94,24 +57,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func applicationDidBecomeActive(_ application: UIApplication) {
         #if DEBUG
-            switch DebugSettings.quickActionSimulation {
-            case .barcodeScan:
-                performQuickAction(shortcutType: AppDelegate.barcodeScanActionName)
-            case .searchOnline:
-                performQuickAction(shortcutType: AppDelegate.searchOnlineActionName)
-            default:
-                break
+            if DebugSettings.quickActionSimulation == .barcodeScan {
+                performQuickAction(.scanBarcode)
+            }
+            else if DebugSettings.quickActionSimulation == .searchOnline {
+                performQuickAction(.searchOnline)
             }
         #endif
         UserEngagement.onAppOpen()
     }
     
     func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
-        performQuickAction(shortcutType: shortcutItem.type)
+        performQuickAction(QuickAction(rawValue: shortcutItem.type)!)
         completionHandler(true)
     }
     
-    func performQuickAction(shortcutType: String) {
+    func performQuickAction(_ action: QuickAction) {
         func presentFromToRead(_ viewController: UIViewController) {
             // Select the To Read tab
             tabBarController.selectTab(.toRead)
@@ -123,28 +84,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             navController.viewControllers[0].present(viewController, animated: true, completion: nil)
         }
         
-        if shortcutType == AppDelegate.barcodeScanActionName {
+        if action == .scanBarcode {
             UserEngagement.logEvent(.scanBarcodeQuickAction)
             presentFromToRead(Storyboard.ScanBarcode.rootAsFormSheet())
         }
-        else if shortcutType == AppDelegate.searchOnlineActionName {
+        else if action == .searchOnline {
             UserEngagement.logEvent(.searchOnlineQuickAction)
             presentFromToRead(Storyboard.SearchOnline.rootAsFormSheet())
         }
     }
-    
-    var appVersion: String {
-        get {
-            guard let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String else { return "Unknown" }
-            return appVersion
-        }
-    }
-    
-    var appBuildNumber: String {
-        get {
-            guard let buildVersion = Bundle.main.infoDictionary?["CFBundleVersion"] as? String else { return "Unknown" }
-            return buildVersion
-        }
-    }
 }
 
+enum QuickAction: String {
+    case scanBarcode = "com.andrewbennet.books.ScanBarcode"
+    case searchOnline = "com.andrewbennet.books.SearchBooks"
+}

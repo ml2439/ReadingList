@@ -169,7 +169,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         navigationItem.titleView!.isHidden = true
 
         // Watch for changes in the managed object context
-        NotificationCenter.default.addObserver(self, selector: #selector(saveOccurred(_:)), name: NSNotification.Name.NSManagedObjectContextDidSave, object: container.viewContext)
+        NotificationCenter.default.addObserver(self, selector: #selector(saveOccurred(_:)), name: NSNotification.Name.NSManagedObjectContextDidSave, object: PersistentStoreManager.container.viewContext)
     }
     
     override func viewDidLayoutSubviews() {
@@ -239,15 +239,13 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     @IBAction func changeReadStateButtonWasPressed(_ sender: BorderedButton) {
         guard let book = book, book.readState == .toRead || book.readState == .reading else { return }
 
-        let readingInfo: BookReadingInformation
         if book.readState == .toRead {
-            readingInfo = BookReadingInformation.reading(started: Date(), currentPage: nil)
+            book.startReading()
         }
         else {
-            readingInfo = BookReadingInformation.finished(started: book.startedReading!, finished: Date())
+            book.finishReading()
         }
-        appDelegate.booksStore.update(book: book, withReadingInformation: readingInfo)
-        
+
         UserEngagement.logEvent(.transitionReadState)
         UserEngagement.onReviewTrigger()
     }
@@ -316,12 +314,16 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
             var previewActions = [UIPreviewActionItem]()
             if book.readState == .toRead {
                 previewActions.append(UIPreviewAction(title: "Start", style: .default){ _,_ in
-                    book.transistionToReading()
+                    book.startReading()
+                    try! book.managedObjectContext!.save()
+                    UserEngagement.logEvent(.transitionReadState)
                 })
             }
             else if book.readState == .reading {
                 previewActions.append(UIPreviewAction(title: "Finish", style: .default){ _,_ in
-                    book.transistionToFinished()
+                    book.finishReading()
+                    try! book.managedObjectContext!.save()
+                    UserEngagement.logEvent(.transitionReadState)
                 })
             }
             previewActions.append(UIPreviewAction(title: "Delete", style: .destructive) { _,_ in

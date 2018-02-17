@@ -6,6 +6,6 @@ class SettingsHeader: UIView {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        versionNumber.text = "v\(appDelegate.appVersion)"
+        versionNumber.text = "v\(UserEngagement.appVersion)"
     }
 }

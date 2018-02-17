@@ -43,7 +43,8 @@ class DataVC: UITableViewController, UIDocumentPickerDelegate, UIDocumentMenuDel
         SVProgressHUD.show(withStatus: "Importing")
         UserEngagement.logEvent(.csvImport)
         
-        BookImporter(csvFileUrl: url, supplementBookCover: true, missingHeadersCallback: {
+        /* TODO: Reimplement
+         BookImporter(csvFileUrl: url, supplementBookCover: true, missingHeadersCallback: {
             
         }, callback: {
             importedCount, duplicateCount, invalidCount in
@@ -57,18 +58,18 @@ class DataVC: UITableViewController, UIDocumentPickerDelegate, UIDocumentMenuDel
                 statusMessage += " \(invalidCount) rows ignored due to invalid data."
             }
             SVProgressHUD.showInfo(withStatus: statusMessage)
-        }).StartImport()
+        }).StartImport()*/
     }
     
     func exportData() {
         UserEngagement.logEvent(.csvExport)
         SVProgressHUD.show(withStatus: "Generating...")
         
-        let listNames = ObjectQuery<List>().sorted(\List.name).fetch(fromContext: container.viewContext).map{$0.name}
+        let listNames = ObjectQuery<List>().sorted(\List.name).fetch(fromContext: PersistentStoreManager.container.viewContext).map{$0.name}
         let exporter = CsvExporter(csvExport: Book.BuildCsvExport(withLists: listNames))
         
         ObjectQuery<Book>().sorted(\Book.readState).sorted(\Book.sort).sorted(\Book.startedReading).sorted(\Book.finishedReading)
-            .fetchAsync(fromContext: container.viewContext) {
+            .fetchAsync(fromContext: PersistentStoreManager.container.viewContext) {
             exporter.addData($0)
             self.renderAndServeCsvExport(exporter)
         }
@@ -120,9 +121,9 @@ class DataVC: UITableViewController, UIDocumentPickerDelegate, UIDocumentMenuDel
         // The CONFIRM DELETE action:
         let confirmDelete = UIAlertController(title: "Final Warning", message: "This action is irreversible. Are you sure you want to continue?", preferredStyle: .alert)
         confirmDelete.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
-            container.viewContext.performAndSaveAndWait {
-                ObjectQuery<Book>().fetch(fromContext: container.viewContext).forEach{$0.delete()}
-                ObjectQuery<List>().fetch(fromContext: container.viewContext).forEach{$0.delete()}
+            PersistentStoreManager.container.viewContext.performAndSaveAndWait {
+                ObjectQuery<Book>().fetch(fromContext: $0).forEach{$0.delete()}
+                ObjectQuery<List>().fetch(fromContext: $0).forEach{$0.delete()}
             }
             UserEngagement.logEvent(.deleteAllData)
         })

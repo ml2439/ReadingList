@@ -1,5 +1,4 @@
 import UIKit
-import DZNEmptyDataSet
 
 class ReadingTable: BookTable {
     
@@ -62,7 +61,7 @@ class ReadingTable: BookTable {
         
         // Turn off updates while we save the object context
         tableViewDataSource.withoutUpdates {
-            container.viewContext.saveIfChanged()
+            PersistentStoreManager.container.viewContext.saveIfChanged()
             try! resultsController.performFetch()
         }
     }
@@ -78,11 +77,13 @@ class ReadingTable: BookTable {
         let leadingSwipeAction = UIContextualAction(style: .normal, title: readStateOfSection == .toRead ? "Start" : "Finish") { [unowned self] _,_,callback in
             let book = self.resultsController.object(at: indexPath)
             if readStateOfSection == .toRead {
-                book.transistionToReading()
+                book.startReading()
             }
             else {
-                book.transistionToFinished()
+                book.finishReading()
             }
+            try! book.managedObjectContext!.save()
+            UserEngagement.logEvent(.transitionReadState)
             callback(true)
         }
         leadingSwipeAction.backgroundColor = readStateOfSection == .toRead ? UIColor.buttonBlue : UIColor.flatGreen

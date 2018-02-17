@@ -85,7 +85,7 @@ class Book: NSManagedObject {
         }
         
         if readState == .toRead && sort == nil {
-            if let maxSort = appDelegate.booksStore.maxSort() {
+            if let maxSort = ObjectQuery<Book>().sorted("sort", ascending: false).fetch(1, fromContext: managedObjectContext!).first?.sort {
                 print("Setting sort to \(maxSort + 1)")
                 self.sort = maxSort + 1
             }
@@ -198,21 +198,24 @@ extension Book {
         if readState == .finished && (startedReading == nil || finishedReading == nil || startedReading!.startOfDay() > finishedReading!.startOfDay()) { throw ValidationError.invalidReadDates }
     }
     
+    func startReading() {
+        guard readState == .toRead else { fatalError("Attempted to start a book in state \(readState)") }
+        readState = .reading
+        startedReading = Date()
+    }
+    
+    func finishReading() {
+        guard readState == .reading else { fatalError("Attempted to finish a book in state \(readState)") }
+        readState = .finished
+        finishedReading = Date()
+    }
+    
+    /*
     func populate(from readingInformation: BookReadingInformation) {
         readState = readingInformation.readState
         startedReading = readingInformation.startedReading
         finishedReading = readingInformation.finishedReading
         currentPage = readingInformation.currentPage
-    }
-    
-    func transistionToReading(log: Bool = true) {
-        let reading = BookReadingInformation(readState: .reading, startedWhen: Date(), finishedWhen: nil, currentPage: nil)
-        updateReadState(with: reading, log: log)
-    }
-    
-    func transistionToFinished(log: Bool = true) {
-        let finished = BookReadingInformation(readState: .finished, startedWhen: self.startedReading!, finishedWhen: Date(), currentPage: nil)
-        updateReadState(with: finished, log: log)
     }
     
     private func updateReadState(with readingInformation: BookReadingInformation, log: Bool) {
@@ -222,6 +225,7 @@ extension Book {
             UserEngagement.onReviewTrigger()
         }
     }
+ */
     
     static func BuildCsvExport(withLists lists: [String]) -> CsvExport<Book> {
         var columns = [
@@ -259,7 +263,7 @@ extension Book {
 
 /// A mutable, non-persistent representation of the metadata fields of a Book object.
 /// Useful for maintaining in-creation books, or books being edited.
-// TODO: Not convinced that this class is good.
+/*
 class BookMetadata {
     let googleBooksId: String?
     var title: String?
@@ -384,5 +388,5 @@ class BookReadingInformation {
         return BookReadingInformation(readState: .finished, startedWhen: started, finishedWhen: finished, currentPage: nil)
     }
 }
-
+*/
 

@@ -2,7 +2,8 @@ import Foundation
 import SwiftyJSON
 import CHCSVParser
 import CoreData
-
+/*
+ TODO: Fix!
 class CsvImporter: NSObject, CHCSVParserDelegate {
     
     private var erroredLineIndexes = [Int]()
@@ -222,3 +223,4 @@ class BookImporter {
         }
     }
 }
+*/

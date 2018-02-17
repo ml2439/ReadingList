@@ -40,18 +40,6 @@ class TabBarController: UITabBarController {
         selectTab(forState: book.readState).simulateBookSelection(book, allowTableObscuring: allowTableObscuring)
     }
     
-    override func restoreUserActivityState(_ activity: NSUserActivity) {
-        // Check that the user activity corresponds to a book which we have a row for
-        guard let identifier = activity.userInfo?[CSSearchableItemActivityIdentifier] as? String,
-            let identifierUrl = URL(string: identifier),
-            let selectedBook = container.viewContext.object(withID: identifierUrl) as? Book else { return }
-        
-        // Dismiss any modally presented VCs (edit book, etc).
-        presentedViewController?.dismiss(animated: false)
-
-        simulateBookSelection(selectedBook, allowTableObscuring: true)
-    }
-    
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
         if let selectedSplitViewController = selectedSplitViewController, item.tag == selectedIndex {
             

@@ -109,7 +109,7 @@ class BookTable: UITableViewController {
             NSPredicate(format: "%K == %ld", #keyPath(Book.readState), $0.rawValue)
         })
         resultsController = ObjectQuery<Book>().filtered(readStatePredicate).sorted(UserSettings.selectedSortOrder)
-            .fetchController(sectionKeyPath: #keyPath(Book.readState), context: container.viewContext)
+            .fetchController(sectionKeyPath: #keyPath(Book.readState), context: PersistentStoreManager.container.viewContext)
 
         tableViewDataSource = BookTableDataSource(tableView: tableView, cellIdentifier: "BookTableViewCell", fetchedResultsController: resultsController, delegate: self) { [unowned self] in
             self.tableFooter.text = self.footerText()
@@ -196,12 +196,13 @@ class BookTable: UITableViewController {
             optionsAlert.addAction(UIAlertAction(title: title, style: .default) { [unowned self] _ in
                 for book in selectedRows.map(self.resultsController.object) {
                     if readState == .toRead {
-                        book.transistionToReading(log: false)
+                        book.startReading()
                     }
                     else {
-                        book.transistionToFinished(log: false)
+                        book.finishReading()
                     }
                 }
+                PersistentStoreManager.container.viewContext.saveIfChanged()
                 self.setEditing(false, animated: true)
                 UserEngagement.logEvent(.bulkEditReadState)
                 UserEngagement.onReviewTrigger()
@@ -338,14 +339,16 @@ class BookTable: UITableViewController {
         // Add the other state change actions where appropriate
         if indexPath.section == toReadIndex {
             let startAction = UITableViewRowAction(style: .normal, title: "Start") { [unowned self] rowAction, indexPath in
-                self.resultsController.object(at: indexPath).transistionToReading()
+                self.resultsController.object(at: indexPath).startReading()
+                try! PersistentStoreManager.container.viewContext.save()
             }
             startAction.backgroundColor = UIColor.buttonBlue
             rowActions.append(startAction)
         }
         else if indexPath.section == readingIndex {
             let finishAction = UITableViewRowAction(style: .normal, title: "Finish") { [unowned self] rowAction, indexPath in
-                self.resultsController.object(at: indexPath).transistionToFinished()
+                self.resultsController.object(at: indexPath).finishReading()
+                try! PersistentStoreManager.container.viewContext.save()
             }
             finishAction.backgroundColor = UIColor.flatGreen
             rowActions.append(finishAction)

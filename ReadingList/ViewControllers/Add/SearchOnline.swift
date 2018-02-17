@@ -96,7 +96,7 @@ class SearchOnline: ArrayBackedTableController<GoogleBooks.SearchResult>, UISear
         let searchResult = tableItems[indexPath.row]
         
         // Duplicate check
-        if let existingBook = Book.get(fromContext: container.viewContext, googleBooksId: searchResult.id, isbn: searchResult.isbn13) {
+        if let existingBook = Book.get(fromContext: PersistentStoreManager.container.viewContext, googleBooksId: searchResult.id, isbn: searchResult.isbn13) {
             presentDuplicateBookAlert(book: existingBook, fromSelectedIndex: indexPath); return
         }
         
@@ -175,7 +175,7 @@ class SearchOnline: ArrayBackedTableController<GoogleBooks.SearchResult>, UISear
             DispatchQueue.main.async { [weak self] in
                 SVProgressHUD.dismiss()
                 if let fetchResult = resultPage.result.value {
-                    let editContext = container.viewContext.childContext()
+                    let editContext = PersistentStoreManager.container.viewContext.childContext()
                     let book = Book(context: editContext, readState: .toRead)
                     // TODO: make a convenience init which takes a fetch result?
                     book.populate(fromFetchResult: fetchResult)
@@ -228,7 +228,7 @@ class SearchOnline: ArrayBackedTableController<GoogleBooks.SearchResult>, UISear
             GoogleBooks.fetch(googleBooksId: tableItems[selectedIndex.row].id) { resultPage in
                 DispatchQueue.main.async {
                     if let fetchResult = resultPage.result.value {
-                        book = Book(context: container.viewContext, readState: .toRead)
+                        book = Book(context: PersistentStoreManager.container.viewContext, readState: .toRead)
                         book.populate(fromFetchResult: fetchResult)
                     }
                     else {
@@ -241,7 +241,7 @@ class SearchOnline: ArrayBackedTableController<GoogleBooks.SearchResult>, UISear
         
         // On completion, dismiss this view (or show an error if they all failed)
         fetches.notify(queue: .main) { [weak self] in
-            container.viewContext.saveIfChanged()
+            PersistentStoreManager.container.viewContext.saveIfChanged()
             SVProgressHUD.dismiss()
             guard errorCount != selectedRows.count else {
                 // If they all errored, don't dismiss - show an error

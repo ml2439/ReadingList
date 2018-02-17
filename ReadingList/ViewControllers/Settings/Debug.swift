@@ -32,10 +32,10 @@ class Debug: FormViewController {
             }
         }
         
-        form +++ SelectableSection<ListCheckRow<QuickAction>>("Quick Action Simulation", selectionType: .singleSelection(enableDeselection: false)) {
+        form +++ SelectableSection<ListCheckRow<QuickActionSimulation>>("Quick Action Simulation", selectionType: .singleSelection(enableDeselection: false)) {
             let currentQuickActionValue = DebugSettings.quickActionSimulation
-            for quickActionOption: QuickAction in [.none, .barcodeScan, .searchOnline] {
-                $0 <<< ListCheckRow<QuickAction>(){
+            for quickActionOption: QuickActionSimulation in [.none, .barcodeScan, .searchOnline] {
+                $0 <<< ListCheckRow<QuickActionSimulation>(){
                     $0.title = quickActionOption.titleText
                     $0.selectableValue = quickActionOption
                     $0.value = (quickActionOption == currentQuickActionValue ? quickActionOption : nil)
@@ -58,20 +58,21 @@ class Debug: FormViewController {
 
     static func loadTestData(withLists: Bool = true) {
 
-        container.viewContext.performAndSaveAndWait {
-            ObjectQuery<Book>().fetch(fromContext: container.viewContext).forEach{$0.delete()}
-            ObjectQuery<List>().fetch(fromContext: container.viewContext).forEach{$0.delete()}
+        PersistentStoreManager.container.viewContext.performAndSaveAndWait {
+            ObjectQuery<Book>().fetch(fromContext: $0).forEach{$0.delete()}
+            ObjectQuery<List>().fetch(fromContext: $0).forEach{$0.delete()}
         }
         
         let csvPath = Bundle.main.url(forResource: "examplebooks", withExtension: "csv")
         
         SVProgressHUD.show(withStatus: "Loading Data...")
         
+        /* TODO: Reimplement
         BookImporter(csvFileUrl: csvPath!, supplementBookCover: true, missingHeadersCallback: {
             print("Missing headers!")
         }) { _, _, _ in
             SVProgressHUD.dismiss()
-        }.StartImport()
+        }.StartImport()*/
     }    
 }
 

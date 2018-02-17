@@ -1,5 +1,4 @@
 import UIKit
-import DZNEmptyDataSet
 
 class FinishedTable: BookTable {
     

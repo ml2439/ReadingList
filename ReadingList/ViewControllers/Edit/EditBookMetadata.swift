@@ -21,7 +21,7 @@ class EditBookMetadata: FormViewController {
     
     func getOrCreateBook() -> Book {
         // Create a child context and either find the existing book or insert a new one
-        editBookContext = container.viewContext.childContext()
+        editBookContext = PersistentStoreManager.container.viewContext.childContext()
         if let bookToEditId = bookToEditID {
             book = editBookContext.object(with: bookToEditId) as! Book
         }

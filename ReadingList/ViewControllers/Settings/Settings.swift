@@ -63,7 +63,7 @@ class Settings: UITableViewController, MFMailComposeViewControllerDelegate {
         
         
         Extra Info:
-          App Version: \(appDelegate.appVersion) (\(appDelegate.appBuildNumber))
+          App Version: \(UserEngagement.appVersion) (\(UserEngagement.appBuildNumber))
           iOS Version: \(UIDevice.current.systemVersion)
           Device: \(UIDevice.current.modelName)
         """
