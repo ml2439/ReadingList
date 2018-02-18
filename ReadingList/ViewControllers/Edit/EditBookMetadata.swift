@@ -63,6 +63,7 @@ class EditBookMetadata: FormViewController {
                 $0.title = "ISBN"
                 $0.value = book.isbn13
                 $0.disabled = Condition(booleanLiteral: true)
+                $0.hidden = Condition(booleanLiteral: isAddingNewBook || book.isbn13 == nil)
             }
             <<< IntRow() {
                 $0.title = "Page Count"
@@ -108,6 +109,7 @@ class EditBookMetadata: FormViewController {
             +++ Section()
             <<< ButtonRow(updateFromGoogleRowKey){
                 $0.title = "Update from Google Books"
+                $0.hidden = Condition(booleanLiteral: isAddingNewBook || book.googleBooksId == nil)
                 $0.onCellSelection(updateFromGooglePressed(cell:row:))
             }
             <<< ButtonRow(deleteRowKey){
@@ -116,11 +118,6 @@ class EditBookMetadata: FormViewController {
                 $0.onCellSelection(deletePressed(cell:row:))
                 $0.hidden = Condition(booleanLiteral: isAddingNewBook)
             }
-        
-        // Don't often show the isbn row
-        form.rowBy(tag: isbnRowKey)!.hidden = Condition(booleanLiteral: isAddingNewBook || book.isbn13 == nil)
-        form.rowBy(tag: updateFromGoogleRowKey)!.hidden = Condition(booleanLiteral: isAddingNewBook)
-        //form.rows.forEach{$0.evaluateHidden()}
     }
     
     func configureNavigationItem() {
