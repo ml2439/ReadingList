@@ -44,6 +44,9 @@ class ReadingTable: BookTable {
         let movedObj = objectsInSection.remove(at: sourceIndexPath.row)
         objectsInSection.insert(movedObj, at: destinationIndexPath.row)
         
+        // Turn off updates while we manipulate the object context
+        resultsController.delegate = nil
+        
         // Update the model sort indexes. The lowest sort number should be the sort of the book immediately
         // above the range, plus 1, or - if the range starts at the top - 0.
         var sortIndex: Int
@@ -59,11 +62,9 @@ class ReadingTable: BookTable {
             sortIndex += 1
         }
         
-        // Turn off updates while we save the object context
-        tableViewDataSource.withoutUpdates {
-            PersistentStoreManager.container.viewContext.saveIfChanged()
-            try! resultsController.performFetch()
-        }
+        PersistentStoreManager.container.viewContext.saveIfChanged()
+        try! resultsController.performFetch()
+        resultsController.delegate = tableView
     }
     
     @available(iOS 11.0, *)
@@ -99,12 +100,12 @@ class ReadingTable: BookTable {
     override func footerText() -> String? {
         var footerPieces = [String]()
         if let toReadSectionIndex = self.sectionIndex(forReadState: .toRead) {
-            let toReadCount = tableViewDataSource.tableView(tableView, numberOfRowsInSection: toReadSectionIndex)
+            let toReadCount = tableView(tableView, numberOfRowsInSection: toReadSectionIndex)
             footerPieces.append("To Read: \(toReadCount) book\(toReadCount == 1 ? "" : "s")")
         }
         
         if let readingSectionIndex = self.sectionIndex(forReadState: .reading) {
-            let readingCount = tableViewDataSource.tableView(tableView, numberOfRowsInSection: readingSectionIndex)
+            let readingCount = tableView(tableView, numberOfRowsInSection: readingSectionIndex)
             footerPieces.append("Reading: \(readingCount) book\(readingCount == 1 ? "" : "s")")
         }
 

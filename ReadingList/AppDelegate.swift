@@ -29,9 +29,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // storyboard will remain in place until this is completed, at which point the Main storyboard will be instantiated.
         DispatchQueue.global(qos: .userInitiated).async { [unowned self] in
             PersistentStoreManager.initalisePersistentStore {
-                DispatchQueue.main.async {
-                    self.window!.rootViewController = Storyboard.Main.instantiateRoot()
-                }
+                self.window!.rootViewController = Storyboard.Main.instantiateRoot()
             }
         }
 

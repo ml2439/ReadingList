@@ -104,13 +104,16 @@
                                                 <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Headline"/>
                                             </userDefinedRuntimeAttributes>
                                         </label>
-                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="CoverPlaceholder" translatesAutoresizingMaskIntoConstraints="NO" id="Prb-Ge-gIA" customClass="RoundedImageView" customModule="Reading_List" customModuleProvider="target">
+                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="CoverPlaceholder" translatesAutoresizingMaskIntoConstraints="NO" id="Prb-Ge-gIA">
                                             <rect key="frame" x="6" y="6" width="53" height="79.5"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" secondItem="Prb-Ge-gIA" secondAttribute="height" multiplier="1:1.5" id="oRb-N6-140"/>
                                             </constraints>
                                             <userDefinedRuntimeAttributes>
                                                 <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                    <real key="value" value="2"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="maskedCornerRadius">
                                                     <real key="value" value="2"/>
                                                 </userDefinedRuntimeAttribute>
                                             </userDefinedRuntimeAttributes>

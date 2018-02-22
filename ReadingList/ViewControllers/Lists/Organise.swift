@@ -6,7 +6,6 @@ import DZNEmptyDataSet
 class Organise: UITableViewController {
 
     var resultsController: NSFetchedResultsController<List>!
-    var tableViewDataSource: TableViewDataSource<List, Organise>!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -16,10 +15,28 @@ class Organise: UITableViewController {
         tableView.emptyDataSetSource = self
         tableView.emptyDataSetDelegate = self
         
-        resultsController = ObjectQuery<List>().sorted(\List.name).fetchController(context: PersistentStoreManager.container.viewContext)
-        tableViewDataSource = TableViewDataSource(tableView: tableView, cellIdentifier: "ListCell", fetchedResultsController: resultsController, delegate: self)
+        resultsController = ObjectQuery<List>().sorted(\List.name).fetchController(batchSize: 25,
+            context: PersistentStoreManager.container.viewContext)
+        try! resultsController.performFetch()
+        resultsController.delegate = tableView
         
         navigationItem.leftBarButtonItem = editButtonItem
+    }
+    
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return resultsController.sections!.count
+    }
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return resultsController.sections![section].numberOfObjects
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ListCell", for: indexPath)
+        let list = resultsController.object(at: indexPath)
+        cell.textLabel!.text = list.name
+        cell.detailTextLabel!.text = "\(list.books.count) book\(list.books.count == 1 ? "" : "s")"
+        return cell
     }
     
     override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
@@ -87,16 +104,6 @@ class Organise: UITableViewController {
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
         // No segue in edit mode
         return !tableView.isEditing
-    }
-}
-
-extension Organise: TableViewDataSourceDelegate {
-    typealias Object = List
-    typealias Cell = UITableViewCell
-    
-    func configure(_ cell: UITableViewCell, for object: List) {
-        cell.textLabel!.text = object.name
-        cell.detailTextLabel!.text = "\(object.books.count) book\(object.books.count == 1 ? "" : "s")"
     }
 }
 

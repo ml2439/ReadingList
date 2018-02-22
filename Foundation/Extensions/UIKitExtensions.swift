@@ -199,6 +199,12 @@ public extension NSAttributedString {
     }
 }
 
+extension UITableView {
+    func advisedFetchBatchSize(forTypicalCell cell: UITableViewCell) -> Int {
+        return Int((self.frame.height / cell.frame.height) * 1.3)
+    }
+}
+
 extension UIDevice {
     
     // From https://stackoverflow.com/a/26962452/5513562

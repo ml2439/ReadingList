@@ -11,7 +11,7 @@ class FinishedTable: BookTable {
     override func footerText() -> String? {
         guard let finishedSectionIndex = self.sectionIndex(forReadState: .finished) else { return nil }
         
-        let finishedCount = tableViewDataSource.tableView(tableView, numberOfRowsInSection: finishedSectionIndex)
+        let finishedCount = tableView(tableView, numberOfRowsInSection: finishedSectionIndex)
         return "Finished: \(finishedCount) book\(finishedCount == 1 ? "" : "s")"
     }
 }

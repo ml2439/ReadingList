@@ -20,14 +20,13 @@ class PersistentStoreManager {
 
         // TODO: Deindex spotlight results if necessary
         
-        // Initialise the container and migrate the store to the latest version if necessary.
+        // Migrate the store to the latest version if necessary and then initialise
         container = NSPersistentContainer(name: storeName, loadManuallyMigratedStoreAt: storeLocation)
-        container.migrateStoreIfRequired(toLatestOf: BooksModelVersion.self)
-        container.viewContext.automaticallyMergesChangesFromParent = true
-        
-        container.loadPersistentStores{ _, error in
-            guard error == nil else { fatalError("Error loading store") }
-            completion()
+        container.loadMigrated(toLatestOf: BooksModelVersion.self) {
+            self.container.viewContext.automaticallyMergesChangesFromParent = true
+            DispatchQueue.main.async {
+                completion()
+            }
         }
     }
     

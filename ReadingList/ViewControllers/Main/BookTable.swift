@@ -2,14 +2,6 @@ import UIKit
 import DZNEmptyDataSet
 import CoreData
 
-class BookTableDataSource: TableViewDataSource<Book, BookTable> {
-    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        // Turn the section name into a BookReadState and use its description property
-        let sectionAsInt = Int16(fetchedResultsController.sections![section].name)!
-        return BookReadState(rawValue: sectionAsInt)!.description
-    }
-}
-
 class BookTableFilterer: FetchedResultsFilterer<Book> {
     
     let readStatePredicate: NSPredicate
@@ -34,7 +26,6 @@ class BookTableFilterer: FetchedResultsFilterer<Book> {
 class BookTable: UITableViewController {
 
     var resultsController: NSFetchedResultsController<Book>!
-    var tableViewDataSource: TableViewDataSource<Book, BookTable>!
     var resultsFilterer: BookTableFilterer!
     var readStates: [BookReadState]!
     var searchController: UISearchController!
@@ -79,6 +70,7 @@ class BookTable: UITableViewController {
 
         // Watch for changes in book sort order
         NotificationCenter.default.addObserver(self, selector: #selector(bookSortChanged), name: NSNotification.Name.BookSortOrderChanged, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(reloadFooter), name: NSNotification.Name.NSManagedObjectContextObjectsDidChange, object: nil)
         
         super.viewDidLoad()
     }
@@ -104,20 +96,25 @@ class BookTable: UITableViewController {
         super.viewDidAppear(animated)
     }
     
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        // Turn the section name into a BookReadState and use its description property
+        let sectionAsInt = Int16(resultsController.sections![section].name)!
+        return BookReadState(rawValue: sectionAsInt)!.description
+    }
+    
     func buildResultsController() {
         let readStatePredicate = NSPredicate.Or(readStates.map{
             NSPredicate(format: "%K == %ld", #keyPath(Book.readState), $0.rawValue)
         })
         resultsController = ObjectQuery<Book>().filtered(readStatePredicate).sorted(UserSettings.selectedSortOrder)
-            .fetchController(sectionKeyPath: #keyPath(Book.readState), context: PersistentStoreManager.container.viewContext)
-
-        tableViewDataSource = BookTableDataSource(tableView: tableView, cellIdentifier: "BookTableViewCell", fetchedResultsController: resultsController, delegate: self) { [unowned self] in
-            self.tableFooter.text = self.footerText()
-        }
+            .fetchController(sectionKeyPath: #keyPath(Book.readState), batchSize: 25,
+                             context: PersistentStoreManager.container.viewContext)
         
         resultsFilterer = BookTableFilterer(searchController: searchController, tableView: tableView, fetchedResultsController: resultsController, readStatePredicate: readStatePredicate) { [unowned self] in
             self.tableFooter.text = self.footerText()
         }
+        try! resultsController.performFetch()
+        resultsController.delegate = tableView
     }
     
     override func setEditing(_ editing: Bool, animated: Bool) {
@@ -149,8 +146,31 @@ class BookTable: UITableViewController {
     }
     
     @objc func bookSortChanged() {
-        buildResultsController()
-        tableView.reloadData()
+        DispatchQueue.main.async {
+            self.buildResultsController()
+            self.tableView.reloadData()
+        }
+    }
+    
+    @objc func reloadFooter() {
+        DispatchQueue.main.async {
+            self.tableFooter.text = self.footerText()
+        }
+    }
+    
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return resultsController.sections!.count
+    }
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return resultsController.sections![section].numberOfObjects
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "BookTableViewCell", for: indexPath) as! BookTableViewCell
+        let book = resultsController.object(at: indexPath)
+        cell.configureFrom(book)
+        return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -404,15 +424,6 @@ class BookTable: UITableViewController {
             callback?(true)
         })
         self.present(confirmDeleteAlert, animated: true, completion: nil)
-    }
-}
-
-extension BookTable: TableViewDataSourceDelegate {
-    typealias Object = Book
-    typealias Cell = BookTableViewCell
-    
-    func configure(_ cell: BookTableViewCell, for object: Book) {
-        cell.configureFrom(object)
     }
 }
 

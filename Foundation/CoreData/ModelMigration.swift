@@ -27,6 +27,20 @@ extension NSPersistentContainer {
     }
     
     /**
+     Migrates (if necessary) the store to the latest version of the supplied Version type.
+     When migrated, loads the persistent store; when complete calls the callback.
+    */
+    public func loadMigrated<Version: ModelVersion>(toLatestOf versions: Version.Type, completion: @escaping () -> ()) {
+        DispatchQueue.global(qos: .userInteractive).async {
+            self.migrateStoreIfRequired(toLatestOf: versions)
+            self.loadPersistentStores { _, error in
+                guard error == nil else { fatalError("Error loading store") }
+                completion()
+            }
+        }
+    }
+    
+    /**
      Migrates the store to the latest version of the supplied Versions if necessary.
     */
     public func migrateStoreIfRequired<Version: ModelVersion>(toLatestOf versions: Version.Type) {

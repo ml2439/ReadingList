@@ -75,11 +75,13 @@ class ObjectQuery<T> where T: NSManagedObject {
         return (try? context.count(for: fetchRequest())) ?? 0
     }
 
-    func fetchController(sectionKeyPath: String? = nil, context: NSManagedObjectContext) -> NSFetchedResultsController<T> {
+    func fetchController(sectionKeyPath: String? = nil, batchSize: Int? = nil, context: NSManagedObjectContext) -> NSFetchedResultsController<T> {
         let request = NSFetchRequest<T>(entityName: String(describing: T.self))
         request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
         request.sortDescriptors = sortDescriptors
-        // TODO: Set batch size?
+        if let batchSize = batchSize {
+            request.fetchBatchSize = batchSize   
+        }
         return NSFetchedResultsController(fetchRequest: request, managedObjectContext: context, sectionNameKeyPath: sectionKeyPath, cacheName: nil)
     }
 }
