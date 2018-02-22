@@ -39,6 +39,15 @@ class EditBookMetadata: FormViewController {
     let deleteRowKey = "delete"
     let updateFromGoogleRowKey = "updateFromGoogle"
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        if #available(iOS 11.2, *) {
+            // Workaround bug https://stackoverflow.com/a/47839657/5513562
+            navigationController!.navigationBar.tintAdjustmentMode = .normal
+            navigationController!.navigationBar.tintAdjustmentMode = .automatic
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 

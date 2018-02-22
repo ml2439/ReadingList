@@ -221,6 +221,7 @@ class BookTable: UITableViewController {
                 for book in selectedRows.map(self.resultsController.object) {
                     book.delete()
                 }
+                try! PersistentStoreManager.container.viewContext.save()
                 self.setEditing(false, animated: true)
                 UserEngagement.logEvent(.bulkDeleteBook)
                 UserEngagement.onReviewTrigger()
@@ -399,7 +400,7 @@ class BookTable: UITableViewController {
             callback?(false)
         })
         confirmDeleteAlert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
-            bookToDelete.delete()
+            bookToDelete.deleteAndSave()
             callback?(true)
         })
         self.present(confirmDeleteAlert, animated: true, completion: nil)

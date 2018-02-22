@@ -91,6 +91,7 @@ class EditBookReadState: FormViewController {
             }
             <<< IntRow(currentPageKey) {
                 $0.title = "Current Page"
+                $0.value = book.currentPage
                 $0.hidden = Condition.function([readStateKey]) { [unowned self] _ in
                     return self.book.readState != .reading
                 }
@@ -102,6 +103,7 @@ class EditBookReadState: FormViewController {
             +++ Section(header: "Notes", footer: "")
             <<< TextAreaRow(){
                 $0.placeholder = "Add your personal notes here..."
+                $0.value = book.notes
                 $0.cellSetup{ [unowned self] cell, _ in
                     cell.height = {return (self.view.frame.height / 3) - 10}
                 }
@@ -112,7 +114,7 @@ class EditBookReadState: FormViewController {
     }
     
     func configureNavigationItem() {
-        if navigationItem.leftBarButtonItem == nil && navigationController?.viewControllers.first == self {
+        if navigationItem.leftBarButtonItem == nil && navigationController!.viewControllers.first == self {
             navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelPressed))
         }
         navigationItem.title = book.title
