@@ -1,17 +1,18 @@
 import Foundation
 
-class Isbn13 {
+struct ISBN13 {
     
-    static func tryParse(inputString: String?) -> String? {
-        guard let inputString = inputString else { return nil }
+    let string: String
+    
+    init?(_ input: String?) {
+        guard let input = input else { return nil }
         
-        let sanitisedInput = inputString.replacingOccurrences(of: "-", with: "")
+        let sanitisedInput = input.replacingOccurrences(of: "-", with: "")
         guard sanitisedInput.count == 13, sanitisedInput.hasPrefix("978") || sanitisedInput.hasPrefix("979"),
-            let _ = Int64.init(sanitisedInput) else {
+            let _ = Int64(sanitisedInput) else {
             return nil
         }
-        
-        // Comment Source: Wikipedia
+
         // The calculation of an ISBN-13 check digit begins with the first
         // 12 digits of the thirteen-digit ISBN (thus excluding the check digit itself).
         // Each digit, from left to right, is alternately multiplied by 1 or 3,
@@ -35,6 +36,6 @@ class Isbn13 {
             }
         }
         
-        return sanitisedInput
+        string = sanitisedInput
     }
 }

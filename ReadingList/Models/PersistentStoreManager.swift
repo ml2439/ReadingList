@@ -23,6 +23,7 @@ class PersistentStoreManager {
         // Initialise the container and migrate the store to the latest version if necessary.
         container = NSPersistentContainer(name: storeName, loadManuallyMigratedStoreAt: storeLocation)
         container.migrateStoreIfRequired(toLatestOf: BooksModelVersion.self)
+        container.viewContext.automaticallyMergesChangesFromParent = true
         
         container.loadPersistentStores{ _, error in
             guard error == nil else { fatalError("Error loading store") }

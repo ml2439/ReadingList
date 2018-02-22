@@ -78,11 +78,11 @@ class BookTable: UITableViewController {
         tableView.emptyDataSetDelegate = self
 
         // Watch for changes in book sort order
-        NotificationCenter.default.addObserver(self, selector: #selector(bookSortChanged), name: NSNotification.Name.onBookSortOrderChanged, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(bookSortChanged), name: NSNotification.Name.BookSortOrderChanged, object: nil)
         
         super.viewDidLoad()
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         if #available(iOS 11.0, *) {
             navigationController!.navigationBar.prefersLargeTitles = UserSettings.useLargeTitles.value

@@ -29,34 +29,25 @@ class DataVC: UITableViewController, UIDocumentPickerDelegate, UIDocumentMenuDel
             popPresenter.sourceView = self.tableView
             popPresenter.permittedArrowDirections = .up
         }
-        self.present(documentImport, animated: true)
+        present(documentImport, animated: true)
     }
     
     func documentMenu(_ documentMenu: UIDocumentMenuViewController, didPickDocumentPicker documentPicker: UIDocumentPickerViewController) {
         documentPicker.delegate = self
-        self.present(documentPicker, animated: true, completion: nil)
+        present(documentPicker, animated: true, completion: nil)
     }
     
     func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentAt url: URL) {
         SVProgressHUD.show(withStatus: "Importing")
         UserEngagement.logEvent(.csvImport)
         
-        /* TODO: Reimplement
-         BookImporter(csvFileUrl: url, supplementBookCover: true, missingHeadersCallback: {
+        BookCSVImporter().startImport(fromFileAt: Bundle.main.url(forResource: "examplebooks", withExtension: "csv")!) { results in
+            var statusMessage = "\(results.success) books imported."
             
-        }, callback: {
-            importedCount, duplicateCount, invalidCount in
-            var statusMessage = "\(importedCount) books imported."
-            
-            if duplicateCount != 0 {
-                statusMessage += " \(duplicateCount) rows ignored due pre-existing data."
-            }
-            
-            if invalidCount != 0 {
-                statusMessage += " \(invalidCount) rows ignored due to invalid data."
-            }
+            if results.duplicate != 0 { statusMessage += " \(results.duplicate) rows ignored due pre-existing data." }
+            if results.error != 0 { statusMessage += " \(results.error) rows ignored due to invalid data." }
             SVProgressHUD.showInfo(withStatus: statusMessage)
-        }).StartImport()*/
+        }
     }
     
     func exportData() {
@@ -66,7 +57,7 @@ class DataVC: UITableViewController, UIDocumentPickerDelegate, UIDocumentMenuDel
         let listNames = ObjectQuery<List>().sorted(\List.name).fetch(fromContext: PersistentStoreManager.container.viewContext).map{$0.name}
         let exporter = CsvExporter(csvExport: Book.BuildCsvExport(withLists: listNames))
         
-        ObjectQuery<Book>().sorted(\Book.readState).sorted(\Book.sort).sorted(\Book.startedReading).sorted(\Book.finishedReading)
+        ObjectQuery<Book>().sorted(\Book.readState).sorted("sort").sorted(\Book.startedReading).sorted(\Book.finishedReading)
             .fetchAsync(fromContext: PersistentStoreManager.container.viewContext) {
             exporter.addData($0)
             self.renderAndServeCsvExport(exporter)
@@ -92,7 +83,7 @@ class DataVC: UITableViewController, UIDocumentPickerDelegate, UIDocumentMenuDel
             }
 
             
-            // Present a dialog with the resulting file (presenting it on the main thread, of course)
+            // Present a dialog with the resulting file
             let activityViewController = UIActivityViewController(activityItems: [temporaryFilePath], applicationActivities: [])
             activityViewController.excludedActivityTypes = [
                 UIActivityType.addToReadingList,

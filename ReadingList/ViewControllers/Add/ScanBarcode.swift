@@ -133,9 +133,9 @@ class ScanBarcode: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
     func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
         
         guard let avMetadata = metadataObjects.first as? AVMetadataMachineReadableCodeObject,
-            let isbn = Isbn13.tryParse(inputString: avMetadata.stringValue) else { return }
+            let isbn = ISBN13(avMetadata.stringValue) else { return }
         DispatchQueue.main.sync {
-            respondToCapturedIsbn(isbn)
+            respondToCapturedIsbn(isbn.string)
         }
     }
     

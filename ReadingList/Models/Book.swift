@@ -86,7 +86,7 @@ class Book: NSManagedObject {
         
         if readState == .toRead && sort == nil {
             if let maxSort = ObjectQuery<Book>().sorted("sort", ascending: false).fetch(1, fromContext: managedObjectContext!).first?.sort {
-                print("Setting sort to \(maxSort + 1)")
+                print("Setting sort for \"\(title)\" to \(maxSort + 1)")
                 self.sort = maxSort + 1
             }
             else {
@@ -191,7 +191,7 @@ extension Book {
     override func validateForUpdate() throws {
         try super.validateForUpdate()
         if title.isEmptyOrWhitespace { throw ValidationError.missingTitle }
-        if let isbn13 = isbn13, Isbn13.tryParse(inputString: isbn13) == nil { throw ValidationError.invalidIsbn }
+        if let isbn = isbn13, ISBN13(isbn) == nil { throw ValidationError.invalidIsbn }
         if authors.count == 0 { throw ValidationError.noAuthors }
         if readState == .toRead && (startedReading != nil || finishedReading != nil) { throw ValidationError.invalidReadDates }
         if readState == .reading && (startedReading == nil || finishedReading != nil) { throw ValidationError.invalidReadDates }
@@ -210,24 +210,7 @@ extension Book {
         finishedReading = Date()
     }
     
-    /*
-    func populate(from readingInformation: BookReadingInformation) {
-        readState = readingInformation.readState
-        startedReading = readingInformation.startedReading
-        finishedReading = readingInformation.finishedReading
-        currentPage = readingInformation.currentPage
-    }
-    
-    private func updateReadState(with readingInformation: BookReadingInformation, log: Bool) {
-        appDelegate.booksStore.update(book: self, withReadingInformation: readingInformation)
-        if log {
-            UserEngagement.logEvent(.transitionReadState)
-            UserEngagement.onReviewTrigger()
-        }
-    }
- */
-    
-    static func BuildCsvExport(withLists lists: [String]) -> CsvExport<Book> {
+    static func BuildCsvExport(withLists lists: [String] = []) -> CsvExport<Book> {
         var columns = [
             CsvColumn<Book>(header: "ISBN-13", cellValue: {$0.isbn13}),
             CsvColumn<Book>(header: "Google Books ID", cellValue: {$0.googleBooksId}),
@@ -259,134 +242,3 @@ extension Book {
         }
     }
 }
-
-
-/// A mutable, non-persistent representation of the metadata fields of a Book object.
-/// Useful for maintaining in-creation books, or books being edited.
-/*
-class BookMetadata {
-    let googleBooksId: String?
-    var title: String?
-    var authors = [(firstNames: String?, lastName: String)]()
-    var subjects = [String]()
-    var pageCount: Int?
-    var publicationDate: Date?
-    var bookDescription: String?
-    var isbn13: String?
-    var coverImage: Data?
-    //var lists = [(listName: String, bookIndex: Int)]()
-    
-    init(googleBooksId: String? = nil) {
-        self.googleBooksId = googleBooksId
-    }
-    
-    func isValid() -> Bool {
-        return title?.isEmptyOrWhitespace == false && authors.count >= 1
-    }
-    
-    init(book: Book) {
-        self.title = book.title
-        self.authors = book.authors.map{
-            let author = $0 as! Author
-            return (author.firstNames, author.lastName)
-        }
-        self.bookDescription = book.bookDescription
-        self.pageCount = book.pageCount
-        self.publicationDate = book.publicationDate
-        self.coverImage = book.coverImage
-        self.isbn13 = book.isbn13
-        self.googleBooksId = book.googleBooksId
-        self.subjects = book.subjects.map{($0 as! Subject).name}
-    }
-    
-    // TODO: This definitely seems like the wrong place for this function
-    static func csvImport(csvData: [String: String]) -> (BookMetadata, BookReadingInformation, notes: String?) {
-        
-        let bookMetadata = BookMetadata(googleBooksId: csvData["Google Books ID"]?.nilIfWhitespace())
-        bookMetadata.title = csvData["Title"]?.nilIfWhitespace()
-        if let authorText = csvData["Authors"]?.nilIfWhitespace() {
-            bookMetadata.authors = authorText.components(separatedBy: ";")
-                .flatMap{$0.trimming().nilIfWhitespace()}
-                .map{
-                    if let firstCommaPos = $0.range(of: ","),
-                        let lastName = $0[..<firstCommaPos.lowerBound].trimming().nilIfWhitespace()  {
-                        return ($0[firstCommaPos.upperBound...].trimming().nilIfWhitespace(), lastName)
-                    }
-                    else {
-                        return (nil, $0)
-                    }
-                }
-        }
-        else {
-            bookMetadata.authors = []
-        }
-        bookMetadata.isbn13 = Isbn13.tryParse(inputString: csvData["ISBN-13"])
-        bookMetadata.pageCount = csvData["Page Count"] == nil ? nil : Int(csvData["Page Count"]!)
-        bookMetadata.publicationDate = csvData["Publication Date"] == nil ? nil : Date(iso: csvData["Publication Date"]!)
-        bookMetadata.bookDescription = csvData["Description"]?.nilIfWhitespace()
-        bookMetadata.subjects = csvData["Subjects"]?.components(separatedBy: ";").flatMap{$0.trimming().nilIfWhitespace()} ?? []
-        
-        let startedReading = Date(iso: csvData["Started Reading"])
-        let finishedReading = Date(iso: csvData["Finished Reading"])
-        let currentPage = csvData["Current Page"] == nil ? nil : Int(string: csvData["Current Page"]!)
-
-        let readingInformation: BookReadingInformation
-        if startedReading != nil && finishedReading != nil {
-            readingInformation = BookReadingInformation.finished(started: startedReading!, finished: finishedReading!)
-        }
-        else if startedReading != nil && finishedReading == nil {
-            readingInformation = BookReadingInformation.reading(started: startedReading!, currentPage: currentPage)
-        }
-        else {
-            readingInformation = BookReadingInformation.toRead()
-        }
-        
-        let notes = csvData["Notes"]?.isEmptyOrWhitespace == false ? csvData["Notes"] : nil
-        return (bookMetadata, readingInformation, notes)
-    }
-}
-
-/// A mutable, non-persistent representation of a the reading status of a Book object.
-/// Useful for maintaining in-creation books, or books being edited.
-class BookReadingInformation {
-    // TODO: consider create class heirachy with non-optional Dates where appropriate
-    
-    let readState: BookReadState
-    let startedReading: Date?
-    let finishedReading: Date?
-    let currentPage: Int?
-    
-    /// Will only populate the start date if started; will only populate the finished date if finished.
-    /// Otherwise, dates are set to nil.
-    init(readState: BookReadState, startedWhen: Date?, finishedWhen: Date?, currentPage: Int?) {
-        self.readState = readState
-        switch readState {
-        case .toRead:
-            self.startedReading = nil
-            self.finishedReading = nil
-            self.currentPage = nil
-        case .reading:
-            self.startedReading = startedWhen!
-            self.finishedReading = nil
-            self.currentPage = currentPage
-        case .finished:
-            self.startedReading = startedWhen!
-            self.finishedReading = finishedWhen!
-            self.currentPage = nil
-        }
-    }
-    
-    static func toRead() -> BookReadingInformation {
-        return BookReadingInformation(readState: .toRead, startedWhen: nil, finishedWhen: nil, currentPage: nil)
-    }
-    
-    static func reading(started: Date, currentPage: Int?) -> BookReadingInformation {
-        return BookReadingInformation(readState: .reading, startedWhen: started, finishedWhen: nil, currentPage: currentPage)
-    }
-    
-    static func finished(started: Date, finished: Date) -> BookReadingInformation {
-        return BookReadingInformation(readState: .finished, startedWhen: started, finishedWhen: finished, currentPage: nil)
-    }
-}
-*/
-

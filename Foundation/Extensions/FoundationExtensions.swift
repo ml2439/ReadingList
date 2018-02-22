@@ -37,6 +37,11 @@ extension Int {
     var string: String {
         get { return String(describing: self) }
     }
+    
+    init?(_ string: String?) {
+        guard let str = string else { return nil }
+        self.init(str)
+    }
 }
 
 extension NSSortDescriptor {

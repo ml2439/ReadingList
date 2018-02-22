@@ -28,7 +28,7 @@ class UserSettings {
         set {
             if newValue != tableSortOrder {
                 UserDefaults.standard.set(newValue.rawValue, forKey: tableSortOrderKey)
-                NotificationCenter.default.post(name: Notification.Name.onBookSortOrderChanged, object: nil)
+                NotificationCenter.default.post(name: Notification.Name.BookSortOrderChanged, object: nil)
             }
         }
     }
@@ -55,5 +55,5 @@ class UserSettings {
 }
 
 extension Notification.Name {
-    static let onBookSortOrderChanged = Notification.Name("on-book-sort-order-changed")
+    static let BookSortOrderChanged = Notification.Name("book-sort-order-changed")
 }

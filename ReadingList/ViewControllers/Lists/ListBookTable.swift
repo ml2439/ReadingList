@@ -6,6 +6,7 @@ import DZNEmptyDataSet
 class ListBookTable: UITableViewController {
     
     var list: List!
+    var currentlyEditing = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,20 +22,15 @@ class ListBookTable: UITableViewController {
     
     func registerForSaveNotifications() {
         // Watch for changes in the managed object context, in order to update the table
-        NotificationCenter.default.addObserver(self, selector: #selector(saveOccurred(_:)), name: NSNotification.Name.NSManagedObjectContextDidSave, object: list.managedObjectContext!)
+        NotificationCenter.default.addObserver(self, selector: #selector(changeOccurred(_:)), name: NSNotification.Name.NSManagedObjectContextObjectsDidChange, object: list.managedObjectContext!)
     }
     
-    func withoutAutomaticUpdates(_ code: () -> ()) {
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.NSManagedObjectContextDidSave, object: nil)
-        code()
-        registerForSaveNotifications()
-    }
-    
-    @objc func saveOccurred(_ notification: Notification) {
+    @objc func changeOccurred(_ notification: Notification) {
+        guard !currentlyEditing else { return }
         guard let userInfo = (notification as NSNotification).userInfo else { return }
         
         let deletedObjects = userInfo[NSDeletedObjectsKey] as? NSSet ?? NSSet()
-        guard deletedObjects.contains(list) != true else {
+        guard !deletedObjects.contains(list) else {
             // If the list was deleted, pop back. This can't happen through any normal means at the moment.
             navigationController!.popViewController(animated: false)
             return
@@ -42,6 +38,12 @@ class ListBookTable: UITableViewController {
         
         // Reload the data
         tableView.reloadData()
+    }
+    
+    func performUIEdit(_ block: () -> ()) {
+        currentlyEditing = true
+        block()
+        currentlyEditing = false
     }
         
     override func numberOfSections(in tableView: UITableView) -> Int { return 1 }
@@ -59,19 +61,17 @@ class ListBookTable: UITableViewController {
     
     private func removeBook(at indexPath: IndexPath) {
         let bookToRemove = list.books[indexPath.row]
-        list.managedObjectContext!.performAndSave {
-            self.list.removeBooks(NSSet(array: ([bookToRemove])))
-        }
+        list.removeBooks(NSSet(array: ([bookToRemove])))
+        list.managedObjectContext!.saveIfChanged()
         UserEngagement.logEvent(.removeBookFromList)
     }
     
     override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         return [UITableViewRowAction(style: .destructive, title: "Remove") { [unowned self] _, indexPath in
-            self.withoutAutomaticUpdates {
+            self.performUIEdit {
                 self.removeBook(at: indexPath)
+                self.tableView.deleteRows(at: [indexPath], with: .automatic)
             }
-
-            self.tableView.deleteRows(at: [indexPath], with: .automatic)
             self.tableView.reloadEmptyDataSet()
         }]
     }
@@ -80,12 +80,11 @@ class ListBookTable: UITableViewController {
     
     override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         guard sourceIndexPath != destinationIndexPath else { return }
-
-        var books = list.books.array.map{($0 as! Book)}
-        let movedBook = books.remove(at: sourceIndexPath.row)
-        books.insert(movedBook, at: destinationIndexPath.row)
-        list.books = NSOrderedSet(array: books)
-        withoutAutomaticUpdates {
+        performUIEdit {
+            var books = list.books.array.map{($0 as! Book)}
+            let movedBook = books.remove(at: sourceIndexPath.row)
+            books.insert(movedBook, at: destinationIndexPath.row)
+            list.books = NSOrderedSet(array: books)
             list.managedObjectContext!.saveIfChanged()
         }
         UserEngagement.logEvent(.reorederList)
@@ -101,7 +100,7 @@ class ListBookTable: UITableViewController {
 
 extension ListBookTable: DZNEmptyDataSetSource {
     func title(forEmptyDataSet scrollView: UIScrollView!) -> NSAttributedString! {
-        return StandardEmptyDataset.title(withText: /*🕳️*/"✨ Empty List")
+        return StandardEmptyDataset.title(withText: "✨ Empty List")
     }
     
     func description(forEmptyDataSet scrollView: UIScrollView!) -> NSAttributedString! {

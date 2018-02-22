@@ -63,16 +63,14 @@ class Debug: FormViewController {
             ObjectQuery<List>().fetch(fromContext: $0).forEach{$0.delete()}
         }
         
-        let csvPath = Bundle.main.url(forResource: "examplebooks", withExtension: "csv")
+        let csvPath = Bundle.main.url(forResource: "examplebooks", withExtension: "csv")!
         
         SVProgressHUD.show(withStatus: "Loading Data...")
-        
-        /* TODO: Reimplement
-        BookImporter(csvFileUrl: csvPath!, supplementBookCover: true, missingHeadersCallback: {
-            print("Missing headers!")
-        }) { _, _, _ in
-            SVProgressHUD.dismiss()
-        }.StartImport()*/
+        BookCSVImporter().startImport(fromFileAt: csvPath) { _ in
+            DispatchQueue.main.async {
+                SVProgressHUD.dismiss()
+            }
+        }
     }    
 }
 
