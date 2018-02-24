@@ -49,16 +49,16 @@ class ReadingTable: BookTable {
         
         // Update the model sort indexes. The lowest sort number should be the sort of the book immediately
         // above the range, plus 1, or - if the range starts at the top - 0.
-        var sortIndex: Int
+        var sortIndex: Int32
         if topRow == 0 {
             sortIndex = 0
         }
         else {
-            sortIndex = (objectsInSection[topRow - 1] as! Book).sort! + 1
+            sortIndex = (objectsInSection[topRow - 1] as! Book).sort!.int32 + 1
         }
         for rowNumber in topRow...bottomRow {
             let book = objectsInSection[rowNumber] as! Book
-            book.sort = sortIndex
+            book.sort = sortIndex.nsNumber
             sortIndex += 1
         }
         

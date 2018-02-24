@@ -76,8 +76,8 @@ class EditBookMetadata: FormViewController {
             }
             <<< IntRow() {
                 $0.title = "Page Count"
-                $0.value = book.pageCount
-                $0.onChange{book.pageCount = $0.value}
+                $0.value = book.pageCount?.intValue
+                $0.onChange{book.pageCount = $0.value?.nsNumber}
             }
             <<< DateRow() {
                 $0.title = "Publication Date"

@@ -42,6 +42,22 @@ extension Int {
         guard let str = string else { return nil }
         self.init(str)
     }
+    
+    var nsNumber: NSNumber {
+        return NSNumber(integerLiteral: self)
+    }
+}
+
+extension Int32 {
+    var nsNumber: NSNumber {
+        return NSNumber(value: self)
+    }
+}
+
+extension NSNumber {
+    var int32: Int32 {
+        return Int32(truncating: self)
+    }
 }
 
 extension NSSortDescriptor {

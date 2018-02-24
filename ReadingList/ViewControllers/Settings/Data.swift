@@ -3,6 +3,7 @@ import UIKit
 import SVProgressHUD
 import Fabric
 import Crashlytics
+import CoreData
 
 class DataVC: UITableViewController, UIDocumentPickerDelegate, UIDocumentMenuDelegate {
     
@@ -54,14 +55,15 @@ class DataVC: UITableViewController, UIDocumentPickerDelegate, UIDocumentMenuDel
         UserEngagement.logEvent(.csvExport)
         SVProgressHUD.show(withStatus: "Generating...")
         
-        let listNames = ObjectQuery<List>().sorted(\List.name).fetch(fromContext: PersistentStoreManager.container.viewContext).map{$0.name}
+        let listNames = List.names(fromContext: PersistentStoreManager.container.viewContext)
         let exporter = CsvExporter(csvExport: Book.BuildCsvExport(withLists: listNames))
         
-        ObjectQuery<Book>().sorted(\Book.readState).sorted("sort").sorted(\Book.startedReading).sorted(\Book.finishedReading)
-            .fetchAsync(fromContext: PersistentStoreManager.container.viewContext) {
-            exporter.addData($0)
+        let exportAll = NSManagedObject.fetchRequest(Book.self)
+        exportAll.sortDescriptors = [NSSortDescriptor(\Book.readState), NSSortDescriptor(\Book.sort), NSSortDescriptor(\Book.startedReading), NSSortDescriptor(\Book.finishedReading)]
+        try! PersistentStoreManager.container.viewContext.execute(NSAsynchronousFetchRequest(fetchRequest: exportAll) {
+            exporter.addData($0.finalResult ?? [])
             self.renderAndServeCsvExport(exporter)
-        }
+        })
     }
     
     func renderAndServeCsvExport(_ exporter: CsvExporter<Book>) {

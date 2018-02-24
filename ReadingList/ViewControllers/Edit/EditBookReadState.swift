@@ -52,7 +52,7 @@ class EditBookReadState: FormViewController {
                     case .reading:
                         self.book.startedReading = (self.form.rowBy(tag: startedReadingKey) as! DateRow).value
                         self.book.finishedReading = nil
-                        self.book.currentPage = (self.form.rowBy(tag: currentPageKey) as! IntRow).value
+                        self.book.currentPage = (self.form.rowBy(tag: currentPageKey) as! IntRow).value?.nsNumber
                     case .finished:
                         self.book.startedReading = (self.form.rowBy(tag: startedReadingKey) as! DateRow).value
                         self.book.finishedReading = (self.form.rowBy(tag: finishedReadingKey) as! DateRow).value
@@ -91,12 +91,12 @@ class EditBookReadState: FormViewController {
             }
             <<< IntRow(currentPageKey) {
                 $0.title = "Current Page"
-                $0.value = book.currentPage
+                $0.value = book.currentPage?.intValue
                 $0.hidden = Condition.function([readStateKey]) { [unowned self] _ in
                     return self.book.readState != .reading
                 }
                 $0.onChange{ [unowned self] cell in
-                    self.book.currentPage = cell.value
+                    self.book.currentPage = cell.value?.nsNumber
                 }
             }
             

@@ -21,6 +21,13 @@ extension NSManagedObject {
             return false
         }
     }
+    
+    static func fetchRequest<T: NSManagedObject>(_ type: T.Type, limit: Int? = nil, batch: Int? = nil) -> NSFetchRequest<T> {
+        let fetchRequest = T.fetchRequest() as! NSFetchRequest<T>
+        if let limit = limit { fetchRequest.fetchLimit = limit }
+        if let batch = batch { fetchRequest.fetchBatchSize = batch }
+        return fetchRequest
+    }
 }
 
 extension NSManagedObjectContext {

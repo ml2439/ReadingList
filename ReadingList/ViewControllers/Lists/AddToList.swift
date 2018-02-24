@@ -39,7 +39,7 @@ class TextBoxAlertController: UIAlertController {
 class NewListAlertController: TextBoxAlertController {
     
     convenience init(onOK: @escaping (String) -> ()) {
-        let existingListNames = ObjectQuery<List>().sorted(\List.name).fetch(fromContext: PersistentStoreManager.container.viewContext).map{$0.name}
+        let existingListNames = List.names(fromContext: PersistentStoreManager.container.viewContext)
         self.init(title: "Add New List", message: "Enter a name for your list", placeholder: "Enter list name", textValidator: { listName in
             guard let listName = listName, !listName.isEmptyOrWhitespace else { return false }
             return !existingListNames.contains(listName)
@@ -70,7 +70,8 @@ class AddToList: UITableViewController {
      The completion action will run at the end of a list addition if a UIAlertController was returned.
     */
     static func getAppropriateVcForAddingBooksToList(_ booksToAdd: [Book], completion: (() -> ())? = nil) -> UIViewController {
-        if ObjectQuery<List>().count(inContext: PersistentStoreManager.container.viewContext) > 0 {
+        let listCount = NSManagedObject.fetchRequest(List.self, limit: 1)
+        if try! PersistentStoreManager.container.viewContext.count(for: listCount) > 0 {
             let rootAddToList = Storyboard.AddToList.instantiateRoot(withStyle: .formSheet) as! UINavigationController
             let addToList = (rootAddToList.viewControllers[0] as! AddToList)
             addToList.books = booksToAdd
@@ -93,7 +94,9 @@ class AddToList: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        resultsController = ObjectQuery<List>().sorted(\List.name).fetchController(context: PersistentStoreManager.container.viewContext)
+        let fetchRequest = NSManagedObject.fetchRequest(List.self, batch: 40)
+        fetchRequest.sortDescriptors = [NSSortDescriptor(\List.name)]
+        resultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: PersistentStoreManager.container.viewContext, sectionNameKeyPath: nil, cacheName: nil)
         try! resultsController.performFetch()
     }
 

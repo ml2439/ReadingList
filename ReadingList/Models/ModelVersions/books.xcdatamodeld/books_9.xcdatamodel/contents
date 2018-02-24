@@ -4,7 +4,7 @@
         <attribute name="firstNames" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="lastName" attributeType="String" syncable="YES"/>
         <relationship name="book" maxCount="1" deletionRule="Nullify" destinationEntity="Book" inverseName="authors" inverseEntity="Book" syncable="YES"/>
-        <fetchIndex name="byLastNameIndex">
+        <fetchIndex name="byLastName">
             <fetchIndexElement property="lastName" type="Binary" order="ascending"/>
         </fetchIndex>
     </entity>
@@ -27,30 +27,38 @@
         <relationship name="authors" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Author" inverseName="book" inverseEntity="Author" syncable="YES"/>
         <relationship name="lists" toMany="YES" deletionRule="Nullify" destinationEntity="List" inverseName="books" inverseEntity="List" syncable="YES"/>
         <relationship name="subjects" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Subject" inverseName="books" inverseEntity="Subject" syncable="YES"/>
-        <fetchIndex name="byFirstAuthorLastNameIndex">
-            <fetchIndexElement property="firstAuthorLastName" type="Binary" order="ascending"/>
-        </fetchIndex>
         <fetchIndex name="byIsbn13Index">
             <fetchIndexElement property="isbn13" type="Binary" order="ascending"/>
         </fetchIndex>
-        <fetchIndex name="byReadStateIndex">
+        <fetchIndex name="sortCustomDate">
             <fetchIndexElement property="readState" type="Binary" order="ascending"/>
-        </fetchIndex>
-        <fetchIndex name="bySortIndex">
             <fetchIndexElement property="sort" type="Binary" order="ascending"/>
+            <fetchIndexElement property="finishedReading" type="Binary" order="ascending"/>
+            <fetchIndexElement property="startedReading" type="Binary" order="ascending"/>
         </fetchIndex>
-        <fetchIndex name="byTitleIndex">
+        <fetchIndex name="sortTitle">
+            <fetchIndexElement property="readState" type="Binary" order="ascending"/>
             <fetchIndexElement property="title" type="Binary" order="ascending"/>
+        </fetchIndex>
+        <fetchIndex name="sortAuthor">
+            <fetchIndexElement property="readState" type="Binary" order="ascending"/>
+            <fetchIndexElement property="firstAuthorLastName" type="Binary" order="ascending"/>
+        </fetchIndex>
+        <fetchIndex name="byGoogleBooksId">
+            <fetchIndexElement property="googleBooksId" type="Binary" order="ascending"/>
         </fetchIndex>
     </entity>
     <entity name="List" representedClassName="List" syncable="YES">
         <attribute name="name" attributeType="String" minValueString="1" maxValueString="100" syncable="YES"/>
         <relationship name="books" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Book" inverseName="lists" inverseEntity="Book" syncable="YES"/>
+        <fetchIndex name="byName">
+            <fetchIndexElement property="name" type="Binary" order="ascending"/>
+        </fetchIndex>
     </entity>
     <entity name="Subject" representedClassName="Subject" syncable="YES">
         <attribute name="name" attributeType="String" syncable="YES"/>
         <relationship name="books" toMany="YES" deletionRule="Nullify" destinationEntity="Book" inverseName="subjects" inverseEntity="Book" syncable="YES"/>
-        <fetchIndex name="byNameIndex">
+        <fetchIndex name="byName">
             <fetchIndexElement property="name" type="Binary" order="ascending"/>
         </fetchIndex>
     </entity>

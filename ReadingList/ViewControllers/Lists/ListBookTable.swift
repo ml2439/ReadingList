@@ -55,7 +55,8 @@ class ListBookTable: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "BookTableViewCell") as! BookTableViewCell
-        cell.configureFrom(list.books.object(at: indexPath.row) as! Book)
+        let book = list.books.object(at: indexPath.row) as! Book
+        cell.configureFrom(book)
         return cell
     }
     

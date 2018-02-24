@@ -13,15 +13,21 @@ public class List: NSManagedObject {
     }
     
     static func getOrCreate(fromContext context: NSManagedObjectContext, withName name: String) -> List {
-        if let existingList = ObjectQuery<List>().filtered("%K == %@", #keyPath(List.name), name).fetch(1, fromContext: context).first {
+        let listFetchRequest = NSManagedObject.fetchRequest(List.self, limit: 1)
+        listFetchRequest.predicate = NSPredicate(format: "%K == %@", #keyPath(List.name), name)
+        if let existingList = (try! context.fetch(listFetchRequest)).first {
             return existingList
         }
         return List(context: context, name: name)
     }
     
-    @objc(addBooks:)
     @NSManaged func addBooks(_ values: NSOrderedSet)
-    
-    @objc(removeBooks:)
     @NSManaged func removeBooks(_ values: NSSet)
+    
+    static func names(fromContext context: NSManagedObjectContext) -> [String] {
+        let fetchRequest = NSManagedObject.fetchRequest(List.self)
+        fetchRequest.sortDescriptors = [NSSortDescriptor(\List.name)]
+        fetchRequest.returnsObjectsAsFaults = false
+        return (try! context.fetch(fetchRequest)).map{$0.name}
+    }
 }

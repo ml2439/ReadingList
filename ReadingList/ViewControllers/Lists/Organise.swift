@@ -15,8 +15,9 @@ class Organise: UITableViewController {
         tableView.emptyDataSetSource = self
         tableView.emptyDataSetDelegate = self
         
-        resultsController = ObjectQuery<List>().sorted(\List.name).fetchController(batchSize: 25,
-            context: PersistentStoreManager.container.viewContext)
+        let fetchRequest = NSManagedObject.fetchRequest(List.self, batch: 25)
+        fetchRequest.sortDescriptors = [NSSortDescriptor(\List.name)]
+        resultsController = NSFetchedResultsController<List>(fetchRequest: fetchRequest, managedObjectContext: PersistentStoreManager.container.viewContext, sectionNameKeyPath: nil, cacheName: nil)
         try! resultsController.performFetch()
         resultsController.delegate = tableView
         
@@ -48,7 +49,7 @@ class Organise: UITableViewController {
                 self.setEditing(false, animated: true)
                 let list = self.resultsController.object(at: indexPath)
                 
-                let existingListNames = ObjectQuery<List>().sorted(\List.name).fetch(fromContext: PersistentStoreManager.container.viewContext).map{$0.name}
+                let existingListNames = List.names(fromContext: PersistentStoreManager.container.viewContext)
                 let renameListAlert = TextBoxAlertController(title: "Rename List", message: "Choose a new name for this list", initialValue: list.name, placeholder: "New list name", textValidator: { listName in
                         guard let listName = listName, !listName.isEmptyOrWhitespace else { return false }
                         return listName == list.name || !existingListNames.contains(listName)

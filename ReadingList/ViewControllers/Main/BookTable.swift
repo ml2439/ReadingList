@@ -106,9 +106,12 @@ class BookTable: UITableViewController {
         let readStatePredicate = NSPredicate.Or(readStates.map{
             NSPredicate(format: "%K == %ld", #keyPath(Book.readState), $0.rawValue)
         })
-        resultsController = ObjectQuery<Book>().filtered(readStatePredicate).sorted(UserSettings.selectedSortOrder)
-            .fetchController(sectionKeyPath: #keyPath(Book.readState), batchSize: 25,
-                             context: PersistentStoreManager.container.viewContext)
+        
+        let f = NSManagedObject.fetchRequest(Book.self, batch: 25)
+        f.predicate = readStatePredicate
+        f.sortDescriptors = UserSettings.selectedSortOrder
+        f.relationshipKeyPathsForPrefetching = [#keyPath(Book.authors)]
+        resultsController = NSFetchedResultsController(fetchRequest: f, managedObjectContext: PersistentStoreManager.container.viewContext, sectionNameKeyPath: #keyPath(Book.readState), cacheName: nil)
         
         resultsFilterer = BookTableFilterer(searchController: searchController, tableView: tableView, fetchedResultsController: resultsController, readStatePredicate: readStatePredicate) { [unowned self] in
             self.tableFooter.text = self.footerText()

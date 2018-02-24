@@ -1,17 +1,7 @@
 import UIKit
-import SVProgressHUD
 
-class SplitViewController: UISplitViewController, UISplitViewControllerDelegate {
-    
-    override func viewDidLoad() {
-        self.preferredDisplayMode = .allVisible
-        self.delegate = self
-    }
-    
-    func splitViewController(_ splitViewController: UISplitViewController, collapseSecondary secondaryViewController: UIViewController, onto primaryViewController: UIViewController) -> Bool {
-        return true
-    }
-    
+extension UISplitViewController {
+
     var masterNavigationController: UINavigationController {
         return viewControllers[0] as! UINavigationController
     }
@@ -39,5 +29,17 @@ class SplitViewController: UISplitViewController, UISplitViewControllerDelegate 
         
         // The controller is not present
         return nil
+    }
+}
+
+class SplitViewController: UISplitViewController, UISplitViewControllerDelegate {
+    
+    override func viewDidLoad() {
+        self.preferredDisplayMode = .allVisible
+        self.delegate = self
+    }
+    
+    func splitViewController(_ splitViewController: UISplitViewController, collapseSecondary secondaryViewController: UIViewController, onto primaryViewController: UIViewController) -> Bool {
+        return true
     }
 }

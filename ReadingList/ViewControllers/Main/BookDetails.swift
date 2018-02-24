@@ -106,8 +106,8 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         }
         setTextOrHideLine(readTime, readTimeText)
         let pageNumberText: String?
-        if let currentPage = book.currentPage {
-            if let totalPages = book.pageCount, currentPage <= totalPages, currentPage > 0 {
+        if let currentPage = book.currentPage?.intValue {
+            if let totalPages = book.pageCount?.intValue, currentPage <= totalPages, currentPage > 0 {
                 pageNumberText = "\(currentPage) (\(100 * currentPage/totalPages)% complete)"
             }
             else {
@@ -120,7 +120,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         setTextOrHideLine(notes, book.notes)
 
         setTextOrHideLine(isbn, book.isbn13)
-        setTextOrHideLine(pages, book.pageCount?.string)
+        setTextOrHideLine(pages, book.pageCount?.intValue.string)
         setTextOrHideLine(published, book.publicationDate?.toPrettyString(short: false))
         setTextOrHideLine(subjects,  book.subjects.map{($0 as! Subject).name}.joined(separator: ", ").nilIfWhitespace())
         googleBooks.isHidden = book.googleBooksId == nil

@@ -24,7 +24,7 @@ struct BookCSVImportResults {
 fileprivate class BookCSVParserDelegate: CSVParserDelegate {
     private let context: NSManagedObjectContext
     private let onCompletion: (BookCSVImportResults) -> ()
-    private var currentSort: Int?
+    private var currentSort: Int32?
     private let dispatchGroup = DispatchGroup()
     private var listMappings = [String: [(bookID: NSManagedObjectID, index: Int)]]()
     private var listNames = [String]()
@@ -50,8 +50,8 @@ fileprivate class BookCSVParserDelegate: CSVParserDelegate {
         book.authors = NSOrderedSet(array: createAuthors(authors))
         book.googleBooksId = values["Google Books ID"]
         book.isbn13 = ISBN13(values["ISBN-13"])?.string
-        book.pageCount = Int(values["Page Count"])
-        book.currentPage = Int(values["Current Page"])
+        book.pageCount = Int(values["Page Count"])?.nsNumber
+        book.currentPage = Int(values["Current Page"])?.nsNumber
         book.notes = values["Notes"]
         book.publicationDate = Date(iso: values["Publication Date"])
         book.bookDescription = values["Description"]
@@ -120,10 +120,10 @@ fileprivate class BookCSVParserDelegate: CSVParserDelegate {
             else {
                 // Get the current sort value if we have not done so yet
                 if currentSort == nil {
-                    currentSort = ObjectQuery<Book>().sorted("sort", ascending: false).fetch(1, fromContext: context).first?.sort ?? -1
+                    currentSort = Book.maxSort(fromContext: context) ?? -1
                 }
                 currentSort! += 1
-                newBook.sort = currentSort!
+                newBook.sort = currentSort?.nsNumber
             }
             
             // If the book is not valid, delete it

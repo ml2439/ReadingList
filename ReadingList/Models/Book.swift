@@ -1,75 +1,52 @@
 import Foundation
 import CoreData
 
+@objc enum BookReadState: Int16, CustomStringConvertible {
+    case reading = 1
+    case toRead = 2
+    case finished = 3
+    
+    var description: String {
+        switch self {
+        case .reading: return "Reading"
+        case .toRead: return "To Read"
+        case .finished: return "Finished"
+        }
+    }
+    
+    var longDescription: String {
+        switch self {
+        case .toRead:
+            return "📚 To Read"
+        case .reading:
+            return "📖 Currently Reading"
+        case .finished:
+            return "🎉 Finished"
+        }
+    }
+}
+
 @objc(Book)
 class Book: NSManagedObject {
-    // Book Metadata
     @NSManaged var title: String
     @NSManaged var isbn13: String?
     @NSManaged var googleBooksId: String?
-    
-    var pageCount: Int? {
-        get {
-            willAccessValue(forKey: "pageCount")
-            defer { didAccessValue(forKey: "pageCount") }
-            return primitivePageCount?.intValue
-        }
-        set {
-            willChangeValue(forKey: "pageCount")
-            defer { didChangeValue(forKey: "pageCount") }
-            primitivePageCount = newValue == nil ? nil : NSNumber(value: newValue!)
-        }
-    }
-    @NSManaged private var primitivePageCount: NSNumber?
-
+    @NSManaged var pageCount: NSNumber?
     @NSManaged var publicationDate: Date?
     @NSManaged var bookDescription: String?
     @NSManaged var coverImage: Data?
-    
     @NSManaged var readState: BookReadState
     @NSManaged var startedReading: Date?
     @NSManaged var finishedReading: Date?
     @NSManaged var notes: String?
-    
-    var currentPage: Int? {
-        get {
-            willAccessValue(forKey: "currentPage")
-            defer { didAccessValue(forKey: "currentPage") }
-            return primitiveCurrentPage?.intValue
-        }
-        set {
-            willChangeValue(forKey: "currentPage")
-            defer { didChangeValue(forKey: "currentPage") }
-            primitiveCurrentPage = newValue == nil ? nil : NSNumber(value: newValue!)
-        }
-    }
-    @NSManaged private var primitiveCurrentPage: NSNumber?
-    
-    var sort: Int? {
-        get {
-            willAccessValue(forKey: "sort")
-            defer { didAccessValue(forKey: "sort") }
-            return primitiveSort?.intValue
-        }
-        set {
-            willChangeValue(forKey: "sort")
-            defer { didChangeValue(forKey: "sort") }
-            primitiveSort = newValue == nil ? nil : NSNumber(value: newValue!)
-        }
-    }
-    @NSManaged private var primitiveSort: NSNumber?
-
+    @NSManaged var currentPage: NSNumber?
+    @NSManaged var sort: NSNumber?
     @NSManaged var createdWhen: Date
-    
-    // Relationships
+
     @NSManaged var subjects: NSOrderedSet
     @NSManaged var authors: NSOrderedSet
     @NSManaged var lists: Set<List>
-    
-    @objc(addAuthors:)
     @NSManaged func addAuthors(_ values: NSOrderedSet)
-    
-    @objc(removeAuthors:)
     @NSManaged func removeAuthors(_ values: NSSet)
     
     // Calculated sort helper
@@ -85,12 +62,10 @@ class Book: NSManagedObject {
         }
         
         if readState == .toRead && sort == nil {
-            if let maxSort = ObjectQuery<Book>().sorted("sort", ascending: false).fetch(1, fromContext: managedObjectContext!).first?.sort {
-                print("Setting sort for \"\(title)\" to \(maxSort + 1)")
-                self.sort = maxSort + 1
+            if let maxSort = Book.maxSort(fromContext: managedObjectContext!) {
+                self.sort = (maxSort + 1).nsNumber
             }
             else {
-                print("Setting sort to 1")
                 self.sort = 1
             }
         }
@@ -126,38 +101,11 @@ class Book: NSManagedObject {
         bookDescription = fetchResult.description
         subjects = NSOrderedSet(array: fetchResult.subjects.map{Subject.getOrCreate(inContext: self.managedObjectContext!, withName: $0)})
         coverImage = fetchResult.coverImage
-        pageCount = fetchResult.pageCount
+        pageCount = fetchResult.pageCount?.nsNumber
         publicationDate = fetchResult.publishedDate
         isbn13 = fetchResult.isbn13
     }
 }
-
-/// The availale reading progress states
-@objc enum BookReadState : Int16, CustomStringConvertible {
-    case reading = 1
-    case toRead = 2
-    case finished = 3
-    
-    var description: String {
-        switch self{
-        case .reading: return "Reading"
-        case .toRead: return "To Read"
-        case .finished: return "Finished"
-        }
-    }
-    
-    var longDescription: String {
-        switch self {
-        case .toRead:
-            return "📚 To Read"
-        case .reading:
-            return "📖 Currently Reading"
-        case .finished:
-            return "🎉 Finished"
-        }
-    }
-}
-
 
 extension Book {
 
@@ -170,15 +118,27 @@ extension Book {
     static func get(fromContext context: NSManagedObjectContext, googleBooksId: String? = nil, isbn: String? = nil) -> Book? {
         // if both are nil, leave early
         guard googleBooksId != nil || isbn != nil else { return nil }
-            
-        var predicates = [NSPredicate]()
+        
+        // First try fetching by google books ID
         if let googleBooksId = googleBooksId {
-            predicates.append(NSPredicate(format: "%K == %@", #keyPath(Book.googleBooksId), googleBooksId))
+            let googleBooksfetch = NSManagedObject.fetchRequest(Book.self, limit: 1)
+            googleBooksfetch.predicate = NSPredicate(format: "%K == %@", #keyPath(Book.googleBooksId), googleBooksId)
+            if let result = (try! context.fetch(googleBooksfetch)).first { return result }
         }
-        if let isbn = isbn {
-            predicates.append(NSPredicate(format: "%K == %@", #keyPath(Book.isbn13), isbn))
-        }
-        return ObjectQuery<Book>().any(predicates).fetch(1, fromContext: context).first
+        
+        // then try fetching by ISBN
+        let isbnFetch = NSManagedObject.fetchRequest(Book.self, limit: 1)
+        isbnFetch.predicate = NSPredicate(format: "%K == %@", #keyPath(Book.isbn13), isbn!)
+        return (try! context.fetch(isbnFetch)).first
+    }
+    
+    static func maxSort(fromContext context: NSManagedObjectContext) -> Int32? {
+        // FUTURE: Could use a fetch expression to just return the max value
+        let fetchRequest = NSManagedObject.fetchRequest(Book.self, limit: 1)
+        fetchRequest.predicate = NSPredicate(format: "%K == %ld", #keyPath(Book.readState), BookReadState.toRead.rawValue)
+        fetchRequest.sortDescriptors = [NSSortDescriptor(\Book.sort, ascending: false)]
+        fetchRequest.returnsObjectsAsFaults = false
+        return (try! context.fetch(fetchRequest)).first?.sort?.int32
     }
     
     enum ValidationError: Error {

@@ -58,9 +58,11 @@ class Debug: FormViewController {
 
     static func loadTestData(withLists: Bool = true) {
 
-        PersistentStoreManager.container.viewContext.performAndSaveAndWait {
+        PersistentStoreManager.container.viewContext.performAndSaveAndWait { _ in
+            /* TODO: batch delete
             ObjectQuery<Book>().fetch(fromContext: $0).forEach{$0.delete()}
             ObjectQuery<List>().fetch(fromContext: $0).forEach{$0.delete()}
+             */
         }
         
         let csvPath = Bundle.main.url(forResource: "examplebooks", withExtension: "csv")!

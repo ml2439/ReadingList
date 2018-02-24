@@ -85,7 +85,7 @@
             skipped = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "1C02BC7320277E2800AAE6CC"
+               BlueprintIdentifier = "1CD1123D202DD46500BE3E1D"
                BuildableName = "ReadingList_Screenshots.xctest"
                BlueprintName = "ReadingList_Screenshots"
                ReferencedContainer = "container:ReadingList.xcodeproj">
@@ -135,6 +135,12 @@
             ReferencedContainer = "container:ReadingList.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <CommandLineArguments>
+         <CommandLineArgument
+            argument = "-com.apple.CoreData.SQLDebug 1"
+            isEnabled = "YES">
+         </CommandLineArgument>
+      </CommandLineArguments>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
