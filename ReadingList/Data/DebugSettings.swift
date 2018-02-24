@@ -46,7 +46,7 @@ enum QuickActionSimulation: Int {
     }
 }
 
-// TODO: Move to using command line switches
+// FUTURE: Move to using command line switches?
 class DebugSettings {
     
     static func initialiseFromCommandLine() {

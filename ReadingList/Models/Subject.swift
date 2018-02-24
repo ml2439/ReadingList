@@ -12,14 +12,6 @@ class Subject: NSManagedObject {
         self.name = name
     }
     
-    override func willSave() {
-        super.willSave()
-        if !isDeleted && books.count == 0 {
-            print("Orphaned subject \(name) deleted before save")
-            managedObjectContext?.delete(self)
-        }
-    }
-    
     static func getOrCreate(inContext context: NSManagedObjectContext, withName name: String) -> Subject {
         let subjectFetchRequest = NSManagedObject.fetchRequest(Subject.self, limit: 1)
         subjectFetchRequest.predicate = NSPredicate(format: "%K == %@", #keyPath(Subject.name), name)

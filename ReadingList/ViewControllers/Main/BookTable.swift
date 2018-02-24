@@ -15,7 +15,7 @@ class BookTableFilterer: FetchedResultsFilterer<Book> {
         var predicate = readStatePredicate
         if let searchText = searchText,
             !searchText.isEmptyOrWhitespace && searchText.trimming().count >= 2 {
-            let searchPredicate = NSPredicate.wordsWithinFields(searchText, fieldNames: #keyPath(Book.title), "ANY authors.firstNames", "ANY authors.lastName", "ANY subjects.name")
+            let searchPredicate = NSPredicate.wordsWithinFields(searchText, fieldNames: #keyPath(Book.title), #keyPath(Book.authorDisplay), "ANY \(#keyPath(Book.subjects)).name")
             predicate = NSPredicate.And([readStatePredicate, searchPredicate])
         }
         return predicate
@@ -110,7 +110,6 @@ class BookTable: UITableViewController {
         let f = NSManagedObject.fetchRequest(Book.self, batch: 25)
         f.predicate = readStatePredicate
         f.sortDescriptors = UserSettings.selectedSortOrder
-        f.relationshipKeyPathsForPrefetching = [#keyPath(Book.authors)]
         resultsController = NSFetchedResultsController(fetchRequest: f, managedObjectContext: PersistentStoreManager.container.viewContext, sectionNameKeyPath: #keyPath(Book.readState), cacheName: nil)
         
         resultsFilterer = BookTableFilterer(searchController: searchController, tableView: tableView, fetchedResultsController: resultsController, readStatePredicate: readStatePredicate) { [unowned self] in

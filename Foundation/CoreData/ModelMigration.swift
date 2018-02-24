@@ -7,7 +7,7 @@ extension NSPersistentContainer {
      Creates a NSPersistentContainer with a single store description describing the store at the provided URL,
      and with both shouldInferMappingModelAutomatically and shouldMigrateStoreAutomatically set to false.
     */
-    convenience init(name: String, loadManuallyMigratedStoreAt storeURL: URL) {
+    convenience init(name: String, manuallyMigratedStoreAt storeURL: URL) {
         self.init(name: name)
         self.persistentStoreDescriptions = [{
             let description = NSPersistentStoreDescription(url: storeURL)
@@ -30,9 +30,9 @@ extension NSPersistentContainer {
      Migrates (if necessary) the store to the latest version of the supplied Version type.
      When migrated, loads the persistent store; when complete calls the callback.
     */
-    public func loadMigrated<Version: ModelVersion>(toLatestOf versions: Version.Type, completion: @escaping () -> ()) {
+    public func migrateAndLoad<Version: ModelVersion>(_ version: Version.Type, completion: @escaping () -> ()) {
         DispatchQueue.global(qos: .userInteractive).async {
-            self.migrateStoreIfRequired(toLatestOf: versions)
+            self.migrateStoreIfRequired(version)
             self.loadPersistentStores { _, error in
                 guard error == nil else { fatalError("Error loading store") }
                 completion()
@@ -43,7 +43,7 @@ extension NSPersistentContainer {
     /**
      Migrates the store to the latest version of the supplied Versions if necessary.
     */
-    public func migrateStoreIfRequired<Version: ModelVersion>(toLatestOf versions: Version.Type) {
+    public func migrateStoreIfRequired<Version: ModelVersion>(_ version: Version.Type) {
         guard let sourceVersion = Version(storeURL: storeURL) else {
             print("No current store.")
             return
@@ -51,7 +51,7 @@ extension NSPersistentContainer {
         
         let migrationSteps = sourceVersion.migrationSteps(to: Version.latest)
         guard migrationSteps.count > 0 else { return }
-        print("Migrating store at \(storeURL.path): \(migrationSteps.count) migration steps detected")
+        print("Migrating store \(storeURL.lastPathComponent): \(migrationSteps.count) migration steps detected")
         
         // For each migration step, migrate to a temporary URL and destroy the previous one (except for the sourceURL)
         var currentURL = storeURL
@@ -73,15 +73,6 @@ extension NSPersistentContainer {
         // Once all migrations are done, place the current temporary store at the target URL
         try! persistentStoreCoordinator.replacePersistentStore(at: storeURL, destinationOptions: nil, withPersistentStoreFrom: currentURL, sourceOptions: nil, ofType: NSSQLiteStoreType)
         print("Persistent store replaced")
-    }
-    
-    // TODO: Remove
-    func createNew(entity: String) -> NSManagedObject {
-        let newItem = NSEntityDescription.insertNewObject(forEntityName: entity, into: viewContext)
-        #if DEBUG
-            print("Created new object with ID \(newItem.objectID.uriRepresentation().absoluteString)")
-        #endif
-        return newItem
     }
 }
 

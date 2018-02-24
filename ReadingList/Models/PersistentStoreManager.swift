@@ -21,8 +21,8 @@ class PersistentStoreManager {
         // TODO: Deindex spotlight results if necessary
         
         // Migrate the store to the latest version if necessary and then initialise
-        container = NSPersistentContainer(name: storeName, loadManuallyMigratedStoreAt: storeLocation)
-        container.loadMigrated(toLatestOf: BooksModelVersion.self) {
+        container = NSPersistentContainer(name: storeName, manuallyMigratedStoreAt: storeLocation)
+        container.migrateAndLoad(BooksModelVersion.self) {
             self.container.viewContext.automaticallyMergesChangesFromParent = true
             DispatchQueue.main.async {
                 completion()

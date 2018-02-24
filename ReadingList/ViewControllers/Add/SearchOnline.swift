@@ -177,7 +177,6 @@ class SearchOnline: ArrayBackedTableController<GoogleBooks.SearchResult>, UISear
                 if let fetchResult = resultPage.result.value {
                     let editContext = PersistentStoreManager.container.viewContext.childContext()
                     let book = Book(context: editContext, readState: .toRead)
-                    // TODO: make a convenience init which takes a fetch result?
                     book.populate(fromFetchResult: fetchResult)
                     self?.navigationController!.pushViewController(EditBookReadState(newUnsavedBook: book), animated: true)
                 }

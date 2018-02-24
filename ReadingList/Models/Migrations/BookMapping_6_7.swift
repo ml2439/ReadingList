@@ -3,16 +3,6 @@ import CoreData
 
 class BookMapping_6_7: NSEntityMigrationPolicy {
     
-    func copyValue(oldObject: NSManagedObject, newObject: NSManagedObject, key: String) {
-        newObject.setValue(oldObject.value(forKey: key), forKey: key)
-    }
-    
-    func copyValues(oldObject: NSManagedObject, newObject: NSManagedObject, keys: String...) {
-        for key in keys {
-            copyValue(oldObject: oldObject, newObject: newObject, key: key)
-        }
-    }
-    
     func newAuthor(manager: NSMigrationManager, lastName: String, firstNames: String?) -> NSManagedObject {
         let newAuthor = NSEntityDescription.insertNewObject(forEntityName: "Author", into: manager.destinationContext)
         newAuthor.setValue(lastName, forKey: "lastName")

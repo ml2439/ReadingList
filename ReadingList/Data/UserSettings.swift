@@ -45,7 +45,8 @@ class UserSettings {
                                      TableSortOrder.byTitle: [NSSortDescriptor(\Book.readState),
                                                               NSSortDescriptor(\Book.title)],
                                      TableSortOrder.byAuthor: [NSSortDescriptor(\Book.readState),
-                                                               NSSortDescriptor(\Book.firstAuthorLastName)]]
+                                                               NSSortDescriptor(\Book.authorSort),
+                                                               NSSortDescriptor(\Book.title)]]
 
     static var sendAnalytics = UserSetting<Bool>(key: "sendAnalytics", defaultValue: true)
     static var sendCrashReports = UserSetting<Bool>(key: "sendCrashReports", defaultValue: true)

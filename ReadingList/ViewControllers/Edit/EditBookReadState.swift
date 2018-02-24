@@ -123,7 +123,7 @@ class EditBookReadState: FormViewController {
     
     @objc func validate() {
         print("validated form")
-        navigationItem.rightBarButtonItem!.isEnabled = book.isValidForUpdate()
+        navigationItem.rightBarButtonItem!.isEnabled = book.checkIsValid() == nil
     }
     
     @objc func cancelPressed() {

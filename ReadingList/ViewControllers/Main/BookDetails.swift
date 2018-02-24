@@ -54,7 +54,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         
         // There are 2 title and 2 author labels, one for Regular display (iPad) and one for other displays
         titleAndAuthorStack.subviews[0...1].forEach{($0 as! UILabel).text = book.title}
-        titleAndAuthorStack.subviews[2...3].forEach{($0 as! UILabel).text = book.authorsFirstLast}
+        titleAndAuthorStack.subviews[2...3].forEach{($0 as! UILabel).text = book.authorDisplay}
         (navigationItem.titleView as! UINavigationBarLabel).setTitle(book.title)
         
         switch book.readState {
@@ -222,7 +222,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
             return
         }
         
-        // TODO: Consider whether it is worth inspecting the changes to see if they affect this book; perhaps we should just always reload?
+        // FUTURE: Consider whether it is worth inspecting the changes to see if they affect this book; perhaps we should just always reload?
         
         let updatedObjects = userInfo[NSUpdatedObjectsKey] as? NSSet ?? NSSet()
         let createdObjects = userInfo[NSInsertedObjectsKey] as? NSSet ?? NSSet()
@@ -277,7 +277,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
 
         guard let book = book else { return }
 
-        let activityViewController = UIActivityViewController(activityItems: ["\(book.title)\n\(book.authorsFirstLast)"], applicationActivities: nil)
+        let activityViewController = UIActivityViewController(activityItems: ["\(book.title)\n\(book.authorDisplay)"], applicationActivities: nil)
         activityViewController.popoverPresentationController?.barButtonItem = sender
 
         var excludedActivityTypes: [UIActivityType] = [.assignToContact, .saveToCameraRoll, .addToReadingList, .postToFlickr, .postToVimeo, .openInIBooks]

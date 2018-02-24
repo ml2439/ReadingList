@@ -3,8 +3,8 @@ import CoreData
 
 @objc(Author)
 public class Author: NSManagedObject {
-    @NSManaged var lastName: String
-    @NSManaged var firstNames: String?
+    @NSManaged private(set) var lastName: String
+    @NSManaged private(set) var firstNames: String?
     
     var displayFirstLast: String {
         get { return (firstNames == nil ? "" : "\(firstNames!) ") + lastName }

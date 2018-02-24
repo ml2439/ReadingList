@@ -186,7 +186,7 @@ class EditBookMetadata: FormViewController {
     }
     
     @objc func validate() {
-        navigationItem.rightBarButtonItem!.isEnabled = book.isValidForUpdate()
+        navigationItem.rightBarButtonItem!.isEnabled = book.checkIsValid() == nil
     }
     
     @objc func cancelPressed() {
@@ -222,7 +222,7 @@ class AuthorSection: MultivaluedSection {
     required init(book: Book, navigationController: UINavigationController) {
         super.init(multivaluedOptions: [.Insert, .Delete], header: "Authors", footer: "") {
             for author in book.authors.flatMap({$0 as? Author}) {
-                $0 <<< AuthorRow(author: author, navigationController: navigationController)
+                $0 <<< LabelRow() {$0.title = author.displayFirstLast }
             }
             
             $0.addButtonProvider = { _ in
@@ -305,23 +305,24 @@ class EditAuthorMetadata: FormViewController {
             <<< NameRow() {
                 $0.placeholder = "First Name(s)"
                 $0.value = row.author.firstNames
-                $0.onChange{[unowned self] in self.row.author.firstNames = $0.value}
+                //$0.onChange{[unowned self] in self.row.author.firstNames = $0.value}
             }
             <<< NameRow() {
                 $0.placeholder = "Last Name"
                 $0.value = row.author.lastName
-                $0.onChange{[unowned self] in self.row.author.lastName = $0.value ?? ""}
+                //$0.onChange{[unowned self] in self.row.author.lastName = $0.value ?? ""}
         }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        if row.author.isValidForUpdate() {
+        /* TODO fix
+         if row.author.isValidForUpdate() {
             row.reload()
         }
         else {
             row.removeSelf()
-        }
+        }*/
     }
 }
 
@@ -341,7 +342,7 @@ class EditBookSubjectsForm: FormViewController {
         
         super.viewDidLoad()
         
-        form +++ MultivaluedSection(multivaluedOptions: [.Insert, .Delete, .Reorder], header: "Subjects", footer: "Add subjects to categorise this book") {
+        form +++ MultivaluedSection(multivaluedOptions: [.Insert, .Delete], header: "Subjects", footer: "Add subjects to categorise this book") {
             $0.addButtonProvider = { _ in
                 return ButtonRow(){
                     $0.title = "Add New Subject"
@@ -355,9 +356,9 @@ class EditBookSubjectsForm: FormViewController {
                     $0.placeholder = "Subject"
                 }
             }
-            for subject in book.subjects {
+            for subject in book.subjects.sorted(by: {return $0.name < $1.name}) {
                 $0 <<< NameRow() {
-                    $0.value = (subject as! Subject).name
+                    $0.value = subject.name
                 }
             }
         }
@@ -365,10 +366,9 @@ class EditBookSubjectsForm: FormViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        // TODO: Match the Author behaviour and add Subjects each time Add is pressed
         let subjectNames = form.rows.flatMap{($0 as? NameRow)?.value?.trimming().nilIfWhitespace()}
-        if book.subjects.map({($0 as! Subject).name}) != subjectNames {
-            book.subjects = NSOrderedSet(array: subjectNames.map{Subject.getOrCreate(inContext: book.managedObjectContext!, withName: $0)})
+        if book.subjects.map({$0.name}) != subjectNames {
+            book.subjects = Set(subjectNames.map{Subject.getOrCreate(inContext: book.managedObjectContext!, withName: $0)})
         }
         sendingRow.reload()
     }

@@ -43,22 +43,25 @@ class Book: NSManagedObject {
     @NSManaged var sort: NSNumber?
     @NSManaged var createdWhen: Date
 
-    @NSManaged var subjects: NSOrderedSet
-    @NSManaged var authors: NSOrderedSet
+    @NSManaged var subjects: Set<Subject>
     @NSManaged var lists: Set<List>
+    @NSManaged var authors: NSOrderedSet
+    
     @NSManaged func addAuthors(_ values: NSOrderedSet)
     @NSManaged func removeAuthors(_ values: NSSet)
     
-    // Calculated sort helper
-    @NSManaged private(set) var firstAuthorLastName: String?
+    @NSManaged private(set) var authorDisplay: String // Denormalised attribute to reduce required fetches
+    @NSManaged private(set) var authorSort: String // Calculated sort helper
 
     override func willSave() {
         super.willSave()
-        
-        // Do not set the firstAuthorLastName property if it is already correct; will lead to an infinite loop
-        let currentFirstAuthorLastName = (authors.firstObject as? Author)?.lastName
-        if firstAuthorLastName != currentFirstAuthorLastName {
-            firstAuthorLastName = currentFirstAuthorLastName
+
+        if changedValues().contains(where: {$0.key == #keyPath(Book.authors)}) {
+            let authorsArray = authors.map{$0 as! Author}
+            let newAuthorSort = authorsArray.map{"\($0.lastName).\($0.firstNames ?? "")"}.joined(separator: ",")
+            let newAuthorDisplay = authorsArray.map{$0.displayFirstLast}.joined(separator: ", ")
+            if authorSort != newAuthorSort { authorSort = newAuthorSort }
+            if authorDisplay != newAuthorDisplay { authorDisplay = newAuthorDisplay }
         }
         
         if readState == .toRead && sort == nil {
@@ -68,6 +71,14 @@ class Book: NSManagedObject {
             else {
                 self.sort = 1
             }
+        }
+    }
+    
+    override func prepareForDeletion() {
+        super.prepareForDeletion()
+        for orphanedSubject in subjects.map({$0 as! Subject}).filter({$0.books.count == 1}) {
+            orphanedSubject.delete()
+            print("orphaned subject \(orphanedSubject.name) deleted.")
         }
     }
     
@@ -83,6 +94,7 @@ class Book: NSManagedObject {
         }
     }
     
+    // FUTURE: make a convenience init which takes a fetch result?
     func populate(fromFetchResult fetchResult: GoogleBooks.FetchResult) {
         googleBooksId = fetchResult.id
         title = fetchResult.title
@@ -99,7 +111,7 @@ class Book: NSManagedObject {
         }
         authors = NSOrderedSet(array: authorNames.map{Author(context: self.managedObjectContext!, lastName: $0.1, firstNames: $0.0)})
         bookDescription = fetchResult.description
-        subjects = NSOrderedSet(array: fetchResult.subjects.map{Subject.getOrCreate(inContext: self.managedObjectContext!, withName: $0)})
+        subjects = Set(fetchResult.subjects.map{Subject.getOrCreate(inContext: self.managedObjectContext!, withName: $0)})
         coverImage = fetchResult.coverImage
         pageCount = fetchResult.pageCount?.nsNumber
         publicationDate = fetchResult.publishedDate
@@ -108,12 +120,6 @@ class Book: NSManagedObject {
 }
 
 extension Book {
-
-    var authorsFirstLast: String {
-        get {
-            return authors.map{($0 as! Author).displayFirstLast}.joined(separator: ", ")
-        }
-    }
     
     static func get(fromContext context: NSManagedObjectContext, googleBooksId: String? = nil, isbn: String? = nil) -> Book? {
         // if both are nil, leave early
@@ -127,9 +133,13 @@ extension Book {
         }
         
         // then try fetching by ISBN
-        let isbnFetch = NSManagedObject.fetchRequest(Book.self, limit: 1)
-        isbnFetch.predicate = NSPredicate(format: "%K == %@", #keyPath(Book.isbn13), isbn!)
-        return (try! context.fetch(isbnFetch)).first
+        if let isbn = isbn {
+            let isbnFetch = NSManagedObject.fetchRequest(Book.self, limit: 1)
+            isbnFetch.predicate = NSPredicate(format: "%K == %@", #keyPath(Book.isbn13), isbn)
+            return (try! context.fetch(isbnFetch)).first
+        }
+        
+        return nil
     }
     
     static func maxSort(fromContext context: NSManagedObjectContext) -> Int32? {
@@ -150,12 +160,17 @@ extension Book {
     
     override func validateForUpdate() throws {
         try super.validateForUpdate()
-        if title.isEmptyOrWhitespace { throw ValidationError.missingTitle }
-        if let isbn = isbn13, ISBN13(isbn) == nil { throw ValidationError.invalidIsbn }
-        if authors.count == 0 { throw ValidationError.noAuthors }
-        if readState == .toRead && (startedReading != nil || finishedReading != nil) { throw ValidationError.invalidReadDates }
-        if readState == .reading && (startedReading == nil || finishedReading != nil) { throw ValidationError.invalidReadDates }
-        if readState == .finished && (startedReading == nil || finishedReading == nil || startedReading!.startOfDay() > finishedReading!.startOfDay()) { throw ValidationError.invalidReadDates }
+        if let error = checkIsValid() { throw error }
+    }
+    
+    func checkIsValid() -> Error? {
+        if title.isEmptyOrWhitespace { return ValidationError.missingTitle }
+        if let isbn = isbn13, ISBN13(isbn) == nil { return ValidationError.invalidIsbn }
+        if authors.count == 0 { return ValidationError.noAuthors }
+        if readState == .toRead && (startedReading != nil || finishedReading != nil) { return ValidationError.invalidReadDates }
+        if readState == .reading && (startedReading == nil || finishedReading != nil) { return ValidationError.invalidReadDates }
+        if readState == .finished && (startedReading == nil || finishedReading == nil || startedReading!.startOfDay() > finishedReading!.startOfDay()) { return ValidationError.invalidReadDates }
+        return nil
     }
     
     func startReading() {

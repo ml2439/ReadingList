@@ -12,16 +12,6 @@ extension NSManagedObject {
         try! managedObjectContext!.save()
     }
     
-    func isValidForUpdate() -> Bool {
-        do {
-            try validateForUpdate()
-            return true
-        }
-        catch {
-            return false
-        }
-    }
-    
     static func fetchRequest<T: NSManagedObject>(_ type: T.Type, limit: Int? = nil, batch: Int? = nil) -> NSFetchRequest<T> {
         let fetchRequest = T.fetchRequest() as! NSFetchRequest<T>
         if let limit = limit { fetchRequest.fetchLimit = limit }
@@ -83,4 +73,18 @@ extension NSManagedObjectContext {
             self.saveIfChanged()
         }
     }
+}
+
+extension NSEntityMigrationPolicy {
+    
+    func copyValue(oldObject: NSManagedObject, newObject: NSManagedObject, key: String) {
+        newObject.setValue(oldObject.value(forKey: key), forKey: key)
+    }
+    
+    func copyValues(oldObject: NSManagedObject, newObject: NSManagedObject, keys: String...) {
+        for key in keys {
+            copyValue(oldObject: oldObject, newObject: newObject, key: key)
+        }
+    }
+
 }

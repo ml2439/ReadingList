@@ -9,7 +9,7 @@ class BookTableViewCell: UITableViewCell {
     
     func configureFrom(_ book: Book) {
         titleLabel.text = book.title
-        authorsLabel.text = book.authorsFirstLast
+        authorsLabel.text = book.authorDisplay
         bookCover.image = UIImage(optionalData: book.coverImage) ?? #imageLiteral(resourceName: "CoverPlaceholder")
         if book.readState == .reading {
             readTimeLabel?.text = book.startedReading!.toPrettyString()

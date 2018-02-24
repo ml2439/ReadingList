@@ -4,6 +4,7 @@ import Foundation
 import Eureka
 import SVProgressHUD
 import SimulatorStatusMagic
+import CoreData
 
 class Debug: FormViewController {
     
@@ -57,12 +58,10 @@ class Debug: FormViewController {
     }
 
     static func loadTestData(withLists: Bool = true) {
-
-        PersistentStoreManager.container.viewContext.performAndSaveAndWait { _ in
-            /* TODO: batch delete
-            ObjectQuery<Book>().fetch(fromContext: $0).forEach{$0.delete()}
-            ObjectQuery<List>().fetch(fromContext: $0).forEach{$0.delete()}
-             */
+        PersistentStoreManager.container.newBackgroundContext().performAndSaveAndWait {
+            (try! $0.fetch(NSManagedObject.fetchRequest(Book.self, batch: 100))).forEach{$0.delete()}
+            (try! $0.fetch(NSManagedObject.fetchRequest(List.self, batch: 100))).forEach{$0.delete()}
+            $0.saveIfChanged()
         }
         
         let csvPath = Bundle.main.url(forResource: "examplebooks", withExtension: "csv")!

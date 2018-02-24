@@ -57,7 +57,7 @@ fileprivate class BookCSVParserDelegate: CSVParserDelegate {
         book.bookDescription = values["Description"]
         book.startedReading = Date(iso: values["Started Reading"])
         book.finishedReading = Date(iso: values["Finished Reading"])
-        book.subjects = NSOrderedSet(array: createSubjects(values["Subjects"]))
+        book.subjects = Set(createSubjects(values["Subjects"]))
         return book
     }
     
@@ -127,7 +127,7 @@ fileprivate class BookCSVParserDelegate: CSVParserDelegate {
             }
             
             // If the book is not valid, delete it
-            guard newBook.isValidForUpdate() else {
+            guard newBook.checkIsValid() == nil else {
                 invalidCount += 1
                 print("Invalid book; deleting")
                 newBook.delete()

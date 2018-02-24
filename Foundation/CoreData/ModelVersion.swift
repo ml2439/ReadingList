@@ -42,8 +42,10 @@ extension ModelVersion {
         guard let nextVersion = successor else { return nil }
         guard let mapping = NSMappingModel(from: [modelBundle], forSourceModel: managedObjectModel(), destinationModel: nextVersion.managedObjectModel()) else {
             // If there is no mapping model, build an inferred one
+            print("Loading inferred mapping used for step \(self.name) to \(nextVersion.name).")
             return try! NSMappingModel.inferredMappingModel(forSourceModel: managedObjectModel(), destinationModel: successor!.managedObjectModel())
         }
+        print("Loaded specified mapping model for step \(self.name) to \(nextVersion.name).")
         return mapping
     }
 

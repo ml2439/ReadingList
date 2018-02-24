@@ -127,6 +127,7 @@ class AddToList: UITableViewController {
             let booksInThisList = listObj.books.set
             
             // If any of the books are already in this list:
+            // FUTURE: Check whether this is firing a lot of faults
             if booksSet.intersects(booksInThisList) {
                 var alreadyAddedText: String
                 
