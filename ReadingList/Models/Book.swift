@@ -86,11 +86,11 @@ class Book: NSManagedObject {
         self.init(context: context)
         self.readState = readState
         if readState == .reading {
-            self.startedReading = Date()
+            startedReading = Date()
         }
         if readState == .finished {
-            self.startedReading = Date()
-            self.finishedReading = Date()
+            startedReading = Date()
+            finishedReading = Date()
         }
     }
     
