@@ -58,7 +58,7 @@ class Book: NSManagedObject {
 
         if changedValues().contains(where: {$0.key == #keyPath(Book.authors)}) {
             let authorsArray = authors.map{$0 as! Author}
-            let newAuthorSort = authorsArray.map{"\($0.lastName).\($0.firstNames ?? "")"}.joined(separator: ",")
+            let newAuthorSort = authorsArray.map{"\($0.lastName).\($0.firstNames ?? "")"}.joined(separator: "..")
             let newAuthorDisplay = authorsArray.map{$0.displayFirstLast}.joined(separator: ", ")
             if authorSort != newAuthorSort { authorSort = newAuthorSort }
             if authorDisplay != newAuthorDisplay { authorDisplay = newAuthorDisplay }
@@ -76,7 +76,7 @@ class Book: NSManagedObject {
     
     override func prepareForDeletion() {
         super.prepareForDeletion()
-        for orphanedSubject in subjects.map({$0 as! Subject}).filter({$0.books.count == 1}) {
+        for orphanedSubject in subjects.filter({$0.books.count == 1}) {
             orphanedSubject.delete()
             print("orphaned subject \(orphanedSubject.name) deleted.")
         }
@@ -194,7 +194,7 @@ extension Book {
             CsvColumn<Book>(header: "Page Count", cellValue: {$0.pageCount == nil ? nil : String(describing: $0.pageCount!)}),
             CsvColumn<Book>(header: "Publication Date", cellValue: {$0.publicationDate == nil ? nil : $0.publicationDate!.string(withDateFormat: "yyyy-MM-dd")}),
             CsvColumn<Book>(header: "Description", cellValue: {$0.bookDescription}),
-            CsvColumn<Book>(header: "Subjects", cellValue: {$0.subjects.map{($0 as! Subject).name}.joined(separator: "; ")}),
+            CsvColumn<Book>(header: "Subjects", cellValue: {$0.subjects.map{$0.name}.joined(separator: "; ")}),
             CsvColumn<Book>(header: "Started Reading", cellValue: {$0.startedReading?.string(withDateFormat: "yyyy-MM-dd")}),
             CsvColumn<Book>(header: "Finished Reading", cellValue: {$0.finishedReading?.string(withDateFormat: "yyyy-MM-dd")}),
             CsvColumn<Book>(header: "Current Page", cellValue: {$0.currentPage == nil ? nil : String(describing: $0.currentPage!)}),

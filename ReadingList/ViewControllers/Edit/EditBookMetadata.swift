@@ -63,10 +63,7 @@ class EditBookMetadata: FormViewController {
             }
             
             +++ AuthorSection(book: book, navigationController: navigationController!)
-            
-            // ****************************************************************** //
-            // *****************     ADDITIONAL INFORMATION      **************** //
-            // ****************************************************************** //
+
             +++ Section(header: "Additional Information", footer: "")
             <<< TextRow(isbnRowKey) {
                 $0.title = "ISBN"
@@ -91,7 +88,7 @@ class EditBookMetadata: FormViewController {
                     cell.textLabel!.textAlignment = .left
                     cell.textLabel!.textColor = .black
                     cell.accessoryType = .disclosureIndicator
-                    cell.detailTextLabel?.text = self.book.subjects.map{($0 as! Subject).name}.joined(separator: ", ")
+                    cell.detailTextLabel?.text = self.book.subjects.map{$0.name}.sorted().joined(separator: ", ")
                 }
                 row.onCellSelection{ [unowned self] _,_ in
                     self.navigationController!.pushViewController(EditBookSubjectsForm(book: book, sender: row), animated: true)
@@ -217,12 +214,13 @@ class EditBookMetadata: FormViewController {
 
 class AuthorSection: MultivaluedSection {
     var book: Book!
+    var isInitialising = true
     weak var navigationController: UINavigationController!
     
     required init(book: Book, navigationController: UINavigationController) {
-        super.init(multivaluedOptions: [.Insert, .Delete], header: "Authors", footer: "") {
-            for author in book.authors.flatMap({$0 as? Author}) {
-                $0 <<< LabelRow() {$0.title = author.displayFirstLast }
+        super.init(multivaluedOptions: [.Insert, .Delete, .Reorder], header: "Authors", footer: "") {
+            for author in book.authors.map({$0 as! Author}) {
+                $0 <<< AuthorRow(author: author)
             }
             
             $0.addButtonProvider = { _ in
@@ -233,39 +231,63 @@ class AuthorSection: MultivaluedSection {
             }
             
             $0.multivaluedRowToInsertAt = { _ in
-                let newAuthor = Author(context: book.managedObjectContext!)
-                book.addAuthors(NSOrderedSet(array: [newAuthor]))
-                let authorRow = AuthorRow(author: newAuthor, navigationController: navigationController)
-                authorRow.pushEditAuthorView()
+                let authorRow = AuthorRow()
+                navigationController.pushViewController(AddAuthorForm(authorRow), animated: true)
                 return authorRow
             }
         }
         self.book = book
         self.navigationController = navigationController
+        isInitialising = false
     }
     
     required init() {
-        super.init(multivaluedOptions: [.Insert, .Delete], header: "Authors", footer: "", {_ in})
+        super.init(multivaluedOptions: [], header: "", footer: "", {_ in})
     }
     
     required init(multivaluedOptions: MultivaluedOptions, header: String, footer: String, _ initializer: (MultivaluedSection) -> Void) {
         super.init(multivaluedOptions: multivaluedOptions, header: header, footer: footer, initializer)
     }
     
+    func rebuildAuthors() {
+        // It's a bit tricky with Eureka to manage an ordered set: the reordering comes through rowsHaveBeenRemoved
+        // and rowsHaveBeenAdded, so we can't delete books on removal, since they might need to come back.
+        // Instead, we take the brute force approach of deleting all authors and rebuilding the set each time
+        // something changes. We can check whether there are any meaningful differences before we embark on this though.
+        let currentAuthors = book.authors.map{$0 as! Author}
+        let newAuthors: [(String, String?)] = self.flatMap{$0 as? AuthorRow}.flatMap{
+            guard let lastName = $0.lastName else { return nil }
+            return (lastName, $0.firstNames)
+        }
+        if currentAuthors.map({($0.lastName, $0.firstNames)}).elementsEqual(newAuthors, by: {return $0.0 == $1.0 && $0.1 == $1.1}) {
+            return
+        }
+        currentAuthors.forEach{$0.delete()}
+        book.authors = NSOrderedSet(array: newAuthors.map{Author(context: book.managedObjectContext!, lastName: $0.0, firstNames: $0.1)})
+    }
+    
     override func rowsHaveBeenRemoved(_ rows: [BaseRow], at: IndexSet) {
         super.rowsHaveBeenRemoved(rows, at: at)
-        rows.map{($0 as! AuthorRow).author}.forEach{$0?.delete()}
+        guard !isInitialising else { return }
+        rebuildAuthors()
+    }
+    
+    override func rowsHaveBeenAdded(_ rows: [BaseRow], at: IndexSet) {
+        super.rowsHaveBeenAdded(rows, at: at)
+        guard !isInitialising else { return }
+        rebuildAuthors()
     }
 }
 
-final class AuthorRow: _ButtonRowOf<String>, RowType {
-    var author: Author!
-    weak var navigationController: UINavigationController!
+final class AuthorRow: _LabelRow, RowType {
+    var lastName: String?
+    var firstNames: String?
     
-    convenience init(author: Author, navigationController: UINavigationController) {
-        self.init()
-        self.author = author
-        self.navigationController = navigationController
+    convenience init(tag: String? = nil, author: Author? = nil) {
+        self.init(tag: tag)
+        lastName = author?.lastName
+        firstNames = author?.firstNames
+        reload()
     }
     
     required init(tag: String?) {
@@ -275,54 +297,49 @@ final class AuthorRow: _ButtonRowOf<String>, RowType {
         cellUpdate{ [unowned self] cell,row in
             cell.textLabel!.textColor = UIColor.black
             cell.textLabel!.textAlignment = .left
-            cell.textLabel!.text = self.author.displayFirstLast
+            cell.textLabel!.text = [self.firstNames, self.lastName].flatMap{return $0}.joined(separator: " ")
         }
-        
-        onCellSelection{ [unowned self] _,_ in
-            self.pushEditAuthorView()
-        }
-    }
-    
-    func pushEditAuthorView() {
-        self.navigationController.pushViewController(EditAuthorMetadata(self), animated: true)
     }
 }
 
-class EditAuthorMetadata: FormViewController {
 
-    weak var row: AuthorRow!
+class AddAuthorForm: FormViewController {
+
+    weak var presentingRow: AuthorRow!
     
     convenience init(_ row: AuthorRow) {
         self.init()
-        self.row = row
+        self.presentingRow = row
     }
+    
+    let lastNameRow = "lastName"
+    let firstNamesRow = "firstNames"
     
     override func viewDidLoad() {
         
         super.viewDidLoad()
-        
         form +++ Section(header: "Author Name", footer: "")
             <<< NameRow() {
+                $0.tag = firstNamesRow
                 $0.placeholder = "First Name(s)"
-                $0.value = row.author.firstNames
-                //$0.onChange{[unowned self] in self.row.author.firstNames = $0.value}
             }
             <<< NameRow() {
+                $0.tag = lastNameRow
                 $0.placeholder = "Last Name"
-                $0.value = row.author.lastName
-                //$0.onChange{[unowned self] in self.row.author.lastName = $0.value ?? ""}
-        }
+            }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        /* TODO fix
-         if row.author.isValidForUpdate() {
-            row.reload()
+        if let lastName = (form.rowBy(tag: lastNameRow) as! NameRow).value, !lastName.isEmptyOrWhitespace {
+            presentingRow.lastName = lastName
+            presentingRow.firstNames = (form.rowBy(tag: firstNamesRow) as! NameRow).value
+            presentingRow.reload()
+            (presentingRow.section as! AuthorSection).rebuildAuthors()
         }
         else {
-            row.removeSelf()
-        }*/
+            presentingRow.removeSelf()
+        }
     }
 }
 

@@ -7,7 +7,7 @@ class BookMapping_9_10: NSEntityMigrationPolicy {
         return forAuthors.map{
             let author = ($0 as! NSManagedObject)
             return "\(author.value(forKey: "lastName")!).\(author.value(forKey: "firstNames") ?? "")"
-        }.joined(separator: ",")
+        }.joined(separator: "..")
     }
     
     @objc func authorDisplay(forAuthors: NSOrderedSet) -> String {
