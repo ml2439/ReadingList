@@ -52,7 +52,10 @@ class EditBookReadState: FormViewController {
                     case .reading:
                         self.book.startedReading = (self.form.rowBy(tag: startedReadingKey) as! DateRow).value
                         self.book.finishedReading = nil
-                        self.book.currentPage = (self.form.rowBy(tag: currentPageKey) as! IntRow).value?.nsNumber
+                        if let currentPage = (self.form.rowBy(tag: currentPageKey) as! IntRow).value, currentPage >= 0 && currentPage <= Int32.max {
+                            self.book.currentPage = currentPage.nsNumber
+                        }
+                        else { self.book.currentPage = nil }
                     case .finished:
                         self.book.startedReading = (self.form.rowBy(tag: startedReadingKey) as! DateRow).value
                         self.book.finishedReading = (self.form.rowBy(tag: finishedReadingKey) as! DateRow).value
@@ -69,7 +72,6 @@ class EditBookReadState: FormViewController {
             <<< DateRow(startedReadingKey) {
                 $0.title = "Started"
                 //$0.maximumDate = Date.startOfToday()
-                // Set a value here so we can be sure that the started date is *never* null.
                 $0.value = book.startedReading ?? now
                 $0.onChange {[unowned self] cell in
                     print("set started reading")
@@ -82,7 +84,6 @@ class EditBookReadState: FormViewController {
                 $0.hidden = Condition.function([readStateKey]) {[unowned self] _ in
                     return self.book.readState != .finished
                 }
-                // Set a value here so we can be sure that the finished date is *never* null.
                 $0.value = book.finishedReading ?? now
                 $0.onChange {[unowned self] cell in
                     print("set finished reading")
@@ -127,7 +128,7 @@ class EditBookReadState: FormViewController {
     }
     
     @objc func cancelPressed() {
-        // TODO: Duplicates code in EditBookMetadata. Consolidate.
+        // FUTURE: Duplicates code in EditBookMetadata. Consolidate.
         guard book.changedValues().count == 0 else {
             // Confirm exit dialog
             let confirmExit = UIAlertController(title: "Unsaved changes", message: "Are you sure you want to discard your unsaved changes?", preferredStyle: .actionSheet)

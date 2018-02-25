@@ -74,7 +74,11 @@ class EditBookMetadata: FormViewController {
             <<< IntRow() {
                 $0.title = "Page Count"
                 $0.value = book.pageCount?.intValue
-                $0.onChange{book.pageCount = $0.value?.nsNumber}
+                $0.onChange{
+                    guard let pageCount = $0.value else { book.pageCount = nil; return }
+                    guard pageCount >= 0 && pageCount <= Int32.max else { book.pageCount = nil; return }
+                    book.pageCount = pageCount.nsNumber
+                }
             }
             <<< DateRow() {
                 $0.title = "Publication Date"
