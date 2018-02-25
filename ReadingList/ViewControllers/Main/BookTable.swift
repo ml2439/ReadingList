@@ -273,7 +273,8 @@ class BookTable: UITableViewController {
         return readStates.first{sectionIndex(forReadState: $0) == section}!
     }
 
-    func simulateBookSelection(_ book: Book, allowTableObscuring: Bool = true) {
+    func simulateBookSelection(_ bookID: NSManagedObjectID, allowTableObscuring: Bool = true) {
+        let book = PersistentStoreManager.container.viewContext.object(with: bookID) as! Book
         let indexPathOfSelectedBook = self.resultsController.indexPath(forObject: book)
         
         // If there is a row (there might not be is there is a search filtering the results,

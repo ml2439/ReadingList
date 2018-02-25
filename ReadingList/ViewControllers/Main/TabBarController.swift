@@ -15,9 +15,8 @@ class TabBarController: UITabBarController {
         selectedIndex = tab.rawValue
     }
     
-    func selectTab(forState state: BookReadState) -> BookTable {
+    func selectTab(forState state: BookReadState) {
         selectTab(state == .finished ? .finished : .toRead)
-        return selectedBookTable!
     }
     
     var selectedTab: TabOption {
@@ -37,7 +36,8 @@ class TabBarController: UITabBarController {
     }
     
     func simulateBookSelection(_ book: Book, allowTableObscuring: Bool) {
-        selectTab(forState: book.readState).simulateBookSelection(book, allowTableObscuring: allowTableObscuring)
+        selectTab(forState: book.readState)
+        selectedBookTable!.simulateBookSelection(book.objectID, allowTableObscuring: allowTableObscuring)
     }
     
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {

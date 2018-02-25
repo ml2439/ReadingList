@@ -7,6 +7,7 @@ class EditBookReadState: FormViewController {
 
     private var editContext: NSManagedObjectContext!
     private var book: Book!
+    private var newBook: Bool = false
 
     convenience init(existingBookID: NSManagedObjectID) {
         self.init()
@@ -16,6 +17,7 @@ class EditBookReadState: FormViewController {
     
     convenience init(newUnsavedBook: Book) {
         self.init()
+        self.newBook = true
         self.book = newUnsavedBook
         // An unsaved book on a child context should never be deleted, so the context should never be nil
         self.editContext = newUnsavedBook.managedObjectContext!
@@ -123,7 +125,6 @@ class EditBookReadState: FormViewController {
     }
     
     @objc func validate() {
-        print("validated form")
         navigationItem.rightBarButtonItem!.isEnabled = book.checkIsValid() == nil
     }
     
@@ -144,7 +145,14 @@ class EditBookReadState: FormViewController {
     }
     
     @objc func donePressed() {
+        self.view.endEditing(true)
         editContext.saveIfChanged()
-        dismiss(animated: true, completion: nil)
+        if newBook {
+            appDelegate.tabBarController.selectTab(forState: book.readState)
+        }
+        presentingViewController!.dismiss(animated: true) { [unowned self] in
+            appDelegate.tabBarController.simulateBookSelection(self.book, allowTableObscuring: false)
+            UserEngagement.onReviewTrigger()
+        }
     }
 }

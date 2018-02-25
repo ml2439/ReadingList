@@ -207,7 +207,9 @@ class EditBookMetadata: FormViewController {
     
     @objc func donePressed() {
         editBookContext.saveIfChanged()
-        dismiss(animated: true, completion: nil)
+        dismiss(animated: true) {
+            UserEngagement.onReviewTrigger()
+        }
     }
     
     @objc func presentEditReadingState() {
