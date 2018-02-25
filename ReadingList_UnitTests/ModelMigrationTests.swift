@@ -61,11 +61,13 @@ class ModelMigrationTests: XCTestCase {
         XCTAssertEqual(testValues["isbn13"] as! String?, migratedBook.isbn13)
         XCTAssertEqual(testValues["googleBooksId"] as! String?, migratedBook.googleBooksId)
         
-        XCTAssertEqual(2, migratedBook.authorsArray.count)
-        XCTAssertEqual("Author", migratedBook.authorsArray[0].firstNames)
-        XCTAssertEqual("1", migratedBook.authorsArray[0].lastName)
-        XCTAssertEqual("Author", migratedBook.authorsArray[1].firstNames)
-        XCTAssertEqual("2", migratedBook.authorsArray[1].lastName)
+        XCTAssertEqual(2, migratedBook.authors.count)
+        let author1 = migratedBook.authors[0] as! Author
+        let author2 = migratedBook.authors[1] as! Author
+        XCTAssertEqual("Author", author1.firstNames)
+        XCTAssertEqual("1", author1.lastName)
+        XCTAssertEqual("Author", author2.firstNames)
+        XCTAssertEqual("2", author2.lastName)
     }
     
     func testAuthorListMigration() {
@@ -102,7 +104,8 @@ class ModelMigrationTests: XCTestCase {
         for (index, authorList) in authorLists.enumerated() {
             let book = allBooks[index]
             XCTAssertEqual(authorList.value.count, book.authors.count)
-            for (authorIndex, author) in book.authorsArray.enumerated() {
+            for (authorIndex, author) in book.authors.enumerated() {
+                let author = author as! Author
                 XCTAssertEqual(authorList.value[authorIndex].0, author.firstNames)
                 XCTAssertEqual(authorList.value[authorIndex].1, author.lastName)
             }
