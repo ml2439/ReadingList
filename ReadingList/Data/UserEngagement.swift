@@ -62,6 +62,9 @@ class UserEngagement {
         case enableAnalytics = "Enable_Analytics"
         case disableCrashReports = "Disable_Crash_Reports"
         case enableCrashReports = "Enable_Crash_Reports"
+        
+        // Other
+        case viewOnAmazon = "View_On_Amazon"
     }
     
     static func logEvent(_ event: Event) {

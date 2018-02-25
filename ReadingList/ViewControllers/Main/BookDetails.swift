@@ -256,7 +256,11 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         let amazonSearch = "https://www.amazon.com/s?url=search-alias%3Dstripbooks&field-author=\(authorText ?? "")&field-title=\(book.title)"
         
         // Use https://bestazon.io/#WebService to localize Amazon links
-        let localisedAffiliateAmazonSearch = URL(string: "http://lnks.io/r.php?Conf_Source=API&destURL=\(amazonSearch.urlEncoding())&Amzn_AfiliateID_GB=readinglistap-21")!
+        // US store: readinglistio-20
+        // UK store: readinglistio-21
+        let refURL = "https://www.readinglistapp.xyz"
+        let localisedAffiliateAmazonSearch = URL(string: "http://lnks.io/r.php?Conf_Source=API&refURL=\(refURL.urlEncoding())&destURL=\(amazonSearch.urlEncoding())&Amzn_AfiliateID_GB=readinglistio-21&Amzn_AfiliateID_US=readinglistio-20")!
+        UserEngagement.logEvent(.viewOnAmazon)
         UIApplication.shared.open(localisedAffiliateAmazonSearch, options: [:], completionHandler: nil)
     }
     
