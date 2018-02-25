@@ -1,7 +1,7 @@
 import Foundation
 import CoreData
 
-class BookMapping_9_10: NSEntityMigrationPolicy {
+class BookMapping_8_9: NSEntityMigrationPolicy {
 
     @objc func authorSort(forAuthors: NSOrderedSet) -> String {
         return forAuthors.map{
