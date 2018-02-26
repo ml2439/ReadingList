@@ -388,7 +388,7 @@ class BookTable: UITableViewController {
         }
         deleteAction.image = #imageLiteral(resourceName: "Trash")
         let editAction = UIContextualAction(style: .normal, title: "Edit") { [unowned self] _,_,callback in
-            self.present(EditBookMetadata(self.resultsController.object(at: indexPath).objectID).inNavigationController(), animated: true)
+            self.present(EditBookMetadata(bookToEditID: self.resultsController.object(at: indexPath).objectID).inNavigationController(), animated: true)
             callback(true)
         }
         editAction.image = #imageLiteral(resourceName: "Literature")

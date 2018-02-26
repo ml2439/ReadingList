@@ -209,7 +209,7 @@ class ScanBarcode: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
                 let context = PersistentStoreManager.container.viewContext.childContext()
                 let book = Book(context: context, readState: .toRead)
                 book.populate(fromFetchResult: fetchResult)
-                vc.navigationController!.pushViewController(EditBookReadState(newUnsavedBook: book), animated: true)
+                vc.navigationController!.pushViewController(EditBookReadState(newUnsavedBook: book, scratchpadContext: context), animated: true)
             }
         }
     }

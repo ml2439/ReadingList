@@ -171,19 +171,16 @@ class SearchOnline: ArrayBackedTableController<GoogleBooks.SearchResult>, UISear
     func fetchAndSegue(googleBooksId: String) {
         UserEngagement.logEvent(.searchOnline)
         SVProgressHUD.show(withStatus: "Loading...")
-        GoogleBooks.fetch(googleBooksId: googleBooksId) { resultPage in
-            DispatchQueue.main.async { [weak self] in
-                SVProgressHUD.dismiss()
-                if let fetchResult = resultPage.result.value {
-                    let editContext = PersistentStoreManager.container.viewContext.childContext()
-                    let book = Book(context: editContext, readState: .toRead)
-                    book.populate(fromFetchResult: fetchResult)
-                    self?.navigationController!.pushViewController(EditBookReadState(newUnsavedBook: book), animated: true)
-                }
-                else {
-                    SVProgressHUD.showError(withStatus: "An error occurred. Please try again later.")
-                }
+        GoogleBooks.fetch(googleBooksId: googleBooksId) { [weak self] resultPage in
+            SVProgressHUD.dismiss()
+            guard let fetchResult = resultPage.result.value else {
+                SVProgressHUD.showError(withStatus: "An error occurred. Please try again later.")
+                return
             }
+            let editContext = PersistentStoreManager.container.viewContext.childContext()
+            let book = Book(context: editContext, readState: .toRead)
+            book.populate(fromFetchResult: fetchResult)
+            self?.navigationController!.pushViewController(EditBookReadState(newUnsavedBook: book, scratchpadContext: editContext), animated: true)
         }
     }
     

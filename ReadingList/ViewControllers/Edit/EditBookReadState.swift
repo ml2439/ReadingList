@@ -15,12 +15,11 @@ class EditBookReadState: FormViewController {
         self.book = editContext.object(with: existingBookID) as! Book
     }
     
-    convenience init(newUnsavedBook: Book) {
+    convenience init(newUnsavedBook: Book, scratchpadContext: NSManagedObjectContext) {
         self.init()
         self.newBook = true
         self.book = newUnsavedBook
-        // An unsaved book on a child context should never be deleted, so the context should never be nil
-        self.editContext = newUnsavedBook.managedObjectContext!
+        self.editContext = scratchpadContext
     }
 
     override func viewDidLoad() {

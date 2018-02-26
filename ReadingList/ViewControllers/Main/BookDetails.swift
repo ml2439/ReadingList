@@ -195,7 +195,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     }
 
     @IBAction func editBookPressed(_ sender: Any) {
-        present(EditBookMetadata(book!.objectID).inNavigationController(), animated: true)
+        present(EditBookMetadata(bookToEditID: book!.objectID).inNavigationController(), animated: true)
     }
     
     @objc func seeMoreDescription() {

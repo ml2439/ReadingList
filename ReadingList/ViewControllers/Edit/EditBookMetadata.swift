@@ -7,32 +7,20 @@ import SVProgressHUD
 
 class EditBookMetadata: FormViewController {
 
-    var bookToEditID: NSManagedObjectID?
-    private var editBookContext: NSManagedObjectContext!
+    private var editBookContext = PersistentStoreManager.container.viewContext.childContext()
     private var book: Book!
-    private var isAddingNewBook: Bool {
-        get { return bookToEditID == nil }
-    }
+    private var isAddingNewBook: Bool!
 
-    convenience init(_ bookToEditID: NSManagedObjectID?) {
+    convenience init(bookToEditID: NSManagedObjectID) {
         self.init()
-        self.bookToEditID = bookToEditID
+        self.isAddingNewBook = false
+        self.book = editBookContext.object(with: bookToEditID) as! Book
     }
     
-    func getOrCreateBook() -> Book {
-        // Create a child context and either find the existing book or insert a new one
-        editBookContext = PersistentStoreManager.container.viewContext.childContext()
-        if let bookToEditId = bookToEditID {
-            book = editBookContext.object(with: bookToEditId) as! Book
-        }
-        else {
-            book = Book(context: editBookContext, readState: .reading)
-        }
-        
-        // Watch the book object for changes and validate the form
-        NotificationCenter.default.addObserver(self, selector: #selector(validate), name: NSNotification.Name.NSManagedObjectContextObjectsDidChange, object: editBookContext)
-
-        return book
+    convenience init(bookToCreateReadState: BookReadState) {
+        self.init()
+        self.isAddingNewBook = true
+        self.book = Book(context: editBookContext, readState: bookToCreateReadState)
     }
     
     let isbnRowKey = "isbn"
@@ -53,8 +41,12 @@ class EditBookMetadata: FormViewController {
 
         configureNavigationItem()
         
-        let book = getOrCreateBook()
+        // Watch the book object for changes and validate the form
+        NotificationCenter.default.addObserver(self, selector: #selector(validate), name: NSNotification.Name.NSManagedObjectContextObjectsDidChange, object: editBookContext)
 
+        // Just to prevent having to reference `self` in the onChange handlers...
+        let book = self.book!
+        
         form +++ Section(header: "Title", footer: "")
             <<< NameRow() {
                 $0.placeholder = "Title"
@@ -147,7 +139,7 @@ class EditBookMetadata: FormViewController {
         
         let confirmDeleteAlert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         confirmDeleteAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        confirmDeleteAlert.addAction(UIAlertAction(title: "Delete", style: .destructive) {[unowned self] _ in
+        confirmDeleteAlert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [unowned self] _ in
             // Dismiss this modal view, delete the book, and log the event
             self.dismiss(animated: true) {
                 self.book.managedObjectContext!.performAndSave {
@@ -169,19 +161,17 @@ class EditBookMetadata: FormViewController {
 
     func updateBookFromGoogle() {
         guard let googleBooksId = book.googleBooksId else { return }
-
         SVProgressHUD.show(withStatus: "Downloading...")
+
         GoogleBooks.fetch(googleBooksId: googleBooksId) { [unowned self] fetchResultPage in
-            DispatchQueue.main.async {
-                SVProgressHUD.dismiss()
-                guard fetchResultPage.result.isSuccess else {
-                    SVProgressHUD.showError(withStatus: "Could not update book details")
-                    return
-                }
-                self.book.populate(fromFetchResult: fetchResultPage.result.value!)
-                self.dismiss(animated: true) {
-                    SVProgressHUD.showInfo(withStatus: "Book updated")
-                }
+            SVProgressHUD.dismiss()
+            guard fetchResultPage.result.isSuccess else {
+                SVProgressHUD.showError(withStatus: "Could not update book details")
+                return
+            }
+            self.book.populate(fromFetchResult: fetchResultPage.result.value!)
+            self.dismiss(animated: true) {
+                SVProgressHUD.showInfo(withStatus: "Book updated")
             }
         }
     }
@@ -213,15 +203,18 @@ class EditBookMetadata: FormViewController {
     }
     
     @objc func presentEditReadingState() {
-        navigationController!.pushViewController(EditBookReadState(newUnsavedBook: book), animated: true)
+        navigationController!.pushViewController(EditBookReadState(newUnsavedBook: book, scratchpadContext: editBookContext), animated: true)
     }
     
 }
 
 class AuthorSection: MultivaluedSection {
+
+    // This form is only presented by a metadata form, so does not need to maintain
+    // a strong reference to the book's object context
     var book: Book!
+
     var isInitialising = true
-    weak var navigationController: UINavigationController!
     
     required init(book: Book, navigationController: UINavigationController) {
         super.init(multivaluedOptions: [.Insert, .Delete, .Reorder], header: "Authors", footer: "") {
@@ -243,7 +236,6 @@ class AuthorSection: MultivaluedSection {
             }
         }
         self.book = book
-        self.navigationController = navigationController
         isInitialising = false
     }
     
@@ -322,8 +314,8 @@ class AddAuthorForm: FormViewController {
     let firstNamesRow = "firstNames"
     
     override func viewDidLoad() {
-        
         super.viewDidLoad()
+
         form +++ Section(header: "Author Name", footer: "")
             <<< NameRow() {
                 $0.tag = firstNamesRow
@@ -337,6 +329,7 @@ class AddAuthorForm: FormViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+
         if let lastName = (form.rowBy(tag: lastNameRow) as! NameRow).value, !lastName.isEmptyOrWhitespace {
             presentingRow.lastName = lastName
             presentingRow.firstNames = (form.rowBy(tag: firstNamesRow) as! NameRow).value
@@ -357,12 +350,14 @@ class EditBookSubjectsForm: FormViewController {
         self.book = book
         self.sendingRow = sender
     }
-    
-    var book: Book!
+
     weak var sendingRow: ButtonRow!
     
+    // This form is only presented by a metadata form, so does not need to maintain
+    // a strong reference to the book's object context
+    var book: Book!
+
     override func viewDidLoad() {
-        
         super.viewDidLoad()
         
         form +++ MultivaluedSection(multivaluedOptions: [.Insert, .Delete], header: "Subjects", footer: "Add subjects to categorise this book") {
@@ -389,6 +384,7 @@ class EditBookSubjectsForm: FormViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+
         let subjectNames = form.rows.flatMap{($0 as? NameRow)?.value?.trimming().nilIfWhitespace()}
         if book.subjects.map({$0.name}) != subjectNames {
             book.subjects = Set(subjectNames.map{Subject.getOrCreate(inContext: book.managedObjectContext!, withName: $0)})
