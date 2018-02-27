@@ -66,7 +66,7 @@
             </objects>
             <point key="canvasLocation" x="-7782" y="632"/>
         </scene>
-        <!--Item-->
+        <!--To Read-->
         <scene sceneID="E4H-Kr-ib7">
             <objects>
                 <viewController id="VqH-22-6E6" sceneMemberID="viewController">
@@ -79,7 +79,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Item" image="courses" selectedImage="courses-filled" id="h6f-QB-b9m"/>
+                    <tabBarItem key="tabBarItem" title="To Read" image="courses" selectedImage="courses-filled" id="h6f-QB-b9m"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ooM-bw-dwe" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

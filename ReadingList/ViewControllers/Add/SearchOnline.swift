@@ -3,9 +3,10 @@ import UIKit
 import SVProgressHUD
 import Crashlytics
 
-class SearchOnline: ArrayBackedTableController<GoogleBooks.SearchResult>, UISearchBarDelegate {
+class SearchOnline: UITableViewController {
     
     var initialSearchString: String?
+    var tableItems = [GoogleBooks.SearchResult]()
     
     @IBOutlet weak var addAllButton: UIBarButtonItem!
     @IBOutlet weak var selectModeButton: UIBarButtonItem!
@@ -14,10 +15,22 @@ class SearchOnline: ArrayBackedTableController<GoogleBooks.SearchResult>, UISear
     private let feedbackGenerator = UINotificationFeedbackGenerator()
     private let emptyDatasetView = UINib.instantiate(SearchBooksEmptyDataset.self)
 
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return tableItems.isEmpty ? 0 : 1
+    }
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return section == 0 ? tableItems.count : 0
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "SearchResultCell") as! SearchResultCell
+        cell.updateDisplay(from: tableItems[indexPath.row])
+        return cell
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        cellIdentifier = "SearchResultCell"
         
         tableView.tableFooterView = UIView()
         tableView.backgroundView = emptyDatasetView
@@ -256,7 +269,9 @@ class SearchOnline: ArrayBackedTableController<GoogleBooks.SearchResult>, UISear
             }
         }
     }
+}
 
+extension SearchOnline: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
         performSearch(searchText: searchBar.text ?? "")
@@ -268,116 +283,3 @@ class SearchOnline: ArrayBackedTableController<GoogleBooks.SearchResult>, UISear
         }
     }
 }
-
-class SearchBooksEmptyDataset: UIView {
-    @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var descriptionLabel: UILabel!
-    @IBOutlet weak var topConstraint: NSLayoutConstraint!
-
-    enum EmptySetReason {
-        case noSearch
-        case noResults
-        case error
-    }
-    
-    func setEmptyDatasetReason(_ reason: EmptySetReason) {
-        self.reason = reason
-        titleLabel.text = title
-        descriptionLabel.text = descriptionString
-    }
-    
-    func setTopDistance(_ distance: CGFloat) {
-        topConstraint.constant = distance
-        self.layoutIfNeeded()
-    }
-    
-    private var reason = EmptySetReason.noSearch
-    
-    private var title: String {
-        get {
-            switch reason {
-            case .noSearch:
-                return "🔍 Search Books"
-            case .noResults:
-                return "😞 No Results"
-            case .error:
-                return "⚠️ Error!"
-            }
-        }
-    }
-    
-    private var descriptionString: String {
-        get {
-            switch reason {
-            case .noSearch:
-                return "Search books by title, author, ISBN - or a mixture!"
-            case .noResults:
-                return "There were no Google Books search results. Try changing your search text."
-            case .error:
-                return "Something went wrong! It might be your Internet connection..."
-            }
-        }
-    }
-}
-
-/**
- A single sectioned (at most) table view controller, backed by an array.
-*/
-class ArrayBackedTableController<ArrayItemType>: UITableViewController {
-    var tableItems = [ArrayItemType]()
-    var cellIdentifier = "cellIdentifier"
-    
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        return tableItems.isEmpty ? 0 : 1
-    }
-    
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return section == 0 ? tableItems.count : 0
-    }
-    
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier) as! ArrayBackedTableCell<ArrayItemType>
-        cell.updateDisplay(from: tableItems[indexPath.row])
-        return cell
-    }
-}
-
-class ArrayBackedTableCell<ArrayItemType>: UITableViewCell {
-    func updateDisplay(from arrayItem: ArrayItemType) { }
-}
-
-/// A table cell used in the Search Online table
-class SearchResultCell: ArrayBackedTableCell<GoogleBooks.SearchResult> {
-    @IBOutlet weak var titleOutlet: UILabel!
-    @IBOutlet weak var authorOutlet: UILabel!
-    @IBOutlet weak var imageOutlet: UIImageView!
-    
-    private var coverImageRequest: HTTP.Request?
-
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        
-        // Cancel any pending cover data request task
-        coverImageRequest?.cancel()
-
-        titleOutlet.text = nil
-        authorOutlet.text = nil
-        imageOutlet.image = nil
-    }
-    
-    override func updateDisplay(from arrayItem: GoogleBooks.SearchResult) {
-        super.updateDisplay(from: arrayItem)
-
-        titleOutlet.text = arrayItem.title
-        authorOutlet.text = arrayItem.authors.joined(separator: ", ")
-        
-        guard let coverURL = arrayItem.thumbnailCoverUrl else { imageOutlet.image = #imageLiteral(resourceName: "CoverPlaceholder"); return }
-        coverImageRequest = HTTP.Request.get(url: coverURL).data { [weak self] result in
-            // Cancellations appear to be reported as errors. Ideally we would detect non-cancellation
-            // errors (e.g. 404), and show the placeholder in those cases. For now, just make the image blank.
-            guard result.isSuccess, let data = result.value else { self?.imageOutlet.image = nil; return }
-            self?.imageOutlet.image = UIImage(data: data)
-        }
-    }
-}
-
