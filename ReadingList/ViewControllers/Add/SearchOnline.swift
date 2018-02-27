@@ -262,7 +262,7 @@ class SearchOnline: UITableViewController {
             SVProgressHUD.dismiss()
             
             self?.presentingViewController!.dismiss(animated: true) {
-                SVProgressHUD.showInfo(withStatus: "\(selectedRows.count) book\(selectedRows.count == 1 ? "" : "s") added.")
+                SVProgressHUD.showInfo(withStatus: "\(selectedRows.count) book\(selectedRows.count == 1 ? "" : "s") added")
             }
         }
     }
