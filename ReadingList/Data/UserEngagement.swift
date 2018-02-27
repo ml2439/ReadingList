@@ -68,6 +68,7 @@ class UserEngagement {
     }
     
     static func logEvent(_ event: Event) {
+        guard UserSettings.sendAnalytics.value else { return }
         Analytics.logEvent(event.rawValue, parameters: nil)
     }
     
@@ -82,14 +83,10 @@ class UserEngagement {
     }
     
     static var appVersion: String {
-        get {
-            return Bundle.main.infoDictionary!["CFBundleShortVersionString"] as! String
-        }
+        get { return Bundle.main.infoDictionary!["CFBundleShortVersionString"] as! String }
     }
     
     static var appBuildNumber: String {
-        get {
-            return Bundle.main.infoDictionary!["CFBundleVersion"] as! String
-        }
+        get { return Bundle.main.infoDictionary!["CFBundleVersion"] as! String }
     }
 }

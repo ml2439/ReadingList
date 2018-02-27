@@ -31,7 +31,6 @@
 		1C87F5B81FAE4A5200E44043 /* About.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C87F5B71FAE4A5200E44043 /* About.swift */; };
 		1C87F5BA1FAE4AF500E44043 /* General.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C87F5B91FAE4AF500E44043 /* General.swift */; };
 		1C87F5BC1FAE582A00E44043 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C87F5BB1FAE582A00E44043 /* Data.swift */; };
-		1CAD7E971F8EA11B00A2E178 /* Privacy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CAD7E961F8EA11B00A2E178 /* Privacy.swift */; };
 		1CAE41B9204597BE002AF7DF /* SearchResultCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CAE41B8204597BE002AF7DF /* SearchResultCell.swift */; };
 		1CAE41BB204597EB002AF7DF /* SearchBooksEmptyDataSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CAE41BA204597EB002AF7DF /* SearchBooksEmptyDataSet.swift */; };
 		1CC18FA51FA4AC02000FB7E5 /* SettingsHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1CC18FA41FA4AC02000FB7E5 /* SettingsHeader.xib */; };
@@ -155,7 +154,6 @@
 		1C87F5B71FAE4A5200E44043 /* About.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = About.swift; sourceTree = "<group>"; };
 		1C87F5B91FAE4AF500E44043 /* General.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = General.swift; sourceTree = "<group>"; };
 		1C87F5BB1FAE582A00E44043 /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
-		1CAD7E961F8EA11B00A2E178 /* Privacy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Privacy.swift; sourceTree = "<group>"; };
 		1CAE41B8204597BE002AF7DF /* SearchResultCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultCell.swift; sourceTree = "<group>"; };
 		1CAE41BA204597EB002AF7DF /* SearchBooksEmptyDataSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBooksEmptyDataSet.swift; sourceTree = "<group>"; };
 		1CC18FA41FA4AC02000FB7E5 /* SettingsHeader.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SettingsHeader.xib; sourceTree = "<group>"; };
@@ -474,7 +472,6 @@
 				1C87F5B91FAE4AF500E44043 /* General.swift */,
 				1C87F5BB1FAE582A00E44043 /* Data.swift */,
 				49B2CEF71F39A4D300C6B45D /* SortOrder.swift */,
-				1CAD7E961F8EA11B00A2E178 /* Privacy.swift */,
 				49CEB8091E9D8C06003FD859 /* Debug.swift */,
 			);
 			path = Settings;
@@ -1087,7 +1084,6 @@
 				1CD1D2B6202BC9C400ACA5D9 /* UIKitExtensions.swift in Sources */,
 				1CDD535E1FA6609600A5ED66 /* SettingsHeader.swift in Sources */,
 				492500781C0B1B0000C149B5 /* PersistentStoreManager.swift in Sources */,
-				1CAD7E971F8EA11B00A2E178 /* Privacy.swift in Sources */,
 				1CFCD01A2013BD6A00D27301 /* Organise.swift in Sources */,
 				1C66927D203849EA001ED046 /* BookTableViewCell.swift in Sources */,
 				1C87F5B81FAE4A5200E44043 /* About.swift in Sources */,
