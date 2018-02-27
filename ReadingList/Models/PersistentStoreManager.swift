@@ -1,4 +1,5 @@
 import CoreData
+import CoreSpotlight
 
 class PersistentStoreManager {
     
@@ -18,8 +19,6 @@ class PersistentStoreManager {
         // previous versions put the store in the Documents directory. Move it if necessary.
         moveStoreFromLegacyLocationIfNecessary(toNewLocation: storeLocation)
 
-        // TODO: Deindex spotlight results if necessary
-        
         // Migrate the store to the latest version if necessary and then initialise
         container = NSPersistentContainer(name: storeName, manuallyMigratedStoreAt: storeLocation)
         container.migrateAndLoad(BooksModelVersion.self) {
@@ -43,6 +42,11 @@ class PersistentStoreManager {
             
             // Delete the old store
             tempStoreCoordinator.destroyAndDeleteStore(at: legacyStoreLocation)
+            
+            // The same version (1.7.1) also removed support for spotlight indexing, so deindex everything
+            if CSSearchableIndex.isIndexingAvailable() {
+                CSSearchableIndex.default().deleteAllSearchableItems()
+            }
         }
     }
 }
