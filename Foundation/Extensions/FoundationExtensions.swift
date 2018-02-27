@@ -31,6 +31,10 @@ extension String {
         let allowedCharacterSet = CharacterSet(charactersIn: "!*'();:@&=+$,/?%#[] ").inverted
         return self.addingPercentEncoding(withAllowedCharacters: allowedCharacterSet)!
     }
+    
+    var sortable: String {
+        get { return self.folding(options: [.diacriticInsensitive, .caseInsensitive], locale: Locale.current) }
+    }
 }
 
 extension Int {

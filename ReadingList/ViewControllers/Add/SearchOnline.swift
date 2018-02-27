@@ -2,6 +2,7 @@ import Foundation
 import UIKit
 import SVProgressHUD
 import Crashlytics
+import CoreData
 
 class SearchOnline: UITableViewController {
     
@@ -24,7 +25,7 @@ class SearchOnline: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "SearchResultCell") as! SearchResultCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "SearchResultCell", for: indexPath) as! SearchResultCell
         cell.updateDisplay(from: tableItems[indexPath.row])
         return cell
     }
@@ -41,6 +42,7 @@ class SearchOnline: UITableViewController {
         searchController.searchBar.returnKeyType = .search
         searchController.searchBar.text = initialSearchString
         searchController.searchBar.delegate = self
+        searchController.searchBar.autocapitalizationType = .words
 
         if #available(iOS 11.0, *) {
             navigationItem.searchController = searchController
@@ -118,7 +120,7 @@ class SearchOnline: UITableViewController {
            addAllButton.isEnabled = true
         }
         else {
-            fetchAndSegue(googleBooksId: searchResult.id)
+            fetchAndSegue(searchResult: searchResult)
         }
     }
     
@@ -181,18 +183,34 @@ class SearchOnline: UITableViewController {
         searchController.present(alert, animated: true)
     }
     
-    func fetchAndSegue(googleBooksId: String) {
+    func createBook(inContext context: NSManagedObjectContext, fromSearchResult searchResult: GoogleBooks.SearchResult, completion: @escaping (Book) -> Void) {
+        GoogleBooks.fetch(googleBooksId: searchResult.id) { resultPage in
+            let book = Book(context: context, readState: .toRead)
+            if let fetchResult = resultPage.result.value {
+                book.populate(fromFetchResult: fetchResult)
+                completion(book)
+            }
+            else {
+                if let coverURL = searchResult.thumbnailCoverUrl {
+                    HTTP.Request.get(url: coverURL).data {
+                        book.populate(fromSearchResult: searchResult, withCoverImage: $0.isSuccess ? $0.value! : nil)
+                        completion(book)
+                    }
+                }
+                else {
+                    book.populate(fromSearchResult: searchResult)
+                    completion(book)
+                }
+            }
+        }
+    }
+    
+    func fetchAndSegue(searchResult: GoogleBooks.SearchResult) {
         UserEngagement.logEvent(.searchOnline)
         SVProgressHUD.show(withStatus: "Loading...")
-        GoogleBooks.fetch(googleBooksId: googleBooksId) { [weak self] resultPage in
+        let editContext = PersistentStoreManager.container.viewContext.childContext()
+        createBook(inContext: editContext, fromSearchResult: searchResult) { [weak self] book in
             SVProgressHUD.dismiss()
-            guard let fetchResult = resultPage.result.value else {
-                SVProgressHUD.showError(withStatus: "An error occurred. Please try again later.")
-                return
-            }
-            let editContext = PersistentStoreManager.container.viewContext.childContext()
-            let book = Book(context: editContext, readState: .toRead)
-            book.populate(fromFetchResult: fetchResult)
             self?.navigationController!.pushViewController(EditBookReadState(newUnsavedBook: book, scratchpadContext: editContext), animated: true)
         }
     }
@@ -214,10 +232,10 @@ class SearchOnline: UITableViewController {
         guard tableView.isEditing, let selectedRows = tableView.indexPathsForSelectedRows, selectedRows.count > 0 else { return }
         
         // If there is only 1 cell selected, we might as well proceed as we would in single selection mode
-        guard selectedRows.count > 1 else { fetchAndSegue(googleBooksId: tableItems[selectedRows.first!.row].id); return }
+        guard selectedRows.count > 1 else { fetchAndSegue(searchResult: tableItems[selectedRows.first!.row]); return }
         
         let alert = UIAlertController(title: "Add \(selectedRows.count) books", message: "Are you sure you want to add all \(selectedRows.count) selected books? They will be added to the 'To Read' section.", preferredStyle: .actionSheet)
-        alert.addAction(UIAlertAction(title: "Add All", style: .default, handler: {[unowned self] _ in
+        alert.addAction(UIAlertAction(title: "Add All", style: .default, handler: { [unowned self] _ in
             self.addMultiple(selectedRows: selectedRows)
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
@@ -228,44 +246,23 @@ class SearchOnline: UITableViewController {
         UserEngagement.logEvent(.searchOnlineMultiple)
         SVProgressHUD.show(withStatus: "Adding...")
         let fetches = DispatchGroup()
-        var book: Book!
-        var errorCount = 0
         
         // Queue up the fetches
+        let context = PersistentStoreManager.container.viewContext.childContext()
         for selectedIndex in selectedRows {
             fetches.enter()
-            GoogleBooks.fetch(googleBooksId: tableItems[selectedIndex.row].id) { resultPage in
-                DispatchQueue.main.async {
-                    if let fetchResult = resultPage.result.value {
-                        book = Book(context: PersistentStoreManager.container.viewContext, readState: .toRead)
-                        book.populate(fromFetchResult: fetchResult)
-                    }
-                    else {
-                        errorCount += 1
-                    }
-                    fetches.leave()
-                }
+            createBook(inContext: context, fromSearchResult: tableItems[selectedIndex.row]) { _ in
+                fetches.leave()
             }
         }
         
         // On completion, dismiss this view (or show an error if they all failed)
         fetches.notify(queue: .main) { [weak self] in
-            PersistentStoreManager.container.viewContext.saveIfChanged()
+            context.saveIfChanged()
             SVProgressHUD.dismiss()
-            guard errorCount != selectedRows.count else {
-                // If they all errored, don't dismiss - show an error
-                SVProgressHUD.showError(withStatus: "An error occurred. No books were added."); return
-            }
             
             self?.presentingViewController!.dismiss(animated: true) {
-                if let book = book {
-                    // Scroll to the last added book. This is a bit random, but better than nothing probably
-                    appDelegate.tabBarController.simulateBookSelection(book, allowTableObscuring: false)
-                }
-                // Display an error if any books could not be added
-                if errorCount != 0 {
-                    SVProgressHUD.showInfo(withStatus: "\(selectedRows.count - errorCount) book\(selectedRows.count - errorCount == 1 ? "" : "s") successfully added; \(errorCount) book\(errorCount == 1 ? "" : "s") could not be added due to an error.")
-                }
+                SVProgressHUD.showInfo(withStatus: "\(selectedRows.count) book\(selectedRows.count == 1 ? "" : "s") added.")
             }
         }
     }

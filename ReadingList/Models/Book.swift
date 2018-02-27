@@ -58,7 +58,9 @@ class Book: NSManagedObject {
 
         if changedValues().contains(where: {$0.key == #keyPath(Book.authors)}) {
             let authorsArray = authors.map{$0 as! Author}
-            let newAuthorSort = authorsArray.map{"\($0.lastName).\($0.firstNames ?? "")"}.joined(separator: "..")
+            let newAuthorSort = authorsArray.map {
+                [$0.lastName, $0.firstNames].flatMap{$0?.sortable}.joined(separator: ".")
+            }.joined(separator: "..")
             let newAuthorDisplay = authorsArray.map{$0.displayFirstLast}.joined(separator: ", ")
             if authorSort != newAuthorSort { authorSort = newAuthorSort }
             if authorDisplay != newAuthorDisplay { authorDisplay = newAuthorDisplay }
@@ -98,7 +100,25 @@ class Book: NSManagedObject {
     func populate(fromFetchResult fetchResult: GoogleBooks.FetchResult) {
         googleBooksId = fetchResult.id
         title = fetchResult.title
-        let authorNames: [(String?, String)] = fetchResult.authors.map{
+        populateAuthors(fromStrings: fetchResult.authors)
+        bookDescription = fetchResult.description
+        subjects = Set(fetchResult.subjects.map{Subject.getOrCreate(inContext: self.managedObjectContext!, withName: $0)})
+        coverImage = fetchResult.coverImage
+        pageCount = fetchResult.pageCount?.nsNumber
+        publicationDate = fetchResult.publishedDate
+        isbn13 = fetchResult.isbn13
+    }
+    
+    func populate(fromSearchResult searchResult: GoogleBooks.SearchResult, withCoverImage coverImage: Data? = nil) {
+        googleBooksId = searchResult.id
+        title = searchResult.title
+        populateAuthors(fromStrings: searchResult.authors)
+        isbn13 = searchResult.isbn13
+        self.coverImage = coverImage
+    }
+    
+    private func populateAuthors(fromStrings authors: [String]) {
+        let authorNames: [(String?, String)] = authors.map{
             if let range = $0.range(of: " ", options: .backwards) {
                 let firstNames = $0[..<range.upperBound].trimming()
                 let lastName = $0[range.lowerBound...].trimming()
@@ -109,13 +129,7 @@ class Book: NSManagedObject {
                 return (firstNames: nil, lastName: $0)
             }
         }
-        authors = NSOrderedSet(array: authorNames.map{Author(context: self.managedObjectContext!, lastName: $0.1, firstNames: $0.0)})
-        bookDescription = fetchResult.description
-        subjects = Set(fetchResult.subjects.map{Subject.getOrCreate(inContext: self.managedObjectContext!, withName: $0)})
-        coverImage = fetchResult.coverImage
-        pageCount = fetchResult.pageCount?.nsNumber
-        publicationDate = fetchResult.publishedDate
-        isbn13 = fetchResult.isbn13
+        self.authors = NSOrderedSet(array: authorNames.map{Author(context: self.managedObjectContext!, lastName: $0.1, firstNames: $0.0)})
     }
 }
 
