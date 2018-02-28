@@ -52,10 +52,11 @@ extension NSManagedObjectContext {
     /**
      Saves if changes are present in the context. If an error occurs, throws a fatalError.
     */
-    func saveIfChanged() {
-        guard hasChanges else { return }
+    @discardableResult func saveIfChanged() -> Bool {
+        guard hasChanges else { return false }
         do {
             try save()
+            return true
         }
         catch {
             fatalError(error.localizedDescription)

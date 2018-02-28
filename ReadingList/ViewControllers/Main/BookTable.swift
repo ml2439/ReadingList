@@ -339,7 +339,7 @@ class BookTable: UITableViewController {
         optionsAlert.addAction(storyboardAction(title: "Scan Barcode", storyboard: Storyboard.ScanBarcode))
         optionsAlert.addAction(storyboardAction(title: "Search Online", storyboard: Storyboard.SearchOnline))
         optionsAlert.addAction(UIAlertAction(title: "Add Manually", style: .default){ [unowned self] _ in
-            self.present(EditBookMetadata().inNavigationController(), animated: true, completion: nil)
+            self.present(EditBookMetadata(bookToCreateReadState: .toRead).inNavigationController(), animated: true, completion: nil)
         })
         optionsAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         

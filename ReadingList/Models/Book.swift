@@ -125,6 +125,8 @@ class Book: NSManagedObject {
                 return (firstNames: nil, lastName: $0)
             }
         }
+        // FUTURE: This is a bit brute force, deleting all existing authors. Could perhaps inspect for changes first.
+        self.authors.map{$0 as! Author}.forEach{$0.delete()}
         self.authors = NSOrderedSet(array: authorNames.map{Author(context: self.managedObjectContext!, lastName: $0.1, firstNames: $0.0)})
     }
 }
