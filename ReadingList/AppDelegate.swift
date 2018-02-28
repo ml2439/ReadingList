@@ -70,6 +70,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         completionHandler(true)
     }
     
+    func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
+        print("file opened")
+        tabBarController.selectTab(.settings)
+        // TODO load file
+        let navController = tabBarController.selectedSplitViewController!.masterNavigationController
+        navController.dismiss(animated: false)
+        navController.popToRootViewController(animated: false)
+        navController.performSegue(withIdentifier: "settingsData", sender: nil)
+        return true
+    }
+    
     func performQuickAction(_ action: QuickAction) {
         func presentFromToRead(_ viewController: UIViewController) {
             // Select the To Read tab

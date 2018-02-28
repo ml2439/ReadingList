@@ -335,7 +335,7 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <segue destination="R7D-Jc-uwA" kind="showDetail" id="aeE-7W-9Cm"/>
+                                            <segue destination="R7D-Jc-uwA" kind="showDetail" identifier="settingsData" id="aeE-7W-9Cm"/>
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="elX-Yh-5QX" imageView="0hW-ap-1Hk" style="IBUITableViewCellStyleDefault" id="m01-SV-sOh">
