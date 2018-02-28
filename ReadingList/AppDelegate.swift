@@ -27,9 +27,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Initialise the persistent store on a background thread. The main thread will return and the LaunchScreen
         // storyboard will remain in place until this is completed, at which point the Main storyboard will be instantiated.
-        DispatchQueue.global(qos: .userInitiated).async { [unowned self] in
+        DispatchQueue.global(qos: .userInteractive).async { [unowned self] in
             PersistentStoreManager.initalisePersistentStore {
-                self.window!.rootViewController = Storyboard.Main.instantiateRoot()
+                DispatchQueue.main.async {
+                    self.window!.rootViewController = Storyboard.Main.instantiateRoot()
+                }
             }
         }
 

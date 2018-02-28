@@ -26,6 +26,7 @@
 		1C669281203A26F4001ED046 /* CSVParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C669280203A26F4001ED046 /* CSVParser.swift */; };
 		1C6EA18A1FFAEB6C0013EE5C /* BookDetails.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1C6EA1891FFAEB6C0013EE5C /* BookDetails.storyboard */; };
 		1C6EA18C1FFAEBCC0013EE5C /* BookDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6EA18B1FFAEBCC0013EE5C /* BookDetails.swift */; };
+		1C73B0BB2046973F00E8EAC7 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C73B0BA2046973F00E8EAC7 /* Extensions.swift */; };
 		1C75AEFC2042F38600FB9456 /* books.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1C75AEF62042F38600FB9456 /* books.xcdatamodeld */; };
 		1C75AEFE2042F3A800FB9456 /* BookMapping_8_9.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 1C75AEFD2042F3A800FB9456 /* BookMapping_8_9.xcmappingmodel */; };
 		1C87F5B81FAE4A5200E44043 /* About.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C87F5B71FAE4A5200E44043 /* About.swift */; };
@@ -145,6 +146,7 @@
 		1C669280203A26F4001ED046 /* CSVParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSVParser.swift; sourceTree = "<group>"; };
 		1C6EA1891FFAEB6C0013EE5C /* BookDetails.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = BookDetails.storyboard; sourceTree = "<group>"; };
 		1C6EA18B1FFAEBCC0013EE5C /* BookDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookDetails.swift; sourceTree = "<group>"; };
+		1C73B0BA2046973F00E8EAC7 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		1C75AEF72042F38600FB9456 /* books_5.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = books_5.xcdatamodel; sourceTree = "<group>"; };
 		1C75AEF82042F38600FB9456 /* books_9.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = books_9.xcdatamodel; sourceTree = "<group>"; };
 		1C75AEF92042F38600FB9456 /* books_6.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = books_6.xcdatamodel; sourceTree = "<group>"; };
@@ -329,6 +331,7 @@
 				1CD11212202DD2DC00BE3E1D /* ModelMigrationTests.swift */,
 				1CD11210202DD2DC00BE3E1D /* UnitTests.swift */,
 				1CD11209202DD29500BE3E1D /* Info.plist */,
+				1C73B0BA2046973F00E8EAC7 /* Extensions.swift */,
 			);
 			path = ReadingList_UnitTests;
 			sourceTree = "<group>";
@@ -1023,6 +1026,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1CD11216202DD2DC00BE3E1D /* ModelMigrationTests.swift in Sources */,
+				1C73B0BB2046973F00E8EAC7 /* Extensions.swift in Sources */,
 				1CD11214202DD2DC00BE3E1D /* UnitTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -23,9 +23,7 @@ class PersistentStoreManager {
         container = NSPersistentContainer(name: storeName, manuallyMigratedStoreAt: storeLocation)
         container.migrateAndLoad(BooksModelVersion.self) {
             self.container.viewContext.automaticallyMergesChangesFromParent = true
-            DispatchQueue.main.async {
-                completion()
-            }
+            completion()
         }
     }
     
