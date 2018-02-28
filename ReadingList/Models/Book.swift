@@ -70,6 +70,11 @@ class Book: NSManagedObject {
             let maxSort = Book.maxSort(fromContext: managedObjectContext!) ?? 0
             self.sort = (maxSort + 1).nsNumber
         }
+        
+        // Sort is not (yet) supported for non To Read books
+        if readState != .toRead && sort != nil {
+            self.sort = nil
+        }
     }
     
     override func prepareForDeletion() {

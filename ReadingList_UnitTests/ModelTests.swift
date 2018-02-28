@@ -30,13 +30,19 @@ class ModelTests: XCTestCase {
         XCTAssertEqual(maxSort + 2, book2.sort!.int32)
         XCTAssertEqual(Book.maxSort(fromContext: testContainer.viewContext)!, book2.sort!.int32)
         
+        // Start reading book2; check it has no sort and the maxSort goes down
+        book2.startReading()
+        testContainer.viewContext.saveIfChanged()
+        XCTAssertEqual(nil, book2.sort)
+        XCTAssertEqual(Book.maxSort(fromContext: testContainer.viewContext)!, maxSort + 1)
+        
         // Add book to .reading and check sort remains nil
         let book3 = Book(context: testContainer.viewContext, readState: .reading)
         book3.title = "title3"
         book3.authors = NSOrderedSet(arrayLiteral: Author(context: testContainer.viewContext, lastName: "Lastname", firstNames: "Firstname"))
         testContainer.viewContext.saveIfChanged()
         XCTAssertEqual(nil, book3.sort)
-        XCTAssertEqual(Book.maxSort(fromContext: testContainer.viewContext)!, book2.sort!.int32)
+        XCTAssertEqual(Book.maxSort(fromContext: testContainer.viewContext)!, maxSort + 1)
         
         // Add book with prepopulated sort, check it is not changed
         let book4 = Book(context: testContainer.viewContext, readState: .toRead)
@@ -48,7 +54,7 @@ class ModelTests: XCTestCase {
         XCTAssertEqual(Book.maxSort(fromContext: testContainer.viewContext)!, book4.sort!.int32)
     }
     
-    func testAuthorSort() {
+    func testAuthorCalculatedProperties() {
         let book = Book(context: testContainer.viewContext, readState: .toRead)
         book.title = "title"
         book.authors = NSOrderedSet(arrayLiteral: Author(context: testContainer.viewContext, lastName: "Birkhäuser", firstNames: "Wahlöö"),
