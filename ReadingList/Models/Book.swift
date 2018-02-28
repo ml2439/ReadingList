@@ -67,12 +67,8 @@ class Book: NSManagedObject {
         }
         
         if readState == .toRead && sort == nil {
-            if let maxSort = Book.maxSort(fromContext: managedObjectContext!) {
-                self.sort = (maxSort + 1).nsNumber
-            }
-            else {
-                self.sort = 1
-            }
+            let maxSort = Book.maxSort(fromContext: managedObjectContext!) ?? 0
+            self.sort = (maxSort + 1).nsNumber
         }
     }
     

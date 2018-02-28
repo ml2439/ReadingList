@@ -38,9 +38,8 @@
 		1CD111F9202DA42800BE3E1D /* BookMapping_6_7.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 1CD111F3202DA42800BE3E1D /* BookMapping_6_7.xcmappingmodel */; };
 		1CD11200202DA47C00BE3E1D /* Isbn13.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD111FF202DA47B00BE3E1D /* Isbn13.swift */; };
 		1CD11213202DD2DC00BE3E1D /* GoogleBooksFetchResult.json in Resources */ = {isa = PBXBuildFile; fileRef = 1CD1120F202DD2DC00BE3E1D /* GoogleBooksFetchResult.json */; };
-		1CD11214202DD2DC00BE3E1D /* UnitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD11210202DD2DC00BE3E1D /* UnitTests.swift */; };
+		1CD11214202DD2DC00BE3E1D /* ModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD11210202DD2DC00BE3E1D /* ModelTests.swift */; };
 		1CD11215202DD2DC00BE3E1D /* GoogleBooksSearchResult.json in Resources */ = {isa = PBXBuildFile; fileRef = 1CD11211202DD2DC00BE3E1D /* GoogleBooksSearchResult.json */; };
-		1CD11216202DD2DC00BE3E1D /* ModelMigrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD11212202DD2DC00BE3E1D /* ModelMigrationTests.swift */; };
 		1CD11228202DD39000BE3E1D /* ReadingListApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD11225202DD39000BE3E1D /* ReadingListApplication.swift */; };
 		1CD11229202DD39000BE3E1D /* Lists.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD11226202DD39000BE3E1D /* Lists.swift */; };
 		1CD1122A202DD39000BE3E1D /* WithData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD11227202DD39000BE3E1D /* WithData.swift */; };
@@ -164,9 +163,8 @@
 		1CD11205202DD29500BE3E1D /* ReadingList_UnitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ReadingList_UnitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1CD11209202DD29500BE3E1D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1CD1120F202DD2DC00BE3E1D /* GoogleBooksFetchResult.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = GoogleBooksFetchResult.json; sourceTree = "<group>"; };
-		1CD11210202DD2DC00BE3E1D /* UnitTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnitTests.swift; sourceTree = "<group>"; };
+		1CD11210202DD2DC00BE3E1D /* ModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelTests.swift; sourceTree = "<group>"; };
 		1CD11211202DD2DC00BE3E1D /* GoogleBooksSearchResult.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = GoogleBooksSearchResult.json; sourceTree = "<group>"; };
-		1CD11212202DD2DC00BE3E1D /* ModelMigrationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelMigrationTests.swift; sourceTree = "<group>"; };
 		1CD1121B202DD32900BE3E1D /* ReadingList_UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ReadingList_UITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1CD1121F202DD32A00BE3E1D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1CD11225202DD39000BE3E1D /* ReadingListApplication.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReadingListApplication.swift; sourceTree = "<group>"; };
@@ -328,8 +326,7 @@
 			children = (
 				1CD1120F202DD2DC00BE3E1D /* GoogleBooksFetchResult.json */,
 				1CD11211202DD2DC00BE3E1D /* GoogleBooksSearchResult.json */,
-				1CD11212202DD2DC00BE3E1D /* ModelMigrationTests.swift */,
-				1CD11210202DD2DC00BE3E1D /* UnitTests.swift */,
+				1CD11210202DD2DC00BE3E1D /* ModelTests.swift */,
 				1CD11209202DD29500BE3E1D /* Info.plist */,
 				1C73B0BA2046973F00E8EAC7 /* Extensions.swift */,
 			);
@@ -1025,9 +1022,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1CD11216202DD2DC00BE3E1D /* ModelMigrationTests.swift in Sources */,
 				1C73B0BB2046973F00E8EAC7 /* Extensions.swift in Sources */,
-				1CD11214202DD2DC00BE3E1D /* UnitTests.swift in Sources */,
+				1CD11214202DD2DC00BE3E1D /* ModelTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
