@@ -42,7 +42,7 @@ class DataVC: UITableViewController, UIDocumentPickerDelegate, UIDocumentMenuDel
         SVProgressHUD.show(withStatus: "Importing")
         UserEngagement.logEvent(.csvImport)
         
-        BookCSVImporter().startImport(fromFileAt: Bundle.main.url(forResource: "examplebooks", withExtension: "csv")!) { results in
+        BookCSVImporter().startImport(fromFileAt: url) { results in
             var statusMessage = "\(results.success) books imported."
             
             if results.duplicate != 0 { statusMessage += " \(results.duplicate) rows ignored due pre-existing data." }
