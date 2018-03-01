@@ -133,6 +133,7 @@ fileprivate class BookCSVParserDelegate: CSVParserDelegate {
                 newBook.delete()
                 return
             }
+            successCount += 1
             
             // Record the list memberships
             for listName in listNames {
