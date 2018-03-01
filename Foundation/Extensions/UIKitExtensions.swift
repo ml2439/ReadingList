@@ -56,6 +56,13 @@ extension UIViewController {
     }
 }
 
+extension UINavigationController {
+    func dismissAndPopToRoot() {
+        dismiss(animated: false)
+        popToRootViewController(animated: false)
+    }
+}
+
 extension UISearchBar {
     var isActive: Bool {
         get {

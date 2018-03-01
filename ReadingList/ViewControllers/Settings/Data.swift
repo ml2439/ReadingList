@@ -38,6 +38,15 @@ class DataVC: UITableViewController, UIDocumentPickerDelegate, UIDocumentMenuDel
         present(documentPicker, animated: true, completion: nil)
     }
     
+    func confirmImport() {
+        let alert = UIAlertController(title: "Confirm import", message: "Are you sure you want to import books from this file?", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Yes", style: .default){ _ in
+            
+        })
+        alert.addAction(UIAlertAction(title: "No", style: .cancel, handler: nil))
+        present(alert, animated: true, completion: nil)
+    }
+    
     func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentAt url: URL) {
         SVProgressHUD.show(withStatus: "Importing")
         UserEngagement.logEvent(.csvImport)
@@ -83,7 +92,6 @@ class DataVC: UITableViewController, UIDocumentPickerDelegate, UIDocumentMenuDel
                 }
                 return
             }
-
             
             // Present a dialog with the resulting file
             let activityViewController = UIActivityViewController(activityItems: [temporaryFilePath], applicationActivities: [])

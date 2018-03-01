@@ -65,6 +65,7 @@ class UserEngagement {
         
         // Other
         case viewOnAmazon = "View_On_Amazon"
+        case openCsvInApp = "Open_CSV_In_App"
     }
     
     static func logEvent(_ event: Event) {

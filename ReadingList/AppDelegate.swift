@@ -71,13 +71,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
-        print("file opened")
+        UserEngagement.logEvent(.openCsvInApp)
         tabBarController.selectTab(.settings)
-        // TODO load file
+
         let navController = tabBarController.selectedSplitViewController!.masterNavigationController
-        navController.dismiss(animated: false)
-        navController.popToRootViewController(animated: false)
+        navController.dismissAndPopToRoot()
         navController.performSegue(withIdentifier: "settingsData", sender: nil)
+        
+        // TODO: Is there a nicer way to get the Data VC?
+        let data = (navController.viewControllers.first! as! UINavigationController).viewControllers.first! as! DataVC
+        // TODO: pass the file URL in, present confirmation
+        data.requestImport()
         return true
     }
     
@@ -88,8 +92,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             
             // Dismiss any modal views
             let navController = tabBarController.selectedSplitViewController!.masterNavigationController
-            navController.dismiss(animated: false)
-            navController.popToRootViewController(animated: false)
+            navController.dismissAndPopToRoot()
             navController.viewControllers[0].present(viewController, animated: true, completion: nil)
         }
         
