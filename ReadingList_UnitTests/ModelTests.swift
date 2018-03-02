@@ -19,20 +19,20 @@ class ModelTests: XCTestCase {
         let book = Book(context: testContainer.viewContext, readState: .toRead)
         book.title = "title"
         book.authors = NSOrderedSet(arrayLiteral: Author(context: testContainer.viewContext, lastName: "Lastname", firstNames: "Firstname"))
-        testContainer.viewContext.saveIfChanged()
+        try! testContainer.viewContext.save()
         XCTAssertEqual(maxSort + 1, book.sort!.int32)
         XCTAssertEqual(Book.maxSort(fromContext: testContainer.viewContext)!, book.sort!.int32)
         
         let book2 = Book(context: testContainer.viewContext, readState: .toRead)
         book2.title = "title2"
         book2.authors = NSOrderedSet(arrayLiteral: Author(context: testContainer.viewContext, lastName: "Lastname", firstNames: "Firstname"))
-        testContainer.viewContext.saveIfChanged()
+        try! testContainer.viewContext.save()
         XCTAssertEqual(maxSort + 2, book2.sort!.int32)
         XCTAssertEqual(Book.maxSort(fromContext: testContainer.viewContext)!, book2.sort!.int32)
         
         // Start reading book2; check it has no sort and the maxSort goes down
         book2.startReading()
-        testContainer.viewContext.saveIfChanged()
+        try! testContainer.viewContext.save()
         XCTAssertEqual(nil, book2.sort)
         XCTAssertEqual(Book.maxSort(fromContext: testContainer.viewContext)!, maxSort + 1)
         
@@ -40,7 +40,7 @@ class ModelTests: XCTestCase {
         let book3 = Book(context: testContainer.viewContext, readState: .reading)
         book3.title = "title3"
         book3.authors = NSOrderedSet(arrayLiteral: Author(context: testContainer.viewContext, lastName: "Lastname", firstNames: "Firstname"))
-        testContainer.viewContext.saveIfChanged()
+        try! testContainer.viewContext.save()
         XCTAssertEqual(nil, book3.sort)
         XCTAssertEqual(Book.maxSort(fromContext: testContainer.viewContext)!, maxSort + 1)
         
@@ -49,7 +49,7 @@ class ModelTests: XCTestCase {
         book4.title = "title3"
         book4.authors = NSOrderedSet(arrayLiteral: Author(context: testContainer.viewContext, lastName: "Lastname", firstNames: "Firstname"))
         book4.sort = 12
-        testContainer.viewContext.saveIfChanged()
+        try! testContainer.viewContext.save()
         XCTAssertEqual(12, book4.sort)
         XCTAssertEqual(Book.maxSort(fromContext: testContainer.viewContext)!, book4.sort!.int32)
     }
@@ -59,7 +59,7 @@ class ModelTests: XCTestCase {
         book.title = "title"
         book.authors = NSOrderedSet(arrayLiteral: Author(context: testContainer.viewContext, lastName: "Birkhäuser", firstNames: "Wahlöö"),
                                     Author(context: testContainer.viewContext, lastName: "Sjöwall", firstNames: "Maj"))
-        testContainer.viewContext.saveIfChanged()
+        try! testContainer.viewContext.save()
         
         XCTAssertEqual("birkhauser.wahloo..sjowall.maj", book.authorSort)
         XCTAssertEqual("Wahlöö Birkhäuser, Maj Sjöwall", book.authorDisplay)

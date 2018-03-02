@@ -15,7 +15,7 @@ extension NSManagedObject {
     static func fetchRequest<T: NSManagedObject>(_ type: T.Type, limit: Int? = nil, batch: Int? = nil) -> NSFetchRequest<T> {
         // Apple bug: the following line does not work when run from a test target
         // let fetchRequest = T.fetchRequest() as! NSFetchRequest<T>
-        let fetchRequest = NSFetchRequest<T>(entityName: String(describing: type))
+        let fetchRequest = NSFetchRequest<T>(entityName: type.entity().managedObjectClassName)
         if let limit = limit { fetchRequest.fetchLimit = limit }
         if let batch = batch { fetchRequest.fetchBatchSize = batch }
         return fetchRequest
@@ -39,7 +39,7 @@ extension NSManagedObjectContext {
     
     @objc private func mergeAndSave(fromChildContextDidSave notification: Notification) {
         self.mergeChanges(fromContextDidSave: notification)
-        self.saveIfChanged()
+        try! self.save()
     }
     
     /**
@@ -66,16 +66,41 @@ extension NSManagedObjectContext {
     func performAndSave(block: @escaping () -> ()) {
         perform { [unowned self] in
             block()
-            self.saveIfChanged()
+            try! self.save()
         }
     }
     
     func performAndSaveAndWait(block: @escaping (_ context: NSManagedObjectContext) -> ()) {
         performAndWait { [unowned self] in
             block(self)
-            self.saveIfChanged()
+            try! self.save()
         }
     }
+    
+        func repeatFetchAndDelete<T: NSManagedObject>(forFetchRequest fetchRequest: NSFetchRequest<T>) {
+            func block() {
+                // Grab the objects; if there are none then we are done
+                let objects = try! self.fetch(fetchRequest)
+                guard objects.count != 0 else { return }
+
+                // Delete all and save
+                for object in objects {
+                    print("pre-delete object is fault: \(object.isFault)")
+                    self.delete(object)
+                    print("post-delete object is fault: \(object.isFault)")
+                }
+                try! self.save()
+                
+                // Clear the objects from memory
+                self.reset()
+                
+                // Call recursively...
+                self.perform(block)
+            }
+            
+            // Run the block, which calls itself until there is no work left to do
+            self.perform(block)
+        }
 }
 
 extension NSEntityMigrationPolicy {

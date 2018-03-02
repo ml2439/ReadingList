@@ -15,6 +15,7 @@ class Subject: NSManagedObject {
     static func getOrCreate(inContext context: NSManagedObjectContext, withName name: String) -> Subject {
         let subjectFetchRequest = NSManagedObject.fetchRequest(Subject.self, limit: 1)
         subjectFetchRequest.predicate = NSPredicate(format: "%K == %@", #keyPath(Subject.name), name)
+        subjectFetchRequest.returnsObjectsAsFaults = false
         if let existingSubject = (try! context.fetch(subjectFetchRequest)).first {
             return existingSubject
         }

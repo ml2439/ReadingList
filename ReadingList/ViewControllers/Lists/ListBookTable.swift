@@ -67,7 +67,7 @@ class ListBookTable: UITableViewController {
     private func removeBook(at indexPath: IndexPath) {
         let bookToRemove = list.books[indexPath.row]
         list.removeBooks(NSSet(array: ([bookToRemove])))
-        list.managedObjectContext!.saveIfChanged()
+        try! list.managedObjectContext!.save()
         UserEngagement.logEvent(.removeBookFromList)
     }
     
@@ -90,7 +90,7 @@ class ListBookTable: UITableViewController {
             let movedBook = books.remove(at: sourceIndexPath.row)
             books.insert(movedBook, at: destinationIndexPath.row)
             list.books = NSOrderedSet(array: books)
-            list.managedObjectContext!.saveIfChanged()
+            try! list.managedObjectContext!.save()
         }
         UserEngagement.logEvent(.reorederList)
     }

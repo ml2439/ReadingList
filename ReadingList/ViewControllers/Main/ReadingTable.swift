@@ -62,7 +62,7 @@ class ReadingTable: BookTable {
             sortIndex += 1
         }
         
-        PersistentStoreManager.container.viewContext.saveIfChanged()
+        try! PersistentStoreManager.container.viewContext.save()
         try! resultsController.performFetch()
         resultsController.delegate = tableView
     }

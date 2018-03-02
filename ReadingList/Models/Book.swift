@@ -52,11 +52,13 @@ class Book: NSManagedObject {
     
     @NSManaged private(set) var authorDisplay: String // Denormalised attribute to reduce required fetches
     @NSManaged private(set) var authorSort: String // Calculated sort helper
-
+    
     override func willSave() {
         super.willSave()
+        guard !isDeleted else { return }
 
-        if changedValues().contains(where: {$0.key == #keyPath(Book.authors)}) {
+        // FUTURE: This is a bad place to do this work; faults will be firing
+        /*if changedValues().contains(where: {$0.key == #keyPath(Book.authors)}) {
             let authorsArray = authors.map{$0 as! Author}
             let newAuthorSort = authorsArray.map {
                 [$0.lastName, $0.firstNames].flatMap{$0?.sortable}.joined(separator: ".")
@@ -74,15 +76,17 @@ class Book: NSManagedObject {
         // Sort is not (yet) supported for non To Read books
         if readState != .toRead && sort != nil {
             self.sort = nil
-        }
+        }*/
     }
     
     override func prepareForDeletion() {
         super.prepareForDeletion()
-        for orphanedSubject in subjects.filter({$0.books.count == 1}) {
+        // Disabled deletion of orphaned subjects for now - it forces the subject's books fault to be fulfilled,
+        // which can have a performance penalty when batch deleting. Perhaps orphaned subjects don't even matter...
+        /*for orphanedSubject in subjects.filter({$0.books.count == 1}) {
             orphanedSubject.delete()
             print("orphaned subject \(orphanedSubject.name) deleted.")
-        }
+        }*/
     }
     
     convenience init(context: NSManagedObjectContext, readState: BookReadState) {
@@ -177,7 +181,9 @@ extension Book {
     
     override func validateForUpdate() throws {
         try super.validateForUpdate()
-        if let error = checkIsValid() { throw error }
+        /*guard !isDeleted else { return }
+        if isFault { print("WARNING: Validating a fault") }
+        if let error = checkIsValid() { throw error }*/
     }
     
     func checkIsValid() -> Error? {

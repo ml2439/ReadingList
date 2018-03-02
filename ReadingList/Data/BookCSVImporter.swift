@@ -101,6 +101,7 @@ fileprivate class BookCSVParserDelegate: CSVParserDelegate {
     }
     
     func lineParseSuccess(_ values: [String: String]){
+        // FUTURE: Batch save
         context.performAndWait { [unowned self] in
             // Check for duplicates
             guard Book.get(fromContext: self.context, googleBooksId: values["Google Books ID"], isbn: values["ISBN-13"]) == nil else {
@@ -162,7 +163,7 @@ fileprivate class BookCSVParserDelegate: CSVParserDelegate {
         dispatchGroup.notify(queue: .main) {
             self.context.performAndWait {
                 self.populateLists()
-                self.context.saveIfChanged()
+                try! self.context.save()
             }
             self.onCompletion(BookCSVImportResults(success: self.successCount, error: self.invalidCount, duplicate: self.duplicateCount))
         }

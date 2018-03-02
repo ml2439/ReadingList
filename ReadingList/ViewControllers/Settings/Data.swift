@@ -15,6 +15,8 @@ class DataVC: UITableViewController, UIDocumentPickerDelegate, UIDocumentMenuDel
             exportData()
         case (DataVC.importIndexPath.section, DataVC.importIndexPath.row):
             requestImport()
+        case (2, 0):
+            deleteAllData()
         default:
             break
         }
@@ -105,5 +107,54 @@ class DataVC: UITableViewController, UIDocumentPickerDelegate, UIDocumentMenuDel
                 self.present(activityViewController, animated: true, completion: nil)
             }
         }
+    }
+    
+    func deleteAllData() {
+        
+        // The CONFIRM DELETE action:
+        let confirmDelete = UIAlertController(title: "Final Warning", message: "This action is irreversible. Are you sure you want to continue?", preferredStyle: .alert)
+        confirmDelete.addAction(UIAlertAction(title: "Delete", style: .destructive) { [unowned self] _ in
+            self.deleteAll()
+            UserEngagement.logEvent(.deleteAllData)
+        })
+        confirmDelete.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        
+        // The initial WARNING action
+        let areYouSure = UIAlertController(title: "Warning", message: "This will delete all books saved in the application. Are you sure you want to continue?", preferredStyle: .alert)
+        areYouSure.addAction(UIAlertAction(title: "Delete", style: .destructive) { [unowned self] _ in
+            self.present(confirmDelete, animated: true)
+        })
+        areYouSure.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        
+        present(areYouSure, animated: true)
+    }
+    
+    func deleteAll() {
+    
+        let deleteContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+        deleteContext.parent = PersistentStoreManager.container.viewContext
+        deleteContext.automaticallyMergesChangesFromParent = true
+        
+        let batchDelete = NSBatchDeleteRequest(fetchRequest: List.fetchRequest())
+        try! PersistentStoreManager.container.persistentStoreCoordinator.execute(batchDelete, with: deleteContext)
+        PersistentStoreManager.container.viewContext.reset()
+        
+        /*
+
+    let listFetchRequest = List.fetchRequest()
+    listFetchRequest.fetchLimit = 100
+    listFetchRequest.relationshipKeyPathsForPrefetching = [#keyPath(List.books), "\(#keyPath(List.books)).lists"]
+    listFetchRequest.includesPropertyValues = false*/
+        /*
+        let bookFetchRequest = NSManagedObject.fetchRequest(Book.self, limit: 50)
+        bookFetchRequest.relationshipKeyPathsForPrefetching = [#keyPath(Book.authors), "\(#keyPath(Book.authors)).books",
+                                                               #keyPath(Book.subjects), "\(#keyPath(Book.subjects)).books"]
+        bookFetchRequest.includesPropertyValues = false
+        */
+    //    print("deleteing lists")
+    //deleteContext.repeatFetchAndDelete(forFetchRequest: listFetchRequest as! NSFetchRequest<NSManagedObject>)
+
+        //print("deleteing books")
+        //deleteContext.repeatFetchAndDelete(forFetchRequest: bookFetchRequest as! NSFetchRequest<NSManagedObject>)
     }
 }

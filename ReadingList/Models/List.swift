@@ -15,6 +15,7 @@ public class List: NSManagedObject {
     static func getOrCreate(fromContext context: NSManagedObjectContext, withName name: String) -> List {
         let listFetchRequest = NSManagedObject.fetchRequest(List.self, limit: 1)
         listFetchRequest.predicate = NSPredicate(format: "%K == %@", #keyPath(List.name), name)
+        listFetchRequest.returnsObjectsAsFaults = false
         if let existingList = (try! context.fetch(listFetchRequest)).first {
             return existingList
         }
