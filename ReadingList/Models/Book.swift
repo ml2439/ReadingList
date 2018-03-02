@@ -47,18 +47,14 @@ class Book: NSManagedObject {
     @NSManaged var lists: Set<List>
     @NSManaged var authors: NSOrderedSet
     
-    @NSManaged func addAuthors(_ values: NSOrderedSet)
-    @NSManaged func removeAuthors(_ values: NSSet)
-    
     @NSManaged private(set) var authorDisplay: String // Denormalised attribute to reduce required fetches
     @NSManaged private(set) var authorSort: String // Calculated sort helper
-    
+
     override func willSave() {
         super.willSave()
-        guard !isDeleted else { return }
 
-        // FUTURE: This is a bad place to do this work; faults will be firing
-        /*if changedValues().contains(where: {$0.key == #keyPath(Book.authors)}) {
+        // FUTURE: This should probably not be in willSave, but in a author setting method
+        if changedValues().contains(where: {$0.key == #keyPath(Book.authors)}) {
             let authorsArray = authors.map{$0 as! Author}
             let newAuthorSort = authorsArray.map {
                 [$0.lastName, $0.firstNames].flatMap{$0?.sortable}.joined(separator: ".")
@@ -68,6 +64,7 @@ class Book: NSManagedObject {
             if authorDisplay != newAuthorDisplay { authorDisplay = newAuthorDisplay }
         }
         
+        // The sort manipulation should be in a method which allows setting of dates
         if readState == .toRead && sort == nil {
             let maxSort = Book.maxSort(fromContext: managedObjectContext!) ?? 0
             self.sort = (maxSort + 1).nsNumber
@@ -76,17 +73,15 @@ class Book: NSManagedObject {
         // Sort is not (yet) supported for non To Read books
         if readState != .toRead && sort != nil {
             self.sort = nil
-        }*/
+        }
     }
     
     override func prepareForDeletion() {
         super.prepareForDeletion()
-        // Disabled deletion of orphaned subjects for now - it forces the subject's books fault to be fulfilled,
-        // which can have a performance penalty when batch deleting. Perhaps orphaned subjects don't even matter...
-        /*for orphanedSubject in subjects.filter({$0.books.count == 1}) {
+        for orphanedSubject in subjects.filter({$0.books.count == 1}) {
             orphanedSubject.delete()
             print("orphaned subject \(orphanedSubject.name) deleted.")
-        }*/
+        }
     }
     
     convenience init(context: NSManagedObjectContext, readState: BookReadState) {
@@ -181,9 +176,7 @@ extension Book {
     
     override func validateForUpdate() throws {
         try super.validateForUpdate()
-        /*guard !isDeleted else { return }
-        if isFault { print("WARNING: Validating a fault") }
-        if let error = checkIsValid() { throw error }*/
+        if let error = checkIsValid() { throw error }
     }
     
     func checkIsValid() -> Error? {

@@ -70,7 +70,10 @@ class BookTable: UITableViewController {
 
         // Watch for changes in book sort order
         NotificationCenter.default.addObserver(self, selector: #selector(bookSortChanged), name: NSNotification.Name.BookSortOrderChanged, object: nil)
+        // TODO: hook in to delegate's objects did change handler
         NotificationCenter.default.addObserver(self, selector: #selector(reloadFooter), name: NSNotification.Name.NSManagedObjectContextObjectsDidChange, object: nil)
+        // TODO: notification should just perform fetch.
+        NotificationCenter.default.addObserver(self, selector: #selector(bookSortChanged), name: NSNotification.Name.PersistentStoreBatchOperationOccurred, object: nil)
         
         super.viewDidLoad()
     }

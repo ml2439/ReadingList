@@ -135,26 +135,15 @@ class DataVC: UITableViewController, UIDocumentPickerDelegate, UIDocumentMenuDel
         deleteContext.parent = PersistentStoreManager.container.viewContext
         deleteContext.automaticallyMergesChangesFromParent = true
         
-        let batchDelete = NSBatchDeleteRequest(fetchRequest: List.fetchRequest())
-        try! PersistentStoreManager.container.persistentStoreCoordinator.execute(batchDelete, with: deleteContext)
-        PersistentStoreManager.container.viewContext.reset()
+        let batchDeleteLists = NSBatchDeleteRequest(fetchRequest: List.fetchRequest())
+        try! PersistentStoreManager.container.persistentStoreCoordinator.execute(batchDeleteLists, with: deleteContext)
+        let batchDeleteBooks = NSBatchDeleteRequest(fetchRequest: Book.fetchRequest())
+        try! PersistentStoreManager.container.persistentStoreCoordinator.execute(batchDeleteBooks, with: deleteContext)
         
-        /*
-
-    let listFetchRequest = List.fetchRequest()
-    listFetchRequest.fetchLimit = 100
-    listFetchRequest.relationshipKeyPathsForPrefetching = [#keyPath(List.books), "\(#keyPath(List.books)).lists"]
-    listFetchRequest.includesPropertyValues = false*/
-        /*
-        let bookFetchRequest = NSManagedObject.fetchRequest(Book.self, limit: 50)
-        bookFetchRequest.relationshipKeyPathsForPrefetching = [#keyPath(Book.authors), "\(#keyPath(Book.authors)).books",
-                                                               #keyPath(Book.subjects), "\(#keyPath(Book.subjects)).books"]
-        bookFetchRequest.includesPropertyValues = false
-        */
-    //    print("deleteing lists")
-    //deleteContext.repeatFetchAndDelete(forFetchRequest: listFetchRequest as! NSFetchRequest<NSManagedObject>)
-
-        //print("deleteing books")
-        //deleteContext.repeatFetchAndDelete(forFetchRequest: bookFetchRequest as! NSFetchRequest<NSManagedObject>)
+        NotificationCenter.default.post(name: Notification.Name.PersistentStoreBatchOperationOccurred, object: nil)
     }
+}
+
+extension Notification.Name {
+    static let PersistentStoreBatchOperationOccurred = Notification.Name("persistent-store-batch-operation-occurred")
 }

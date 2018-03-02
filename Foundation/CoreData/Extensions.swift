@@ -76,31 +76,6 @@ extension NSManagedObjectContext {
             try! self.save()
         }
     }
-    
-        func repeatFetchAndDelete<T: NSManagedObject>(forFetchRequest fetchRequest: NSFetchRequest<T>) {
-            func block() {
-                // Grab the objects; if there are none then we are done
-                let objects = try! self.fetch(fetchRequest)
-                guard objects.count != 0 else { return }
-
-                // Delete all and save
-                for object in objects {
-                    print("pre-delete object is fault: \(object.isFault)")
-                    self.delete(object)
-                    print("post-delete object is fault: \(object.isFault)")
-                }
-                try! self.save()
-                
-                // Clear the objects from memory
-                self.reset()
-                
-                // Call recursively...
-                self.perform(block)
-            }
-            
-            // Run the block, which calls itself until there is no work left to do
-            self.perform(block)
-        }
 }
 
 extension NSEntityMigrationPolicy {
