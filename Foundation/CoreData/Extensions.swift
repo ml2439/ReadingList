@@ -89,5 +89,13 @@ extension NSEntityMigrationPolicy {
             copyValue(oldObject: oldObject, newObject: newObject, key: key)
         }
     }
+}
 
+extension NSFetchedResultsController {
+    @objc func withoutUpdates(_ block: () -> ()) {
+        let delegate = self.delegate
+        self.delegate = nil
+        block()
+        self.delegate = delegate
+    }
 }
