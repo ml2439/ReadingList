@@ -78,14 +78,15 @@
         <relationship name="entitymapping" type="1/1" destination="XDDEVENTITYMAPPING" idrefs="z107"></relationship>
     </object>
     <object type="XDDEVENTITYMAPPING" id="z107">
+        <attribute name="migrationpolicyclassname" type="string">Reading_List.BookMapping_9_10</attribute>
         <attribute name="sourcename" type="string">Book</attribute>
         <attribute name="mappingtypename" type="string">Undefined</attribute>
         <attribute name="mappingnumber" type="int16">2</attribute>
         <attribute name="destinationname" type="string">Book</attribute>
         <attribute name="autogenerateexpression" type="bool">1</attribute>
         <relationship name="mappingmodel" type="1/1" destination="XDDEVMAPPINGMODEL" idrefs="z121"></relationship>
-        <relationship name="attributemappings" type="0/0" destination="XDDEVATTRIBUTEMAPPING" idrefs="z128 z102 z106 z112 z123 z108 z116 z126 z129 z110 z111 z127 z130 z120 z122"></relationship>
-        <relationship name="relationshipmappings" type="0/0" destination="XDDEVRELATIONSHIPMAPPING" idrefs="z113 z109 z124"></relationship>
+        <relationship name="attributemappings" type="0/0" destination="XDDEVATTRIBUTEMAPPING" idrefs="z127 z130 z102 z123 z126 z106 z108 z129 z110 z112 z116 z120 z111 z128 z122"></relationship>
+        <relationship name="relationshipmappings" type="0/0" destination="XDDEVRELATIONSHIPMAPPING" idrefs="z113 z124 z109"></relationship>
     </object>
     <object type="XDDEVATTRIBUTEMAPPING" id="z108">
         <attribute name="name" type="string">googleBooksId</attribute>
@@ -93,7 +94,7 @@
     </object>
     <object type="XDDEVRELATIONSHIPMAPPING" id="z109">
         <attribute name="valueexpressiondata" type="binary">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
-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
+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
 </attribute>
         <attribute name="autogenerateexpression" type="bool">0</attribute>
         <attribute name="name" type="string">authors</attribute>
@@ -104,6 +105,9 @@ FQcIExQZGiIoLS4xMjY7PD9DR0pLTVUkbnVsbNUJCgsMDQ4PEBESWU5TT3BlcmFuZF5OU1NlbGVjdG9y
         <relationship name="entitymapping" type="1/1" destination="XDDEVENTITYMAPPING" idrefs="z107"></relationship>
     </object>
     <object type="XDDEVATTRIBUTEMAPPING" id="z111">
+        <attribute name="valueexpressiondata" type="binary">YnBsaXN0MDDUAQIDBAUGSktYJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoK8Q
+EwcIExQZGiInLC0wMTU6Oz5CRkhVJG51bGzVCQoLDA0ODxAREllOU09wZXJhbmReTlNTZWxlY3Rvck5hbWVfEBBOU0V4cHJlc3Npb25UeXBlW05TQXJndW1lbnRzViRjbGFzc4ADgAIQBIAGgBJfEBdhdXRob3JEaXNwbGF5Rm9yU291cmNlOtMVCw0WFxhaTlNWYXJpYWJsZYAEEAKABVxlbnRpdHlQb2xpY3nSGxwdHlokY2xhc3NuYW1lWCRjbGFzc2VzXxAUTlNWYXJpYWJsZUV4cHJlc3Npb26jHyAhXxAUTlNWYXJpYWJsZUV4cHJlc3Npb25cTlNFeHByZXNzaW9uWE5TT2JqZWN00iMNJCZaTlMub2JqZWN0c6ElgAeAEdUJCgsMDSgpECorgAmACIALgBBfEBB2YWx1ZUZvcktleVBhdGg60xULDS4XGIAKgAVWc291cmNl0iMNMjShM4AMgA/TDQs2Nzg5WU5TS2V5UGF0aIAOEAqADV1hdXRob3JEaXNwbGF50hscPD1fEBxOU0tleVBhdGhTcGVjaWZpZXJFeHByZXNzaW9uozwgIdIbHD9AXk5TTXV0YWJsZUFycmF5oz9BIVdOU0FycmF50hscQ0RfEBNOU0tleVBhdGhFeHByZXNzaW9upENFICFfEBROU0Z1bmN0aW9uRXhwcmVzc2lvbtIbHEFHokEh0hscRUmjRSAhXxAPTlNLZXllZEFyY2hpdmVy0UxNVHJvb3SAAQAIABEAGgAjAC0AMgA3AE0AUwBeAGgAdwCKAJYAnQCfAKEAowClAKcAwQDIANMA1QDXANkA5gDrAPYA/wEWARoBMQE+AUcBTAFXAVkBWwFdAWgBagFsAW4BcAGDAYoBjAGOAZUBmgGcAZ4BoAGnAbEBswG1AbcBxQHKAekB7QHyAgECBQINAhICKAItAkQCSQJMAlECVQJnAmoCbwAAAAAAAAIBAAAAAAAAAE4AAAAAAAAAAAAAAAAAAAJx
+</attribute>
         <attribute name="name" type="string">authorDisplay</attribute>
         <relationship name="entitymapping" type="1/1" destination="XDDEVENTITYMAPPING" idrefs="z107"></relationship>
     </object>
@@ -180,6 +184,9 @@ cBIAAYagrxEC9QAHAAgAFwAzADQANQBDAEQARQBGAEcAYgBjAGQAagBrAHcAjQCOAI8AkACRAJIAkwCU
         <relationship name="entitymapping" type="1/1" destination="XDDEVENTITYMAPPING" idrefs="z105"></relationship>
     </object>
     <object type="XDDEVATTRIBUTEMAPPING" id="z126">
+        <attribute name="valueexpressiondata" type="binary">YnBsaXN0MDDUAQIDBAUGSktYJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoK8Q
+EwcIExQZGiInLC0wMTU6Oz5CRkhVJG51bGzVCQoLDA0ODxAREllOU09wZXJhbmReTlNTZWxlY3Rvck5hbWVfEBBOU0V4cHJlc3Npb25UeXBlW05TQXJndW1lbnRzViRjbGFzc4ADgAIQBIAGgBJfEBRhdXRob3JTb3J0Rm9yU291cmNlOtMVCw0WFxhaTlNWYXJpYWJsZYAEEAKABVxlbnRpdHlQb2xpY3nSGxwdHlokY2xhc3NuYW1lWCRjbGFzc2VzXxAUTlNWYXJpYWJsZUV4cHJlc3Npb26jHyAhXxAUTlNWYXJpYWJsZUV4cHJlc3Npb25cTlNFeHByZXNzaW9uWE5TT2JqZWN00iMNJCZaTlMub2JqZWN0c6ElgAeAEdUJCgsMDSgpECorgAmACIALgBBfEBB2YWx1ZUZvcktleVBhdGg60xULDS4XGIAKgAVWc291cmNl0iMNMjShM4AMgA/TDQs2Nzg5WU5TS2V5UGF0aIAOEAqADVphdXRob3JTb3J00hscPD1fEBxOU0tleVBhdGhTcGVjaWZpZXJFeHByZXNzaW9uozwgIdIbHD9AXk5TTXV0YWJsZUFycmF5oz9BIVdOU0FycmF50hscQ0RfEBNOU0tleVBhdGhFeHByZXNzaW9upENFICFfEBROU0Z1bmN0aW9uRXhwcmVzc2lvbtIbHEFHokEh0hscRUmjRSAhXxAPTlNLZXllZEFyY2hpdmVy0UxNVHJvb3SAAQAIABEAGgAjAC0AMgA3AE0AUwBeAGgAdwCKAJYAnQCfAKEAowClAKcAvgDFANAA0gDUANYA4wDoAPMA/AETARcBLgE7AUQBSQFUAVYBWAFaAWUBZwFpAWsBbQGAAYcBiQGLAZIBlwGZAZsBnQGkAa4BsAGyAbQBvwHEAeMB5wHsAfsB/wIHAgwCIgInAj4CQwJGAksCTwJhAmQCaQAAAAAAAAIBAAAAAAAAAE4AAAAAAAAAAAAAAAAAAAJr
+</attribute>
         <attribute name="name" type="string">authorSort</attribute>
         <relationship name="entitymapping" type="1/1" destination="XDDEVENTITYMAPPING" idrefs="z107"></relationship>
     </object>

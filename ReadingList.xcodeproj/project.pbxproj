@@ -362,12 +362,12 @@
 		1CD11250202DED5500BE3E1D /* Migrations */ = {
 			isa = PBXGroup;
 			children = (
+				1CD07235204A1F7D00DCFBDE /* BookMapping_9_10.xcmappingmodel */,
+				1CD07237204A201C00DCFBDE /* BookMapping_9_10.swift */,
 				1C75AEFD2042F3A800FB9456 /* BookMapping_8_9.xcmappingmodel */,
 				1C64AB212041E7E40089CD57 /* BookMapping_8_9.swift */,
 				1CD111F3202DA42800BE3E1D /* BookMapping_6_7.xcmappingmodel */,
 				49B8D8E61F4A08E700D4C4EF /* BookMapping_6_7.swift */,
-				1CD07235204A1F7D00DCFBDE /* BookMapping_9_10.xcmappingmodel */,
-				1CD07237204A201C00DCFBDE /* BookMapping_9_10.swift */,
 			);
 			path = Migrations;
 			sourceTree = "<group>";
