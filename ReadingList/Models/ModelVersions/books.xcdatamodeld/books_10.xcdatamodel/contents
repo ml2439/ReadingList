@@ -10,7 +10,6 @@
         <attribute name="authorSort" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="bookDescription" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="coverImage" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
-        <attribute name="createdWhen" attributeType="Date" defaultDateTimeInterval="504921600" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="currentPage" optional="YES" attributeType="Integer 32" minValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="finishedReading" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="googleBooksId" optional="YES" attributeType="String" syncable="YES"/>
@@ -67,7 +66,7 @@
     </entity>
     <elements>
         <element name="Author" positionX="-54" positionY="108" width="128" height="90"/>
-        <element name="Book" positionX="-63" positionY="-18" width="128" height="330"/>
+        <element name="Book" positionX="-63" positionY="-18" width="128" height="315"/>
         <element name="List" positionX="-54" positionY="117" width="128" height="75"/>
         <element name="Subject" positionX="-63" positionY="90" width="128" height="75"/>
     </elements>

@@ -41,7 +41,6 @@ class Book: NSManagedObject {
     @NSManaged var notes: String?
     @NSManaged var currentPage: NSNumber?
     @NSManaged var sort: NSNumber?
-    @NSManaged var createdWhen: Date
 
     @NSManaged var subjects: Set<Subject>
     @NSManaged var lists: Set<List>
