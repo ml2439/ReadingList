@@ -112,8 +112,8 @@ class DataVC: UITableViewController, UIDocumentPickerDelegate, UIDocumentMenuDel
         
         // The CONFIRM DELETE action:
         let confirmDelete = UIAlertController(title: "Final Warning", message: "This action is irreversible. Are you sure you want to continue?", preferredStyle: .alert)
-        confirmDelete.addAction(UIAlertAction(title: "Delete", style: .destructive) { [unowned self] _ in
-            self.deleteAll()
+        confirmDelete.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
+            PersistentStoreManager.deleteAll()
             UserEngagement.logEvent(.deleteAllData)
         })
         confirmDelete.addAction(UIAlertAction(title: "Cancel", style: .cancel))
@@ -127,22 +127,6 @@ class DataVC: UITableViewController, UIDocumentPickerDelegate, UIDocumentMenuDel
         
         present(areYouSure, animated: true)
     }
-    
-    func deleteAll() {
-    
-        let deleteContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-        deleteContext.parent = PersistentStoreManager.container.viewContext
-        deleteContext.automaticallyMergesChangesFromParent = true
-        
-        let batchDeleteLists = NSBatchDeleteRequest(fetchRequest: List.fetchRequest())
-        try! PersistentStoreManager.container.persistentStoreCoordinator.execute(batchDeleteLists, with: deleteContext)
-        let batchDeleteBooks = NSBatchDeleteRequest(fetchRequest: Book.fetchRequest())
-        try! PersistentStoreManager.container.persistentStoreCoordinator.execute(batchDeleteBooks, with: deleteContext)
-        
-        NotificationCenter.default.post(name: Notification.Name.PersistentStoreBatchOperationOccurred, object: nil)
-    }
 }
 
-extension Notification.Name {
-    static let PersistentStoreBatchOperationOccurred = Notification.Name("persistent-store-batch-operation-occurred")
-}
+

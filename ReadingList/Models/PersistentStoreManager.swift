@@ -47,4 +47,22 @@ class PersistentStoreManager {
             }
         }
     }
+    
+    /**
+     Deletes all data from the persistent store.
+    */
+    static func deleteAll() {
+        let batchDeleteLists = NSBatchDeleteRequest(fetchRequest: List.fetchRequest())
+        try! PersistentStoreManager.container.persistentStoreCoordinator.execute(batchDeleteLists, with: container.viewContext)
+        let batchDeleteSubjects = NSBatchDeleteRequest(fetchRequest: Subject.fetchRequest())
+        try! PersistentStoreManager.container.persistentStoreCoordinator.execute(batchDeleteSubjects, with: container.viewContext)
+        let batchDeleteBooks = NSBatchDeleteRequest(fetchRequest: Book.fetchRequest())
+        try! PersistentStoreManager.container.persistentStoreCoordinator.execute(batchDeleteBooks, with: container.viewContext)
+        
+        NotificationCenter.default.post(name: Notification.Name.PersistentStoreBatchOperationOccurred, object: nil)
+    }
+}
+
+extension Notification.Name {
+    static let PersistentStoreBatchOperationOccurred = Notification.Name("persistent-store-batch-operation-occurred")
 }
