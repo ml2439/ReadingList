@@ -15,6 +15,8 @@ class DataVC: UITableViewController, UIDocumentPickerDelegate, UIDocumentMenuDel
             exportData()
         case (DataVC.importIndexPath.section, DataVC.importIndexPath.row):
             requestImport()
+        case (2, 0):
+            deleteAllData()
         default:
             break
         }
@@ -56,7 +58,7 @@ class DataVC: UITableViewController, UIDocumentPickerDelegate, UIDocumentMenuDel
         SVProgressHUD.show(withStatus: "Generating...")
         
         let listNames = List.names(fromContext: PersistentStoreManager.container.viewContext)
-        let exporter = CsvExporter(csvExport: Book.BuildCsvExport(withLists: listNames))
+        let exporter = CsvExporter(csvExport: BookCSVExport.build(withLists: listNames))
         
         let exportAll = NSManagedObject.fetchRequest(Book.self)
         exportAll.sortDescriptors = [NSSortDescriptor(\Book.readState), NSSortDescriptor(\Book.sort), NSSortDescriptor(\Book.startedReading), NSSortDescriptor(\Book.finishedReading)]
@@ -84,7 +86,6 @@ class DataVC: UITableViewController, UIDocumentPickerDelegate, UIDocumentMenuDel
                 return
             }
 
-            
             // Present a dialog with the resulting file
             let activityViewController = UIActivityViewController(activityItems: [temporaryFilePath], applicationActivities: [])
             activityViewController.excludedActivityTypes = [
@@ -106,4 +107,42 @@ class DataVC: UITableViewController, UIDocumentPickerDelegate, UIDocumentMenuDel
             }
         }
     }
+    
+    func deleteAllData() {
+        
+        // The CONFIRM DELETE action:
+        let confirmDelete = UIAlertController(title: "Final Warning", message: "This action is irreversible. Are you sure you want to continue?", preferredStyle: .alert)
+        confirmDelete.addAction(UIAlertAction(title: "Delete", style: .destructive) { [unowned self] _ in
+            self.deleteAll()
+            UserEngagement.logEvent(.deleteAllData)
+        })
+        confirmDelete.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        
+        // The initial WARNING action
+        let areYouSure = UIAlertController(title: "Warning", message: "This will delete all books saved in the application. Are you sure you want to continue?", preferredStyle: .alert)
+        areYouSure.addAction(UIAlertAction(title: "Delete", style: .destructive) { [unowned self] _ in
+            self.present(confirmDelete, animated: true)
+        })
+        areYouSure.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        
+        present(areYouSure, animated: true)
+    }
+    
+    func deleteAll() {
+    
+        let deleteContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+        deleteContext.parent = PersistentStoreManager.container.viewContext
+        deleteContext.automaticallyMergesChangesFromParent = true
+        
+        let batchDeleteLists = NSBatchDeleteRequest(fetchRequest: List.fetchRequest())
+        try! PersistentStoreManager.container.persistentStoreCoordinator.execute(batchDeleteLists, with: deleteContext)
+        let batchDeleteBooks = NSBatchDeleteRequest(fetchRequest: Book.fetchRequest())
+        try! PersistentStoreManager.container.persistentStoreCoordinator.execute(batchDeleteBooks, with: deleteContext)
+        
+        NotificationCenter.default.post(name: Notification.Name.PersistentStoreBatchOperationOccurred, object: nil)
+    }
+}
+
+extension Notification.Name {
+    static let PersistentStoreBatchOperationOccurred = Notification.Name("persistent-store-batch-operation-occurred")
 }

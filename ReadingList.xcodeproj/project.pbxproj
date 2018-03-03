@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		1B3A0A6607176238CCDDD3DB /* Pods_ReadingList_ReadingList_UITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B81008C39ED366477C5FF2C2 /* Pods_ReadingList_ReadingList_UITests.framework */; };
+		1C0DC734204B09610044B377 /* BookCSVExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0DC733204B09610044B377 /* BookCSVExport.swift */; };
+		1C0DC736204B0A230044B377 /* BookReadState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0DC735204B0A230044B377 /* BookReadState.swift */; };
 		1C1C887F1FE05A9D00A20402 /* Tip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C1C887E1FE05A9D00A20402 /* Tip.swift */; };
 		1C22D4A6202BBDC0004264B4 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C22D4A5202BBDC0004264B4 /* StoreKit.framework */; };
 		1C395448202F7966007ACCB1 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C395447202F7966007ACCB1 /* Extensions.swift */; };
@@ -35,6 +37,8 @@
 		1CAE41B9204597BE002AF7DF /* SearchResultCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CAE41B8204597BE002AF7DF /* SearchResultCell.swift */; };
 		1CAE41BB204597EB002AF7DF /* SearchBooksEmptyDataSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CAE41BA204597EB002AF7DF /* SearchBooksEmptyDataSet.swift */; };
 		1CC18FA51FA4AC02000FB7E5 /* SettingsHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1CC18FA41FA4AC02000FB7E5 /* SettingsHeader.xib */; };
+		1CD07236204A1F7D00DCFBDE /* BookMapping_9_10.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 1CD07235204A1F7D00DCFBDE /* BookMapping_9_10.xcmappingmodel */; };
+		1CD07238204A201C00DCFBDE /* BookMapping_9_10.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD07237204A201C00DCFBDE /* BookMapping_9_10.swift */; };
 		1CD111F9202DA42800BE3E1D /* BookMapping_6_7.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 1CD111F3202DA42800BE3E1D /* BookMapping_6_7.xcmappingmodel */; };
 		1CD11200202DA47C00BE3E1D /* Isbn13.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD111FF202DA47B00BE3E1D /* Isbn13.swift */; };
 		1CD11213202DD2DC00BE3E1D /* GoogleBooksFetchResult.json in Resources */ = {isa = PBXBuildFile; fileRef = 1CD1120F202DD2DC00BE3E1D /* GoogleBooksFetchResult.json */; };
@@ -127,6 +131,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1C0DC733204B09610044B377 /* BookCSVExport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookCSVExport.swift; sourceTree = "<group>"; };
+		1C0DC735204B0A230044B377 /* BookReadState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookReadState.swift; sourceTree = "<group>"; };
 		1C1C887E1FE05A9D00A20402 /* Tip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tip.swift; sourceTree = "<group>"; };
 		1C22D4A5202BBDC0004264B4 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		1C395447202F7966007ACCB1 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
@@ -158,6 +164,9 @@
 		1CAE41B8204597BE002AF7DF /* SearchResultCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultCell.swift; sourceTree = "<group>"; };
 		1CAE41BA204597EB002AF7DF /* SearchBooksEmptyDataSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBooksEmptyDataSet.swift; sourceTree = "<group>"; };
 		1CC18FA41FA4AC02000FB7E5 /* SettingsHeader.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SettingsHeader.xib; sourceTree = "<group>"; };
+		1CD072342048BA7E00DCFBDE /* books_10.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = books_10.xcdatamodel; sourceTree = "<group>"; };
+		1CD07235204A1F7D00DCFBDE /* BookMapping_9_10.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = BookMapping_9_10.xcmappingmodel; sourceTree = "<group>"; };
+		1CD07237204A201C00DCFBDE /* BookMapping_9_10.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookMapping_9_10.swift; sourceTree = "<group>"; };
 		1CD111F3202DA42800BE3E1D /* BookMapping_6_7.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = BookMapping_6_7.xcmappingmodel; sourceTree = "<group>"; };
 		1CD111FF202DA47B00BE3E1D /* Isbn13.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Isbn13.swift; sourceTree = "<group>"; };
 		1CD11205202DD29500BE3E1D /* ReadingList_UnitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ReadingList_UnitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -357,6 +366,8 @@
 		1CD11250202DED5500BE3E1D /* Migrations */ = {
 			isa = PBXGroup;
 			children = (
+				1CD07235204A1F7D00DCFBDE /* BookMapping_9_10.xcmappingmodel */,
+				1CD07237204A201C00DCFBDE /* BookMapping_9_10.swift */,
 				1C75AEFD2042F3A800FB9456 /* BookMapping_8_9.xcmappingmodel */,
 				1C64AB212041E7E40089CD57 /* BookMapping_8_9.swift */,
 				1CD111F3202DA42800BE3E1D /* BookMapping_6_7.xcmappingmodel */,
@@ -443,6 +454,7 @@
 				4937A1471E9E1FB900A3B0D1 /* DebugSettings.swift */,
 				49D0FAAA1F2B284000101EE1 /* UserEngagement.swift */,
 				49B8D8E01F499A5300D4C4EF /* UserSettings.swift */,
+				1C0DC733204B09610044B377 /* BookCSVExport.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -487,6 +499,7 @@
 				1CD1124E202DED3600BE3E1D /* Author.swift */,
 				1CD11251202DED8200BE3E1D /* List.swift */,
 				1C395449202F948B007ACCB1 /* Subject.swift */,
+				1C0DC735204B0A230044B377 /* BookReadState.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1056,6 +1069,7 @@
 				1C66927B20343D63001ED046 /* EditBookReadState.swift in Sources */,
 				1CAE41BB204597EB002AF7DF /* SearchBooksEmptyDataSet.swift in Sources */,
 				4973C79F1E901A6A001CFABC /* CommonUIElements.swift in Sources */,
+				1C0DC734204B09610044B377 /* BookCSVExport.swift in Sources */,
 				1C39544A202F948B007ACCB1 /* Subject.swift in Sources */,
 				1CD1D2C2202BCCF400ACA5D9 /* NavigationBarLabel.swift in Sources */,
 				4994706C1DB421A2008CB06E /* FinishedTable.swift in Sources */,
@@ -1073,9 +1087,11 @@
 				1CD1125E202DF7F000BE3E1D /* BooksModelVersions.swift in Sources */,
 				1C3954502030D3CB007ACCB1 /* EurekaExtensions.swift in Sources */,
 				1C39544C202F9698007ACCB1 /* UserSetting.swift in Sources */,
+				1CD07236204A1F7D00DCFBDE /* BookMapping_9_10.xcmappingmodel in Sources */,
 				49B8D8E11F499A5300D4C4EF /* UserSettings.swift in Sources */,
 				495C5D101BF1404D00E00C07 /* AppDelegate.swift in Sources */,
 				1C87F5BC1FAE582A00E44043 /* Data.swift in Sources */,
+				1CD07238204A201C00DCFBDE /* BookMapping_9_10.swift in Sources */,
 				1CFCD01C20150DAA00D27301 /* ListBookTable.swift in Sources */,
 				1C75AEFC2042F38600FB9456 /* books.xcdatamodeld in Sources */,
 				1CD11254202DF23300BE3E1D /* ModelVersion.swift in Sources */,
@@ -1110,6 +1126,7 @@
 				1CD1D2BA202BCAA500ACA5D9 /* NoCancelSearchBar.swift in Sources */,
 				1CD1D2C4202BCD6300ACA5D9 /* ClearToWhiteHorizontalGradientView.swift in Sources */,
 				1C87F5BA1FAE4AF500E44043 /* General.swift in Sources */,
+				1C0DC736204B0A230044B377 /* BookReadState.swift in Sources */,
 				1CD1124F202DED3600BE3E1D /* Author.swift in Sources */,
 				491F14621C02228C0052B355 /* ScanBarcode.swift in Sources */,
 				1C395448202F7966007ACCB1 /* Extensions.swift in Sources */,
@@ -1491,13 +1508,14 @@
 		1C75AEF62042F38600FB9456 /* books.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				1CD072342048BA7E00DCFBDE /* books_10.xcdatamodel */,
 				1C75AEF72042F38600FB9456 /* books_5.xcdatamodel */,
 				1C75AEF82042F38600FB9456 /* books_9.xcdatamodel */,
 				1C75AEF92042F38600FB9456 /* books_6.xcdatamodel */,
 				1C75AEFA2042F38600FB9456 /* books_8.xcdatamodel */,
 				1C75AEFB2042F38600FB9456 /* books_7.xcdatamodel */,
 			);
-			currentVersion = 1C75AEF82042F38600FB9456 /* books_9.xcdatamodel */;
+			currentVersion = 1CD072342048BA7E00DCFBDE /* books_10.xcdatamodel */;
 			path = books.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

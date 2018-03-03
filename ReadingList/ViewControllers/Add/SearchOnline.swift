@@ -258,7 +258,7 @@ class SearchOnline: UITableViewController {
         
         // On completion, dismiss this view (or show an error if they all failed)
         fetches.notify(queue: .main) { [weak self] in
-            context.saveIfChanged()
+            try! context.save()
             SVProgressHUD.dismiss()
             
             self?.presentingViewController!.dismiss(animated: true) {

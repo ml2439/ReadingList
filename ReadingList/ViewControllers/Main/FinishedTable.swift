@@ -4,7 +4,6 @@ class FinishedTable: BookTable {
     
     override func viewDidLoad() {
         readStates = [.finished]
-        navigationItemTitle = "Finished"
         super.viewDidLoad()
     }
     

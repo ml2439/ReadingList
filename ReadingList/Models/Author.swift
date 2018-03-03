@@ -19,4 +19,14 @@ public class Author: NSManagedObject {
         self.lastName = lastName
         self.firstNames = firstNames
     }
+    
+    static func authorSort(_ authors: [Author]) -> String {
+        return authors.map {
+            [$0.lastName, $0.firstNames].flatMap{$0?.sortable}.joined(separator: ".")
+        }.joined(separator: "..")
+    }
+    
+    static func authorDisplay(_ authors: [Author]) -> String {
+        return authors.map{$0.displayFirstLast}.joined(separator: ", ")
+    }
 }

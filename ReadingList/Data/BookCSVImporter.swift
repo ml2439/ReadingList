@@ -38,7 +38,7 @@ fileprivate class BookCSVParserDelegate: CSVParserDelegate {
         if !headers.contains("Title") || !headers.contains("Authors") {
             return false
         }
-        listNames = headers.filter{!Book.BuildCsvExport().headers().contains($0)}
+        listNames = headers.filter{!BookCSVExport.headers.contains($0)}
         return true
     }
     
@@ -47,7 +47,7 @@ fileprivate class BookCSVParserDelegate: CSVParserDelegate {
         guard let authors = values["Authors"] else { return nil }
         let book = Book(context: self.context, readState: .toRead)
         book.title = title
-        book.authors = NSOrderedSet(array: createAuthors(authors))
+        book.setAuthors(createAuthors(authors))
         book.googleBooksId = values["Google Books ID"]
         book.isbn13 = ISBN13(values["ISBN-13"])?.string
         book.pageCount = Int(values["Page Count"])?.nsNumber
@@ -93,14 +93,16 @@ fileprivate class BookCSVParserDelegate: CSVParserDelegate {
         dispatchGroup.enter()
         GoogleBooks.getCover(googleBooksId: googleID) { [unowned self] result in
             self.context.perform {
-                guard let data = result.value else { return }
-                book.coverImage = data
+                if let data = result.value {
+                    book.coverImage = data
+                }
                 self.dispatchGroup.leave()
             }
         }
     }
     
     func lineParseSuccess(_ values: [String: String]){
+        // FUTURE: Batch save
         context.performAndWait { [unowned self] in
             // Check for duplicates
             guard Book.get(fromContext: self.context, googleBooksId: values["Google Books ID"], isbn: values["ISBN-13"]) == nil else {
@@ -162,7 +164,7 @@ fileprivate class BookCSVParserDelegate: CSVParserDelegate {
         dispatchGroup.notify(queue: .main) {
             self.context.performAndWait {
                 self.populateLists()
-                self.context.saveIfChanged()
+                try! self.context.save()
             }
             self.onCompletion(BookCSVImportResults(success: self.successCount, error: self.invalidCount, duplicate: self.duplicateCount))
         }

@@ -59,6 +59,7 @@ class Debug: FormViewController {
 
     static func loadTestData(withLists: Bool = true) {
         PersistentStoreManager.container.newBackgroundContext().performAndSaveAndWait {
+            // TODO: more efficient delete
             (try! $0.fetch(NSManagedObject.fetchRequest(Book.self, batch: 100))).forEach{$0.delete()}
             (try! $0.fetch(NSManagedObject.fetchRequest(List.self, batch: 100))).forEach{$0.delete()}
             $0.saveIfChanged()

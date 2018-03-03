@@ -22,6 +22,13 @@ class Organise: UITableViewController {
         resultsController.delegate = tableView
         
         navigationItem.leftBarButtonItem = editButtonItem
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(refetch), name: NSNotification.Name.PersistentStoreBatchOperationOccurred, object: nil)
+    }
+    
+    @objc func refetch() {
+        try! self.resultsController.performFetch()
+        self.tableView.reloadData()
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
