@@ -93,8 +93,9 @@ fileprivate class BookCSVParserDelegate: CSVParserDelegate {
         dispatchGroup.enter()
         GoogleBooks.getCover(googleBooksId: googleID) { [unowned self] result in
             self.context.perform {
-                guard let data = result.value else { return }
-                book.coverImage = data
+                if let data = result.value {
+                    book.coverImage = data
+                }
                 self.dispatchGroup.leave()
             }
         }
