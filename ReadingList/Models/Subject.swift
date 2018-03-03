@@ -4,8 +4,8 @@ import CoreData
 // FUTURE: rename to "tag"?
 @objc(Subject)
 class Subject: NSManagedObject {
-    @NSManaged public var name: String
-    @NSManaged public var books: Set<Book>
+    @NSManaged var name: String
+    @NSManaged private(set) var books: Set<Book>
     
     convenience init(context: NSManagedObjectContext, name: String) {
         self.init(context: context)

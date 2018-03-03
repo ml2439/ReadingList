@@ -58,7 +58,7 @@ class DataVC: UITableViewController, UIDocumentPickerDelegate, UIDocumentMenuDel
         SVProgressHUD.show(withStatus: "Generating...")
         
         let listNames = List.names(fromContext: PersistentStoreManager.container.viewContext)
-        let exporter = CsvExporter(csvExport: Book.BuildCsvExport(withLists: listNames))
+        let exporter = CsvExporter(csvExport: BookCSVExport.build(withLists: listNames))
         
         let exportAll = NSManagedObject.fetchRequest(Book.self)
         exportAll.sortDescriptors = [NSSortDescriptor(\Book.readState), NSSortDescriptor(\Book.sort), NSSortDescriptor(\Book.startedReading), NSSortDescriptor(\Book.finishedReading)]
@@ -86,7 +86,6 @@ class DataVC: UITableViewController, UIDocumentPickerDelegate, UIDocumentMenuDel
                 return
             }
 
-            
             // Present a dialog with the resulting file
             let activityViewController = UIActivityViewController(activityItems: [temporaryFilePath], applicationActivities: [])
             activityViewController.excludedActivityTypes = [

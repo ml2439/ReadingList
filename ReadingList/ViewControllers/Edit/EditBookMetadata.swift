@@ -262,7 +262,7 @@ class AuthorSection: MultivaluedSection {
             return
         }
         currentAuthors.forEach{$0.delete()}
-        book.authors = NSOrderedSet(array: newAuthors.map{Author(context: book.managedObjectContext!, lastName: $0.0, firstNames: $0.1)})
+        book.setAuthors(newAuthors.map{Author(context: book.managedObjectContext!, lastName: $0.0, firstNames: $0.1)})
     }
     
     override func rowsHaveBeenRemoved(_ rows: [BaseRow], at: IndexSet) {
