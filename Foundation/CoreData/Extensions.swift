@@ -13,9 +13,10 @@ extension NSManagedObject {
     }
     
     static func fetchRequest<T: NSManagedObject>(_ type: T.Type, limit: Int? = nil, batch: Int? = nil) -> NSFetchRequest<T> {
-        // Apple bug: the following line does not work when run from a test target
+        // Apple bug: the following lines do not work when run from a test target
         // let fetchRequest = T.fetchRequest() as! NSFetchRequest<T>
-        let fetchRequest = NSFetchRequest<T>(entityName: type.entity().managedObjectClassName)
+        // let fetchRequest = NSFetchRequest<T>(entityName: type.entity().managedObjectClassName)
+        let fetchRequest = NSFetchRequest<T>(entityName: String(describing: type))
         if let limit = limit { fetchRequest.fetchLimit = limit }
         if let batch = batch { fetchRequest.fetchBatchSize = batch }
         return fetchRequest
