@@ -140,13 +140,12 @@ class EditBookMetadata: FormViewController {
         let confirmDeleteAlert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         confirmDeleteAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         confirmDeleteAlert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [unowned self] _ in
-            // Dismiss this modal view, delete the book, and log the event
-            self.dismiss(animated: true) {
-                self.book.managedObjectContext!.performAndSave {
-                    self.book.delete()
-                }
-                UserEngagement.logEvent(.deleteBook)
+            // Delete the book, log the event, and dismiss this modal view
+            self.editBookContext.performAndSave {
+                self.book.delete()
             }
+            UserEngagement.logEvent(.deleteBook)
+            self.dismiss(animated: true)
         })
 
         self.present(confirmDeleteAlert, animated: true, completion: nil)
@@ -170,7 +169,9 @@ class EditBookMetadata: FormViewController {
                 return
             }
             self.book.populate(fromFetchResult: fetchResultPage.result.value!)
+            self.editBookContext.saveIfChanged()
             self.dismiss(animated: true) {
+                // FUTURE: Would be nice to display whether any changes were made
                 SVProgressHUD.showInfo(withStatus: "Book updated")
             }
         }
@@ -261,7 +262,7 @@ class AuthorSection: MultivaluedSection {
             return
         }
         currentAuthors.forEach{$0.delete()}
-        book.authors = NSOrderedSet(array: newAuthors.map{Author(context: book.managedObjectContext!, lastName: $0.0, firstNames: $0.1)})
+        book.setAuthors(newAuthors.map{Author(context: book.managedObjectContext!, lastName: $0.0, firstNames: $0.1)})
     }
     
     override func rowsHaveBeenRemoved(_ rows: [BaseRow], at: IndexSet) {

@@ -13,7 +13,10 @@ extension NSManagedObject {
     }
     
     static func fetchRequest<T: NSManagedObject>(_ type: T.Type, limit: Int? = nil, batch: Int? = nil) -> NSFetchRequest<T> {
-        let fetchRequest = T.fetchRequest() as! NSFetchRequest<T>
+        // Apple bug: the following lines do not work when run from a test target
+        // let fetchRequest = T.fetchRequest() as! NSFetchRequest<T>
+        // let fetchRequest = NSFetchRequest<T>(entityName: type.entity().managedObjectClassName)
+        let fetchRequest = NSFetchRequest<T>(entityName: String(describing: type))
         if let limit = limit { fetchRequest.fetchLimit = limit }
         if let batch = batch { fetchRequest.fetchBatchSize = batch }
         return fetchRequest
@@ -37,7 +40,7 @@ extension NSManagedObjectContext {
     
     @objc private func mergeAndSave(fromChildContextDidSave notification: Notification) {
         self.mergeChanges(fromContextDidSave: notification)
-        self.saveIfChanged()
+        try! self.save()
     }
     
     /**
@@ -50,10 +53,11 @@ extension NSManagedObjectContext {
     /**
      Saves if changes are present in the context. If an error occurs, throws a fatalError.
     */
-    func saveIfChanged() {
-        guard hasChanges else { return }
+    @discardableResult func saveIfChanged() -> Bool {
+        guard hasChanges else { return false }
         do {
             try save()
+            return true
         }
         catch {
             fatalError(error.localizedDescription)
@@ -63,14 +67,14 @@ extension NSManagedObjectContext {
     func performAndSave(block: @escaping () -> ()) {
         perform { [unowned self] in
             block()
-            self.saveIfChanged()
+            try! self.save()
         }
     }
     
     func performAndSaveAndWait(block: @escaping (_ context: NSManagedObjectContext) -> ()) {
         performAndWait { [unowned self] in
             block(self)
-            self.saveIfChanged()
+            try! self.save()
         }
     }
 }
@@ -86,5 +90,13 @@ extension NSEntityMigrationPolicy {
             copyValue(oldObject: oldObject, newObject: newObject, key: key)
         }
     }
+}
 
+extension NSFetchedResultsController {
+    @objc func withoutUpdates(_ block: () -> ()) {
+        let delegate = self.delegate
+        self.delegate = nil
+        block()
+        self.delegate = delegate
+    }
 }

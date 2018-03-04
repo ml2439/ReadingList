@@ -23,9 +23,7 @@ class PersistentStoreManager {
         container = NSPersistentContainer(name: storeName, manuallyMigratedStoreAt: storeLocation)
         container.migrateAndLoad(BooksModelVersion.self) {
             self.container.viewContext.automaticallyMergesChangesFromParent = true
-            DispatchQueue.main.async {
-                completion()
-            }
+            completion()
         }
     }
     
@@ -49,4 +47,27 @@ class PersistentStoreManager {
             }
         }
     }
+    
+    /**
+     Deletes all objects of the given type
+    */
+    static func delete<T>(type: T.Type) where T: NSManagedObject {
+        print("Deleting all \(String(describing: type)) objects")
+        let batchDelete = NSBatchDeleteRequest(fetchRequest: type.fetchRequest())
+        try! PersistentStoreManager.container.persistentStoreCoordinator.execute(batchDelete, with: container.viewContext)
+    }
+    
+    /**
+     Deletes all data from the persistent store.
+    */
+    static func deleteAll() {
+        delete(type: List.self)
+        delete(type: Subject.self)
+        delete(type: Book.self)
+        NotificationCenter.default.post(name: Notification.Name.PersistentStoreBatchOperationOccurred, object: nil)
+    }
+}
+
+extension Notification.Name {
+    static let PersistentStoreBatchOperationOccurred = Notification.Name("persistent-store-batch-operation-occurred")
 }

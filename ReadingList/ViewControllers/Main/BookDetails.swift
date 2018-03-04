@@ -245,6 +245,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         else {
             book.finishReading()
         }
+        try! book.managedObjectContext!.save()
 
         UserEngagement.logEvent(.transitionReadState)
         UserEngagement.onReviewTrigger()

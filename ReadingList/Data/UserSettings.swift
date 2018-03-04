@@ -40,8 +40,8 @@ class UserSettings {
     
     private static let SortOrders = [TableSortOrder.byDate: [NSSortDescriptor(\Book.readState),
                                                              NSSortDescriptor(\Book.sort),
-                                                             NSSortDescriptor(\Book.finishedReading),
-                                                             NSSortDescriptor(\Book.startedReading)],
+                                                             NSSortDescriptor(\Book.finishedReading, ascending: false),
+                                                             NSSortDescriptor(\Book.startedReading, ascending: false)],
                                      TableSortOrder.byTitle: [NSSortDescriptor(\Book.readState),
                                                               NSSortDescriptor(\Book.title)],
                                      TableSortOrder.byAuthor: [NSSortDescriptor(\Book.readState),

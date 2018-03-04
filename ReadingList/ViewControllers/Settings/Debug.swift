@@ -15,7 +15,10 @@ class Debug: FormViewController {
             <<< ButtonRow() {
                 $0.title = "Import Test Data"
                 $0.onCellSelection { _,_ in
-                    Debug.loadTestData()
+                    SVProgressHUD.show(withStatus: "Loading Data...")
+                    DebugSettings.loadTestData{
+                        SVProgressHUD.dismiss()
+                    }
                 }
             }
         
@@ -55,24 +58,7 @@ class Debug: FormViewController {
                     DebugSettings.showSortNumber = $0.value ?? false
                 }
         }
-    }
-
-    static func loadTestData(withLists: Bool = true) {
-        PersistentStoreManager.container.newBackgroundContext().performAndSaveAndWait {
-            (try! $0.fetch(NSManagedObject.fetchRequest(Book.self, batch: 100))).forEach{$0.delete()}
-            (try! $0.fetch(NSManagedObject.fetchRequest(List.self, batch: 100))).forEach{$0.delete()}
-            $0.saveIfChanged()
-        }
-        
-        let csvPath = Bundle.main.url(forResource: "examplebooks", withExtension: "csv")!
-        
-        SVProgressHUD.show(withStatus: "Loading Data...")
-        BookCSVImporter().startImport(fromFileAt: csvPath) { _ in
-            DispatchQueue.main.async {
-                SVProgressHUD.dismiss()
-            }
-        }
-    }    
+    } 
 }
 
 #endif

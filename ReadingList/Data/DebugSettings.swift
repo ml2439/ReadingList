@@ -46,19 +46,8 @@ enum QuickActionSimulation: Int {
     }
 }
 
-// FUTURE: Move to using command line switches?
+// FUTURE: Move all to using command line switches?
 class DebugSettings {
-    
-    static func initialiseFromCommandLine() {
-        let includeLists = !CommandLine.arguments.contains("--UITests_DeleteLists")
-        if CommandLine.arguments.contains("--UITests_PopulateData") {
-            Debug.loadTestData(withLists: includeLists)
-        }
-        if CommandLine.arguments.contains("--UITests_PrettyStatusBar") {
-            SDStatusBarManager.sharedInstance().enableOverrides()
-        }
-        DebugSettings.useFixedBarcodeScanImage = CommandLine.arguments.contains("--UITests_FixedBarcodeScanImage")
-    }
     
     private static let useFixedBarcodeScanImageKey = "useFixedBarcodeScanImage"
     

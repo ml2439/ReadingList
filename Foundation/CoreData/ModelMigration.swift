@@ -31,12 +31,10 @@ extension NSPersistentContainer {
      When migrated, loads the persistent store; when complete calls the callback.
     */
     public func migrateAndLoad<Version: ModelVersion>(_ version: Version.Type, completion: @escaping () -> ()) {
-        DispatchQueue.global(qos: .userInteractive).async {
-            self.migrateStoreIfRequired(version)
-            self.loadPersistentStores { _, error in
-                guard error == nil else { fatalError("Error loading store") }
-                completion()
-            }
+        self.migrateStoreIfRequired(version)
+        self.loadPersistentStores { _, error in
+            guard error == nil else { fatalError("Error loading store") }
+            completion()
         }
     }
     
@@ -57,7 +55,7 @@ extension NSPersistentContainer {
         var currentURL = storeURL
         for step in migrationSteps {
             let destinationURL = URL.temporary()
-            
+
             let manager = NSMigrationManager(sourceModel: step.source, destinationModel: step.destination)
             try! manager.migrateStore(from: currentURL, sourceType: NSSQLiteStoreType, options: nil, with: step.mapping, toDestinationURL: destinationURL, destinationType: NSSQLiteStoreType, destinationOptions: nil)
             

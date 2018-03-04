@@ -20,20 +20,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         setupSvProgressHud()
         completeStoreTransactions()
-
-        #if DEBUG
-        DebugSettings.initialiseFromCommandLine()
-        #endif
+        
+        let shortcutItem = launchOptions?[UIApplicationLaunchOptionsKey.shortcutItem] as? UIApplicationShortcutItem
 
         // Initialise the persistent store on a background thread. The main thread will return and the LaunchScreen
         // storyboard will remain in place until this is completed, at which point the Main storyboard will be instantiated.
-        DispatchQueue.global(qos: .userInitiated).async { [unowned self] in
+        DispatchQueue.global(qos: .userInteractive).async { [unowned self] in
             PersistentStoreManager.initalisePersistentStore {
-                self.window!.rootViewController = Storyboard.Main.instantiateRoot()
+                DispatchQueue.main.async {
+                    #if DEBUG
+                        DebugSettings.initialiseFromCommandLine()
+                    #endif
+                    self.window!.rootViewController = Storyboard.Main.instantiateRoot()
+                    
+                    // Only perform the quick action once the app is loaded
+                    if let shortcutItem = shortcutItem {
+                        self.performQuickAction(QuickAction(rawValue: shortcutItem.type)!)
+                    }
+                }
             }
         }
-
-        return true
+        
+        // If there was a QuickAction, it is handled here, so prevent application:performAction from being called
+        return shortcutItem == nil
     }
     
     func setupSvProgressHud() {

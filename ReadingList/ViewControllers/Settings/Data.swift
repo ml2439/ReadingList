@@ -15,6 +15,8 @@ class DataVC: UITableViewController, UIDocumentPickerDelegate, UIDocumentMenuDel
             exportData()
         case (DataVC.importIndexPath.section, DataVC.importIndexPath.row):
             requestImport()
+        case (2, 0):
+            deleteAllData()
         default:
             break
         }
@@ -51,7 +53,7 @@ class DataVC: UITableViewController, UIDocumentPickerDelegate, UIDocumentMenuDel
         SVProgressHUD.show(withStatus: "Importing")
         UserEngagement.logEvent(.csvImport)
         
-        BookCSVImporter().startImport(fromFileAt: Bundle.main.url(forResource: "examplebooks", withExtension: "csv")!) { results in
+        BookCSVImporter().startImport(fromFileAt: url) { results in
             var statusMessage = "\(results.success) books imported."
             
             if results.duplicate != 0 { statusMessage += " \(results.duplicate) rows ignored due pre-existing data." }
@@ -65,7 +67,7 @@ class DataVC: UITableViewController, UIDocumentPickerDelegate, UIDocumentMenuDel
         SVProgressHUD.show(withStatus: "Generating...")
         
         let listNames = List.names(fromContext: PersistentStoreManager.container.viewContext)
-        let exporter = CsvExporter(csvExport: Book.BuildCsvExport(withLists: listNames))
+        let exporter = CsvExporter(csvExport: BookCSVExport.build(withLists: listNames))
         
         let exportAll = NSManagedObject.fetchRequest(Book.self)
         exportAll.sortDescriptors = [NSSortDescriptor(\Book.readState), NSSortDescriptor(\Book.sort), NSSortDescriptor(\Book.startedReading), NSSortDescriptor(\Book.finishedReading)]
@@ -114,4 +116,26 @@ class DataVC: UITableViewController, UIDocumentPickerDelegate, UIDocumentMenuDel
             }
         }
     }
+    
+    func deleteAllData() {
+        
+        // The CONFIRM DELETE action:
+        let confirmDelete = UIAlertController(title: "Final Warning", message: "This action is irreversible. Are you sure you want to continue?", preferredStyle: .alert)
+        confirmDelete.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
+            PersistentStoreManager.deleteAll()
+            UserEngagement.logEvent(.deleteAllData)
+        })
+        confirmDelete.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        
+        // The initial WARNING action
+        let areYouSure = UIAlertController(title: "Warning", message: "This will delete all books saved in the application. Are you sure you want to continue?", preferredStyle: .alert)
+        areYouSure.addAction(UIAlertAction(title: "Delete", style: .destructive) { [unowned self] _ in
+            self.present(confirmDelete, animated: true)
+        })
+        areYouSure.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        
+        present(areYouSure, animated: true)
+    }
 }
+
+

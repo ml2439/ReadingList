@@ -29,24 +29,19 @@ class BookTable: UITableViewController {
     var resultsFilterer: BookTableFilterer!
     var readStates: [BookReadState]!
     var searchController: UISearchController!
-
-    var navigationItemTitle: String! // Should be set by subclasses
-    
-    var parentSplitViewController: SplitViewController {
-        get { return splitViewController as! SplitViewController }
-    }
+    var navigationItemTitle: String!
 
     @IBOutlet weak var tableFooter: UILabel!
     
     override func viewDidLoad() {
         searchController = UISearchController(filterPlaceholderText: "Your Library")
         tableView.keyboardDismissMode = .onDrag
+        clearsSelectionOnViewWillAppear = false
+        navigationItemTitle = readStates.first!.description
+        navigationItem.title = navigationItemTitle
         
         // Handle the data fetch, sort and filtering
         buildResultsController()
-        
-        // We will manage the clearing of selections ourselves.
-        clearsSelectionOnViewWillAppear = false
         
         // Some search bar styles are slightly different on iOS 11
         if #available(iOS 11.0, *) {
@@ -58,9 +53,6 @@ class BookTable: UITableViewController {
             tableView.setContentOffset(CGPoint(x: 0, y: searchController.searchBar.frame.height), animated: false)
         }
         
-        // Set the nav bar title
-        navigationItem.title = navigationItemTitle
-        
         // Set the table footer text
         tableFooter.text = footerText()
         
@@ -70,7 +62,7 @@ class BookTable: UITableViewController {
 
         // Watch for changes in book sort order
         NotificationCenter.default.addObserver(self, selector: #selector(bookSortChanged), name: NSNotification.Name.BookSortOrderChanged, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(reloadFooter), name: NSNotification.Name.NSManagedObjectContextObjectsDidChange, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(refetch), name: NSNotification.Name.PersistentStoreBatchOperationOccurred, object: nil)
         
         super.viewDidLoad()
     }
@@ -84,15 +76,9 @@ class BookTable: UITableViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         // Deselect selected rows, so they don't stay highlighted, but only when in non-split mode
-        if let selectedIndexPath = self.tableView.indexPathForSelectedRow, !parentSplitViewController.detailIsPresented {
+        if let selectedIndexPath = self.tableView.indexPathForSelectedRow, !(splitViewController as! SplitViewController).detailIsPresented {
             self.tableView.deselectRow(at: selectedIndexPath, animated: animated)
         }
-        
-        // Work around a stupid bug (https://stackoverflow.com/q/46239530/5513562)
-        if #available(iOS 11.0, *), searchController.searchBar.frame.height == 0 {
-            navigationItem.searchController?.isActive = false
-        }
-        
         super.viewDidAppear(animated)
     }
     
@@ -116,7 +102,7 @@ class BookTable: UITableViewController {
             self.tableFooter.text = self.footerText()
         }
         try! resultsController.performFetch()
-        resultsController.delegate = tableView
+        resultsController.delegate = self
     }
     
     override func setEditing(_ editing: Bool, animated: Bool) {
@@ -154,12 +140,12 @@ class BookTable: UITableViewController {
         }
     }
     
-    @objc func reloadFooter() {
-        DispatchQueue.main.async {
-            self.tableFooter.text = self.footerText()
-        }
+    @objc func refetch() {
+        try! self.resultsController.performFetch()
+        self.tableView.reloadData()
+        self.tableFooter.text = self.footerText()
     }
-    
+
     override func numberOfSections(in tableView: UITableView) -> Int {
         return resultsController.sections!.count
     }
@@ -285,6 +271,7 @@ class BookTable: UITableViewController {
         }
         
         // allowTableObscuring determines whether the book details page should actually be shown, if showing it will obscure this table
+        let parentSplitViewController = splitViewController as! SplitViewController
         if allowTableObscuring || parentSplitViewController.isSplit {
             if let indexPathOfSelectedBook = indexPathOfSelectedBook {
                 tableView.selectRow(at: indexPathOfSelectedBook, animated: true, scrollPosition: .none)
@@ -339,11 +326,9 @@ class BookTable: UITableViewController {
         optionsAlert.addAction(storyboardAction(title: "Scan Barcode", storyboard: Storyboard.ScanBarcode))
         optionsAlert.addAction(storyboardAction(title: "Search Online", storyboard: Storyboard.SearchOnline))
         optionsAlert.addAction(UIAlertAction(title: "Add Manually", style: .default){ [unowned self] _ in
-            self.present(EditBookMetadata().inNavigationController(), animated: true, completion: nil)
+            self.present(EditBookMetadata(bookToCreateReadState: .toRead).inNavigationController(), animated: true, completion: nil)
         })
         optionsAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        
-        // For iPad, set the popover presentation controller's source
         if let popPresenter = optionsAlert.popoverPresentationController {
             popPresenter.barButtonItem = sender
         }
@@ -427,6 +412,28 @@ class BookTable: UITableViewController {
             callback?(true)
         })
         self.present(confirmDeleteAlert, animated: true, completion: nil)
+    }
+}
+
+extension BookTable: NSFetchedResultsControllerDelegate {
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        tableView.controllerWillChangeContent(controller)
+    }
+    
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        tableView.controllerDidChangeContent(controller)
+        
+        // The fetched results controller delegate is only done manually (rather than set to the tableView) so we
+        // can trigger the footer text to reload also
+        tableFooter.text = footerText()
+    }
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        tableView.controller(controller, didChange: anObject, at: indexPath, for: type, newIndexPath: newIndexPath)
+    }
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
+        tableView.controller(controller, didChange: sectionInfo, atSectionIndex: sectionIndex, for: type)
     }
 }
 
