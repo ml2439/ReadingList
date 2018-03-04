@@ -11,8 +11,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-    var tabBarController: TabBarController {
-        return window!.rootViewController as! TabBarController
+    var tabBarController: TabBarController? {
+        return window!.rootViewController as? TabBarController
     }
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
@@ -20,6 +20,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         setupSvProgressHud()
         completeStoreTransactions()
+        
+        let shortcutItem = launchOptions?[UIApplicationLaunchOptionsKey.shortcutItem] as? UIApplicationShortcutItem
 
         // Initialise the persistent store on a background thread. The main thread will return and the LaunchScreen
         // storyboard will remain in place until this is completed, at which point the Main storyboard will be instantiated.
@@ -30,10 +32,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         DebugSettings.initialiseFromCommandLine()
                     #endif
                     self.window!.rootViewController = Storyboard.Main.instantiateRoot()
+                    
+                    // Only perform the quick action once the app is loaded
+                    if let shortcutItem = shortcutItem {
+                        self.performQuickAction(QuickAction(rawValue: shortcutItem.type)!)
+                    }
                 }
             }
         }
-        return true
+        
+        // If there was a QuickAction, it is handled here, so prevent application:performAction from being called
+        return shortcutItem == nil
     }
     
     func setupSvProgressHud() {
