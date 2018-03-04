@@ -63,6 +63,29 @@ extension UINavigationController {
     }
 }
 
+extension UIPopoverPresentationController {
+    
+    func setSourceCell(atIndexPath indexPath: IndexPath, inTable tableView: UITableView, arrowDirections: UIPopoverArrowDirection = .any) {
+        let cell = tableView.cellForRow(at: indexPath)!
+        self.sourceRect = cell.frame
+        self.sourceView = tableView
+        self.permittedArrowDirections = arrowDirections
+    }
+}
+
+extension UIActivityType {
+    static var documentUnsuitableTypes: [UIActivityType] {
+        get {
+            var types: [UIActivityType] = [addToReadingList, assignToContact, saveToCameraRoll, postToFlickr, postToVimeo,
+                                           postToTencentWeibo, postToTwitter, postToFacebook, openInIBooks]
+            if #available(iOS 11.0, *) {
+                types.append(.markupAsPDF)
+            }
+            return types
+        }
+    }
+}
+
 extension UISearchBar {
     var isActive: Bool {
         get {

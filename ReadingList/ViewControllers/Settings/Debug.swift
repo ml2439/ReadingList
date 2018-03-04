@@ -3,8 +3,6 @@
 import Foundation
 import Eureka
 import SVProgressHUD
-import SimulatorStatusMagic
-import CoreData
 
 class Debug: FormViewController {
     

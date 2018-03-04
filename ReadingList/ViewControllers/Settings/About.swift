@@ -6,7 +6,6 @@ class About: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard indexPath.section == 0 else { return }
         switch indexPath.row {
-            
         case 0: UIApplication.shared.open(URL(string: "https://www.readinglistapp.xyz")!, options: [:])
         case 2: UIApplication.shared.open(URL(string: "https://github.com/AndrewBennet/readinglist")!, options: [:])
         case 3: share()

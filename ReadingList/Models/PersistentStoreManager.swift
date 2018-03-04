@@ -69,5 +69,5 @@ class PersistentStoreManager {
 }
 
 extension Notification.Name {
-    static let PersistentStoreBatchOperationOccurred = Notification.Name("persistent-store-batch-operation-occurred")
+    static let PersistentStoreBatchOperationOccurred = Notification.Name("persistent-store-batch-delete-occurred")
 }

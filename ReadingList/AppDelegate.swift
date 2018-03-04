@@ -21,7 +21,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupSvProgressHud()
         completeStoreTransactions()
         
-        let shortcutItem = launchOptions?[UIApplicationLaunchOptionsKey.shortcutItem] as? UIApplicationShortcutItem
+        // Grab any options which we take action on after the persistent store is initialised
+        let quickAction = launchOptions?[UIApplicationLaunchOptionsKey.shortcutItem] as? UIApplicationShortcutItem
+        let csvFileUrl = launchOptions?[UIApplicationLaunchOptionsKey.url] as? URL
 
         // Initialise the persistent store on a background thread. The main thread will return and the LaunchScreen
         // storyboard will remain in place until this is completed, at which point the Main storyboard will be instantiated.
@@ -33,16 +35,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     #endif
                     self.window!.rootViewController = Storyboard.Main.instantiateRoot()
                     
-                    // Only perform the quick action once the app is loaded
-                    if let shortcutItem = shortcutItem {
-                        self.performQuickAction(QuickAction(rawValue: shortcutItem.type)!)
+                    // Once the store is loaded and the main storyboard instantiated, perform the quick action
+                    // or open the CSV file, is specified. This is done here rather than in application:open, for example,
+                    // in the case where the app is not yet launched.
+                    if let quickAction = quickAction {
+                        self.performQuickAction(QuickAction(rawValue: quickAction.type)!)
+                    }
+                    else if let csvFileUrl = csvFileUrl {
+                        self.openCsvImport(url: csvFileUrl)
                     }
                 }
             }
         }
         
-        // If there was a QuickAction, it is handled here, so prevent application:performAction from being called
-        return shortcutItem == nil
+        // If there was a QuickAction or URL-open, it is handled here, so prevent another handler from being called
+        return quickAction == nil && csvFileUrl == nil
     }
     
     func setupSvProgressHud() {
@@ -80,36 +87,39 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
+        openCsvImport(url: url)
+        return true
+    }
+    
+    func openCsvImport(url: URL) {
         UserEngagement.logEvent(.openCsvInApp)
         tabBarController.selectTab(.settings)
-
-        let navController = tabBarController.selectedSplitViewController!.masterNavigationController
-        navController.dismissAndPopToRoot()
-        navController.performSegue(withIdentifier: "settingsData", sender: nil)
         
-        // TODO: Is there a nicer way to get the Data VC?
-        let data = (navController.viewControllers.first! as! UINavigationController).viewControllers.first! as! DataVC
-        // TODO: pass the file URL in, present confirmation
-        data.requestImport()
-        return true
+        let settingsSplitView = tabBarController.selectedSplitViewController!
+        let navController = settingsSplitView.masterNavigationController
+        navController.dismiss(animated: false)
+        
+        // FUTURE: The pop was preventing the segue from occurring. We can end up with a taller
+        // than usual navigation stack. Looking for a way to pop and then push in quick succession.
+        navController.viewControllers.first!.performSegue(withIdentifier: "settingsData", sender: url)
     }
     
     func performQuickAction(_ action: QuickAction) {
         func presentFromToRead(_ viewController: UIViewController) {
-            // Select the To Read tab
+            // All quick actions are presented from the To Read tab
             tabBarController.selectTab(.toRead)
             
-            // Dismiss any modal views
+            // Dismiss any modal views before presenting
             let navController = tabBarController.selectedSplitViewController!.masterNavigationController
             navController.dismissAndPopToRoot()
-            navController.viewControllers[0].present(viewController, animated: true, completion: nil)
+            navController.viewControllers.first!.present(viewController, animated: true, completion: nil)
         }
         
-        if action == .scanBarcode {
+        switch action{
+        case .scanBarcode:
             UserEngagement.logEvent(.scanBarcodeQuickAction)
             presentFromToRead(Storyboard.ScanBarcode.rootAsFormSheet())
-        }
-        else if action == .searchOnline {
+        case .searchOnline:
             UserEngagement.logEvent(.searchOnlineQuickAction)
             presentFromToRead(Storyboard.SearchOnline.rootAsFormSheet())
         }
