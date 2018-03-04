@@ -11,8 +11,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-    var tabBarController: TabBarController? {
-        return window!.rootViewController as? TabBarController
+    var tabBarController: TabBarController {
+        return window!.rootViewController as! TabBarController
     }
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
