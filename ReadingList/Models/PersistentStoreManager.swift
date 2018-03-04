@@ -49,16 +49,21 @@ class PersistentStoreManager {
     }
     
     /**
+     Deletes all objects of the given type
+    */
+    static func delete<T>(type: T.Type) where T: NSManagedObject {
+        print("Deleting all \(String(describing: type)) objects")
+        let batchDelete = NSBatchDeleteRequest(fetchRequest: type.fetchRequest())
+        try! PersistentStoreManager.container.persistentStoreCoordinator.execute(batchDelete, with: container.viewContext)
+    }
+    
+    /**
      Deletes all data from the persistent store.
     */
     static func deleteAll() {
-        let batchDeleteLists = NSBatchDeleteRequest(fetchRequest: List.fetchRequest())
-        try! PersistentStoreManager.container.persistentStoreCoordinator.execute(batchDeleteLists, with: container.viewContext)
-        let batchDeleteSubjects = NSBatchDeleteRequest(fetchRequest: Subject.fetchRequest())
-        try! PersistentStoreManager.container.persistentStoreCoordinator.execute(batchDeleteSubjects, with: container.viewContext)
-        let batchDeleteBooks = NSBatchDeleteRequest(fetchRequest: Book.fetchRequest())
-        try! PersistentStoreManager.container.persistentStoreCoordinator.execute(batchDeleteBooks, with: container.viewContext)
-        
+        delete(type: List.self)
+        delete(type: Subject.self)
+        delete(type: Book.self)
         NotificationCenter.default.post(name: Notification.Name.PersistentStoreBatchOperationOccurred, object: nil)
     }
 }

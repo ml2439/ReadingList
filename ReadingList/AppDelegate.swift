@@ -21,20 +21,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupSvProgressHud()
         completeStoreTransactions()
 
-        #if DEBUG
-        DebugSettings.initialiseFromCommandLine()
-        #endif
-
         // Initialise the persistent store on a background thread. The main thread will return and the LaunchScreen
         // storyboard will remain in place until this is completed, at which point the Main storyboard will be instantiated.
         DispatchQueue.global(qos: .userInteractive).async { [unowned self] in
             PersistentStoreManager.initalisePersistentStore {
                 DispatchQueue.main.async {
+                    #if DEBUG
+                        DebugSettings.initialiseFromCommandLine()
+                    #endif
                     self.window!.rootViewController = Storyboard.Main.instantiateRoot()
                 }
             }
         }
-
         return true
     }
     

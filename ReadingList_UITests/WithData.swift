@@ -9,6 +9,7 @@ class WithData: XCTestCase {
         let app = ReadingListApplication()
         app.launchArguments.append("--UITests_PopulateData")
         app.launch()
+        sleep(5)
     }
     
     override func tearDown() {
