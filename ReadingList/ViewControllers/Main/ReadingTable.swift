@@ -3,7 +3,7 @@ import UIKit
 class ReadingTable: BookTable {
     
     override func viewDidLoad() {
-        readStates = [.toRead, .reading]
+        readStates = [.reading, .toRead]
         super.viewDidLoad()
     }
 
@@ -44,7 +44,7 @@ class ReadingTable: BookTable {
         objectsInSection.insert(movedObj, at: destinationIndexPath.row)
         
         // Turn off updates while we manipulate the object context
-        resultsController.withoutUpdates {
+        //resultsController.withoutUpdates { TODO
             // Update the model sort indexes. The lowest sort number should be the sort of the book immediately
             // above the range, plus 1, or - if the range starts at the top - 0.
             var sortIndex: Int32
@@ -62,7 +62,7 @@ class ReadingTable: BookTable {
             
             try! PersistentStoreManager.container.viewContext.save()
             try! resultsController.performFetch()
-        }
+        //}
     }
     
     @available(iOS 11.0, *)

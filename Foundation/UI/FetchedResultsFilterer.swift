@@ -9,12 +9,12 @@ class FetchedResultsFilterer<ResultType>: NSObject, UISearchResultsUpdating wher
     let searchController: UISearchController
     let onChange: (() -> ())?
     
-    private let fetchedResultsController: NSFetchedResultsController<ResultType>
+    private let fetchedResultsControllers: [NSFetchedResultsController<ResultType>]
     private let tableView: UITableView
 
-    init(searchController: UISearchController, tableView: UITableView, fetchedResultsController: NSFetchedResultsController<ResultType>, onChange: (() -> ())?) {
+    init(searchController: UISearchController, tableView: UITableView, fetchedResultsControllers: [NSFetchedResultsController<ResultType>], onChange: (() -> ())?) {
         self.searchController = searchController
-        self.fetchedResultsController = fetchedResultsController
+        self.fetchedResultsControllers = fetchedResultsControllers
         self.tableView = tableView
         self.onChange = onChange
         super.init()
@@ -34,10 +34,16 @@ class FetchedResultsFilterer<ResultType>: NSObject, UISearchResultsUpdating wher
         let predicate = self.predicate(forSearchText: searchController.searchBar.text)
         
         // We shouldn't need to do anything if the predicate is the same, given that we are tracking changes.
-        if fetchedResultsController.fetchRequest.predicate != predicate {
-            fetchedResultsController.fetchRequest.predicate = predicate
-            try! fetchedResultsController.performFetch()
-            tableView.reloadData()
+        var anyChangedPredicates = false
+        for fetchedResultsController in fetchedResultsControllers {
+            if fetchedResultsController.fetchRequest.predicate != predicate {
+                fetchedResultsController.fetchRequest.predicate = predicate
+                try! fetchedResultsController.performFetch()
+                tableView.reloadData()
+                anyChangedPredicates = true
+            }
+        }
+        if anyChangedPredicates {
             onChange?()
         }
     }

@@ -57,6 +57,7 @@
 		1CD11254202DF23300BE3E1D /* ModelVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD11253202DF23300BE3E1D /* ModelVersion.swift */; };
 		1CD11256202DF39300BE3E1D /* ModelMigration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD11255202DF39300BE3E1D /* ModelMigration.swift */; };
 		1CD1125E202DF7F000BE3E1D /* BooksModelVersions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD1125D202DF7F000BE3E1D /* BooksModelVersions.swift */; };
+		1CD11DAF204CA460005F49D3 /* CompoundFetchedResultsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD11DAE204CA460005F49D3 /* CompoundFetchedResultsController.swift */; };
 		1CD1D2B0202BC4DF00ACA5D9 /* FoundationExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD1D2AF202BC4DF00ACA5D9 /* FoundationExtensions.swift */; };
 		1CD1D2B4202BC64900ACA5D9 /* CSVExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD1D2B3202BC64900ACA5D9 /* CSVExport.swift */; };
 		1CD1D2B6202BC9C400ACA5D9 /* UIKitExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD1D2B5202BC9C400ACA5D9 /* UIKitExtensions.swift */; };
@@ -189,6 +190,7 @@
 		1CD11253202DF23300BE3E1D /* ModelVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelVersion.swift; sourceTree = "<group>"; };
 		1CD11255202DF39300BE3E1D /* ModelMigration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelMigration.swift; sourceTree = "<group>"; };
 		1CD1125D202DF7F000BE3E1D /* BooksModelVersions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BooksModelVersions.swift; sourceTree = "<group>"; };
+		1CD11DAE204CA460005F49D3 /* CompoundFetchedResultsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompoundFetchedResultsController.swift; sourceTree = "<group>"; };
 		1CD1D2AF202BC4DF00ACA5D9 /* FoundationExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoundationExtensions.swift; sourceTree = "<group>"; };
 		1CD1D2B3202BC64900ACA5D9 /* CSVExport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSVExport.swift; sourceTree = "<group>"; };
 		1CD1D2B5202BC9C400ACA5D9 /* UIKitExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitExtensions.swift; sourceTree = "<group>"; };
@@ -327,6 +329,7 @@
 				1CD11253202DF23300BE3E1D /* ModelVersion.swift */,
 				1CD11255202DF39300BE3E1D /* ModelMigration.swift */,
 				1C395447202F7966007ACCB1 /* Extensions.swift */,
+				1CD11DAE204CA460005F49D3 /* CompoundFetchedResultsController.swift */,
 			);
 			path = CoreData;
 			sourceTree = "<group>";
@@ -1067,6 +1070,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1CD11DAF204CA460005F49D3 /* CompoundFetchedResultsController.swift in Sources */,
 				1C66927B20343D63001ED046 /* EditBookReadState.swift in Sources */,
 				1CAE41BB204597EB002AF7DF /* SearchBooksEmptyDataSet.swift in Sources */,
 				4973C79F1E901A6A001CFABC /* CommonUIElements.swift in Sources */,

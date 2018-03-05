@@ -6,9 +6,9 @@ class BookTableFilterer: FetchedResultsFilterer<Book> {
     
     let readStatePredicate: NSPredicate
     
-    required init(searchController: UISearchController, tableView: UITableView, fetchedResultsController: NSFetchedResultsController<Book>, readStatePredicate: NSPredicate, onChange: (() -> ())?) {
+    required init(searchController: UISearchController, tableView: UITableView, fetchedResultsControllers: [NSFetchedResultsController<Book>], readStatePredicate: NSPredicate, onChange: (() -> ())?) {
         self.readStatePredicate = readStatePredicate
-        super.init(searchController: searchController, tableView: tableView, fetchedResultsController: fetchedResultsController, onChange: onChange)
+        super.init(searchController: searchController, tableView: tableView, fetchedResultsControllers: fetchedResultsControllers, onChange: onChange)
     }
     
     override func predicate(forSearchText searchText: String?) -> NSPredicate {
@@ -25,7 +25,7 @@ class BookTableFilterer: FetchedResultsFilterer<Book> {
 
 class BookTable: UITableViewController {
 
-    var resultsController: NSFetchedResultsController<Book>!
+    var resultsController: CompoundFetchedResultsController<Book>!
     var resultsFilterer: BookTableFilterer!
     var readStates: [BookReadState]!
     var searchController: UISearchController!
@@ -89,16 +89,16 @@ class BookTable: UITableViewController {
     }
     
     func buildResultsController() {
-        let readStatePredicate = NSPredicate.Or(readStates.map{
-            NSPredicate(format: "%K == %ld", #keyPath(Book.readState), $0.rawValue)
-        })
+        let controllers = readStates.map { readState -> NSFetchedResultsController<Book> in
+            let f = NSManagedObject.fetchRequest(Book.self, batch: 25)
+            f.predicate = NSPredicate(format: "%K == %ld", #keyPath(Book.readState), readState.rawValue)
+            f.sortDescriptors = [NSSortDescriptor(\Book.title)] // TODO
+            return NSFetchedResultsController<Book>(fetchRequest: f, managedObjectContext: PersistentStoreManager.container.viewContext, sectionNameKeyPath: #keyPath(Book.readState), cacheName: nil)
+        }
         
-        let f = NSManagedObject.fetchRequest(Book.self, batch: 25)
-        f.predicate = readStatePredicate
-        f.sortDescriptors = UserSettings.selectedSortOrder
-        resultsController = NSFetchedResultsController(fetchRequest: f, managedObjectContext: PersistentStoreManager.container.viewContext, sectionNameKeyPath: #keyPath(Book.readState), cacheName: nil)
+        resultsController = CompoundFetchedResultsController(controllers: controllers)
         
-        resultsFilterer = BookTableFilterer(searchController: searchController, tableView: tableView, fetchedResultsController: resultsController, readStatePredicate: readStatePredicate) { [unowned self] in
+        resultsFilterer = BookTableFilterer(searchController: searchController, tableView: tableView, fetchedResultsControllers: controllers, readStatePredicate: controllers.first!.fetchRequest.predicate!/*readStatePredicate*/) { [unowned self] in
             self.tableFooter.text = self.footerText()
         }
         try! resultsController.performFetch()
@@ -261,7 +261,7 @@ class BookTable: UITableViewController {
 
     func simulateBookSelection(_ bookID: NSManagedObjectID, allowTableObscuring: Bool = true) {
         let book = PersistentStoreManager.container.viewContext.object(with: bookID) as! Book
-        let indexPathOfSelectedBook = self.resultsController.indexPath(forObject: book)
+        /*let indexPathOfSelectedBook = self.resultsController.indexPath(forObject: book)
         
         // If there is a row (there might not be is there is a search filtering the results,
         // and clearing the search creates animations which mess up push segues), then
@@ -285,7 +285,7 @@ class BookTable: UITableViewController {
                 // Segue to the details view, with the cell corresponding to the book as the sender.
                 performSegue(withIdentifier: "showDetail", sender: book)
             }
-        }
+        }*/// TODO
     }
     
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
