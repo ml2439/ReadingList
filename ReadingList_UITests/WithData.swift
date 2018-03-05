@@ -32,7 +32,7 @@ class WithData: XCTestCase {
         app.typeText("J.D.")
         app.tables.textFields["Last Name"].tap()
         app.typeText("Salinger")
-        app.navigationBars.element(boundBy: 0).buttons["Add Manually"].tap()
+        app.navigationBars.element(boundBy: 0).buttons["Add Book"].tap()
         
         app.navigationBars.element(boundBy: 0).buttons["Next"].tap()
         app.navigationBars.element(boundBy: 0).buttons["Done"].tap()

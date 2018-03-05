@@ -148,19 +148,15 @@ extension Book {
     
     override func validateForUpdate() throws {
         try super.validateForUpdate()
-        if let error = checkIsValid() { throw error }
-    }
-    
-    func checkIsValid() -> Error? {
+
         // FUTURE: these should be property validators, not in validateForUpdate
-        if title.isEmptyOrWhitespace { return ValidationError.missingTitle }
-        if let isbn = isbn13, ISBN13(isbn) == nil { return ValidationError.invalidIsbn }
+        if title.isEmptyOrWhitespace { throw ValidationError.missingTitle }
+        if let isbn = isbn13, ISBN13(isbn) == nil { throw ValidationError.invalidIsbn }
         
         // FUTURE: Check read state with current page
-        if readState == .toRead && (startedReading != nil || finishedReading != nil) { return ValidationError.invalidReadDates }
-        if readState == .reading && (startedReading == nil || finishedReading != nil) { return ValidationError.invalidReadDates }
-        if readState == .finished && (startedReading == nil || finishedReading == nil || startedReading!.startOfDay() > finishedReading!.startOfDay()) { return ValidationError.invalidReadDates }
-        return nil
+        if readState == .toRead && (startedReading != nil || finishedReading != nil) { throw ValidationError.invalidReadDates }
+        if readState == .reading && (startedReading == nil || finishedReading != nil) { throw ValidationError.invalidReadDates }
+        if readState == .finished && (startedReading == nil || finishedReading == nil || startedReading!.startOfDay() > finishedReading!.startOfDay()) { throw ValidationError.invalidReadDates }
     }
     
     func startReading() {

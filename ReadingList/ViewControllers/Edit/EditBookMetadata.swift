@@ -120,6 +120,9 @@ class EditBookMetadata: FormViewController {
                 $0.onCellSelection(deletePressed(cell:row:))
                 $0.hidden = Condition(booleanLiteral: isAddingNewBook)
             }
+        
+        // Validate on start
+        validate()
     }
     
     func configureNavigationItem() {
@@ -178,7 +181,7 @@ class EditBookMetadata: FormViewController {
     }
     
     @objc func validate() {
-        navigationItem.rightBarButtonItem!.isEnabled = book.checkIsValid() == nil
+        navigationItem.rightBarButtonItem!.isEnabled = book.isValidForUpdate()
     }
     
     @objc func cancelPressed() {

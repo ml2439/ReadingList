@@ -21,6 +21,16 @@ extension NSManagedObject {
         if let batch = batch { fetchRequest.fetchBatchSize = batch }
         return fetchRequest
     }
+    
+    func isValidForUpdate() -> Bool {
+        do {
+            try self.validateForUpdate()
+            return true
+        }
+        catch {
+            return false
+        }
+    }
 }
 
 extension NSManagedObjectContext {
@@ -51,17 +61,12 @@ extension NSManagedObjectContext {
     }
     
     /**
-     Saves if changes are present in the context. If an error occurs, throws a fatalError.
+     Saves if changes are present in the context. If an error occurs, produces a fatalError.
     */
     @discardableResult func saveIfChanged() -> Bool {
         guard hasChanges else { return false }
-        do {
-            try save()
-            return true
-        }
-        catch {
-            fatalError(error.localizedDescription)
-        }
+        try! save()
+        return true
     }
     
     func performAndSave(block: @escaping () -> ()) {

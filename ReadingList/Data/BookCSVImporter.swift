@@ -129,7 +129,7 @@ fileprivate class BookCSVParserDelegate: CSVParserDelegate {
             }
             
             // If the book is not valid, delete it
-            guard newBook.checkIsValid() == nil else {
+            guard newBook.isValidForUpdate() else {
                 invalidCount += 1
                 print("Invalid book; deleting")
                 newBook.delete()
