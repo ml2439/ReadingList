@@ -20,6 +20,13 @@ class ListBookTable: UITableViewController {
         registerForSaveNotifications()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        if #available(iOS 11.0, *) {
+            navigationController!.navigationBar.prefersLargeTitles = UserSettings.useLargeTitles.value
+        }
+        super.viewWillAppear(animated)
+    }
+    
     func registerForSaveNotifications() {
         // Watch for changes in the managed object context, in order to update the table
         NotificationCenter.default.addObserver(self, selector: #selector(changeOccurred(_:)), name: NSNotification.Name.NSManagedObjectContextObjectsDidChange, object: list.managedObjectContext!)
