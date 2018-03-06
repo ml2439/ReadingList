@@ -160,13 +160,13 @@ extension Book {
     }
     
     func startReading() {
-        guard readState == .toRead else { fatalError("Attempted to start a book in state \(readState)") }
+        guard readState == .toRead else { print("Attempted to start a book in state \(readState)"); return }
         readState = .reading
         startedReading = Date()
     }
     
     func finishReading() {
-        guard readState == .reading else { fatalError("Attempted to finish a book in state \(readState)") }
+        guard readState == .reading else { print("Attempted to finish a book in state \(readState)"); return }
         readState = .finished
         finishedReading = Date()
     }
