@@ -44,25 +44,27 @@ class ReadingTable: BookTable {
         objectsInSection.insert(movedObj, at: destinationIndexPath.row)
         
         // Turn off updates while we manipulate the object context
-        //resultsController.withoutUpdates { TODO
-            // Update the model sort indexes. The lowest sort number should be the sort of the book immediately
-            // above the range, plus 1, or - if the range starts at the top - 0.
-            var sortIndex: Int32
-            if topRow == 0 {
-                sortIndex = 0
-            }
-            else {
-                sortIndex = (objectsInSection[topRow - 1] as! Book).sort!.int32 + 1
-            }
-            for rowNumber in topRow...bottomRow {
-                let book = objectsInSection[rowNumber] as! Book
-                book.sort = sortIndex.nsNumber
-                sortIndex += 1
-            }
-            
-            try! PersistentStoreManager.container.viewContext.save()
-            try! resultsController.performFetch()
-        //}
+        resultsController.delegate = nil
+
+        // Update the model sort indexes. The lowest sort number should be the sort of the book immediately
+        // above the range, plus 1, or - if the range starts at the top - 0.
+        var sortIndex: Int32
+        if topRow == 0 {
+            sortIndex = 0
+        }
+        else {
+            sortIndex = (objectsInSection[topRow - 1] as! Book).sort!.int32 + 1
+        }
+        for rowNumber in topRow...bottomRow {
+            let book = objectsInSection[rowNumber] as! Book
+            book.sort = sortIndex.nsNumber
+            sortIndex += 1
+        }
+        
+        try! PersistentStoreManager.container.viewContext.save()
+        try! resultsController.performFetch()
+
+        resultsController.delegate = self
     }
     
     @available(iOS 11.0, *)

@@ -38,6 +38,20 @@ class CompoundFetchedResultsController<T: NSFetchRequestResult>: NSObject, NSFet
         return sections![indexPath.section].objects![indexPath.row] as! T
     }
     
+    func indexPath(forObject object: T) -> IndexPath? {
+        // FUTURE: This overlaps a bit with sectionOffset(), but can't see an obvious way of incorporating it.
+        var sectionOffset = 0
+        for controller in controllers {
+            if let indexPath = controller.indexPath(forObject: object) {
+                return IndexPath(row: indexPath.row, section: sectionOffset + indexPath.section)
+            }
+            else {
+                sectionOffset = controller.sections!.count
+            }
+        }
+        return nil
+    }
+    
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         // Forward on the willChange notification
         delegate?.controllerWillChangeContent?(controller)

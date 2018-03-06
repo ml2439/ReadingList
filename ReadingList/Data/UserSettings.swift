@@ -33,20 +33,21 @@ class UserSettings {
         }
     }
     
-    // FUTURE: The predicates probably shouldn't be stored in this class
-    static var selectedSortOrder: [NSSortDescriptor] {
-        get { return SortOrders[UserSettings.tableSortOrder]! }
+    static func selectedBookSortDescriptors(forReadState readState: BookReadState) -> [NSSortDescriptor] {
+        switch UserSettings.tableSortOrder {
+        case .byTitle:
+            return [NSSortDescriptor(\Book.title)]
+        case .byAuthor:
+            return [NSSortDescriptor(\Book.authorSort), NSSortDescriptor(\Book.title)]
+        case .byDate:
+            if readState == .toRead {
+                return [NSSortDescriptor(\Book.sort)]
+            }
+            else {
+                return [NSSortDescriptor(\Book.finishedReading, ascending: false), NSSortDescriptor(\Book.startedReading, ascending: false)]
+            }
+        }
     }
-    
-    private static let SortOrders = [TableSortOrder.byDate: [NSSortDescriptor(\Book.readState),
-                                                             NSSortDescriptor(\Book.sort),
-                                                             NSSortDescriptor(\Book.finishedReading, ascending: false),
-                                                             NSSortDescriptor(\Book.startedReading, ascending: false)],
-                                     TableSortOrder.byTitle: [NSSortDescriptor(\Book.readState),
-                                                              NSSortDescriptor(\Book.title)],
-                                     TableSortOrder.byAuthor: [NSSortDescriptor(\Book.readState),
-                                                               NSSortDescriptor(\Book.authorSort),
-                                                               NSSortDescriptor(\Book.title)]]
 
     static var sendAnalytics = UserSetting<Bool>(key: "sendAnalytics", defaultValue: true)
     static var sendCrashReports = UserSetting<Bool>(key: "sendCrashReports", defaultValue: true)

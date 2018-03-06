@@ -68,17 +68,17 @@ class BookTable: UITableViewController {
         return BookReadState(rawValue: sectionAsInt)!.description
     }
     
-    lazy var defaultPredicates: [NSPredicate] = {
-        return readStates.map{
-            NSPredicate(format: "%K == %ld", #keyPath(Book.readState), $0.rawValue)
+    lazy var defaultPredicates: [BookReadState: NSPredicate] = {
+        return readStates.reduce(into: [BookReadState: NSPredicate]()) {
+            $0[$1] = NSPredicate(format: "%K == %ld", #keyPath(Book.readState), $1.rawValue)
         }
     }()
     
     func buildResultsController() {
-        let controllers = defaultPredicates.map { predicate -> NSFetchedResultsController<Book> in
+        let controllers = defaultPredicates.map { (readState, predicate) -> NSFetchedResultsController<Book> in
             let f = NSManagedObject.fetchRequest(Book.self, batch: 25)
             f.predicate = predicate
-            f.sortDescriptors = [NSSortDescriptor(\Book.title)] // TODO
+            f.sortDescriptors = UserSettings.selectedBookSortDescriptors(forReadState: readState)
             return NSFetchedResultsController<Book>(fetchRequest: f, managedObjectContext: PersistentStoreManager.container.viewContext, sectionNameKeyPath: #keyPath(Book.readState), cacheName: nil)
         }
         
@@ -244,7 +244,7 @@ class BookTable: UITableViewController {
 
     func simulateBookSelection(_ bookID: NSManagedObjectID, allowTableObscuring: Bool = true) {
         let book = PersistentStoreManager.container.viewContext.object(with: bookID) as! Book
-        /*let indexPathOfSelectedBook = self.resultsController.indexPath(forObject: book)
+        let indexPathOfSelectedBook = self.resultsController.indexPath(forObject: book)
         
         // If there is a row (there might not be is there is a search filtering the results,
         // and clearing the search creates animations which mess up push segues), then
@@ -268,7 +268,7 @@ class BookTable: UITableViewController {
                 // Segue to the details view, with the cell corresponding to the book as the sender.
                 performSegue(withIdentifier: "showDetail", sender: book)
             }
-        }*/// TODO
+        }
     }
     
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
@@ -403,26 +403,25 @@ extension BookTable: UISearchResultsUpdating {
         if let searchText = searchText, !searchText.isEmptyOrWhitespace && searchText.trimming().count >= 2 {
             return NSPredicate.wordsWithinFields(searchText, fieldNames: #keyPath(Book.title), #keyPath(Book.authorDisplay), "ANY \(#keyPath(Book.subjects)).name")
         }
-        return NSPredicate(boolean: true)
+        return NSPredicate(boolean: true) // If we cannot filter with the search text, we should return all results
     }
     
     func updateSearchResults(for searchController: UISearchController) {
-        let predicate = self.predicate(forSearchText: searchController.searchBar.text)
+        let searchTextPredicate = self.predicate(forSearchText: searchController.searchBar.text)
         
-        /* TODO
-        // We shouldn't need to do anything if the predicate is the same, given that we are tracking changes.
         var anyChangedPredicates = false
-        for fetchedResultsController in fetchedResultsControllers {
-            if fetchedResultsController.fetchRequest.predicate != predicate {
-                fetchedResultsController.fetchRequest.predicate = predicate
-                try! fetchedResultsController.performFetch()
-                tableView.reloadData()
+        for (index, controller) in resultsController.controllers.enumerated() {
+            let thisSectionPredicate = NSPredicate.And([defaultPredicates[readStates[index]]!, searchTextPredicate])
+            if controller.fetchRequest.predicate != thisSectionPredicate {
+                controller.fetchRequest.predicate = thisSectionPredicate
                 anyChangedPredicates = true
             }
         }
         if anyChangedPredicates {
-            onChange?()
-        }*/
+            try! resultsController.performFetch()
+            tableView.reloadData()
+            tableFooter.text = footerText()
+        }
     }
 }
 
