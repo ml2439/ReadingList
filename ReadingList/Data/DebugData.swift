@@ -27,6 +27,7 @@ extension DebugSettings {
             loadTestData {
                 if CommandLine.arguments.contains("--UITests_DeleteLists") {
                     PersistentStoreManager.delete(type: List.self)
+                    NotificationCenter.default.post(name: .PersistentStoreBatchOperationOccurred, object: nil)
                 }
             }
         }

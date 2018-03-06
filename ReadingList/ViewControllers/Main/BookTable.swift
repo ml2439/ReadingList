@@ -142,8 +142,9 @@ class BookTable: UITableViewController {
     
     @objc func refetch() {
         try! self.resultsController.performFetch()
-        self.tableView.reloadData()
         self.tableFooter.text = self.footerText()
+        self.tableView.reloadData()
+        // FUTURE: This can leave the empty data set off-screen. Can't find a way to prevent this.
     }
 
     override func numberOfSections(in tableView: UITableView) -> Int {

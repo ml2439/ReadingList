@@ -9,6 +9,32 @@ class ReadingListApplication : XCUIApplication {
         case settings = 3
     }
     
+    enum BarcodeScanSimulation: Int {
+        case none = 0
+        case normal = 1
+        case noCameraPermissions = 2
+        case validIsbn = 3
+        case unfoundIsbn = 4
+        case existingIsbn = 5
+        
+        var titleText: String {
+            switch self {
+            case .none:
+                return "None"
+            case .normal:
+                return "Normal"
+            case .noCameraPermissions:
+                return "No Camera Permissions"
+            case .validIsbn:
+                return "Valid ISBN"
+            case .unfoundIsbn:
+                return "Not-found ISBN"
+            case .existingIsbn:
+                return "Existing ISBN"
+            }
+        }
+    }
+    
     enum addMethod : Int {
         case scanBarcode = 0
         case searchOnline = 1

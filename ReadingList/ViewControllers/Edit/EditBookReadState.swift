@@ -124,7 +124,7 @@ class EditBookReadState: FormViewController {
     }
     
     @objc func validate() {
-        navigationItem.rightBarButtonItem!.isEnabled = book.checkIsValid() == nil
+        navigationItem.rightBarButtonItem!.isEnabled = book.isValidForUpdate()
     }
     
     @objc func cancelPressed() {

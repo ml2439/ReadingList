@@ -85,7 +85,7 @@ class WithData: XCTestCase {
         }
     }
     
-    private func scanBarcode(app: ReadingListApplication, mode: BarcodeScanSimulation) {
+    private func scanBarcode(app: ReadingListApplication, mode: ReadingListApplication.BarcodeScanSimulation) {
         app.setBarcodeSimulation(mode)
         app.clickTab(.toRead)
         

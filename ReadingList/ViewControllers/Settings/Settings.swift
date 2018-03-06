@@ -3,7 +3,7 @@ import SVProgressHUD
 import Crashlytics
 import MessageUI
 
-class Settings: UITableViewController, MFMailComposeViewControllerDelegate {
+class Settings: UITableViewController {
 
     static let appStoreAddress = "itunes.apple.com/gb/app/reading-list-book-tracker/id1217139955"
     static let feedbackEmailAddress = "feedback@readinglistapp.xyz"
@@ -17,7 +17,6 @@ class Settings: UITableViewController, MFMailComposeViewControllerDelegate {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
         switch (indexPath.section, indexPath.row) {
         case (0, 1): contact()
         case (0, 2): UIApplication.shared.open(URL(string: "itms-apps://\(Settings.appStoreAddress)?action=write-review")!, options: [:])
@@ -34,6 +33,14 @@ class Settings: UITableViewController, MFMailComposeViewControllerDelegate {
             let realCount = super.tableView(tableView, numberOfRowsInSection: section)
             return section == 1 ? realCount - 1 : realCount
         #endif
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let url = sender as? URL, let nav = segue.destination as? UINavigationController, let data = nav.viewControllers.first as? DataVC {
+            // In order to trigger an import from an external source, the presenting segue's sender is the URL of the file.
+            // Set this on the Data vc, which will load the file the first time the VC appears after the import URL is set.
+            data.importUrl = url
+        }
     }
     
     func contact() {
@@ -70,9 +77,10 @@ class Settings: UITableViewController, MFMailComposeViewControllerDelegate {
         mailComposer.setMessageBody(messageBody, isHTML: false)
         present(mailComposer, animated: true)
     }
-    
+}
+
+extension Settings: MFMailComposeViewControllerDelegate {
     func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
         dismiss(animated: true)
     }
 }
-

@@ -7,10 +7,11 @@ class ModelTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
+        testContainer = NSPersistentContainer(inMemoryStoreWithName: "books")
         testContainer.loadPersistentStores{ _,_ in }
     }
     
-    let testContainer = NSPersistentContainer(inMemoryStoreWithName: "books")
+    var testContainer: NSPersistentContainer!
     
     func testBookSort() {
         let maxSort = Book.maxSort(fromContext: testContainer.viewContext) ?? 0

@@ -1,74 +1,76 @@
 import Foundation
 import UIKit
 import SVProgressHUD
-import Fabric
-import Crashlytics
 import CoreData
+import Crashlytics
 
-class DataVC: UITableViewController, UIDocumentPickerDelegate, UIDocumentMenuDelegate {
+class DataVC: UITableViewController {
+
+    var importUrl: URL?
     
-    static let importIndexPath = IndexPath(row: 0, section: 1)
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        // This view can be loaded from an "Open In" action. If this happens, the importUrl property will be set.
+        if let importUrl = importUrl {
+            confirmImport(fromFile: importUrl)
+            self.importUrl = nil
+        }
+    }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch (indexPath.section, indexPath.row) {
-        case (0, 0):
-            exportData()
-        case (DataVC.importIndexPath.section, DataVC.importIndexPath.row):
-            requestImport()
-        case (2, 0):
-            deleteAllData()
-        default:
-            break
+        case (0, 0): exportData(presentingIndexPath: indexPath)
+        case (1, 0): requestImport(presentingIndexPath: indexPath)
+        case (2, 0): deleteAllData()
+        default: break
         }
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
-    func requestImport() {
+    func requestImport(presentingIndexPath: IndexPath) {
         let documentImport = UIDocumentMenuViewController(documentTypes: ["public.comma-separated-values-text"], in: .import)
         documentImport.delegate = self
         if let popPresenter = documentImport.popoverPresentationController {
-            let cell = tableView(tableView, cellForRowAt: DataVC.importIndexPath)
-            popPresenter.sourceRect = cell.frame
-            popPresenter.sourceView = self.tableView
-            popPresenter.permittedArrowDirections = .up
+            popPresenter.setSourceCell(atIndexPath: presentingIndexPath, inTable: tableView, arrowDirections: .up)
         }
         present(documentImport, animated: true)
     }
     
-    func documentMenu(_ documentMenu: UIDocumentMenuViewController, didPickDocumentPicker documentPicker: UIDocumentPickerViewController) {
-        documentPicker.delegate = self
-        present(documentPicker, animated: true, completion: nil)
-    }
-    
-    func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentAt url: URL) {
-        SVProgressHUD.show(withStatus: "Importing")
-        UserEngagement.logEvent(.csvImport)
-        
-        BookCSVImporter().startImport(fromFileAt: url) { results in
-            var statusMessage = "\(results.success) books imported."
+    func confirmImport(fromFile url: URL) {
+        let alert = UIAlertController(title: "Confirm Import", message: "Are you sure you want to import books from this file? This will skip any rows which have an ISBN or Google Books ID which corresponds to a book already in the app; other rows will be added as new books.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Import", style: .default) { _ in
+            SVProgressHUD.show(withStatus: "Importing")
+            UserEngagement.logEvent(.csvImport)
             
-            if results.duplicate != 0 { statusMessage += " \(results.duplicate) rows ignored due pre-existing data." }
-            if results.error != 0 { statusMessage += " \(results.error) rows ignored due to invalid data." }
-            SVProgressHUD.showInfo(withStatus: statusMessage)
-        }
+            BookCSVImporter().startImport(fromFileAt: url) { results in
+                var statusMessage = "\(results.success) books imported."
+                
+                if results.duplicate != 0 { statusMessage += " \(results.duplicate) rows ignored due pre-existing data." }
+                if results.error != 0 { statusMessage += " \(results.error) rows ignored due to invalid data." }
+                SVProgressHUD.showInfo(withStatus: statusMessage)
+            }
+        })
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        present(alert, animated: true, completion: nil)
     }
     
-    func exportData() {
+    func exportData(presentingIndexPath: IndexPath) {
         UserEngagement.logEvent(.csvExport)
         SVProgressHUD.show(withStatus: "Generating...")
         
         let listNames = List.names(fromContext: PersistentStoreManager.container.viewContext)
         let exporter = CsvExporter(csvExport: BookCSVExport.build(withLists: listNames))
         
+        // FUTURE: Should be batching the fetch and not holding the result entirely in memory
         let exportAll = NSManagedObject.fetchRequest(Book.self)
         exportAll.sortDescriptors = [NSSortDescriptor(\Book.readState), NSSortDescriptor(\Book.sort), NSSortDescriptor(\Book.startedReading), NSSortDescriptor(\Book.finishedReading)]
         try! PersistentStoreManager.container.viewContext.execute(NSAsynchronousFetchRequest(fetchRequest: exportAll) {
             exporter.addData($0.finalResult ?? [])
-            self.renderAndServeCsvExport(exporter)
+            self.renderAndServeCsvExport(exporter, presentingIndexPath: presentingIndexPath)
         })
     }
     
-    func renderAndServeCsvExport(_ exporter: CsvExporter<Book>) {
+    func renderAndServeCsvExport(_ exporter: CsvExporter<Book>, presentingIndexPath: IndexPath) {
         DispatchQueue.global(qos: .userInitiated).async {
             
             // Write the document to a temporary file
@@ -85,20 +87,13 @@ class DataVC: UITableViewController, UIDocumentPickerDelegate, UIDocumentMenuDel
                 }
                 return
             }
-
+            
             // Present a dialog with the resulting file
             let activityViewController = UIActivityViewController(activityItems: [temporaryFilePath], applicationActivities: [])
-            activityViewController.excludedActivityTypes = [
-                UIActivityType.addToReadingList,
-                UIActivityType.assignToContact, UIActivityType.saveToCameraRoll, UIActivityType.postToFlickr, UIActivityType.postToVimeo,
-                UIActivityType.postToTencentWeibo, UIActivityType.postToTwitter, UIActivityType.postToFacebook, UIActivityType.openInIBooks
-            ]
+            activityViewController.excludedActivityTypes = UIActivityType.documentUnsuitableTypes
             
             if let popPresenter = activityViewController.popoverPresentationController {
-                let cell = self.tableView.cellForRow(at: IndexPath(row: 0, section: 0))!
-                popPresenter.sourceRect = cell.frame
-                popPresenter.sourceView = self.tableView
-                popPresenter.permittedArrowDirections = .any
+                popPresenter.setSourceCell(atIndexPath: presentingIndexPath, inTable: self.tableView)
             }
             
             DispatchQueue.main.async {
@@ -129,4 +124,15 @@ class DataVC: UITableViewController, UIDocumentPickerDelegate, UIDocumentMenuDel
     }
 }
 
+extension DataVC: UIDocumentMenuDelegate {
+    func documentMenu(_ documentMenu: UIDocumentMenuViewController, didPickDocumentPicker documentPicker: UIDocumentPickerViewController) {
+        documentPicker.delegate = self
+        present(documentPicker, animated: true, completion: nil)
+    }
+}
 
+extension DataVC: UIDocumentPickerDelegate {
+    func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentAt url: URL) {
+        confirmImport(fromFile: url)
+    }
+}
