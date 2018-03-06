@@ -1,9 +1,9 @@
 PODS:
   - CHCSVParser (2.1.0)
-  - Crashlytics (3.10.0):
-    - Fabric (~> 1.7.3)
+  - Crashlytics (3.10.1):
+    - Fabric (~> 1.7.5)
   - DZNEmptyDataSet (1.8.1)
-  - Eureka (4.0.1)
+  - Eureka (4.1.0)
   - Fabric (1.7.5)
   - Firebase/Core (4.9.0):
     - FirebaseAnalytics (= 4.0.9)
@@ -30,7 +30,7 @@ PODS:
   - SimulatorStatusMagic (2.1)
   - SVProgressHUD (2.2.5)
   - SwiftyJSON (4.0.0)
-  - SwiftyStoreKit (0.13.0)
+  - SwiftyStoreKit (0.13.1)
 
 DEPENDENCIES:
   - CHCSVParser (from `https://github.com/davedelong/CHCSVParser.git`)
@@ -61,9 +61,9 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   CHCSVParser: 64da26e2b4ddbf7527f7f03120bf91d83d28f354
-  Crashlytics: a989ef242b66605577a425733797f810bd2725eb
+  Crashlytics: aee1a064cbbf99b32efa3f056a5f458d846bc8ff
   DZNEmptyDataSet: 9525833b9e68ac21c30253e1d3d7076cc828eaa7
-  Eureka: c8bd5cc07143b6f66268c208d28a246c99b41955
+  Eureka: 5770ef95bbbbe52f8abbc0d9bea6ee8282c50209
   Fabric: ae7146a5f505ea370a1e44820b4b1dc8890e2890
   Firebase: 632216af3ed7f31e3be34776947fdc7546cfb572
   FirebaseAnalytics: 388b630c15713f5dbf364071f5f3d6077fb52f4e
@@ -75,7 +75,7 @@ SPEC CHECKSUMS:
   SimulatorStatusMagic: 481558caf2b9ccb2ceba2cc193728d4db3dcac07
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   SwiftyJSON: 070dabdcb1beb81b247c65ffa3a79dbbfb3b48aa
-  SwiftyStoreKit: df6a58aba530128e1c5d5ae4fe7d191e5ac50d5d
+  SwiftyStoreKit: c36bb7841dd51a485ce5c38abf9e96fba988741f
 
 PODFILE CHECKSUM: d1449c7174f759a4680dd8dc294b626f2ff0c693
 
