@@ -47,16 +47,4 @@ class FetchedResultsFilterer<ResultType>: NSObject, UISearchResultsUpdating wher
             onChange?()
         }
     }
-
-    var showingSearchResults: Bool {
-        get {
-            return searchController.isActive && searchController.searchBar.text?.isEmpty == false
-        }
-    }
-    
-    func dismissSearch() {
-        self.searchController.isActive = false
-        self.searchController.searchBar.showsCancelButton = false
-        self.updateSearchResults(for: self.searchController)
-    }
 }

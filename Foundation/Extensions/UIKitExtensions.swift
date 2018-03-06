@@ -46,6 +46,10 @@ extension UISearchController {
         searchBar.placeholder = filterPlaceholderText
         searchBar.searchBarStyle = .default
     }
+    
+    var hasActiveSearchTerms: Bool {
+        return self.isActive && self.searchBar.text?.isEmpty == false
+    }
 }
 
 extension UIViewController {

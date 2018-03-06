@@ -9,7 +9,7 @@ class ReadingTable: BookTable {
 
     override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
         // Disable reorderng when searching, or when the sort order is not by date
-        guard !resultsFilterer.showingSearchResults else { return false }
+        guard !searchController.hasActiveSearchTerms else { return false }
         guard UserSettings.tableSortOrder == .byDate else { return false }
         guard let toReadSectionIndex = sectionIndex(forReadState: .toRead) else { return false }
 

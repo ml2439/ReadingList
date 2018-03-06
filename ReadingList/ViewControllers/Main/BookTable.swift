@@ -2,31 +2,9 @@ import UIKit
 import DZNEmptyDataSet
 import CoreData
 
-class BookTableFilterer: FetchedResultsFilterer<Book> {
-    
-    let readStatePredicate: NSPredicate
-    
-    required init(searchController: UISearchController, tableView: UITableView, fetchedResultsControllers: [NSFetchedResultsController<Book>], readStatePredicate: NSPredicate, onChange: (() -> ())?) {
-        self.readStatePredicate = readStatePredicate
-        super.init(searchController: searchController, tableView: tableView, fetchedResultsControllers: fetchedResultsControllers, onChange: onChange)
-    }
-    
-    override func predicate(forSearchText searchText: String?) -> NSPredicate {
-        var predicate = readStatePredicate
-        if let searchText = searchText,
-            !searchText.isEmptyOrWhitespace && searchText.trimming().count >= 2 {
-            let searchPredicate = NSPredicate.wordsWithinFields(searchText, fieldNames: #keyPath(Book.title), #keyPath(Book.authorDisplay), "ANY \(#keyPath(Book.subjects)).name")
-            predicate = NSPredicate.And([readStatePredicate, searchPredicate])
-        }
-        return predicate
-    }
-}
-
-
 class BookTable: UITableViewController {
 
     var resultsController: CompoundFetchedResultsController<Book>!
-    var resultsFilterer: BookTableFilterer!
     var readStates: [BookReadState]!
     var searchController: UISearchController!
     var navigationItemTitle: String!
@@ -35,6 +13,8 @@ class BookTable: UITableViewController {
     
     override func viewDidLoad() {
         searchController = UISearchController(filterPlaceholderText: "Your Library")
+        searchController.searchResultsUpdater = self
+        
         tableView.keyboardDismissMode = .onDrag
         clearsSelectionOnViewWillAppear = false
         navigationItemTitle = readStates.first!.description
@@ -88,19 +68,21 @@ class BookTable: UITableViewController {
         return BookReadState(rawValue: sectionAsInt)!.description
     }
     
+    lazy var defaultPredicates: [NSPredicate] = {
+        return readStates.map{
+            NSPredicate(format: "%K == %ld", #keyPath(Book.readState), $0.rawValue)
+        }
+    }()
+    
     func buildResultsController() {
-        let controllers = readStates.map { readState -> NSFetchedResultsController<Book> in
+        let controllers = defaultPredicates.map { predicate -> NSFetchedResultsController<Book> in
             let f = NSManagedObject.fetchRequest(Book.self, batch: 25)
-            f.predicate = NSPredicate(format: "%K == %ld", #keyPath(Book.readState), readState.rawValue)
+            f.predicate = predicate
             f.sortDescriptors = [NSSortDescriptor(\Book.title)] // TODO
             return NSFetchedResultsController<Book>(fetchRequest: f, managedObjectContext: PersistentStoreManager.container.viewContext, sectionNameKeyPath: #keyPath(Book.readState), cacheName: nil)
         }
         
         resultsController = CompoundFetchedResultsController(controllers: controllers)
-        
-        resultsFilterer = BookTableFilterer(searchController: searchController, tableView: tableView, fetchedResultsControllers: controllers, readStatePredicate: controllers.first!.fetchRequest.predicate!/*readStatePredicate*/) { [unowned self] in
-            self.tableFooter.text = self.footerText()
-        }
         try! resultsController.performFetch()
         resultsController.delegate = self
     }
@@ -416,6 +398,34 @@ class BookTable: UITableViewController {
     }
 }
 
+extension BookTable: UISearchResultsUpdating {
+    func predicate(forSearchText searchText: String?) -> NSPredicate {
+        if let searchText = searchText, !searchText.isEmptyOrWhitespace && searchText.trimming().count >= 2 {
+            return NSPredicate.wordsWithinFields(searchText, fieldNames: #keyPath(Book.title), #keyPath(Book.authorDisplay), "ANY \(#keyPath(Book.subjects)).name")
+        }
+        return NSPredicate(boolean: true)
+    }
+    
+    func updateSearchResults(for searchController: UISearchController) {
+        let predicate = self.predicate(forSearchText: searchController.searchBar.text)
+        
+        /* TODO
+        // We shouldn't need to do anything if the predicate is the same, given that we are tracking changes.
+        var anyChangedPredicates = false
+        for fetchedResultsController in fetchedResultsControllers {
+            if fetchedResultsController.fetchRequest.predicate != predicate {
+                fetchedResultsController.fetchRequest.predicate = predicate
+                try! fetchedResultsController.performFetch()
+                tableView.reloadData()
+                anyChangedPredicates = true
+            }
+        }
+        if anyChangedPredicates {
+            onChange?()
+        }*/
+    }
+}
+
 extension BookTable: NSFetchedResultsControllerDelegate {
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         tableView.controllerWillChangeContent(controller)
@@ -441,7 +451,7 @@ extension BookTable: NSFetchedResultsControllerDelegate {
 extension BookTable: DZNEmptyDataSetSource {
     
     func title(forEmptyDataSet scrollView: UIScrollView!) -> NSAttributedString! {
-        if resultsFilterer.showingSearchResults {
+        if searchController.hasActiveSearchTerms {
             return StandardEmptyDataset.title(withText: "🔍 No Results")
         }
         else if readStates.contains(.reading) {
@@ -453,7 +463,7 @@ extension BookTable: DZNEmptyDataSetSource {
     }
     
     func verticalOffset(forEmptyDataSet scrollView: UIScrollView!) -> CGFloat {
-        if resultsFilterer.showingSearchResults {
+        if searchController.hasActiveSearchTerms {
             // Shift the "no search results" view up a bit, so the keyboard doesn't obscure it
             return -(tableView.frame.height - 150)/4
         }
@@ -469,7 +479,7 @@ extension BookTable: DZNEmptyDataSetSource {
     }
     
     func description(forEmptyDataSet scrollView: UIScrollView!) -> NSAttributedString! {
-        if resultsFilterer.showingSearchResults {
+        if searchController.hasActiveSearchTerms {
             return StandardEmptyDataset.description(withMarkdownText: "Try changing your search, or add a new book by tapping the **+** button above.")
         }
         if readStates.contains(.reading) {
@@ -487,7 +497,7 @@ extension BookTable: DZNEmptyDataSetDelegate {
     // We want to hide the Search Bar when there are no items, but not due to a search filtering everything out.
 
     func emptyDataSetDidAppear(_ scrollView: UIScrollView!) {
-        if !resultsFilterer.showingSearchResults {
+        if !searchController.hasActiveSearchTerms {
             // Deactivate the search controller so that clearing a search term cannot hide an active search bar
             if searchController.isActive { searchController.isActive = false }
             searchController.searchBar.isActiveOrVisible = false
