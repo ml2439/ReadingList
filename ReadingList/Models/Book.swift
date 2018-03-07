@@ -105,7 +105,7 @@ extension Book {
         }
         // FUTURE: This is a bit brute force, deleting all existing authors. Could perhaps inspect for changes first.
         self.authors.map{$0 as! Author}.forEach{$0.delete()}
-        self.authors = NSOrderedSet(array: authorNames.map{Author(context: self.managedObjectContext!, lastName: $0.1, firstNames: $0.0)})
+        self.setAuthors(authorNames.map{Author(context: self.managedObjectContext!, lastName: $0.1, firstNames: $0.0)})
     }
     
     static func get(fromContext context: NSManagedObjectContext, googleBooksId: String? = nil, isbn: String? = nil) -> Book? {
