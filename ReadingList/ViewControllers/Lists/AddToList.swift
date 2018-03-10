@@ -49,7 +49,7 @@ class AddToList: UITableViewController {
         return TextBoxAlertController(title: "Add New List", message: "Enter a name for your list", placeholder: "Enter list name", textValidator: textValidator, onOK: { title in
             let createdList = List(context: PersistentStoreManager.container.viewContext, name: title!)
             createdList.books = NSOrderedSet(array: books)
-            try! PersistentStoreManager.container.viewContext.save()
+            PersistentStoreManager.container.viewContext.saveAndLogIfErrored()
             completion?()
         })
     }

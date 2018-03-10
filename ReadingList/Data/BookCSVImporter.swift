@@ -164,7 +164,7 @@ fileprivate class BookCSVParserDelegate: CSVParserDelegate {
         dispatchGroup.notify(queue: .main) {
             self.context.performAndWait {
                 self.populateLists()
-                try! self.context.save()
+                self.context.saveAndLogIfErrored()
             }
             self.onCompletion(BookCSVImportResults(success: self.successCount, error: self.invalidCount, duplicate: self.duplicateCount))
         }

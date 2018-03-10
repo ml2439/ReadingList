@@ -230,7 +230,7 @@ class BookTable: UITableViewController {
                 for book in selectedRows.map(self.resultsController.object) {
                     book.delete()
                 }
-                try! PersistentStoreManager.container.viewContext.save()
+                PersistentStoreManager.container.viewContext.saveAndLogIfErrored()
                 self.setEditing(false, animated: true)
                 UserEngagement.logEvent(.bulkDeleteBook)
                 UserEngagement.onReviewTrigger()
@@ -350,7 +350,7 @@ class BookTable: UITableViewController {
         if indexPath.section == toReadIndex {
             let startAction = UITableViewRowAction(style: .normal, title: "Start") { [unowned self] rowAction, indexPath in
                 self.resultsController.object(at: indexPath).startReading()
-                try! PersistentStoreManager.container.viewContext.save()
+                PersistentStoreManager.container.viewContext.saveAndLogIfErrored()
             }
             startAction.backgroundColor = UIColor.buttonBlue
             rowActions.append(startAction)
@@ -358,7 +358,7 @@ class BookTable: UITableViewController {
         else if indexPath.section == readingIndex {
             let finishAction = UITableViewRowAction(style: .normal, title: "Finish") { [unowned self] rowAction, indexPath in
                 self.resultsController.object(at: indexPath).finishReading()
-                try! PersistentStoreManager.container.viewContext.save()
+                PersistentStoreManager.container.viewContext.saveAndLogIfErrored()
             }
             finishAction.backgroundColor = UIColor.flatGreen
             rowActions.append(finishAction)
