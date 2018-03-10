@@ -28,6 +28,7 @@ extension ModelVersion {
         
         #if DEBUG
             // Validation check - if multiple model versions match the store, we are in trouble.
+            // Run this check in debug mode only as an optimisation.
             let matchingModels = Self.orderedModelVersions.filter{$0.managedObjectModel().isConfiguration(withName: nil, compatibleWithStoreMetadata: metadata)}
             if matchingModels.count > 1 {
                 fatalError("\(matchingModels.count) model versions matched the current store (\(matchingModels.map{$0.name}.joined(separator: ","))). Cannot guarantee that migrations will be performed correctly")
@@ -39,7 +40,16 @@ extension ModelVersion {
         let version = Self.orderedModelVersions.reversed().first {
             $0.managedObjectModel().isConfiguration(withName: nil, compatibleWithStoreMetadata: metadata)
         }
-        guard let result = version else { fatalError("Current store did not match any model version") }
+        guard let result = version else {
+            #if DEBUG
+                print("##### INCOMPATIBLE STORE DETECTED #####")
+                print("Deleting incompatible store; will initialise new store. This will cause a fatal error on a release build.")
+                NSPersistentStoreCoordinator().destroyAndDeleteStore(at: storeURL)
+                return nil
+            #else
+                fatalError("Current store did not match any model version")
+            #endif
+        }
         self = result
     }
     

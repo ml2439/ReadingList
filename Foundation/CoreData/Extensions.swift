@@ -91,6 +91,24 @@ extension NSManagedObjectContext {
     }
 }
 
+extension NSPersistentStoreCoordinator {
+    
+    /**
+     Attempts to destory and then delete the store at the specified URL. If an error occurs, prints the error; does not rethrow.
+     */
+    public func destroyAndDeleteStore(at url: URL) {
+        do {
+            try destroyPersistentStore(at: url, ofType: NSSQLiteStoreType, options: nil)
+            try FileManager.default.removeItem(at: url)
+            try FileManager.default.removeItem(at: URL(fileURLWithPath: url.path.appending("-shm")))
+            try FileManager.default.removeItem(at: URL(fileURLWithPath: url.path.appending("-wal")))
+        }
+        catch let e {
+            print("failed to destroy or delete persistent store at \(url)", e)
+        }
+    }
+}
+
 extension NSError {
     func descriptiveCode() -> String {
         switch self.code {
