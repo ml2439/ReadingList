@@ -53,14 +53,14 @@ extension NSPersistentContainer {
         
         // For each migration step, migrate to a temporary URL and destroy the previous one (except for the sourceURL)
         var currentMigrationStepURL = storeURL
-        for step in migrationSteps {
+        for (stepNumber, step) in migrationSteps.enumerated() {
             let temporaryURL = URL.temporary()
 
             let manager = NSMigrationManager(sourceModel: step.source, destinationModel: step.destination)
             try! manager.migrateStore(from: currentMigrationStepURL, sourceType: NSSQLiteStoreType, options: nil, with: step.mapping, toDestinationURL: temporaryURL, destinationType: NSSQLiteStoreType, destinationOptions: nil)
             
             currentMigrationStepURL = temporaryURL
-            print("Migration step complete")
+            print("Migration step \(stepNumber + 1) complete")
         }
         
         // Once all migrations are done, place the current temporary store at the original location
