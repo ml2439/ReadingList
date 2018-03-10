@@ -61,7 +61,7 @@ class ReadingTable: BookTable {
             sortIndex += 1
         }
         
-        try! PersistentStoreManager.container.viewContext.save()
+        PersistentStoreManager.container.viewContext.saveAndLogIfErrored()
         try! resultsController.performFetch()
 
         resultsController.delegate = self
@@ -83,7 +83,7 @@ class ReadingTable: BookTable {
             else {
                 book.finishReading()
             }
-            try! book.managedObjectContext!.save()
+            book.managedObjectContext!.saveAndLogIfErrored()
             UserEngagement.logEvent(.transitionReadState)
             callback(true)
         }

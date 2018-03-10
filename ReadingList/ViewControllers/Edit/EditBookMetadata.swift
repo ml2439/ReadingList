@@ -331,6 +331,17 @@ class AddAuthorForm: FormViewController {
             }
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+
+        // The removal of the presenting row should be at the point of disappear, since viewWillDisappear
+        // is called when a right-swipe is started - the user could reverse and bring this view back
+        let lastName = (form.rowBy(tag: lastNameRow) as! NameRow).value
+        if lastName?.isEmptyOrWhitespace != false {
+            presentingRow.removeSelf()
+        }
+    }
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
@@ -339,9 +350,6 @@ class AddAuthorForm: FormViewController {
             presentingRow.firstNames = (form.rowBy(tag: firstNamesRow) as! NameRow).value
             presentingRow.reload()
             (presentingRow.section as! AuthorSection).rebuildAuthors()
-        }
-        else {
-            presentingRow.removeSelf()
         }
     }
 }

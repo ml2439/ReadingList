@@ -245,7 +245,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         else {
             book.finishReading()
         }
-        try! book.managedObjectContext!.save()
+        book.managedObjectContext!.saveAndLogIfErrored()
 
         UserEngagement.logEvent(.transitionReadState)
         UserEngagement.onReviewTrigger()
@@ -320,14 +320,14 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
             if book.readState == .toRead {
                 previewActions.append(UIPreviewAction(title: "Start", style: .default){ _,_ in
                     book.startReading()
-                    try! book.managedObjectContext!.save()
+                    book.managedObjectContext!.saveAndLogIfErrored()
                     UserEngagement.logEvent(.transitionReadState)
                 })
             }
             else if book.readState == .reading {
                 previewActions.append(UIPreviewAction(title: "Finish", style: .default){ _,_ in
                     book.finishReading()
-                    try! book.managedObjectContext!.save()
+                    book.managedObjectContext!.saveAndLogIfErrored()
                     UserEngagement.logEvent(.transitionReadState)
                 })
             }

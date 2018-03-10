@@ -1,5 +1,6 @@
 import Foundation
 import CoreData
+import Fabric
 
 extension NSManagedObject {
     func delete() {
@@ -9,7 +10,7 @@ extension NSManagedObject {
     
     func deleteAndSave() {
         delete()
-        try! managedObjectContext!.save()
+        managedObjectContext!.saveAndLogIfErrored()
     }
     
     static func fetchRequest<T: NSManagedObject>(_ type: T.Type, limit: Int? = nil, batch: Int? = nil) -> NSFetchRequest<T> {
@@ -36,6 +37,19 @@ extension NSManagedObject {
 extension NSManagedObjectContext {
     
     /**
+     Tries to save the managed object context and logs an event and raises a fatal error if failure occurs.
+    */
+    func saveAndLogIfErrored() {
+        do {
+            try self.save()
+        }
+        catch let error {
+            Fabric.log((error as NSError).getCoreDataSaveErrorDescription())
+            fatalError(error.localizedDescription)
+        }
+    }
+    
+    /**
      Creates a child managed object context, and adds an observer to the child context's save event in order to trigger a merge and save
     */
     func childContext(concurrencyType: NSManagedObjectContextConcurrencyType = .mainQueueConcurrencyType) -> NSManagedObjectContext {
@@ -50,7 +64,7 @@ extension NSManagedObjectContext {
     
     @objc private func mergeAndSave(fromChildContextDidSave notification: Notification) {
         self.mergeChanges(fromContextDidSave: notification)
-        try! self.save()
+        self.saveAndLogIfErrored()
     }
     
     /**
@@ -61,26 +75,69 @@ extension NSManagedObjectContext {
     }
     
     /**
-     Saves if changes are present in the context. If an error occurs, produces a fatalError.
+     Saves if changes are present in the context.
     */
     @discardableResult func saveIfChanged() -> Bool {
         guard hasChanges else { return false }
-        try! save()
+        self.saveAndLogIfErrored()
         return true
     }
     
     func performAndSave(block: @escaping () -> ()) {
         perform { [unowned self] in
             block()
-            try! self.save()
+            self.saveAndLogIfErrored()
+        }
+    }
+}
+
+extension NSPersistentStoreCoordinator {
+    
+    /**
+     Attempts to destory and then delete the store at the specified URL. If an error occurs, prints the error; does not rethrow.
+     */
+    public func destroyAndDeleteStore(at url: URL) {
+        do {
+            try destroyPersistentStore(at: url, ofType: NSSQLiteStoreType, options: nil)
+            try FileManager.default.removeItem(at: url)
+            try FileManager.default.removeItem(at: URL(fileURLWithPath: url.path.appending("-shm")))
+            try FileManager.default.removeItem(at: URL(fileURLWithPath: url.path.appending("-wal")))
+        }
+        catch let e {
+            print("failed to destroy or delete persistent store at \(url)", e)
+        }
+    }
+}
+
+extension NSError {
+    func descriptiveCode() -> String {
+        switch self.code {
+        case NSManagedObjectValidationError: return "NSManagedObjectValidationError"
+        case NSValidationMissingMandatoryPropertyError: return "NSValidationMissingMandatoryPropertyError"
+        case NSValidationRelationshipLacksMinimumCountError: return "NSValidationRelationshipLacksMinimumCountError"
+        case NSValidationRelationshipExceedsMaximumCountError: return "NSValidationRelationshipExceedsMaximumCountError"
+        case NSValidationRelationshipDeniedDeleteError: return "NSValidationRelationshipDeniedDeleteError"
+        case NSValidationNumberTooLargeError: return "NSValidationNumberTooLargeError"
+        case NSValidationNumberTooSmallError: return "NSValidationNumberTooSmallError"
+        case NSValidationDateTooLateError: return "NSValidationDateTooLateError"
+        case NSValidationDateTooSoonError: return "NSValidationDateTooSoonError"
+        case NSValidationInvalidDateError: return "NSValidationInvalidDateError"
+        case NSValidationStringTooLongError: return "NSValidationStringTooLongError"
+        case NSValidationStringTooShortError: return "NSValidationStringTooShortError"
+        case NSValidationStringPatternMatchingError: return "NSValidationStringPatternMatchingError"
+        default: return String(self.code)
         }
     }
     
-    func performAndSaveAndWait(block: @escaping (_ context: NSManagedObjectContext) -> ()) {
-        performAndWait { [unowned self] in
-            block(self)
-            try! self.save()
+    func getCoreDataSaveErrorDescription() -> String {
+        if self.code == NSValidationMultipleErrorsError {
+            guard let errors = self.userInfo[NSDetailedErrorsKey] as? [NSError] else { return "\"Multiple errors\" error without detail" }
+            return errors.flatMap{$0.getCoreDataSaveErrorDescription()}.joined(separator: "; ")
         }
+        
+        let entityName = (self.userInfo["NSValidationErrorObject"] as? NSManagedObject)?.entity.name ?? "Unknown"
+        let attributeName = self.userInfo["NSValidationErrorKey"] as? String ?? "Unknown"
+        return "Save error for entity \"\(entityName)\", attribute \"\(attributeName)\": \(self.descriptiveCode())"
     }
 }
 

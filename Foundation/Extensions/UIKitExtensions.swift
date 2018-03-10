@@ -239,6 +239,19 @@ extension UITableView {
     }
 }
 
+extension UITableViewCell {
+    var isEnabled: Bool {
+        get {
+            return isUserInteractionEnabled && textLabel?.isEnabled != false && detailTextLabel?.isEnabled != false
+        }
+        set {
+            isUserInteractionEnabled = newValue
+            textLabel?.isEnabled = newValue
+            detailTextLabel?.isEnabled = newValue
+        }
+    }
+}
+
 extension UIDevice {
     
     // From https://stackoverflow.com/a/26962452/5513562

@@ -94,6 +94,29 @@ extension String.SubSequence {
     }
 }
 
+extension FileManager {
+    func removeTemporaryFiles() {
+        let tmpFiles: [URL]
+        do {
+            tmpFiles = try FileManager.default.contentsOfDirectory(at: URL(string: NSTemporaryDirectory())!, includingPropertiesForKeys: nil, options: .skipsHiddenFiles)
+        }
+        catch {
+            print("Error enumerating temporary directory: \(error)")
+            return
+        }
+        
+        for url in tmpFiles {
+            do {
+                try FileManager.default.removeItem(at: url)
+                print("Removed temporary file: \(url.path)")
+            }
+            catch {
+                print("Unable to remove temporary file: \(url.path)")
+            }
+        }
+    }
+}
+
 extension Array where Element: Equatable {
     func distinct() -> [Element] {
         var uniqueValues: [Element] = []

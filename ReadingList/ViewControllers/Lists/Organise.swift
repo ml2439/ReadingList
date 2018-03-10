@@ -26,6 +26,13 @@ class Organise: UITableViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(refetch), name: NSNotification.Name.PersistentStoreBatchOperationOccurred, object: nil)
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        if #available(iOS 11.0, *) {
+            navigationController!.navigationBar.prefersLargeTitles = UserSettings.useLargeTitles.value
+        }
+        super.viewWillAppear(animated)
+    }
+    
     @objc func refetch() {
         try! self.resultsController.performFetch()
         self.tableView.reloadData()

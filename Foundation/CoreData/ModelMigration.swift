@@ -52,43 +52,22 @@ extension NSPersistentContainer {
         print("Migrating store \(storeURL.lastPathComponent): \(migrationSteps.count) migration steps detected")
         
         // For each migration step, migrate to a temporary URL and destroy the previous one (except for the sourceURL)
-        var currentURL = storeURL
-        for step in migrationSteps {
-            let destinationURL = URL.temporary()
+        var currentMigrationStepURL = storeURL
+        for (stepNumber, step) in migrationSteps.enumerated() {
+            let temporaryURL = URL.temporary()
 
             let manager = NSMigrationManager(sourceModel: step.source, destinationModel: step.destination)
-            try! manager.migrateStore(from: currentURL, sourceType: NSSQLiteStoreType, options: nil, with: step.mapping, toDestinationURL: destinationURL, destinationType: NSSQLiteStoreType, destinationOptions: nil)
+            try! manager.migrateStore(from: currentMigrationStepURL, sourceType: NSSQLiteStoreType, options: nil, with: step.mapping, toDestinationURL: temporaryURL, destinationType: NSSQLiteStoreType, destinationOptions: nil)
             
-            // Only destroy the intermediate stores - the ones in the temporary directory
-            if currentURL != storeURL {
-                persistentStoreCoordinator.destroyAndDeleteStore(at: currentURL)
-            }
-            
-            currentURL = destinationURL
-            print("Migration step complete")
+            currentMigrationStepURL = temporaryURL
+            print("Migration step \(stepNumber + 1) complete")
         }
         
-        // Once all migrations are done, place the current temporary store at the target URL
-        try! persistentStoreCoordinator.replacePersistentStore(at: storeURL, destinationOptions: nil, withPersistentStoreFrom: currentURL, sourceOptions: nil, ofType: NSSQLiteStoreType)
+        // Once all migrations are done, place the current temporary store at the original location
+        try! persistentStoreCoordinator.replacePersistentStore(at: storeURL, destinationOptions: nil, withPersistentStoreFrom: currentMigrationStepURL, sourceOptions: nil, ofType: NSSQLiteStoreType)
         print("Persistent store replaced")
+        
+        // Remove any temporary store files once the migration is complete
+        FileManager.default.removeTemporaryFiles()
     }
 }
-
-extension NSPersistentStoreCoordinator {
-    
-    /**
-     Attempts to destory and then delete the store at the specified URL. If an error occurs, prints the error; does not rethrow.
-     */
-    public func destroyAndDeleteStore(at url: URL) {
-        do {
-            try destroyPersistentStore(at: url, ofType: NSSQLiteStoreType, options: nil)
-            try FileManager.default.removeItem(at: url)
-            try FileManager.default.removeItem(at: URL(fileURLWithPath: url.path.appending("-shm")))
-            try FileManager.default.removeItem(at: URL(fileURLWithPath: url.path.appending("-wal")))
-        }
-        catch let e {
-            print("failed to destroy or delete persistent store at \(url)", e)
-        }
-    }
-}
-

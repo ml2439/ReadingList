@@ -20,6 +20,13 @@ class ListBookTable: UITableViewController {
         registerForSaveNotifications()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        if #available(iOS 11.0, *) {
+            navigationController!.navigationBar.prefersLargeTitles = UserSettings.useLargeTitles.value
+        }
+        super.viewWillAppear(animated)
+    }
+    
     func registerForSaveNotifications() {
         // Watch for changes in the managed object context, in order to update the table
         NotificationCenter.default.addObserver(self, selector: #selector(changeOccurred(_:)), name: NSNotification.Name.NSManagedObjectContextObjectsDidChange, object: list.managedObjectContext!)
@@ -67,7 +74,7 @@ class ListBookTable: UITableViewController {
     private func removeBook(at indexPath: IndexPath) {
         let bookToRemove = list.books[indexPath.row]
         list.removeBooks(NSSet(array: ([bookToRemove])))
-        try! list.managedObjectContext!.save()
+        list.managedObjectContext!.saveAndLogIfErrored()
         UserEngagement.logEvent(.removeBookFromList)
     }
     
@@ -90,7 +97,7 @@ class ListBookTable: UITableViewController {
             let movedBook = books.remove(at: sourceIndexPath.row)
             books.insert(movedBook, at: destinationIndexPath.row)
             list.books = NSOrderedSet(array: books)
-            try! list.managedObjectContext!.save()
+            list.managedObjectContext!.saveAndLogIfErrored()
         }
         UserEngagement.logEvent(.reorederList)
     }

@@ -5,13 +5,13 @@ import CoreData
 
 class ModelTests: XCTestCase {
     
+    var testContainer: NSPersistentContainer!
+
     override func setUp() {
         super.setUp()
         testContainer = NSPersistentContainer(inMemoryStoreWithName: "books")
         testContainer.loadPersistentStores{ _,_ in }
     }
-    
-    var testContainer: NSPersistentContainer!
     
     func testBookSort() {
         let maxSort = Book.maxSort(fromContext: testContainer.viewContext) ?? 0
