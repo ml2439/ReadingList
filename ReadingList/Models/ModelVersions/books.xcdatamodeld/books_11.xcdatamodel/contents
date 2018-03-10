@@ -50,8 +50,8 @@
             <fetchIndexElement property="authorDisplay" type="Binary" order="ascending"/>
         </fetchIndex>
     </entity>
-    <entity name="List" representedClassName="List" syncable="YES">
-        <attribute name="name" attributeType="String" minValueString="1" maxValueString="100" syncable="YES"/>
+    <entity name="List" representedClassName="List" versionHashModifier="v11" syncable="YES">
+        <attribute name="name" attributeType="String" syncable="YES"/>
         <relationship name="books" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Book" inverseName="lists" inverseEntity="Book" syncable="YES"/>
         <fetchIndex name="name">
             <fetchIndexElement property="name" type="Binary" order="ascending"/>
