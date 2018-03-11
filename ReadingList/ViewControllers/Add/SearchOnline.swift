@@ -15,26 +15,13 @@ class SearchOnline: UITableViewController {
     private var searchController: UISearchController!
     private let feedbackGenerator = UINotificationFeedbackGenerator()
     private let emptyDatasetView = UINib.instantiate(SearchBooksEmptyDataset.self)
-
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        return tableItems.isEmpty ? 0 : 1
-    }
-    
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return section == 0 ? tableItems.count : 0
-    }
-    
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "SearchResultCell", for: indexPath) as! SearchResultCell
-        cell.updateDisplay(from: tableItems[indexPath.row])
-        return cell
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         tableView.tableFooterView = UIView()
         tableView.backgroundView = emptyDatasetView
+        tableView.register(BookTableViewCell.self, forCellReuseIdentifier: String(describing: BookTableViewCell.self))
 
         searchController = NoCancelButtonSearchController(searchResultsController: nil)
         searchController.obscuresBackgroundDuringPresentation = false
@@ -80,6 +67,20 @@ class SearchOnline: UITableViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         navigationController!.setToolbarHidden(true, animated: true)
+    }
+    
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return tableItems.isEmpty ? 0 : 1
+    }
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return section == 0 ? tableItems.count : 0
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "BookTableViewCell", for: indexPath) as! BookTableViewCell
+        cell.configureFrom(tableItems[indexPath.row])
+        return cell
     }
     
     override func viewDidLayoutSubviews() {
