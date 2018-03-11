@@ -32,21 +32,36 @@ class CompoundFetchedResultsController<T: NSFetchRequestResult>: NSObject, NSFet
         // To get the flattened sections array, we simply reduce-by-concatenation the inner controllers' sections arrays.
         get { return controllers.flatMap{$0.sections}.reduce([], +) }
     }
+
+    private func sectionOffset(forController controller: NSFetchedResultsController<T>) -> Int {
+        // Determine the index of the specified controller
+        let controllerIndex = controllers.index(of: controller)!
+        
+        // Count the number of sections present in all controllers up to (but not including) the supplied controller
+        return controllers.prefix(upTo: controllerIndex).map{$0.sections!.count}.reduce(0, +)
+    }
     
     func object(at indexPath: IndexPath) -> T {
-        // Use the flattened sections array to get the object at the (flattened) index path
-        return sections![indexPath.section].objects![indexPath.row] as! T
+        // Sum the section counts of the controllers, in order, until we exceed the section of the supplied index path.
+        // At that point, we have identifiers the controller which should be used to obtain the object, and just
+        // adjust the supplied index path's section accordingly.
+        var sectionCount = 0
+        for controller in controllers {
+            if sectionCount + controller.sections!.count <= indexPath.section {
+                sectionCount += controller.sections!.count
+            }
+            else {
+                return controller.object(at: IndexPath(row: indexPath.row, section: indexPath.section - sectionCount))
+            }
+        }
+        fatalError("Could not find index path \(indexPath).")
     }
     
     func indexPath(forObject object: T) -> IndexPath? {
-        // FUTURE: This overlaps a bit with sectionOffset(), but can't see an obvious way of incorporating it.
-        var sectionOffset = 0
+        // Given an object, to determine which controller it is in, we just query each controller in turn.
         for controller in controllers {
             if let indexPath = controller.indexPath(forObject: object) {
-                return IndexPath(row: indexPath.row, section: sectionOffset + indexPath.section)
-            }
-            else {
-                sectionOffset = controller.sections!.count
+                return IndexPath(row: indexPath.row, section: sectionOffset(forController: controller) + indexPath.section)
             }
         }
         return nil
@@ -62,17 +77,9 @@ class CompoundFetchedResultsController<T: NSFetchRequestResult>: NSObject, NSFet
         delegate?.controllerDidChangeContent?(controller)
     }
     
-    private func sectionOffset(forController controller: NSFetchedResultsController<NSFetchRequestResult>) -> Int {
-        // Determine the index of the specified controller
-        let controllerIndex = controllers.index(of: controller as! NSFetchedResultsController<T>)!
-        
-        // Count the number of sections present in all controllers up to (but not including) the supplied controller
-        return controllers.prefix(upTo: controllerIndex).map{$0.sections!.count}.reduce(0, +)
-    }
-    
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         
-        let sectionOffset = self.sectionOffset(forController: controller)
+        let sectionOffset = self.sectionOffset(forController: controller as! NSFetchedResultsController<T>)
         
         // Index Paths should be adjusted by adding to the section offset to the section index
         func adjustIndexPath(_ indexPath: IndexPath?) -> IndexPath? {
@@ -86,7 +93,7 @@ class CompoundFetchedResultsController<T: NSFetchRequestResult>: NSObject, NSFet
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
         
-        let sectionOffset = self.sectionOffset(forController: controller)
+        let sectionOffset = self.sectionOffset(forController: controller as! NSFetchedResultsController<T>)
         
         // Forward on the notification with the adjusted section index
         delegate?.controller?(controller, didChange: sectionInfo, atSectionIndex: sectionIndex + sectionOffset, for: type)
