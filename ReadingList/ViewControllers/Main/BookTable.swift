@@ -17,7 +17,7 @@ class BookTable: UITableViewController {
         
         tableView.keyboardDismissMode = .onDrag
         clearsSelectionOnViewWillAppear = false
-        navigationItemTitle = readStates.first!.description
+        navigationItemTitle = readStates.last!.description
         navigationItem.title = navigationItemTitle
         
         // Handle the data fetch, sort and filtering
