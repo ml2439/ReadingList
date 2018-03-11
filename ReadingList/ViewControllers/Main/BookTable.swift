@@ -189,7 +189,9 @@ class BookTable: UITableViewController {
                     if readState == .toRead {
                         book.startReading()
                     }
-                    else {
+                    else if book.startedReading! < Date() {
+                        // It is not "invalid" to have a book with a started date in the future; but it is invalid
+                        // to have a finish date before the start date.
                         book.finishReading()
                     }
                 }
@@ -338,12 +340,15 @@ class BookTable: UITableViewController {
             rowActions.append(startAction)
         }
         else if indexPath.section == readingIndex {
-            let finishAction = UITableViewRowAction(style: .normal, title: "Finish") { [unowned self] rowAction, indexPath in
-                self.resultsController.object(at: indexPath).finishReading()
-                PersistentStoreManager.container.viewContext.saveAndLogIfErrored()
+            let readingBook = self.resultsController.object(at: indexPath)
+            if readingBook.startedReading! < Date() {
+                let finishAction = UITableViewRowAction(style: .normal, title: "Finish") { rowAction, indexPath in
+                    readingBook.finishReading()
+                    PersistentStoreManager.container.viewContext.saveAndLogIfErrored()
+                }
+                finishAction.backgroundColor = UIColor.flatGreen
+                rowActions.append(finishAction)
             }
-            finishAction.backgroundColor = UIColor.flatGreen
-            rowActions.append(finishAction)
         }
         
         return rowActions

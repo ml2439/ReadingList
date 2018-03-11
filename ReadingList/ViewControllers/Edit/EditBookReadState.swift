@@ -146,11 +146,10 @@ class EditBookReadState: FormViewController {
     @objc func donePressed() {
         self.view.endEditing(true)
         editContext.saveIfChanged()
-        if newBook {
-            appDelegate.tabBarController.selectTab(forState: book.readState)
-        }
         presentingViewController!.dismiss(animated: true) { [unowned self] in
-            appDelegate.tabBarController.simulateBookSelection(self.book, allowTableObscuring: false)
+            if self.newBook {
+                appDelegate.tabBarController.simulateBookSelection(self.book, allowTableObscuring: false)
+            }
             UserEngagement.onReviewTrigger()
         }
     }

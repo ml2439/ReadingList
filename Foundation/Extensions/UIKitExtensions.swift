@@ -21,6 +21,11 @@ extension UIView {
             layer.masksToBounds = newValue > 0
         }
     }
+    
+    convenience init(backgroundColor: UIColor) {
+        self.init()
+        self.backgroundColor = backgroundColor
+    }
 }
 
 
@@ -35,6 +40,14 @@ extension UIStoryboard {
     
     func rootAsFormSheet() -> UIViewController {
         return instantiateRoot(withStyle: .formSheet)
+    }
+}
+
+@available(iOS 11.0, *)
+extension UISwipeActionsConfiguration {
+    convenience init(performFirstActionWithFullSwipe: Bool, actions: [UIContextualAction]) {
+        self.init(actions: actions)
+        self.performsFirstActionWithFullSwipe = performFirstActionWithFullSwipe
     }
 }
 
