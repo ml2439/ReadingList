@@ -52,10 +52,10 @@ extension NSManagedObjectContext {
     /**
      Creates a child managed object context, and adds an observer to the child context's save event in order to trigger a merge and save
     */
-    func childContext(concurrencyType: NSManagedObjectContextConcurrencyType = .mainQueueConcurrencyType) -> NSManagedObjectContext {
+    func childContext(concurrencyType: NSManagedObjectContextConcurrencyType = .mainQueueConcurrencyType, autoMerge: Bool = true) -> NSManagedObjectContext {
         let childContext = NSManagedObjectContext(concurrencyType: concurrencyType)
         childContext.parent = self
-        childContext.automaticallyMergesChangesFromParent = true
+        childContext.automaticallyMergesChangesFromParent = autoMerge
         
         NotificationCenter.default.addObserver(self, selector: #selector(mergeAndSave(fromChildContextDidSave:)), name: NSNotification.Name.NSManagedObjectContextDidSave, object: childContext)
         

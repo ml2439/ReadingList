@@ -35,6 +35,16 @@ extension String {
     var sortable: String {
         get { return self.folding(options: [.diacriticInsensitive, .caseInsensitive], locale: Locale.current) }
     }
+    
+    func append(toFile file: URL, encoding: String.Encoding) throws {
+        if let fileHandle = try? FileHandle(forWritingTo: file) {
+            fileHandle.seekToEndOfFile()
+            fileHandle.write(self.data(using: encoding)!)
+        }
+        else {
+            try self.write(to: file, atomically: false, encoding: encoding)
+        }
+    }
 }
 
 extension Int {
@@ -75,8 +85,12 @@ extension NSSortDescriptor {
 }
 
 extension URL {
+    static func temporary(fileWithName fileName: String) -> URL {
+        return URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(fileName)
+    }
+    
     static func temporary() -> URL {
-        return URL(fileURLWithPath:NSTemporaryDirectory(), isDirectory: true).appendingPathComponent(UUID().uuidString)
+        return URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true).appendingPathComponent(UUID().uuidString)
     }
 
     static var documents: URL {
