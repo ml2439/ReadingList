@@ -13,6 +13,17 @@ class Settings: UITableViewController {
         }
     }
     
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
+        if !appDelegate.tabBarController.selectedSplitViewController!.isSplit { return cell }
+        
+        // In split mode, change the cells a little to look more like the standard iOS settings app
+        cell.selectedBackgroundView = UIView(backgroundColor: UIColor(fromHex: 5350396))
+        cell.textLabel!.highlightedTextColor = UIColor.white
+        cell.accessoryType = .none
+        return cell
+    }
+
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch (indexPath.section, indexPath.row) {
         case (0, 1): UIApplication.shared.open(URL(string: "itms-apps://\(Settings.appStoreAddress)?action=write-review")!, options: [:])

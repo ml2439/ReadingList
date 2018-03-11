@@ -238,7 +238,7 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="0wo-HB-QfE" imageView="yoY-MX-cJu" style="IBUITableViewCellStyleDefault" id="j8B-T2-Qce">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="0wo-HB-QfE" imageView="yoY-MX-cJu" style="IBUITableViewCellStyleDefault" id="j8B-T2-Qce">
                                         <rect key="frame" x="0.0" y="231" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="j8B-T2-Qce" id="jik-qc-EOJ">

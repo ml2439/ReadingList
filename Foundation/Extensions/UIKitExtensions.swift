@@ -21,6 +21,11 @@ extension UIView {
             layer.masksToBounds = newValue > 0
         }
     }
+    
+    convenience init(backgroundColor: UIColor) {
+        self.init()
+        self.backgroundColor = backgroundColor
+    }
 }
 
 
