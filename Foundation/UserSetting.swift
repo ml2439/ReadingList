@@ -11,7 +11,8 @@ struct UserSetting<SettingType> {
     
     var value: SettingType {
         get {
-            return UserDefaults.standard.object(forKey: key) as? SettingType ?? defaultValue
+            guard let settingsObject = UserDefaults.standard.object(forKey: key) else { return defaultValue }
+            return settingsObject as! SettingType
         }
         set {
             UserDefaults.standard.set(newValue, forKey: key)
