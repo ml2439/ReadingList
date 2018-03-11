@@ -71,8 +71,16 @@ class ReadingTable: BookTable {
         if let superConfiguration = super.tableView(tableView, leadingSwipeActionsConfigurationForRowAt: indexPath) {
             actions.append(contentsOf: superConfiguration.actions)
         }
-        
+
         let readStateOfSection = readStateForSection(indexPath.section)
+
+        guard readStateOfSection != .reading || resultsController.object(at: indexPath).startedReading! < Date() else {
+            // It is not "invalid" to have a book with a started date in the future; but it is invalid
+            // to have a finish date before the start date. Therefore, hide the finish action if
+            // this would be the case.
+            return UISwipeActionsConfiguration(performFirstActionWithFullSwipe: false, actions: actions)
+        }
+        
         let leadingSwipeAction = UIContextualAction(style: .normal, title: readStateOfSection == .toRead ? "Start" : "Finish") { [unowned self] _,_,callback in
             let book = self.resultsController.object(at: indexPath)
             if readStateOfSection == .toRead {
@@ -89,10 +97,7 @@ class ReadingTable: BookTable {
         leadingSwipeAction.image = readStateOfSection == .toRead ? #imageLiteral(resourceName: "Play") : #imageLiteral(resourceName: "Complete")
         actions.insert(leadingSwipeAction, at: 0)
         
-        let configuration = UISwipeActionsConfiguration(actions: actions)
-        configuration.performsFirstActionWithFullSwipe = true
-        
-        return configuration
+        return UISwipeActionsConfiguration(actions: actions)
     }
 
     override func footerText() -> String? {

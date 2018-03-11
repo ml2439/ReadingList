@@ -38,6 +38,14 @@ extension UIStoryboard {
     }
 }
 
+@available(iOS 11.0, *)
+extension UISwipeActionsConfiguration {
+    convenience init(performFirstActionWithFullSwipe: Bool, actions: [UIContextualAction]) {
+        self.init(actions: actions)
+        self.performsFirstActionWithFullSwipe = performFirstActionWithFullSwipe
+    }
+}
+
 extension UISearchController {
     convenience init(filterPlaceholderText: String) {
         self.init(searchResultsController: nil)

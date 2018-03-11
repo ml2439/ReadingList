@@ -61,7 +61,10 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         case .toRead:
             changeReadStateButton.setState(.start)
         case .reading:
-            changeReadStateButton.setState(.finish)
+            // It is not "invalid" to have a book with a started date in the future; but it is invalid
+            // to have a finish date before the start date. Therefore, hide the finish button if
+            // this would be the case.
+            changeReadStateButton.setState(book.startedReading! < Date() ? .finish : .none)
         case .finished:
             changeReadStateButton.setState(.none)
         }
