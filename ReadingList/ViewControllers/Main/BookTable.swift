@@ -16,6 +16,8 @@ class BookTable: UITableViewController {
         searchController.searchResultsUpdater = self
         
         tableView.keyboardDismissMode = .onDrag
+        tableView.register(UINib(BookTableViewCell.self), forCellReuseIdentifier: String(describing: BookTableViewCell.self))
+
         clearsSelectionOnViewWillAppear = false
         navigationItemTitle = readStates.first!.description
         navigationItem.title = navigationItemTitle
@@ -145,9 +147,13 @@ class BookTable: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard isEditing else { return }
-        navigationItem.rightBarButtonItem!.isEnabled = true
-        navigationItem.title = "\(tableView.indexPathsForSelectedRows!.count) Selected"
+        if isEditing {
+            navigationItem.rightBarButtonItem!.isEnabled = true
+            navigationItem.title = "\(tableView.indexPathsForSelectedRows!.count) Selected"
+        }
+        else {
+            performSegue(withIdentifier: "showDetail", sender: tableView.cellForRow(at: indexPath)!)
+        }
     }
     
     override func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
