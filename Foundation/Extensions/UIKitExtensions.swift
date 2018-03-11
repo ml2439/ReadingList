@@ -82,11 +82,15 @@ extension UINavigationController {
 
 extension UIPopoverPresentationController {
     
-    func setSourceCell(atIndexPath indexPath: IndexPath, inTable tableView: UITableView, arrowDirections: UIPopoverArrowDirection = .any) {
-        let cell = tableView.cellForRow(at: indexPath)!
+    func setSourceCell(_ cell: UITableViewCell, inTableView tableView: UITableView, arrowDirections: UIPopoverArrowDirection = .any) {
         self.sourceRect = cell.frame
         self.sourceView = tableView
         self.permittedArrowDirections = arrowDirections
+    }
+    
+    func setSourceCell(atIndexPath indexPath: IndexPath, inTable tableView: UITableView, arrowDirections: UIPopoverArrowDirection = .any) {
+        let cell = tableView.cellForRow(at: indexPath)!
+        setSourceCell(cell, inTableView: tableView, arrowDirections: arrowDirections)
     }
 }
 

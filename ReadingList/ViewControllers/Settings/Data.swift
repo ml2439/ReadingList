@@ -30,9 +30,7 @@ class DataVC: UITableViewController {
     func requestImport(presentingIndexPath: IndexPath) {
         let documentImport = UIDocumentMenuViewController(documentTypes: ["public.comma-separated-values-text"], in: .import)
         documentImport.delegate = self
-        if let popPresenter = documentImport.popoverPresentationController {
-            popPresenter.setSourceCell(atIndexPath: presentingIndexPath, inTable: tableView, arrowDirections: .up)
-        }
+        documentImport.popoverPresentationController?.setSourceCell(atIndexPath: presentingIndexPath, inTable: tableView, arrowDirections: .up)
         present(documentImport, animated: true)
     }
     
@@ -59,48 +57,34 @@ class DataVC: UITableViewController {
         SVProgressHUD.show(withStatus: "Generating...")
         
         let listNames = List.names(fromContext: PersistentStoreManager.container.viewContext)
-        let exporter = CsvExporter(csvExport: BookCSVExport.build(withLists: listNames))
         
-        // FUTURE: Should be batching the fetch and not holding the result entirely in memory
+        let temporaryFilePath = URL.temporary(fileWithName: "Reading List - \(UIDevice.current.name) - \(Date().string(withDateFormat: "yyyy-MM-dd hh-mm")).csv")
+        let exporter = CsvExporter(filePath: temporaryFilePath, csvExport: BookCSVExport.build(withLists: listNames))
+        
         let exportAll = NSManagedObject.fetchRequest(Book.self)
         exportAll.sortDescriptors = [NSSortDescriptor(\Book.readState), NSSortDescriptor(\Book.sort), NSSortDescriptor(\Book.startedReading), NSSortDescriptor(\Book.finishedReading)]
-        try! PersistentStoreManager.container.viewContext.execute(NSAsynchronousFetchRequest(fetchRequest: exportAll) {
-            exporter.addData($0.finalResult ?? [])
-            self.renderAndServeCsvExport(exporter, presentingIndexPath: presentingIndexPath)
-        })
-    }
-    
-    func renderAndServeCsvExport(_ exporter: CsvExporter<Book>, presentingIndexPath: IndexPath) {
-        DispatchQueue.global(qos: .userInitiated).async {
-            
-            // Write the document to a temporary file
-            let exportFileName = "Reading List - \(UIDevice.current.name) - \(Date().string(withDateFormat: "yyyy-MM-dd hh-mm")).csv"
-            let temporaryFilePath = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(exportFileName)
-            do {
-                try exporter.write(to: temporaryFilePath)
-            }
-            catch {
-                Crashlytics.sharedInstance().recordError(error)
-                DispatchQueue.main.async {
-                    SVProgressHUD.dismiss()
-                    SVProgressHUD.showError(withStatus: "Error exporting data.")
-                }
-                return
-            }
-            
-            // Present a dialog with the resulting file
-            let activityViewController = UIActivityViewController(activityItems: [temporaryFilePath], applicationActivities: [])
-            activityViewController.excludedActivityTypes = UIActivityType.documentUnsuitableTypes
-            
-            if let popPresenter = activityViewController.popoverPresentationController {
-                popPresenter.setSourceCell(atIndexPath: presentingIndexPath, inTable: self.tableView)
-            }
-            
+        exportAll.relationshipKeyPathsForPrefetching = [#keyPath(Book.subjects), #keyPath(Book.authors), #keyPath(Book.lists)]
+        exportAll.returnsObjectsAsFaults = false
+        exportAll.fetchBatchSize = 50
+        
+        let context = PersistentStoreManager.container.viewContext.childContext(concurrencyType: .privateQueueConcurrencyType, autoMerge: false)
+        context.perform {
+            let results = try! context.fetch(exportAll)
+            exporter.addData(results)
             DispatchQueue.main.async {
-                SVProgressHUD.dismiss()
-                self.present(activityViewController, animated: true, completion: nil)
+                self.serveCsvExport(filePath: temporaryFilePath, presentingIndexPath: presentingIndexPath)
             }
         }
+    }
+    
+    func serveCsvExport(filePath: URL, presentingIndexPath: IndexPath) {
+        // Present a dialog with the resulting file
+        let activityViewController = UIActivityViewController(activityItems: [filePath], applicationActivities: [])
+        activityViewController.excludedActivityTypes = UIActivityType.documentUnsuitableTypes
+        activityViewController.popoverPresentationController?.setSourceCell(atIndexPath: presentingIndexPath, inTable: self.tableView)
+        
+        SVProgressHUD.dismiss()
+        self.present(activityViewController, animated: true, completion: nil)
     }
     
     func deleteAllData() {
