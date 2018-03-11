@@ -30,9 +30,7 @@ class DataVC: UITableViewController {
     func requestImport(presentingIndexPath: IndexPath) {
         let documentImport = UIDocumentMenuViewController(documentTypes: ["public.comma-separated-values-text"], in: .import)
         documentImport.delegate = self
-        if let popPresenter = documentImport.popoverPresentationController {
-            popPresenter.setSourceCell(atIndexPath: presentingIndexPath, inTable: tableView, arrowDirections: .up)
-        }
+        documentImport.popoverPresentationController?.setSourceCell(atIndexPath: presentingIndexPath, inTable: tableView, arrowDirections: .up)
         present(documentImport, animated: true)
     }
     
@@ -91,10 +89,7 @@ class DataVC: UITableViewController {
             // Present a dialog with the resulting file
             let activityViewController = UIActivityViewController(activityItems: [temporaryFilePath], applicationActivities: [])
             activityViewController.excludedActivityTypes = UIActivityType.documentUnsuitableTypes
-            
-            if let popPresenter = activityViewController.popoverPresentationController {
-                popPresenter.setSourceCell(atIndexPath: presentingIndexPath, inTable: self.tableView)
-            }
+            activityViewController.popoverPresentationController?.setSourceCell(atIndexPath: presentingIndexPath, inTable: self.tableView)
             
             DispatchQueue.main.async {
                 SVProgressHUD.dismiss()

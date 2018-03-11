@@ -8,7 +8,7 @@ class About: UITableViewController {
         guard indexPath.section == 0 else { return }
         switch indexPath.row {
         case 0: UIApplication.shared.open(URL(string: "https://www.readinglistapp.xyz")!, options: [:])
-        case 1: share()
+        case 1: share(indexPath)
         case 2: contact()
         case 3: UIApplication.shared.open(URL(string: "https://github.com/AndrewBennet/readinglist")!, options: [:])
         default: return
@@ -16,14 +16,9 @@ class About: UITableViewController {
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
-    func share() {
+    func share(_ indexPath: IndexPath) {
         let activityViewController = UIActivityViewController(activityItems: [URL(string: "https://\(Settings.appStoreAddress)")!], applicationActivities: nil)
-        if let popPresenter = activityViewController.popoverPresentationController {
-            let cell = self.tableView.cellForRow(at: IndexPath(row: 2, section: 0))!
-            popPresenter.sourceRect = cell.frame
-            popPresenter.sourceView = self.tableView
-            popPresenter.permittedArrowDirections = .any
-        }
+        activityViewController.popoverPresentationController?.setSourceCell(atIndexPath: indexPath, inTable: tableView)
         present(activityViewController, animated: true)
     }
 

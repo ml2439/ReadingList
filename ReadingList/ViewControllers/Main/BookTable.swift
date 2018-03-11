@@ -205,9 +205,7 @@ class BookTable: UITableViewController {
         optionsAlert.addAction(UIAlertAction(title: "Delete\(selectedRows.count > 1 ? " All" : "")", style: .destructive) { [unowned self] _ in
             // Are you sure?
             let confirmDeleteAlert = UIAlertController(title: "Confirm deletion of \(selectedRows.count) book\(selectedRows.count == 1 ? "" : "s")", message: nil, preferredStyle: .actionSheet)
-            if let popPresenter = confirmDeleteAlert.popoverPresentationController {
-                popPresenter.barButtonItem = sender
-            }
+            confirmDeleteAlert.popoverPresentationController?.barButtonItem = sender
             confirmDeleteAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
             confirmDeleteAlert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [unowned self] _ in
                 // Collect the books up-front, since the selected row indexes will change as we modify them
@@ -222,11 +220,7 @@ class BookTable: UITableViewController {
             self.present(confirmDeleteAlert, animated: true)
         })
         optionsAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        
-        // For iPad, set the popover presentation controller's source
-        if let popPresenter = optionsAlert.popoverPresentationController {
-            popPresenter.barButtonItem = sender
-        }
+        optionsAlert.popoverPresentationController?.barButtonItem = sender
         
         self.present(optionsAlert, animated: true, completion: nil)
     }
@@ -314,9 +308,7 @@ class BookTable: UITableViewController {
             self.present(EditBookMetadata(bookToCreateReadState: .toRead).inNavigationController(), animated: true, completion: nil)
         })
         optionsAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        if let popPresenter = optionsAlert.popoverPresentationController {
-            popPresenter.barButtonItem = sender
-        }
+        optionsAlert.popoverPresentationController?.barButtonItem = sender
         
         self.present(optionsAlert, animated: true, completion: nil)
     }
@@ -385,12 +377,7 @@ class BookTable: UITableViewController {
     func presentDeleteBookAlert(indexPath: IndexPath, callback: ((Bool) -> ())?) {
         let bookToDelete = self.resultsController.object(at: indexPath)
         let confirmDeleteAlert = UIAlertController(title: "Confirm delete", message: nil, preferredStyle: .actionSheet)
-        if let popPresenter = confirmDeleteAlert.popoverPresentationController {
-            let cell = self.tableView.cellForRow(at: indexPath)!
-            popPresenter.sourceRect = cell.frame
-            popPresenter.sourceView = self.tableView
-            popPresenter.permittedArrowDirections = .any
-        }
+        confirmDeleteAlert.popoverPresentationController?.setSourceCell(atIndexPath: indexPath, inTable: tableView)
         
         confirmDeleteAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { _ in
             callback?(false)
