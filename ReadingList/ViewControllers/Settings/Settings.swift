@@ -1,7 +1,4 @@
 import UIKit
-import SVProgressHUD
-import Crashlytics
-import MessageUI
 
 class Settings: UITableViewController {
 
@@ -18,8 +15,7 @@ class Settings: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch (indexPath.section, indexPath.row) {
-        case (0, 1): contact()
-        case (0, 2): UIApplication.shared.open(URL(string: "itms-apps://\(Settings.appStoreAddress)?action=write-review")!, options: [:])
+        case (0, 1): UIApplication.shared.open(URL(string: "itms-apps://\(Settings.appStoreAddress)?action=write-review")!, options: [:])
         default: return
         }
         tableView.deselectRow(at: indexPath, animated: true)
@@ -41,46 +37,5 @@ class Settings: UITableViewController {
             // Set this on the Data vc, which will load the file the first time the VC appears after the import URL is set.
             data.importUrl = url
         }
-    }
-    
-    func contact() {
-        let canSendEmail = MFMailComposeViewController.canSendMail()
-
-        let alert = UIAlertController(title: "Send Feedback?", message: "If you have any questions, comments or suggestions, please email me\(canSendEmail ? "." : " at \(Settings.feedbackEmailAddress).") I'll do my best to respond.", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default){ [unowned self] _ in
-            if canSendEmail {
-                self.presentMailComposeWindow()
-            }
-        })
-        if canSendEmail {
-            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        }
-        present(alert, animated: true)
-    }
-    
-    func presentMailComposeWindow() {
-        let mailComposer = MFMailComposeViewController()
-        mailComposer.mailComposeDelegate = self
-        mailComposer.setToRecipients(["Reading List Developer <\(Settings.feedbackEmailAddress)>"])
-        mailComposer.setSubject("Reading List Feedback")
-        let messageBody = """
-        Your Message Here:
-        
-        
-        
-        
-        Extra Info:
-          App Version: \(UserEngagement.appVersion) (\(UserEngagement.appBuildNumber))
-          iOS Version: \(UIDevice.current.systemVersion)
-          Device: \(UIDevice.current.modelName)
-        """
-        mailComposer.setMessageBody(messageBody, isHTML: false)
-        present(mailComposer, animated: true)
-    }
-}
-
-extension Settings: MFMailComposeViewControllerDelegate {
-    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
-        dismiss(animated: true)
     }
 }
