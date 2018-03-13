@@ -7,7 +7,7 @@ target 'ReadingList' do
   # Pods for books
   pod 'DZNEmptyDataSet', '~> 1.8'
   pod 'SwiftyJSON', '~> 4.0'
-  pod 'Eureka', '~> 4.0'
+  pod 'Eureka', '~> 4.0.0'
   pod 'ImageRow', :git => 'https://github.com/EurekaCommunity/ImageRow.git'
   pod 'SVProgressHUD', '~> 2.2'
   pod 'SimulatorStatusMagic', :configurations => ['Debug']
