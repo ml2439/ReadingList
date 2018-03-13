@@ -158,11 +158,7 @@
                     </tableView>
                     <navigationItem key="navigationItem" title="To Read" id="L1D-Rs-V49">
                         <barButtonItem key="backBarButtonItem" title="To Read" id="PiS-zg-Eqa"/>
-                        <barButtonItem key="leftBarButtonItem" systemItem="edit" id="nhd-kN-wZw">
-                            <connections>
-                                <action selector="editWasPressed:" destination="4HX-WC-tQz" id="1Xw-ie-QH6"/>
-                            </connections>
-                        </barButtonItem>
+                        <barButtonItem key="leftBarButtonItem" systemItem="edit" id="nhd-kN-wZw"/>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="xwc-GG-HVK">
                             <connections>
                                 <action selector="addWasPressed:" destination="4HX-WC-tQz" id="Xci-Dd-kOE"/>
@@ -345,11 +341,7 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Finished" id="o0h-MY-3OW">
-                        <barButtonItem key="leftBarButtonItem" systemItem="edit" id="HjT-nZ-fEX">
-                            <connections>
-                                <action selector="editWasPressed:" destination="aQe-Q1-yJv" id="d3F-CA-WET"/>
-                            </connections>
-                        </barButtonItem>
+                        <barButtonItem key="leftBarButtonItem" systemItem="edit" id="HjT-nZ-fEX"/>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="XMH-PT-dLc">
                             <connections>
                                 <action selector="addWasPressed:" destination="aQe-Q1-yJv" id="KTu-Ak-IJk"/>

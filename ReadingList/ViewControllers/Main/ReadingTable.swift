@@ -11,7 +11,7 @@ class ReadingTable: BookTable {
         // Disable reorderng when searching, or when the sort order is not by date
         guard !searchController.hasActiveSearchTerms else { return false }
         guard UserSettings.tableSortOrder == .byDate else { return false }
-        guard let toReadSectionIndex = sectionIndex(forReadState: .toRead) else { return false }
+        guard let toReadSectionIndex = sectionIndexByReadState[.toRead] else { return false }
 
         // We can reorder the "ToRead" books if there are more than one
         return indexPath.section == toReadSectionIndex && self.tableView(tableView, numberOfRowsInSection: toReadSectionIndex) > 1
@@ -22,14 +22,14 @@ class ReadingTable: BookTable {
             return proposedDestinationIndexPath
         }
         else {
-            return IndexPath(row: 0, section: sectionIndex(forReadState: .toRead)!)
+            return IndexPath(row: 0, section: sectionIndexByReadState[.toRead]!)
         }
     }
     
     override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         
         // We should only have movement in the ToRead secion. We also ignore moves which have no effect
-        guard let toReadSectionIndex = sectionIndex(forReadState: .toRead) else { return }
+        guard let toReadSectionIndex = sectionIndexByReadState[.toRead] else { return }
         guard sourceIndexPath.section == toReadSectionIndex && destinationIndexPath.section == toReadSectionIndex else { return }
         guard sourceIndexPath.row != destinationIndexPath.row else { return }
         
@@ -74,7 +74,7 @@ class ReadingTable: BookTable {
             actions.append(contentsOf: superConfiguration.actions)
         }
 
-        let readStateOfSection = readStateForSection(indexPath.section)
+        let readStateOfSection = sectionIndexByReadState.first{$0.value == indexPath.section}!.key
 
         guard readStateOfSection != .reading || resultsController.object(at: indexPath).startedReading! < Date() else {
             // It is not "invalid" to have a book with a started date in the future; but it is invalid
@@ -104,12 +104,12 @@ class ReadingTable: BookTable {
 
     override func footerText() -> String? {
         var footerPieces = [String]()
-        if let toReadSectionIndex = self.sectionIndex(forReadState: .toRead) {
+        if let toReadSectionIndex = self.sectionIndexByReadState[.toRead] {
             let toReadCount = tableView(tableView, numberOfRowsInSection: toReadSectionIndex)
             footerPieces.append("To Read: \(toReadCount) book\(toReadCount == 1 ? "" : "s")")
         }
         
-        if let readingSectionIndex = self.sectionIndex(forReadState: .reading) {
+        if let readingSectionIndex = self.sectionIndexByReadState[.reading] {
             let readingCount = tableView(tableView, numberOfRowsInSection: readingSectionIndex)
             footerPieces.append("Reading: \(readingCount) book\(readingCount == 1 ? "" : "s")")
         }

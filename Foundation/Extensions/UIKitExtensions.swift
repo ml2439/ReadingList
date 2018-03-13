@@ -26,6 +26,22 @@ extension UIView {
         self.init()
         self.backgroundColor = backgroundColor
     }
+        
+    var nextSibling: UIView? {
+        get {
+            guard let views = superview?.subviews else { return nil }
+            let thisIndex = views.index(of: self)!
+            guard thisIndex + 1 < views.count else { return nil }
+            return views[thisIndex + 1]
+        }
+    }
+    
+    var siblings: [UIView] {
+        get {
+            guard let views = superview?.subviews else { return [] }
+            return views.filter{ $0 != self }
+        }
+    }
 }
 
 
@@ -141,9 +157,22 @@ extension UISearchBar {
 }
 
 extension UIBarButtonItem {
-    func toggleHidden(hidden: Bool) {
+    func setHidden(_ hidden: Bool) {
         isEnabled = !hidden
         tintColor = hidden ? UIColor.clear : nil
+    }
+}
+
+extension UITableViewController {
+    @objc func toggleEditingAnimated() {
+        setEditing(!isEditing, animated: true)
+    }
+}
+
+extension UITableViewRowAction {
+    convenience init(style: UITableViewRowActionStyle, title: String?, color: UIColor, handler: (UITableViewRowAction, IndexPath) -> Void) {
+        self.init(style: style, title: title, handler: handler)
+        self.backgroundColor = color
     }
 }
 
