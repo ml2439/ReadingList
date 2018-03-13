@@ -170,7 +170,7 @@ extension UITableViewController {
 }
 
 extension UITableViewRowAction {
-    convenience init(style: UITableViewRowActionStyle, title: String?, color: UIColor, handler: (UITableViewRowAction, IndexPath) -> Void) {
+    convenience init(style: UITableViewRowActionStyle, title: String?, color: UIColor, handler: @escaping (UITableViewRowAction, IndexPath) -> Void) {
         self.init(style: style, title: title, handler: handler)
         self.backgroundColor = color
     }

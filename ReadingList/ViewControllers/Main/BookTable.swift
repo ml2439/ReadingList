@@ -210,21 +210,9 @@ class BookTable: UITableViewController {
         }
         
         optionsAlert.addAction(UIAlertAction(title: "Delete\(selectedRows.count > 1 ? " All" : "")", style: .destructive) { [unowned self] _ in
-            // Are you sure?
-            let confirmDeleteAlert = UIAlertController(title: "Confirm deletion of \(selectedRows.count) book\(selectedRows.count == 1 ? "" : "s")", message: nil, preferredStyle: .actionSheet)
-            confirmDeleteAlert.popoverPresentationController?.barButtonItem = sender
-            confirmDeleteAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-            confirmDeleteAlert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [unowned self] _ in
-                // Collect the books up-front, since the selected row indexes will change as we modify them
-                for book in selectedRows.map(self.resultsController.object) {
-                    book.delete()
-                }
-                PersistentStoreManager.container.viewContext.saveAndLogIfErrored()
-                self.setEditing(false, animated: true)
-                UserEngagement.logEvent(.bulkDeleteBook)
-                UserEngagement.onReviewTrigger()
-            })
-            self.present(confirmDeleteAlert, animated: true)
+            let confirm = self.confirmDeleteAlert(indexPaths: selectedRows)
+            confirm.popoverPresentationController?.barButtonItem = sender
+            self.present(confirm, animated: true)
         })
         optionsAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         optionsAlert.popoverPresentationController?.barButtonItem = sender
@@ -319,7 +307,9 @@ class BookTable: UITableViewController {
 
         // Start with the delete action
         var rowActions = [UITableViewRowAction(style: .destructive, title: "Delete") { [unowned self] _, indexPath in
-            self.presentDeleteBookAlert(indexPath: indexPath, callback: nil)
+            let confirm = self.confirmDeleteAlert(indexPaths: [indexPath])
+            confirm.popoverPresentationController?.setSourceCell(atIndexPath: indexPath, inTable: tableView)
+            self.present(confirm, animated: true)
         }]
         
         // Add the other state change actions where appropriate
@@ -347,7 +337,9 @@ class BookTable: UITableViewController {
     @available(iOS 11.0, *)
     override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { [unowned self] _,_,callback in
-            self.presentDeleteBookAlert(indexPath: indexPath, callback: callback)
+            let confirm = self.confirmDeleteAlert(indexPaths: [indexPath], callback: callback)
+            confirm.popoverPresentationController?.setSourceCell(atIndexPath: indexPath, inTable: tableView)
+            self.present(confirm, animated: true, completion: nil)
         }
         deleteAction.image = #imageLiteral(resourceName: "Trash")
         let editAction = UIContextualAction(style: .normal, title: "Edit") { [unowned self] _,_,callback in
@@ -368,19 +360,19 @@ class BookTable: UITableViewController {
         return UISwipeActionsConfiguration(performFirstActionWithFullSwipe: false, actions: [editReadStateAction])
     }
     
-    func presentDeleteBookAlert(indexPath: IndexPath, callback: ((Bool) -> ())?) {
-        let bookToDelete = self.resultsController.object(at: indexPath)
-        let confirmDeleteAlert = UIAlertController(title: "Confirm delete", message: nil, preferredStyle: .actionSheet)
-        confirmDeleteAlert.popoverPresentationController?.setSourceCell(atIndexPath: indexPath, inTable: tableView)
-        
+    func confirmDeleteAlert(indexPaths: [IndexPath], callback: ((Bool) -> Void)? = nil) -> UIAlertController {
+        let confirmDeleteAlert = UIAlertController(title: indexPaths.count == 1 ? "Confirm delete" : "Confirm deletion of \(indexPaths.count) books", message: nil, preferredStyle: .actionSheet)
         confirmDeleteAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { _ in
             callback?(false)
         })
-        confirmDeleteAlert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
-            bookToDelete.deleteAndSave()
+        confirmDeleteAlert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [unowned self] _ in
+            indexPaths.map(self.resultsController.object).forEach{$0.delete()}
+            PersistentStoreManager.container.viewContext.saveAndLogIfErrored()
+            self.setEditing(false, animated: true)
+            UserEngagement.logEvent(indexPaths.count > 1 ? .bulkDeleteBook : .deleteBook)
             callback?(true)
         })
-        self.present(confirmDeleteAlert, animated: true, completion: nil)
+        return confirmDeleteAlert
     }
 }
 
