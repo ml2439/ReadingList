@@ -221,8 +221,10 @@ class BookTable: UITableViewController {
     }
     
     func footerText() -> String? {
-        fatalError("footerText() not overriden")
-        // FUTURE: There is no need to require override; can be calculated easily here
+        return sectionIndexByReadState.map{
+            let count = tableView(tableView, numberOfRowsInSection: $0.value)
+            return "\($0.key.description): \(count) book\(count == 1 ? "" : "s")"
+        }.joined(separator: "\n")
     }
     
     var sectionIndexByReadState: [BookReadState: Int] {

@@ -101,20 +101,4 @@ class ReadingTable: BookTable {
         
         return UISwipeActionsConfiguration(actions: actions)
     }
-
-    override func footerText() -> String? {
-        var footerPieces = [String]()
-        if let toReadSectionIndex = self.sectionIndexByReadState[.toRead] {
-            let toReadCount = tableView(tableView, numberOfRowsInSection: toReadSectionIndex)
-            footerPieces.append("To Read: \(toReadCount) book\(toReadCount == 1 ? "" : "s")")
-        }
-        
-        if let readingSectionIndex = self.sectionIndexByReadState[.reading] {
-            let readingCount = tableView(tableView, numberOfRowsInSection: readingSectionIndex)
-            footerPieces.append("Reading: \(readingCount) book\(readingCount == 1 ? "" : "s")")
-        }
-
-        guard footerPieces.count != 0 else { return nil }
-        return footerPieces.joined(separator: "\n")
-    }
 }
