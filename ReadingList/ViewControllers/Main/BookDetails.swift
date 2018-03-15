@@ -31,8 +31,8 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     var didShowNavigationItemTitle = false
     var shouldTruncateLongDescriptions = true
     
-    var parentSplitViewController: SplitViewController? {
-        get { return appDelegate.tabBarController.selectedViewController as? SplitViewController }
+    var parentSplitViewController: UISplitViewController? {
+        get { return appDelegate.tabBarController.selectedSplitViewController }
     }
     
     func setViewEnabled(_ enabled: Bool) {

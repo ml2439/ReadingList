@@ -181,7 +181,7 @@
         <!--Organise-->
         <scene sceneID="tj0-M4-c5I">
             <objects>
-                <splitViewController id="wWH-Ym-HSc" customClass="SplitViewController" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
+                <splitViewController id="wWH-Ym-HSc" customClass="AllVisibleSplitViewController" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" tag="2" title="Organise" image="organise" selectedImage="organise-filled" id="ofv-YQ-PuH"/>
                     <connections>
                         <segue destination="WHn-Om-NYv" kind="relationship" relationship="masterViewController" id="vSL-Ob-iCW"/>
@@ -200,6 +200,6 @@
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="QZG-yd-ESl"/>
-        <segue reference="VNc-E8-H9n"/>
+        <segue reference="xJE-Yc-3El"/>
     </inferredMetricsTieBreakers>
 </document>

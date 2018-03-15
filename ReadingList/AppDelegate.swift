@@ -33,7 +33,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     #if DEBUG
                         DebugSettings.initialiseFromCommandLine()
                     #endif
-                    self.window!.rootViewController = Storyboard.Main.instantiateRoot()
+                    self.window!.rootViewController = TabBarController()
                     
                     // Once the store is loaded and the main storyboard instantiated, perform the quick action
                     // or open the CSV file, is specified. This is done here rather than in application:open, for example,
@@ -93,7 +93,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func openCsvImport(url: URL) {
         UserEngagement.logEvent(.openCsvInApp)
-        tabBarController.selectTab(.settings)
+        tabBarController.selectedTab = .settings
         
         let settingsSplitView = tabBarController.selectedSplitViewController!
         let navController = settingsSplitView.masterNavigationController
@@ -107,7 +107,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func performQuickAction(_ action: QuickAction) {
         func presentFromToRead(_ viewController: UIViewController) {
             // All quick actions are presented from the To Read tab
-            tabBarController.selectTab(.toRead)
+            tabBarController.selectedTab = .toRead
             
             // Dismiss any modal views before presenting
             let navController = tabBarController.selectedSplitViewController!.masterNavigationController
