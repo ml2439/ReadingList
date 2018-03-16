@@ -443,6 +443,8 @@ extension BookTable: UISearchResultsUpdating {
             return proposedDestinationIndexPath
         }
         else {
+            // FUTURE: To work best in the general case, this should see whether the proposed section is lower or higher
+            // than the source section, and use that to set the returned IndexPath's row to either 0 or the maximum (respectively)
             return IndexPath(row: 0, section: sourceIndexPath.section)
         }
     }
@@ -454,30 +456,29 @@ extension BookTable: UISearchResultsUpdating {
         guard sourceIndexPath.section == toReadSectionIndex && destinationIndexPath.section == toReadSectionIndex else { return }
         guard sourceIndexPath.row != destinationIndexPath.row else { return }
         
-        // Calculate the ordering of the two rows involved
-        let itemWasMovedDown = sourceIndexPath.row < destinationIndexPath.row
-        let topRow = itemWasMovedDown ? sourceIndexPath.row : destinationIndexPath.row
-        let bottomRow = itemWasMovedDown ? destinationIndexPath.row : sourceIndexPath.row
+        // Get the range of objects that the move affects
+        let topRow = [sourceIndexPath.row, destinationIndexPath.row].min()!
+        let bottomRow = [sourceIndexPath.row, destinationIndexPath.row].max()!
+        var booksInMovementRange = (topRow...bottomRow).map{IndexPath(row: $0, section: toReadSectionIndex)}.map(resultsController.object)
         
-        // Move the objects to reflect the rows
-        var objectsInSection = resultsController.sections![toReadSectionIndex].objects!
-        let movedObj = objectsInSection.remove(at: sourceIndexPath.row)
-        objectsInSection.insert(movedObj, at: destinationIndexPath.row)
+        // Move the objects array to reflect the desired order
+        let wasDownwardsMovement = destinationIndexPath.row == bottomRow
+        if wasDownwardsMovement {
+            let first = booksInMovementRange.removeFirst()
+            booksInMovementRange.append(first)
+        }
+        else {
+            let last = booksInMovementRange.removeLast()
+            booksInMovementRange.insert(last, at: 0)
+        }
         
         // Turn off updates while we manipulate the object context
         resultsController.delegate = nil
         
         // Update the model sort indexes. The lowest sort number should be the sort of the book immediately
         // above the range, plus 1, or - if the range starts at the top - 0.
-        var sortIndex: Int32
-        if topRow == 0 {
-            sortIndex = 0
-        }
-        else {
-            sortIndex = (objectsInSection[topRow - 1] as! Book).sort!.int32 + 1
-        }
-        for rowNumber in topRow...bottomRow {
-            let book = objectsInSection[rowNumber] as! Book
+        var sortIndex: Int32 = topRow == 0 ? 0 : (resultsController.object(at: IndexPath(row: topRow - 1, section: toReadSectionIndex)).sort!.int32 + 1)
+        for book in booksInMovementRange {
             book.sort = sortIndex.nsNumber
             sortIndex += 1
         }
@@ -485,6 +486,7 @@ extension BookTable: UISearchResultsUpdating {
         PersistentStoreManager.container.viewContext.saveAndLogIfErrored()
         try! resultsController.performFetch()
         
+        // Enable updates again
         resultsController.delegate = self
     }
 }
