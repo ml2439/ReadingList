@@ -5,3 +5,5 @@ Pods/
 screenshots.html
 .sass-cache/
 _site
+fastlane/report.xml
+fastlane/README.md

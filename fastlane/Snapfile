@@ -9,10 +9,10 @@ devices([
 languages([
   "en-US"
 ])
-scheme "Screenshots"
-output_directory "ReadingList_Screenshots"
-workspace "ReadingList.xcworkspace"
-clear_previous_screenshots true
+scheme("Screenshots")
+output_directory("../ReadingList_Screenshots")
+workspace("ReadingList.xcworkspace")
+clear_previous_screenshots(true)
 
 # Arguments to pass to the app on launch. See https://docs.fastlane.tools/actions/snapshot/#launch-arguments
 # launch_arguments(["-favColor red"])

@@ -1,0 +1,8 @@
+app_identifier("com.andrewbennet.books") # The bundle identifier of your app
+apple_id("me@andrewbennet.com") # Your Apple email address
+
+itc_team_id "95943445" # iTunes Connect Team ID
+team_id "YPDEV2E775" # Developer Portal Team ID
+
+# For more information about the Appfile, see:
+#     https://docs.fastlane.tools/advanced/#appfile
