@@ -32,4 +32,4 @@ Reading List mostly uses [storyboards](https://developer.apple.com/library/conte
 ### Data persistence
 Reading List uses [Core Data](https://developer.apple.com/documentation/coredata) for data persistence. There are four entities used in Reading List: `Book`, `Author`, `Subject` and `List`. The attributes and relations between then are illustrated below:
 
-![Core data entities](./media/coredata entities.png)
+![Core data entities](./media/coredata_entities.png)
