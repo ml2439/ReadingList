@@ -1,7 +1,13 @@
 language: objective-c
+cache:
+  - bundler
+  - cocoapods
 osx_image: xcode9.2
+notifications:
+  email:
+    - feedback@readinglistapp.xyz
 before_install:
-  - bundle install
+  - bundle install > /dev/null
   - pod repo update > /dev/null
 script:
   - fastlane test

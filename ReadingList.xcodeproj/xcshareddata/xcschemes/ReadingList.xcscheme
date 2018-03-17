@@ -91,16 +91,6 @@
                ReferencedContainer = "container:ReadingList.xcodeproj">
             </BuildableReference>
          </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "1CD1122F202DD44200BE3E1D"
-               BuildableName = "ReadingList_Screenshot.xctest"
-               BlueprintName = "ReadingList_Screenshot"
-               ReferencedContainer = "container:ReadingList.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference

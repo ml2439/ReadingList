@@ -20,7 +20,7 @@ class Debug: FormViewController {
                 }
             }
         
-        form +++ SelectableSection<ListCheckRow<BarcodeScanSimulation>>("Barcode scan behaviour", selectionType: .singleSelection(enableDeselection: false)) {
+        +++ SelectableSection<ListCheckRow<BarcodeScanSimulation>>("Barcode scan behaviour", selectionType: .singleSelection(enableDeselection: false)) {
             let currentValue = DebugSettings.barcodeScanSimulation
             for option: BarcodeScanSimulation in [.none, .normal, .noCameraPermissions, .validIsbn, .unfoundIsbn, .existingIsbn] {
                 $0 <<< ListCheckRow<BarcodeScanSimulation>(){
@@ -34,7 +34,7 @@ class Debug: FormViewController {
             }
         }
         
-        form +++ SelectableSection<ListCheckRow<QuickActionSimulation>>("Quick Action Simulation", selectionType: .singleSelection(enableDeselection: false)) {
+        +++ SelectableSection<ListCheckRow<QuickActionSimulation>>("Quick Action Simulation", selectionType: .singleSelection(enableDeselection: false)) {
             let currentQuickActionValue = DebugSettings.quickActionSimulation
             for quickActionOption: QuickActionSimulation in [.none, .barcodeScan, .searchOnline] {
                 $0 <<< ListCheckRow<QuickActionSimulation>(){
@@ -48,7 +48,7 @@ class Debug: FormViewController {
             }
         }
         
-        form +++ Section("Debug Controls")
+        +++ Section("Debug Controls")
             <<< SwitchRow() {
                 $0.title = "Show sort number"
                 $0.value = DebugSettings.showSortNumber

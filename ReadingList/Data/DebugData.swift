@@ -3,12 +3,12 @@ import SimulatorStatusMagic
 import Foundation
     
 extension DebugSettings {
-    public static func loadTestData(completion: (() -> ())? = nil) {
+    public static func loadTestData(includeImages: Bool = true, completion: (() -> ())? = nil) {
         PersistentStoreManager.deleteAll()
         
         print("Loading test data")
         let csvPath = Bundle.main.url(forResource: "examplebooks", withExtension: "csv")!
-        BookCSVImporter().startImport(fromFileAt: csvPath) { _ in
+        BookCSVImporter(includeImages: includeImages).startImport(fromFileAt: csvPath) { _ in
             print("Test data loaded")
             DispatchQueue.main.async {
                 completion?()
@@ -17,14 +17,15 @@ extension DebugSettings {
     }
 
     static func initialiseFromCommandLine() {
-        DebugSettings.useFixedBarcodeScanImage = CommandLine.arguments.contains("--UITests_FixedBarcodeScanImage")
-        if CommandLine.arguments.contains("--UITests_PrettyStatusBar") {
+        let screenshots = CommandLine.arguments.contains("--UITests_Screenshots")
+        DebugSettings.useFixedBarcodeScanImage = screenshots
+        if screenshots {
             SDStatusBarManager.sharedInstance().enableOverrides()
         }
         
         // long running setup
         if CommandLine.arguments.contains("--UITests_PopulateData") {
-            loadTestData {
+            loadTestData(includeImages: screenshots) {
                 if CommandLine.arguments.contains("--UITests_DeleteLists") {
                     PersistentStoreManager.delete(type: List.self)
                     NotificationCenter.default.post(name: .PersistentStoreBatchOperationOccurred, object: nil)
