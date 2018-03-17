@@ -3,7 +3,7 @@ PODS:
   - Crashlytics (3.10.1):
     - Fabric (~> 1.7.5)
   - DZNEmptyDataSet (1.8.1)
-  - Eureka (4.0.1)
+  - Eureka (4.1.1)
   - Fabric (1.7.5)
   - Firebase/Core (4.10.1):
     - FirebaseAnalytics (= 4.1.0)
@@ -36,10 +36,10 @@ DEPENDENCIES:
   - CHCSVParser (from `https://github.com/davedelong/CHCSVParser.git`)
   - Crashlytics
   - DZNEmptyDataSet (~> 1.8)
-  - Eureka (~> 4.0.0)
+  - Eureka (~> 4.1)
   - Fabric
   - Firebase/Core
-  - ImageRow (from `https://github.com/EurekaCommunity/ImageRow.git`)
+  - ImageRow (~> 3.0)
   - SimulatorStatusMagic
   - SVProgressHUD (~> 2.2)
   - SwiftyJSON (~> 4.0)
@@ -48,35 +48,30 @@ DEPENDENCIES:
 EXTERNAL SOURCES:
   CHCSVParser:
     :git: https://github.com/davedelong/CHCSVParser.git
-  ImageRow:
-    :git: https://github.com/EurekaCommunity/ImageRow.git
 
 CHECKOUT OPTIONS:
   CHCSVParser:
     :commit: a6c23dab9ca633a8ba791463c9e9d3e1ff991a98
     :git: https://github.com/davedelong/CHCSVParser.git
-  ImageRow:
-    :commit: 80587a657cf08ad315c1630c0d88d272e991fd37
-    :git: https://github.com/EurekaCommunity/ImageRow.git
 
 SPEC CHECKSUMS:
   CHCSVParser: 64da26e2b4ddbf7527f7f03120bf91d83d28f354
   Crashlytics: aee1a064cbbf99b32efa3f056a5f458d846bc8ff
   DZNEmptyDataSet: 9525833b9e68ac21c30253e1d3d7076cc828eaa7
-  Eureka: c8bd5cc07143b6f66268c208d28a246c99b41955
+  Eureka: b88fb930e42c79f8c03c373d0fcdc28c1d6c50ed
   Fabric: ae7146a5f505ea370a1e44820b4b1dc8890e2890
   Firebase: 92c6ba593e32db0defde464a9adc981d5cb49f97
   FirebaseAnalytics: 3dfae28d4a5e06f86c4fae830efc2ad3fadb19bc
   FirebaseCore: 872307b001bbefda1dfa0dbfffa50a6919023d4a
   FirebaseInstanceID: d2058a35e9bebda1b6dd42486b84917bde552a9d
   GoogleToolboxForMac: 2501e2ad72a52eb3dfe7bd9aee7dad11b858bd20
-  ImageRow: 2683a3b621210ea05c1f3a2fa294d8d14342d24c
+  ImageRow: 048123c296de9a6ac3998c415a6706c45ce480af
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
   SimulatorStatusMagic: 481558caf2b9ccb2ceba2cc193728d4db3dcac07
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   SwiftyJSON: 070dabdcb1beb81b247c65ffa3a79dbbfb3b48aa
   SwiftyStoreKit: c36bb7841dd51a485ce5c38abf9e96fba988741f
 
-PODFILE CHECKSUM: b2c9a90d8214e88f20931340b06092687c2e2535
+PODFILE CHECKSUM: 87f88f07bdaaa0f607c587cc97696ceaf50ca97c
 
 COCOAPODS: 1.4.0

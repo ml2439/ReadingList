@@ -7,8 +7,8 @@ target 'ReadingList' do
   # Pods for books
   pod 'DZNEmptyDataSet', '~> 1.8'
   pod 'SwiftyJSON', '~> 4.0'
-  pod 'Eureka', '~> 4.0.0'
-  pod 'ImageRow', :git => 'https://github.com/EurekaCommunity/ImageRow.git'
+  pod 'Eureka', '~> 4.1'
+  pod 'ImageRow', '~> 3.0'
   pod 'SVProgressHUD', '~> 2.2'
   pod 'SimulatorStatusMagic', :configurations => ['Debug']
   pod 'Fabric'
@@ -16,7 +16,7 @@ target 'ReadingList' do
   pod 'CHCSVParser', :git => 'https://github.com/davedelong/CHCSVParser.git'
   pod 'Firebase/Core'
   pod 'SwiftyStoreKit'
-  
+
   target 'ReadingList_UITests' do
     inherit! :complete
     # Pods for testing
