@@ -1,0 +1,6 @@
+scheme("ReadingList")
+devices(["iPhone 7 (10.3.1)", "iPhone 8", "iPad Pro (10.5-inch) (11.2)"])
+
+clean(true)
+
+output_types("html")
