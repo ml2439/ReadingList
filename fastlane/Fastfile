@@ -15,7 +15,6 @@ platform :ios do
 
   desc "Run tests"
   lane :test do
-    cocoapods
     # run tests synchronously as a bug in xcpretty will hide test results when multiple devices are used
     scan(scheme: "ReadingList", devices: ["iPhone 7 (10.3.1)"])
     scan(scheme: "ReadingList", devices: ["iPhone 8"], test_without_building: true)
@@ -26,7 +25,7 @@ platform :ios do
   lane :beta do
     match(readonly: true)
     build_app(workspace: "ReadingList.xcworkspace", scheme: "ReadingList")
-    upload_to_testflight
+    upload_to_testflight(skip_submission: true)
   end
 
   desc "Download DSYMs from iTunes and upload them to Crashlytics"
