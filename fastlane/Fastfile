@@ -22,19 +22,17 @@ platform :ios do
     scan(scheme: "ReadingList", devices: ["iPad Pro (10.5-inch) (11.2)"], test_without_building: true)
   end
 
-
   desc "Push a new beta build to TestFlight"
   lane :beta do
-    #scan
-    build_number = get_build_number # store this for later
+    if is_ci
+      sh("travis-setup.sh")
+    end
+    match
     increment_build_number({
       build_number: latest_testflight_build_number + 1
     })
     build_app(workspace: "ReadingList.xcworkspace", scheme: "ReadingList")
     upload_to_testflight
-    increment_build_number(
-      build_number: build_number # revert the build number
-    )
   end
 
   desc "Download DSYMs from iTunes and upload them to Crashlytics"

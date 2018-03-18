@@ -10,3 +10,4 @@ fastlane/test_output
 fastlane/README.md
 *.ipa
 *.dSYM.zip
+.idea
