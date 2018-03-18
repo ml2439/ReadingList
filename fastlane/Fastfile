@@ -32,6 +32,9 @@ platform :ios do
       timeout: 3600,
       add_to_search_list: true
     )
+    sh("git config --global credential.helper osxkeychain")
+    sh("git clone https://andrew_bennet:$GIT_CERTS_PASSWORD@bitbucket.org/andrew_bennet/certificates.git")
+    sh("rm -rf certificates")
     match(
       type: "appstore",
       keychain_name: 'tmp_ci_keychain',
