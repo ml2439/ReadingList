@@ -21,8 +21,19 @@ platform :ios do
     scan(scheme: "ReadingList", devices: ["iPad Pro (10.5-inch) (11.2)"], test_without_building: true)
   end
 
-  desc "Push a new beta build to TestFlight"
+  desc "Push a new beta build to TestFlight (not externally released)"
   lane :beta do
+    if is_ci
+      ci_setup_certs
+    end
+    increment_build_number({
+      build_number: latest_testflight_build_number + 1
+    })
+    build_app(workspace: "ReadingList.xcworkspace", scheme: "ReadingList")
+    upload_to_testflight(skip_submission: true, skip_waiting_for_build_processing: true)
+  end
+
+  private_lane :ci_setup_certs do
     # From https://docs.travis-ci.com/user/common-build-problems/#Mac%3A-macOS-Sierra-(10.12)-Code-Signing-Errors
     create_keychain(
       name: 'tmp_ci_keychain',
@@ -41,13 +52,11 @@ platform :ios do
       keychain_password: 'tmp_ci_keychain_password',
       readonly: true
     )
-    build_app(workspace: "ReadingList.xcworkspace", scheme: "ReadingList")
-    upload_to_testflight(skip_submission: true)
   end
 
   desc "Download DSYMs from iTunes and upload them to Crashlytics"
   lane :dsyms do
-    download_dsyms
+    download_dsyms(version: "latest")
     upload_symbols_to_crashlytics
     clean_build_artifacts
   end

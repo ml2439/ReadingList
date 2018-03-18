@@ -10,4 +10,10 @@ before_install:
   - bundle install > /dev/null
   - pod repo update > /dev/null
 script:
-  - fastlane beta
+  - fastlane test
+deploy:
+  provider: script
+  script:
+    - fastlane beta
+  on:
+    branch: fastlane
