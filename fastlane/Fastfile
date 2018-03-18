@@ -24,9 +24,6 @@ platform :ios do
 
   desc "Push a new beta build to TestFlight"
   lane :beta do
-    if is_ci
-      sh("./travis-setup.sh")
-    end
     match(readonly: true)
     build_app(workspace: "ReadingList.xcworkspace", scheme: "ReadingList")
     upload_to_testflight
