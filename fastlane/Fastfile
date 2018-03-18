@@ -23,7 +23,7 @@ platform :ios do
 
   desc "Push a new beta build to TestFlight"
   lane :beta do
-    match(readonly: true)
+    match(type: "appstore", readonly: true)
     build_app(workspace: "ReadingList.xcworkspace", scheme: "ReadingList")
     upload_to_testflight(skip_submission: true)
   end
