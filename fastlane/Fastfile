@@ -23,7 +23,21 @@ platform :ios do
 
   desc "Push a new beta build to TestFlight"
   lane :beta do
-    match(type: "appstore", readonly: true)
+    # From https://docs.travis-ci.com/user/common-build-problems/#Mac%3A-macOS-Sierra-(10.12)-Code-Signing-Errors
+    create_keychain(
+      name: 'tmp_ci_keychain',
+      password: 'tmp_ci_keychain_password',
+      default_keychain: true,
+      unlock: true,
+      timeout: 3600,
+      add_to_search_list: true
+    )
+    match(
+      type: "appstore",
+      keychain_name: 'tmp_ci_keychain',
+      keychain_password: 'tmp_ci_keychain_password',
+      readonly: true
+    )
     build_app(workspace: "ReadingList.xcworkspace", scheme: "ReadingList")
     upload_to_testflight(skip_submission: true)
   end
