@@ -1,3 +1,4 @@
+#!/bin/sh
 # Add git certs HTTPS password to keychain
 fastlane actions setup_travis
 git config --global credential.helper osxkeychain
