@@ -360,7 +360,7 @@ class BookTable: UITableViewController {
         }]
         
         let readStateOfSection = sectionIndexByReadState.first{$0.value == indexPath.section}!.key
-        guard readStateOfSection == .reading || (readStateOfSection == .toRead && resultsController.object(at: indexPath).startedReading! < Date()) else {
+        guard readStateOfSection == .toRead || (readStateOfSection == .reading && resultsController.object(at: indexPath).startedReading! < Date()) else {
             // It is not "invalid" to have a book with a started date in the future; but it is invalid
             // to have a finish date before the start date. Therefore, hide the finish action if
             // this would be the case.
