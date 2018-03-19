@@ -11,8 +11,5 @@ before_install:
   - pod repo update > /dev/null
   - pod install
 script:
-  - |
-    fastlane test
-    if [ $TRAVIS_TAG = 'beta' ]; then
-    fastlane beta
-    fi
+  - fastlane test
+  - if [ $TRAVIS_TAG = 'beta' ]; then fastlane beta; fi
