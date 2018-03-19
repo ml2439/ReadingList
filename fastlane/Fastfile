@@ -29,8 +29,7 @@ platform :ios do
     increment_build_number({
       build_number: latest_testflight_build_number + 1
     })
-    cocoapods
-    build_app(workspace: "ReadingList.xcworkspace", scheme: "ReadingList", clean: true)
+    build_app(workspace: "ReadingList.xcworkspace", scheme: "ReadingList")
     upload_to_testflight(skip_submission: true, skip_waiting_for_build_processing: true)
   end
 
