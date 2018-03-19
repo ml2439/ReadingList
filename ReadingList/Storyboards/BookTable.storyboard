@@ -137,7 +137,6 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Read State Header" id="L1D-Rs-V49">
-                        <barButtonItem key="backBarButtonItem" title="To Read" id="PiS-zg-Eqa"/>
                         <barButtonItem key="leftBarButtonItem" systemItem="edit" id="nhd-kN-wZw"/>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="xwc-GG-HVK">
                             <connections>
@@ -182,6 +181,6 @@
         <image name="CoverPlaceholder" width="180" height="270"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="Uat-sc-yvW"/>
+        <segue reference="FJ4-wK-Tvz"/>
     </inferredMetricsTieBreakers>
 </document>
