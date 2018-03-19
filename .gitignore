@@ -3,8 +3,6 @@ xcuserdata
 .DS_Store
 Pods/
 screenshots.html
-.sass-cache/
-_site
 fastlane/report.xml
 fastlane/test_output
 fastlane/README.md
