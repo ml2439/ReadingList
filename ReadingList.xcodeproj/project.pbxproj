@@ -19,6 +19,7 @@
 		1C39544C202F9698007ACCB1 /* UserSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C39544B202F9698007ACCB1 /* UserSetting.swift */; };
 		1C39544E2030A4F0007ACCB1 /* EditBookMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C39544D2030A4F0007ACCB1 /* EditBookMetadata.swift */; };
 		1C3954502030D3CB007ACCB1 /* EurekaExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C39544F2030D3CB007ACCB1 /* EurekaExtensions.swift */; };
+		1C42F65B20605BD00024CC84 /* BuildInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C42F65A20605BD00024CC84 /* BuildInfo.swift */; };
 		1C4765931FB8F012005F6AEC /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1C4765921FB8F012005F6AEC /* GoogleService-Info.plist */; };
 		1C5180A82054122A008C6EA4 /* CrashlyticsExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5180A72054122A008C6EA4 /* CrashlyticsExtensions.swift */; };
 		1C5180AC20544427008C6EA4 /* BookMapping_10_11.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 1C5180AB20544427008C6EA4 /* BookMapping_10_11.xcmappingmodel */; };
@@ -145,6 +146,7 @@
 		1C39544B202F9698007ACCB1 /* UserSetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSetting.swift; sourceTree = "<group>"; };
 		1C39544D2030A4F0007ACCB1 /* EditBookMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditBookMetadata.swift; sourceTree = "<group>"; };
 		1C39544F2030D3CB007ACCB1 /* EurekaExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EurekaExtensions.swift; sourceTree = "<group>"; };
+		1C42F65A20605BD00024CC84 /* BuildInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuildInfo.swift; sourceTree = "<group>"; };
 		1C4765921FB8F012005F6AEC /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		1C5180A72054122A008C6EA4 /* CrashlyticsExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrashlyticsExtensions.swift; sourceTree = "<group>"; };
 		1C5180AB20544427008C6EA4 /* BookMapping_10_11.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = BookMapping_10_11.xcmappingmodel; sourceTree = "<group>"; };
@@ -472,6 +474,7 @@
 				49D0FAAA1F2B284000101EE1 /* UserEngagement.swift */,
 				49B8D8E01F499A5300D4C4EF /* UserSettings.swift */,
 				1C0DC733204B09610044B377 /* BookCSVExport.swift */,
+				1C42F65A20605BD00024CC84 /* BuildInfo.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -1145,6 +1148,7 @@
 				1C395448202F7966007ACCB1 /* Extensions.swift in Sources */,
 				49CEB80A1E9D8C06003FD859 /* Debug.swift in Sources */,
 				1C1C887F1FE05A9D00A20402 /* Tip.swift in Sources */,
+				1C42F65B20605BD00024CC84 /* BuildInfo.swift in Sources */,
 				1CD1D2BC202BCC0600ACA5D9 /* PreviewingNavigationController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1447,7 +1451,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = YPDEV2E775;
 				INFOPLIST_FILE = ReadingList/Info.plist;
@@ -1477,7 +1481,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer: Andrew Bennet (NSVAF8RDK6)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = YPDEV2E775;
 				INFOPLIST_FILE = ReadingList/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;

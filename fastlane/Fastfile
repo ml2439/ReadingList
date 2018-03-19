@@ -60,4 +60,21 @@ platform :ios do
     upload_symbols_to_crashlytics
     clean_build_artifacts
   end
-end
+
+  lane :patch do
+    increment_version_number(
+      bump_type: "patch"
+    )
+  end
+
+  lane :minor do
+    increment_version_number(
+      bump_type: "minor"
+    )
+  end
+
+  lane :major do
+    increment_version_number(
+      bump_type: "major"
+    )
+  end

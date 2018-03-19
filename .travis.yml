@@ -11,10 +11,8 @@ before_install:
   - pod repo update > /dev/null
   - pod install
 script:
-  - fastlane test
   - |
-    if [ $TRAVIS_TAG = 'deploy' ]; then
+    fastlane test
+    if [ $TRAVIS_TAG = 'beta' ]; then
     fastlane beta
-    elif [ $TRAVIS_EVENT_TYPE = 'cron' ]; then
-    fastlane dsyms
     fi
