@@ -12,4 +12,4 @@ before_install:
   - pod install
 script:
   - fastlane test
-  - if [ $TRAVIS_TAG = 'beta' ]; then fastlane beta; fi
+  - if [[ $TRAVIS_TAG = 'beta' ]]; then fastlane beta; fi
