@@ -26,6 +26,22 @@ extension UIView {
         self.init()
         self.backgroundColor = backgroundColor
     }
+        
+    var nextSibling: UIView? {
+        get {
+            guard let views = superview?.subviews else { return nil }
+            let thisIndex = views.index(of: self)!
+            guard thisIndex + 1 < views.count else { return nil }
+            return views[thisIndex + 1]
+        }
+    }
+    
+    var siblings: [UIView] {
+        get {
+            guard let views = superview?.subviews else { return [] }
+            return views.filter{ $0 != self }
+        }
+    }
 }
 
 
@@ -51,6 +67,18 @@ extension UISwipeActionsConfiguration {
     }
 }
 
+@available(iOS 11.0, *)
+extension UIContextualAction {
+    convenience init(style: UIContextualAction.Style, title: String?, image: UIImage?, backgroundColor: UIColor? = nil, handler: @escaping UIContextualActionHandler) {
+        self.init(style: style, title: title, handler: handler)
+        self.image = image
+        if let backgroundColor = backgroundColor {
+            // Don't set the background color to nil just because it was not provided
+            self.backgroundColor = backgroundColor
+        }
+    }
+}
+
 extension UISearchController {
     convenience init(filterPlaceholderText: String) {
         self.init(searchResultsController: nil)
@@ -73,6 +101,42 @@ extension UIViewController {
     }
 }
 
+extension UISplitViewController {
+    
+    var masterNavigationController: UINavigationController {
+        return viewControllers[0] as! UINavigationController
+    }
+    
+    var masterNavigationRoot: UIViewController {
+        return masterNavigationController.viewControllers.first!
+    }
+    
+    var detailIsPresented: Bool {
+        return isSplit || masterNavigationController.viewControllers.count >= 2
+    }
+    
+    var isSplit: Bool {
+        return viewControllers.count >= 2
+    }
+    
+    var displayedDetailViewController: UIViewController? {
+        // If the master and detail are separate, the detail will be the second item in viewControllers
+        if isSplit,
+            let detailNavController = viewControllers[1] as? UINavigationController {
+            return detailNavController.viewControllers.first
+        }
+        
+        // Otherwise, navigate to where the Details view controller should be (if it is displayed)
+        if masterNavigationController.viewControllers.count >= 2,
+            let previewNavController = masterNavigationController.viewControllers[1] as? UINavigationController {
+            return previewNavController.viewControllers.first
+        }
+        
+        // The controller is not present
+        return nil
+    }
+}
+
 extension UINavigationController {
     func dismissAndPopToRoot() {
         dismiss(animated: false)
@@ -91,6 +155,15 @@ extension UIPopoverPresentationController {
     func setSourceCell(atIndexPath indexPath: IndexPath, inTable tableView: UITableView, arrowDirections: UIPopoverArrowDirection = .any) {
         let cell = tableView.cellForRow(at: indexPath)!
         setSourceCell(cell, inTableView: tableView, arrowDirections: arrowDirections)
+    }
+}
+
+extension UITabBarItem {
+    
+    func configure(title: String, image: UIImage, selectedImage: UIImage) {
+        self.image = image
+        self.selectedImage = selectedImage
+        self.title = title
     }
 }
 
@@ -141,9 +214,22 @@ extension UISearchBar {
 }
 
 extension UIBarButtonItem {
-    func toggleHidden(hidden: Bool) {
+    func setHidden(_ hidden: Bool) {
         isEnabled = !hidden
         tintColor = hidden ? UIColor.clear : nil
+    }
+}
+
+extension UITableViewController {
+    @objc func toggleEditingAnimated() {
+        setEditing(!isEditing, animated: true)
+    }
+}
+
+extension UITableViewRowAction {
+    convenience init(style: UITableViewRowActionStyle, title: String?, color: UIColor, handler: @escaping (UITableViewRowAction, IndexPath) -> Void) {
+        self.init(style: style, title: title, handler: handler)
+        self.backgroundColor = color
     }
 }
 

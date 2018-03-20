@@ -82,12 +82,4 @@ class UserEngagement {
         
         return appStartCount >= appStartCountMinRequirement && userEngagementCount % userEngagementModulo == 0
     }
-    
-    static var appVersion: String {
-        get { return Bundle.main.infoDictionary!["CFBundleShortVersionString"] as! String }
-    }
-    
-    static var appBuildNumber: String {
-        get { return Bundle.main.infoDictionary!["CFBundleVersion"] as! String }
-    }
 }

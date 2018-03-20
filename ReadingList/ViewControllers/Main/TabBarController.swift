@@ -4,53 +4,71 @@ import Eureka
 
 class TabBarController: UITabBarController {
     
-    enum TabOption : Int {
+    convenience init() {
+        self.init(nibName: nil, bundle: nil)
+    }
+    
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+        initialise()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        initialise()
+    }
+    
+    enum TabOption: Int {
         case toRead = 0
         case finished = 1
         case organise = 2
         case settings = 3
     }
     
-    func selectTab(_ tab: TabOption) {
-        selectedIndex = tab.rawValue
-    }
-    
-    func selectTab(forState state: BookReadState) {
-        selectTab(state == .finished ? .finished : .toRead)
+    func initialise() {
+        // The first two tabs of the tab bar controller are to the same storyboard. We cannot have different tab bar icons
+        // if they are set up in storyboards, so we do them in code here, instead.
+        let toRead = Storyboard.BookTable.instantiateRoot() as! UISplitViewController
+        (toRead.masterNavigationRoot as! BookTable).readStates = [.reading, .toRead]
+        
+        let finished = Storyboard.BookTable.instantiateRoot() as! UISplitViewController
+        (finished.masterNavigationRoot as! BookTable).readStates = [.finished]
+        
+        viewControllers = [toRead, finished, Storyboard.Organise.instantiateRoot(), Storyboard.Settings.instantiateRoot()]
+        
+        // Tabs 3 and 4 are already configured by the Organise and Settings storyboards
+        tabBar.items![0].configure(title: "To Read", image: #imageLiteral(resourceName: "courses"), selectedImage: #imageLiteral(resourceName: "courses-filled"))
+        tabBar.items![1].configure(title: "Finished", image: #imageLiteral(resourceName: "to-do"), selectedImage: #imageLiteral(resourceName: "to-do-filled"))
     }
     
     var selectedTab: TabOption {
         get { return TabOption(rawValue: selectedIndex)! }
+        set { selectedIndex = newValue.rawValue }
     }
     
-    var selectedReadState: BookReadState {
-        get { return selectedTab == .finished ? .finished : .toRead }
-    }
-    
-    var selectedSplitViewController: SplitViewController? {
-        get { return selectedViewController as? SplitViewController }
+    var selectedSplitViewController: UISplitViewController? {
+        get { return selectedViewController as? UISplitViewController }
     }
 
     var selectedBookTable: BookTable? {
-        get { return (selectedSplitViewController?.masterNavigationController.viewControllers.first as? BookTable) }
+        get { return selectedSplitViewController?.masterNavigationController.viewControllers.first as? BookTable }
     }
     
     func simulateBookSelection(_ book: Book, allowTableObscuring: Bool) {
-        selectTab(forState: book.readState)
+        selectedTab = book.readState == .finished ? .finished : .toRead
         selectedBookTable!.simulateBookSelection(book.objectID, allowTableObscuring: allowTableObscuring)
     }
     
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
-        if let selectedSplitViewController = selectedSplitViewController, item.tag == selectedIndex {
+        guard let selectedSplitViewController = selectedSplitViewController, item.tag == selectedIndex else { return }
             
-            if selectedSplitViewController.masterNavigationController.viewControllers.count > 1 {
-               selectedSplitViewController.masterNavigationController.popToRootViewController(animated: true)
-            }
-            else if let topVc = selectedSplitViewController.masterNavigationController.viewControllers.first,
-                let topTable = (topVc as? UITableViewController)?.tableView ?? (topVc as? FormViewController)?.tableView,
-                topTable.numberOfSections > 0, topTable.contentOffset.y > 0 {
-                    topTable.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
-            }
+        if selectedSplitViewController.masterNavigationController.viewControllers.count > 1 {
+           selectedSplitViewController.masterNavigationController.popToRootViewController(animated: true)
+        }
+        else if let topVc = selectedSplitViewController.masterNavigationController.viewControllers.first,
+            let topTable = (topVc as? UITableViewController)?.tableView ?? (topVc as? FormViewController)?.tableView,
+            topTable.numberOfSections > 0, topTable.contentOffset.y > 0 {
+                topTable.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
         }
     }
 }

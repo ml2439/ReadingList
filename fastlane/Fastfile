@@ -1,0 +1,82 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:ios)
+
+platform :ios do
+
+  desc "Run tests"
+  lane :test do
+    # run tests synchronously as a bug in xcpretty will hide test results when multiple devices are used
+    scan(scheme: "ReadingList", devices: ["iPhone 7 (10.3.1)"])
+    scan(scheme: "ReadingList", devices: ["iPhone 8"], test_without_building: true)
+    scan(scheme: "ReadingList", devices: ["iPad Pro (10.5-inch) (11.2)"], test_without_building: true)
+  end
+
+  desc "Push a new beta build to TestFlight (not externally released)"
+  lane :beta do
+    if is_ci
+      ci_setup_certs
+    end
+    increment_build_number({
+      build_number: latest_testflight_build_number + 1
+    })
+    build_app(workspace: "ReadingList.xcworkspace", scheme: "ReadingList")
+    upload_to_testflight(skip_submission: true, skip_waiting_for_build_processing: true)
+  end
+
+  private_lane :ci_setup_certs do
+    # From https://docs.travis-ci.com/user/common-build-problems/#Mac%3A-macOS-Sierra-(10.12)-Code-Signing-Errors
+    create_keychain(
+      name: 'tmp_ci_keychain',
+      password: 'tmp_ci_keychain_password',
+      default_keychain: true,
+      unlock: true,
+      timeout: 3600,
+      add_to_search_list: true
+    )
+    sh("git config --global credential.helper osxkeychain")
+    sh("git clone https://andrew_bennet:$GIT_CERTS_PASSWORD@bitbucket.org/andrew_bennet/certificates.git")
+    sh("rm -rf certificates")
+    match(
+      type: "appstore",
+      keychain_name: 'tmp_ci_keychain',
+      keychain_password: 'tmp_ci_keychain_password',
+      readonly: true
+    )
+  end
+
+  desc "Download DSYMs from iTunes and upload them to Crashlytics"
+  lane :dsyms do
+    download_dsyms(version: "latest")
+    upload_symbols_to_crashlytics
+    clean_build_artifacts
+  end
+
+  lane :patch do
+    increment_version_number(
+      bump_type: "patch"
+    )
+  end
+
+  lane :minor do
+    increment_version_number(
+      bump_type: "minor"
+    )
+  end
+
+  lane :major do
+    increment_version_number(
+      bump_type: "major"
+    )
+  end
+
+end

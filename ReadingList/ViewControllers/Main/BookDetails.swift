@@ -31,14 +31,14 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     var didShowNavigationItemTitle = false
     var shouldTruncateLongDescriptions = true
     
-    var parentSplitViewController: SplitViewController? {
-        get { return appDelegate.tabBarController.selectedViewController as? SplitViewController }
+    var parentSplitViewController: UISplitViewController? {
+        get { return appDelegate.tabBarController.selectedSplitViewController }
     }
     
-    func setViewEnabled(enabled: Bool) {
+    func setViewEnabled(_ enabled: Bool) {
         // Show the whole view and nav bar buttons
         view.isHidden = !enabled
-        navigationItem.rightBarButtonItems?.forEach({$0.toggleHidden(hidden: !enabled)})
+        navigationItem.rightBarButtonItems?.forEach({$0.setHidden(!enabled)})
     }
     
     var book: Book? {
@@ -47,8 +47,8 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     
     func setupViewFromBook() {
         // Hide the whole view and nav bar buttons if there's no book
-        guard let book = book else { setViewEnabled(enabled: false); return }
-        setViewEnabled(enabled: true)
+        guard let book = book else { setViewEnabled(false); return }
+        setViewEnabled(true)
         
         cover.image = UIImage(optionalData: book.coverImage) ?? #imageLiteral(resourceName: "CoverPlaceholder")
         
@@ -125,7 +125,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         setTextOrHideLine(isbn, book.isbn13)
         setTextOrHideLine(pages, book.pageCount?.intValue.string)
         setTextOrHideLine(published, book.publicationDate?.toPrettyString(short: false))
-        setTextOrHideLine(subjects,  book.subjects.map{$0.name}.sorted().joined(separator: ", ").nilIfWhitespace())
+        setTextOrHideLine(subjects, book.subjects.map{$0.name}.sorted().joined(separator: ", ").nilIfWhitespace())
         googleBooks.isHidden = book.googleBooksId == nil
         
         // Remove all the existing list labels
@@ -158,7 +158,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         // Initialise the view so that by default a blank page is shown.
         // This is required for starting the app in split-screen mode, where this view is
         // shown without any books being selected.
-        setViewEnabled(enabled: false)
+        setViewEnabled(false)
         
         // Listen for taps on the book description, which should remove any truncation
         bookDescription.superview!.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(seeMoreDescription)))
@@ -282,7 +282,6 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     }
     
     @IBAction func shareButtonPressed(_ sender: UIBarButtonItem) {
-
         guard let book = book else { return }
 
         let activityViewController = UIActivityViewController(activityItems: ["\(book.title)\n\(book.authorDisplay)"], applicationActivities: nil)
@@ -339,48 +338,6 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
                 UserEngagement.logEvent(.deleteBook)
             })
             return previewActions
-        }
-    }
-}
-
-class StartFinishButton: BorderedButton {
-    enum State {
-        case start
-        case finish
-        case none
-    }
-    
-    func setState(_ state: State) {
-        switch state {
-        case .start:
-            isHidden = false
-            setColor(UIColor.buttonBlue)
-            setTitle("START", for: .normal)
-        case .finish:
-            isHidden = false
-            setColor(UIColor.flatGreen)
-            setTitle("FINISH", for: .normal)
-        case .none:
-            isHidden = true
-        }
-    }
-}
-
-extension UIView {
-
-    var nextSibling: UIView? {
-        get {
-            guard let views = superview?.subviews else { return nil }
-            let thisIndex = views.index(of: self)!
-            guard thisIndex + 1 < views.count else { return nil }
-            return views[thisIndex + 1]
-        }
-    }
-    
-    var siblings: [UIView] {
-        get {
-            guard let views = superview?.subviews else { return [] }
-            return views.filter{ $0 != self }
         }
     }
 }

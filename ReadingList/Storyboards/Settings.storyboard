@@ -30,7 +30,7 @@
         <!--Settings-->
         <scene sceneID="ixr-i2-ceR">
             <objects>
-                <splitViewController id="DTX-v0-0zO" customClass="SplitViewController" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
+                <splitViewController id="DTX-v0-0zO" customClass="AllVisibleSplitViewController" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" tag="3" title="Settings" image="settings" selectedImage="settings-filled" id="ykJ-TP-cgy"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
@@ -121,7 +121,7 @@
                                 </cells>
                             </tableViewSection>
                             <tableViewSection id="QFA-yO-vUj">
-                                <mutableString key="footerTitle">Import from a CSV file. Generate an export file first to see the data format. Book covers will be downloaded for rows with a Google Books ID. Duplicates and invalid entries will be skipped.  Note: Title and Author cells are mandatory. Authors should be separated by semicolons and be entered in the form: "Lastname, Firstnames". Subjects should be separated by semicolons.</mutableString>
+                                <string key="footerTitle">Import from a CSV file. Generate an export file first to see the data format. Book covers will be downloaded for rows with a Google Books ID. Duplicates and invalid entries will be skipped.  Note: Title and Author cells are mandatory. Authors should be separated by semicolons and be entered in the form: "Lastname, Firstnames". Subjects should be separated by semicolons.</string>
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" textLabel="OTY-52-vzH" style="IBUITableViewCellStyleDefault" id="3l5-ie-WrC">
                                         <rect key="frame" x="0.0" y="142.66666666666666" width="375" height="44"/>

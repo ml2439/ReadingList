@@ -3,14 +3,16 @@ import CoreData
 
 class BookCSVImporter {
     let backgroundContext: NSManagedObjectContext
+    let includeImages: Bool
     
-    init() {
+    init(includeImages: Bool = true) {
         self.backgroundContext = PersistentStoreManager.container.newBackgroundContext()
+        self.includeImages = includeImages
     }
     
     public func startImport(fromFileAt fileLocation: URL, _ completion: @escaping (BookCSVImportResults) -> ()) {
         let parser = CSVParser(csvFileUrl: fileLocation)
-        parser.delegate = BookCSVParserDelegate(context: backgroundContext, completion: completion)
+        parser.delegate = BookCSVParserDelegate(context: backgroundContext, includeImages: includeImages, completion: completion)
         parser.begin()
     }
 }
@@ -24,13 +26,15 @@ struct BookCSVImportResults {
 fileprivate class BookCSVParserDelegate: CSVParserDelegate {
     private let context: NSManagedObjectContext
     private let onCompletion: (BookCSVImportResults) -> ()
+    private let includeImages: Bool
     private var currentSort: Int32?
     private let dispatchGroup = DispatchGroup()
     private var listMappings = [String: [(bookID: NSManagedObjectID, index: Int)]]()
     private var listNames = [String]()
     
-    init(context: NSManagedObjectContext, completion: @escaping (BookCSVImportResults) -> ()) {
+    init(context: NSManagedObjectContext, includeImages: Bool = true, completion: @escaping (BookCSVImportResults) -> ()) {
         self.context = context
+        self.includeImages = includeImages
         self.onCompletion = completion
     }
     
@@ -146,7 +150,7 @@ fileprivate class BookCSVParserDelegate: CSVParserDelegate {
             }
             
             // Supplement the book with the cover image
-            if let googleBookdID = newBook.googleBooksId {
+            if self.includeImages, let googleBookdID = newBook.googleBooksId {
                 populateCover(forBook: newBook, withGoogleID: googleBookdID)
             }
         }

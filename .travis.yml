@@ -1,13 +1,15 @@
 language: objective-c
+cache:
+  - bundler
+  - cocoapods
 osx_image: xcode9.2
+notifications:
+  email:
+    - readinglist@andrewbennet.com
 before_install:
+  - bundle install > /dev/null
   - pod repo update > /dev/null
-xcode_workspace: ReadingList.xcworkspace
-xcode_scheme: ReadingList
+  - pod install
 script:
-  - xcodebuild test -workspace ReadingList.xcworkspace -scheme ReadingList -destination 'platform=iOS Simulator,name=iPhone 7,OS=10.3.1' CODE_SIGNING_REQUIRED=NO  | xcpretty && exit ${PIPESTATUS[0]}
-  - xcodebuild test -workspace ReadingList.xcworkspace -scheme ReadingList -destination 'platform=iOS Simulator,name=iPhone 7 Plus,OS=10.3.1' CODE_SIGNING_REQUIRED=NO | xcpretty && exit ${PIPESTATUS[0]}
-  - xcodebuild test -workspace ReadingList.xcworkspace -scheme ReadingList -destination 'platform=iOS Simulator,name=iPad Pro (9.7-inch),OS=10.3.1' CODE_SIGNING_REQUIRED=NO | xcpretty && exit ${PIPESTATUS[0]}
-  - xcodebuild test -workspace ReadingList.xcworkspace -scheme ReadingList -destination 'platform=iOS Simulator,name=iPhone 8,OS=11.2' CODE_SIGNING_REQUIRED=NO | xcpretty && exit ${PIPESTATUS[0]}
-  - xcodebuild test -workspace ReadingList.xcworkspace -scheme ReadingList -destination 'platform=iOS Simulator,name=iPhone 8 Plus,OS=11.2' CODE_SIGNING_REQUIRED=NO | xcpretty && exit ${PIPESTATUS[0]}
-  - xcodebuild test -workspace ReadingList.xcworkspace -scheme ReadingList -destination 'platform=iOS Simulator,name=iPad Pro (9.7-inch),OS=11.2' CODE_SIGNING_REQUIRED=NO | xcpretty && exit ${PIPESTATUS[0]}
+  - fastlane test
+  - if [[ $TRAVIS_TAG = 'beta' ]]; then fastlane beta; fi
