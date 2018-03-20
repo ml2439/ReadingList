@@ -5,11 +5,11 @@ class Settings: UITableViewController {
     static let appStoreAddress = "itunes.apple.com/gb/app/reading-list-book-tracker/id1217139955"
     static let feedbackEmailAddress = "feedback@readinglistapp.xyz"
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+    override func viewDidLoad() {
+        super.viewDidLoad()
         
         if #available(iOS 11.0, *) {
-            navigationController!.navigationBar.prefersLargeTitles = UserSettings.useLargeTitles.value
+            monitorLargeTitleSetting()
         }
     }
     

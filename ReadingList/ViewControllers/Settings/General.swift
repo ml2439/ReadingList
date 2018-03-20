@@ -24,6 +24,7 @@ class General: UITableViewController {
     
     @IBAction func useLargeTitlesChanged(_ sender: UISwitch) {
         UserSettings.useLargeTitles.value = sender.isOn
+        NotificationCenter.default.post(name: NSNotification.Name.LargeTitleSettingChanged, object: nil)
     }
     
     @IBAction func crashReportsSwitchChanged(_ sender: UISwitch) {
@@ -74,5 +75,23 @@ class General: UITableViewController {
             completion(true)
         })
         present(alert, animated: true)
+    }
+}
+
+extension Notification.Name {
+    static let LargeTitleSettingChanged = Notification.Name("large-title-setting-changed")
+}
+
+extension UIViewController {
+    @available(iOS 11.0, *)
+    func monitorLargeTitleSetting() {
+        updateLargeTitleFromSetting()
+        NotificationCenter.default.addObserver(self, selector: #selector(updateLargeTitleFromSetting), name: NSNotification.Name.LargeTitleSettingChanged, object: nil)
+    }
+    
+    @available(iOS 11.0, *)
+    @objc private func updateLargeTitleFromSetting() {
+        guard let navController = navigationController else { return }
+        navController.navigationBar.prefersLargeTitles = UserSettings.useLargeTitles.value
     }
 }

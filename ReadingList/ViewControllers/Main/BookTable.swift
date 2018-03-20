@@ -40,18 +40,15 @@ class BookTable: UITableViewController {
         tableView.emptyDataSetSource = self
         tableView.emptyDataSetDelegate = self
 
-        // Watch for changes in book sort order
+        // Watch for changes
         NotificationCenter.default.addObserver(self, selector: #selector(bookSortChanged), name: NSNotification.Name.BookSortOrderChanged, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(refetch), name: NSNotification.Name.PersistentStoreBatchOperationOccurred, object: nil)
         
-        super.viewDidLoad()
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
         if #available(iOS 11.0, *) {
-            navigationController!.navigationBar.prefersLargeTitles = UserSettings.useLargeTitles.value
+            monitorLargeTitleSetting()
         }
-        super.viewWillAppear(animated)
+        
+        super.viewDidLoad()
     }
     
     override func viewDidAppear(_ animated: Bool) {
