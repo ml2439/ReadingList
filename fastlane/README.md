@@ -25,12 +25,32 @@ Run tests
 ```
 fastlane ios beta
 ```
+Increments the build number, commits with a special commit message to trigger CI deploy
+### ios deploy
+```
+fastlane ios deploy
+```
 Push a new beta build to TestFlight (not externally released)
 ### ios dsyms
 ```
 fastlane ios dsyms
 ```
 Download DSYMs from iTunes and upload them to Crashlytics
+### ios patch
+```
+fastlane ios patch
+```
+
+### ios minor
+```
+fastlane ios minor
+```
+
+### ios major
+```
+fastlane ios major
+```
+
 
 ----
 
