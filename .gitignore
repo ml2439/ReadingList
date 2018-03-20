@@ -5,7 +5,8 @@ Pods/
 screenshots.html
 fastlane/report.xml
 fastlane/test_output
-fastlane/README.md
+fastlane/metadata
+fastlane/screenshots
 *.ipa
 *.dSYM.zip
 .idea
