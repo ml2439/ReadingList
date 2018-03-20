@@ -43,15 +43,9 @@ class Screenshots: XCTestCase {
         
         app.navigationBars["Scan Barcode"].buttons["Cancel"].tap()
         
-        /*app.navigationBars["Finished"].buttons["Add"].tap()
-        app.sheets["Add New Book"].buttons["Search Online"].tap()
-        app.searchFields["Search"].typeText("Kerouac")
-        snapshot("3_SearchOnline")
-        app.navigationBars["Search Online"].buttons["Cancel"].tap()*/
-        
         app.tabBars.buttons["Finished"].tap()
         app.tables.element(boundBy: 0).swipeDown()
-        
+
         let yourLibrarySearchField = app.searchFields["Your Library"]
         yourLibrarySearchField.tap()
         yourLibrarySearchField.typeText("Orwell")
@@ -84,6 +78,4 @@ class Screenshots: XCTestCase {
         snapshot("5_Organise")
     }
 }
-
-
 

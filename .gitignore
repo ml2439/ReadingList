@@ -6,7 +6,7 @@ screenshots.html
 fastlane/report.xml
 fastlane/test_output
 fastlane/metadata
-fastlane/screenshots
+fastlane/screenshots/*/*.png
 *.ipa
 *.dSYM.zip
 .idea

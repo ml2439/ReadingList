@@ -19,6 +19,12 @@
     },
     {
       "filter": "SearchFinished"
+    },
+    {
+      "filter": "BulkEdit"
+    },
+    {
+      "filter": "Organise"
     }
   ]
 }

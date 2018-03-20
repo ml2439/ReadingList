@@ -7,10 +7,9 @@ devices([
 	"iPad Pro (12.9-inch)"
 ])
 languages([
-  "en-US"
+  "default"
 ])
 scheme("Screenshots")
-#output_directory("../ReadingList_Screenshots")
 workspace("ReadingList.xcworkspace")
 clear_previous_screenshots(true)
 
