@@ -20,7 +20,7 @@ or alternatively using `brew cask install fastlane`
 ```
 fastlane ios test
 ```
-Run tests
+Run tests, on iPhone 7 (iOS 10), iPhone 8 (iOS 11) and iPad Pro (iOS 11)
 ### ios beta
 ```
 fastlane ios beta
@@ -31,6 +31,11 @@ Increments the build number, commits with a special commit message to trigger CI
 fastlane ios deploy
 ```
 Push a new beta build to TestFlight (not externally released)
+### ios snaps
+```
+fastlane ios snaps
+```
+Create framed screenshots for a range of devices
 ### ios dsyms
 ```
 fastlane ios dsyms
@@ -40,17 +45,17 @@ Download DSYMs from iTunes and upload them to Crashlytics
 ```
 fastlane ios patch
 ```
-
+Create a commit incrementing the patch number
 ### ios minor
 ```
 fastlane ios minor
 ```
-
+Create a commit incrementing the minor version number
 ### ios major
 ```
 fastlane ios major
 ```
-
+Create a commit incrementing the major version number
 
 ----
 
