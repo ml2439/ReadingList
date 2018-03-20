@@ -10,7 +10,7 @@ languages([
   "en-US"
 ])
 scheme("Screenshots")
-output_directory("../ReadingList_Screenshots")
+#output_directory("../ReadingList_Screenshots")
 workspace("ReadingList.xcworkspace")
 clear_previous_screenshots(true)
 

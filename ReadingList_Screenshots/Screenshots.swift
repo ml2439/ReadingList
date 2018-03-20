@@ -43,11 +43,11 @@ class Screenshots: XCTestCase {
         
         app.navigationBars["Scan Barcode"].buttons["Cancel"].tap()
         
-        app.navigationBars["Finished"].buttons["Add"].tap()
+        /*app.navigationBars["Finished"].buttons["Add"].tap()
         app.sheets["Add New Book"].buttons["Search Online"].tap()
         app.searchFields["Search"].typeText("Kerouac")
         snapshot("3_SearchOnline")
-        app.navigationBars["Search Online"].buttons["Cancel"].tap()
+        app.navigationBars["Search Online"].buttons["Cancel"].tap()*/
         
         app.tabBars.buttons["Finished"].tap()
         app.tables.element(boundBy: 0).swipeDown()
@@ -61,7 +61,7 @@ class Screenshots: XCTestCase {
             app.tables.staticTexts["1984"].tap()
         }
 
-        snapshot("4_SearchFinished")
+        snapshot("3_SearchFinished")
         app.buttons["Cancel"].tap()
         
         if isIpad {
@@ -71,7 +71,7 @@ class Screenshots: XCTestCase {
         app.tables.cells.element(boundBy: 3).tap()
         app.tables.cells.element(boundBy: 6).tap()
         app.tables.cells.element(boundBy: 7).tap()
-        snapshot("5_BulkEdit")
+        snapshot("4_BulkEdit")
         
         app.tabBars.buttons["Organise"].tap()
         app.tables.cells.element(boundBy: 0).tap()
@@ -81,7 +81,7 @@ class Screenshots: XCTestCase {
         else {
             app.swipeUp()
         }
-        snapshot("6_Organise")
+        snapshot("5_Organise")
     }
 }
 
