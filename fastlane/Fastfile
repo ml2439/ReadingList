@@ -13,7 +13,7 @@ default_platform(:ios)
 
 platform :ios do
 
-  desc "Run tests"
+  desc "Run tests, on iPhone 7 (iOS 10), iPhone 8 (iOS 11) and iPad Pro (iOS 11)"
   lane :test do
     # run tests synchronously as a bug in xcpretty will hide test results when multiple devices are used
     scan(scheme: "ReadingList", devices: ["iPhone 7 (10.3.1)"])
@@ -38,6 +38,12 @@ platform :ios do
     end
     build_app(workspace: "ReadingList.xcworkspace", scheme: "ReadingList")
     upload_to_testflight(skip_submission: true, skip_waiting_for_build_processing: true)
+  end
+
+  desc "Create framed screenshots for a range of devices"
+  lane :snaps do
+    screenshot
+    frameit(white: true, path: './fastlane/screenshots')
   end
 
   desc "Download DSYMs from iTunes and upload them to Crashlytics"
@@ -79,6 +85,7 @@ platform :ios do
     )
   end
 
+  desc "Create a commit incrementing the patch number"
   lane :patch do
     ensure_git_status_clean
     reset_build_number
@@ -86,6 +93,7 @@ platform :ios do
     commit_detailed_version_bump
   end
 
+  desc "Create a commit incrementing the minor version number"
   lane :minor do
     ensure_git_status_clean
     reset_build_number
@@ -93,6 +101,7 @@ platform :ios do
     commit_detailed_version_bump
   end
 
+  desc "Create a commit incrementing the major version number"
   lane :major do
     ensure_git_status_clean
     reset_build_number

@@ -160,7 +160,8 @@ extension UIPopoverPresentationController {
 
 extension UITabBarItem {
     
-    func configure(title: String, image: UIImage, selectedImage: UIImage) {
+    func configure(tag: Int, title: String, image: UIImage, selectedImage: UIImage) {
+        self.tag = tag
         self.image = image
         self.selectedImage = selectedImage
         self.title = title
