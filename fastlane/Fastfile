@@ -40,9 +40,17 @@ platform :ios do
     upload_to_testflight(skip_submission: true, skip_waiting_for_build_processing: true)
   end
 
+
+  lane :publish do
+    snaps
+    current_build_number = get_build_number
+    current_version = get_version_number(target: "ReadingList")
+    deliver(skip_metadata: true, build_number: current_build_number, app_version: current_version)
+  end
+
   desc "Create framed screenshots for a range of devices"
   lane :snaps do
-    screenshot
+    snapshot
     frameit(white: true, path: './fastlane/screenshots')
   end
 
@@ -79,7 +87,7 @@ platform :ios do
   end
 
   private_lane :commit_detailed_version_bump do
-    version_number = get_version_number
+    version_number = get_version_number(target: "ReadingList")
     commit_version_bump(
       message: "Increment to version " + version_number
     )

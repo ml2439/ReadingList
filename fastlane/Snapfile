@@ -7,7 +7,7 @@ devices([
 	"iPad Pro (12.9-inch)"
 ])
 languages([
-  "default"
+  "en-GB"
 ])
 scheme("Screenshots")
 workspace("ReadingList.xcworkspace")
