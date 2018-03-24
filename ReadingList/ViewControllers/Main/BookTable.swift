@@ -47,6 +47,7 @@ class BookTable: UITableViewController {
         if #available(iOS 11.0, *) {
             monitorLargeTitleSetting()
         }
+        //initialise(withTheme: UserSettings.theme)
         
         super.viewDidLoad()
     }
@@ -155,6 +156,12 @@ class BookTable: UITableViewController {
         guard isEditing else { return }
         navigationItem.rightBarButtonItem!.isEnabled = true
         navigationItem.title = "\(tableView.indexPathsForSelectedRows!.count) Selected"
+    }
+    
+    override func tableView(_ tableView: UITableView, willDisplayHeaderView view:UIView, forSection: Int) {
+        if let headerTitle = view as? UITableViewHeaderFooterView {
+            headerTitle.textLabel?.textColor = .lightGray
+        }
     }
     
     override func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {

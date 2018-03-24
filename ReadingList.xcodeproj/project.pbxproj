@@ -20,6 +20,7 @@
 		1C39544E2030A4F0007ACCB1 /* EditBookMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C39544D2030A4F0007ACCB1 /* EditBookMetadata.swift */; };
 		1C3954502030D3CB007ACCB1 /* EurekaExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C39544F2030D3CB007ACCB1 /* EurekaExtensions.swift */; };
 		1C42F65B20605BD00024CC84 /* BuildInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C42F65A20605BD00024CC84 /* BuildInfo.swift */; };
+		1C42F65D20645C510024CC84 /* Themeable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C42F65C20645C510024CC84 /* Themeable.swift */; };
 		1C4765931FB8F012005F6AEC /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1C4765921FB8F012005F6AEC /* GoogleService-Info.plist */; };
 		1C5180A82054122A008C6EA4 /* CrashlyticsExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5180A72054122A008C6EA4 /* CrashlyticsExtensions.swift */; };
 		1C5180AC20544427008C6EA4 /* BookMapping_10_11.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 1C5180AB20544427008C6EA4 /* BookMapping_10_11.xcmappingmodel */; };
@@ -147,6 +148,7 @@
 		1C39544D2030A4F0007ACCB1 /* EditBookMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditBookMetadata.swift; sourceTree = "<group>"; };
 		1C39544F2030D3CB007ACCB1 /* EurekaExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EurekaExtensions.swift; sourceTree = "<group>"; };
 		1C42F65A20605BD00024CC84 /* BuildInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuildInfo.swift; sourceTree = "<group>"; };
+		1C42F65C20645C510024CC84 /* Themeable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Themeable.swift; sourceTree = "<group>"; };
 		1C4765921FB8F012005F6AEC /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		1C5180A72054122A008C6EA4 /* CrashlyticsExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrashlyticsExtensions.swift; sourceTree = "<group>"; };
 		1C5180AB20544427008C6EA4 /* BookMapping_10_11.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = BookMapping_10_11.xcmappingmodel; sourceTree = "<group>"; };
@@ -328,6 +330,7 @@
 				1C66927C203849EA001ED046 /* BookTableViewCell.swift */,
 				1CAE41B8204597BE002AF7DF /* SearchResultCell.swift */,
 				1CC4C048205732300034A218 /* StartFinishButton.swift */,
+				1C42F65C20645C510024CC84 /* Themeable.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1102,6 +1105,7 @@
 				49B2CEF81F39A4D300C6B45D /* SortOrder.swift in Sources */,
 				1C75AEFE2042F3A800FB9456 /* BookMapping_8_9.xcmappingmodel in Sources */,
 				1CD1125E202DF7F000BE3E1D /* BooksModelVersions.swift in Sources */,
+				1C42F65D20645C510024CC84 /* Themeable.swift in Sources */,
 				1C3954502030D3CB007ACCB1 /* EurekaExtensions.swift in Sources */,
 				1C39544C202F9698007ACCB1 /* UserSetting.swift in Sources */,
 				1CD07236204A1F7D00DCFBDE /* BookMapping_9_10.xcmappingmodel in Sources */,

@@ -11,6 +11,7 @@ class Settings: UITableViewController {
         if #available(iOS 11.0, *) {
             monitorLargeTitleSetting()
         }
+        //initialise(withTheme: UserSettings.theme)
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

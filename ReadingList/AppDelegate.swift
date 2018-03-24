@@ -124,6 +124,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             presentFromToRead(Storyboard.SearchOnline.rootAsFormSheet())
         }
     }
+    
+    func setTheme(_ theme: Theme) {
+        UIApplication.shared.statusBarStyle = UserSettings.theme == .normal ? .default : .lightContent
+        tabBarController.cascadeInitialise(withTheme: UserSettings.theme)
+    }
 }
 
 enum QuickAction: String {

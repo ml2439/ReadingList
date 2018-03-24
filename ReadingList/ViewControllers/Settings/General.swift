@@ -6,7 +6,8 @@ class General: UITableViewController {
     @IBOutlet weak var useLargeTitlesSwitch: UISwitch!
     @IBOutlet weak var sendAnalyticsSwitch: UISwitch!
     @IBOutlet weak var sendCrashReportsSwitch: UISwitch!
-    
+    @IBOutlet weak var darkModeSwitch: UISwitch!
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -18,8 +19,18 @@ class General: UITableViewController {
             useLargeTitlesSwitch.isEnabled = false
         }
         
+        darkModeSwitch.isOn = UserSettings.theme != .normal
         sendAnalyticsSwitch.isOn = UserSettings.sendAnalytics.value
         sendCrashReportsSwitch.isOn = UserSettings.sendCrashReports.value
+    }
+
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
+        cell.contentView.subviews.flatMap{$0 as? UILabel}.forEach{
+            $0.textColor = UserSettings.theme.titleTextColor
+        }
+        cell.backgroundColor = UserSettings.theme.cellBackgroundColor
+        return cell
     }
     
     @IBAction func useLargeTitlesChanged(_ sender: UISwitch) {
@@ -66,6 +77,21 @@ class General: UITableViewController {
         }
     }
     
+    @IBAction func darkModeSwitchToggled(_ sender: UISwitch) {
+        UserSettings.theme = sender.isOn ? .dark : .normal
+        /*NotificationCenter.default.post(name: Notification.Name.ThemeSettingChanged, object: nil)
+        tableView.setThemeAnimated(UserSettings.theme)
+        navigationController!.navigationBar.setThemeAnimated(UserSettings.theme)
+        tableView.reloadData()
+        appDelegate.themeChanged()*/
+        
+        //UIView.transition(with: view, duration: 0.5, options: [UIViewAnimationOptions.beginFromCurrentState, UIViewAnimationOptions.transitionCrossDissolve], animations: {
+            //appDelegate.setTheme(UserSettings.theme)
+    let rootTabBarVC = UIApplication.shared.delegate!.window!!.rootViewController as! UITabBarController
+    rootTabBarVC.cascadeInitialise(withTheme: UserSettings.theme)
+        //}, completion: nil)
+    }
+    
     func persuadeToKeepOn(title: String, message: String, completion: @escaping (Bool) -> Void) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Turn Off", style: .destructive) { _ in
@@ -80,6 +106,7 @@ class General: UITableViewController {
 
 extension Notification.Name {
     static let LargeTitleSettingChanged = Notification.Name("large-title-setting-changed")
+    static let ThemeSettingChanged = Notification.Name("theme-setting-changed")
 }
 
 extension UIViewController {

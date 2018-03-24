@@ -4,6 +4,11 @@ import MessageUI
 
 class About: UITableViewController {
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        //initialise(withTheme: UserSettings.theme)
+    }
+    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard indexPath.section == 0 else { return }
         switch indexPath.row {

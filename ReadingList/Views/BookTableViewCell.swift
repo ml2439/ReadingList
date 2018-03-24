@@ -1,11 +1,23 @@
 import Foundation
 import UIKit
 
-class BookTableViewCell: UITableViewCell {
+class BookTableViewCell: UITableViewCell, ThemeableView {
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var authorsLabel: UILabel!
     @IBOutlet weak var bookCover: UIImageView!
     @IBOutlet weak var readTimeLabel: UILabel?
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        initialise(withTheme: UserSettings.theme)
+    }
+    
+    func initialise(withTheme theme: Theme) {
+        backgroundColor = theme.cellBackgroundColor
+        titleLabel.textColor = theme.titleTextColor
+        authorsLabel.textColor = theme.subtitleTextColor
+        readTimeLabel?.textColor = theme.subtitleTextColor
+    }
     
     func configureFrom(_ book: Book) {
         titleLabel.text = book.title
