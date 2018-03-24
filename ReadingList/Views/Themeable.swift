@@ -1,7 +1,8 @@
 import UIKit
 import Foundation
+import Eureka
 
-enum Theme: Int {
+@objc enum Theme: Int {
     case normal = 1
     case dark = 2
     case black = 3
@@ -17,135 +18,137 @@ extension Theme {
     }
     
     var subtitleTextColor: UIColor {
-        return self == .normal ? .black : .white
+        return self == .normal ? .darkGray : .white
     }
     
     var cellBackgroundColor: UIColor {
-        return self == .normal ? .white : .black
-    }
-}
-
-protocol ThemeableView where Self: UIView {
-    func initialise(withTheme theme: Theme)
-}
-
-    protocol ThemeableViewController where Self: UIViewController {
-        //func initialise(withTheme theme: Theme)
-        func cascadeInitialise(withTheme theme: Theme)
-    }
-
-    /*extension ThemeableViewController {
-        func cascadeInitialise(withTheme theme: Theme) {
-            //initialise(withTheme: theme)
-            
-            //let childVCs: [UIViewController]?
-            /*if let splitVC = self as? UISplitViewController {
-                print("split view")
-                childVCs = splitVC.viewControllers
-            }
-            else if let navVC = self as? UINavigationController {
-                print("nav view")
-                childVCs = navVC.viewControllers
-            }
-            else */
-            
-            
-            if let tabVC = self as? UITabBarController, let innerVCs = tabVC.viewControllers {
-                for themableVC in innerVCs.flatMap({$0 as? ThemeableViewController}) {
-                    themableVC.cascadeInitialise(withTheme: theme)
-                }
-            }
-            
-            //else {
-                //childVCs = nil
-              //  print("no child VCs")
-            //}
-            
-            
-            //childVCs?.flatMap{$0 as? ThemeableViewController}.forEach{
-              //  $0.cascadeInitialise(withTheme: theme)
-            //}
-        }*/
-
-
-/*extension Themeable {
-    func setThemeAnimated(withTheme theme: Theme) {
-        UIView.transition(with: self, duration: 0.5, options: [UIViewAnimationOptions.beginFromCurrentState, UIViewAnimationOptions.transitionCrossDissolve], animations: {
-            self.setTheme(theme)
-        }, completion: nil)
-    }
-}*/
-
-    extension UITabBarController: ThemeableViewController {
-        /*func initialise(withTheme theme: Theme) {
-            print("DEBUG: do nothing")//tabBar.initialise(withTheme: theme)
-        }*/
-        func cascadeInitialise(withTheme theme: Theme) {
-            guard let viewControllers = viewControllers else { return }
-            for themableVC in viewControllers.flatMap({$0 as? ThemeableViewController}) {
-                themableVC.cascadeInitialise(withTheme: theme)
-            }
-        }
-    }
-
-extension UISplitViewController: ThemeableViewController {
-    func cascadeInitialise(withTheme theme: Theme) {
-        for themableVC in viewControllers.flatMap({$0 as? ThemeableViewController}) {
-            themableVC.cascadeInitialise(withTheme: theme)
+        switch self {
+        case .normal: return .white
+        case .dark: return .darkGray
+        case .black: return .black
         }
     }
     
-        /*func initialise(withTheme theme: Theme) {
-            print("DEBUG: do nothing")
-        }*/
+    var viewBackgroundColor: UIColor {
+        switch self {
+        case .normal: return .white
+        case .dark: return .darkGray
+        case .black: return .black
+        }
     }
+}
 
-    /*extension UINavigationController: ThemeableViewController {
-        /*func initialise(withTheme theme: Theme) {
-            print("DEBUG: do nothing")/*
-            navigationBar.initialise(withTheme: theme)
-            if #available(iOS 11.0, *) {
-                navigationItem.searchController?.searchBar.initialise(withTheme: theme)
-            }*/
-        }*/
-    }*/
+extension UITableViewCell {
+    func defaultInitialise(withTheme theme: Theme) {
+        backgroundColor = theme.cellBackgroundColor
+        textLabel?.textColor = theme.titleTextColor
+        detailTextLabel?.textColor = theme.titleTextColor
+        selectedBackgroundView = UIView(backgroundColor: .lightGray)
+    }
+}
 
-/*extension UITableViewController: ThemeableViewController {
-    /*func initialise(withTheme theme: Theme) {
-        print("DEBUG: do nothing")//tableView.initialise(withTheme: theme)
-    }*/
-}*/
+extension ThemeableViewController {
+    func monitorThemeSetting() {
+        initialise(withTheme: UserSettings.theme)
+        NotificationCenter.default.addObserver(forName: NSNotification.Name.ThemeSettingChanged, object: nil, queue: nil) {_ in
+            UIView.transition(with: self.view, duration: 0.3, options: [UIViewAnimationOptions.beginFromCurrentState, UIViewAnimationOptions.transitionCrossDissolve], animations: {
+                self.initialise(withTheme: UserSettings.theme)
+                self.themeSettingDidChange?()
+            }, completion: nil)
+        }
+    }
+}
 
-extension UINavigationBar: ThemeableView {
-    
+@objc protocol ThemeableViewController where Self: UIViewController {
+    func standardInitialisation(withTheme theme: Theme)
+    @objc optional func specificInitialisation(forTheme theme: Theme)
+    @objc optional func themeSettingDidChange()
+}
+
+extension ThemeableViewController {
     func initialise(withTheme theme: Theme) {
-        backgroundColor = theme == .dark ? .black : nil
-        barTintColor = theme == .dark ? .black : nil
-        titleTextAttributes = theme == .dark ? [NSAttributedStringKey.foregroundColor: UIColor.white] : nil
         if #available(iOS 11.0, *) {
-            largeTitleTextAttributes = theme == .dark ? [NSAttributedStringKey.foregroundColor: UIColor.white] : nil
+            navigationItem.searchController?.searchBar.initialise(withTheme: theme)
+        }
+        standardInitialisation(withTheme: theme)
+        specificInitialisation?(forTheme: theme)
+    }
+}
+
+extension UITabBarController: ThemeableViewController {
+    func standardInitialisation(withTheme theme: Theme) {
+        tabBar.initialise(withTheme: theme)
+    }
+}
+
+extension UITableViewController: ThemeableViewController {
+    func standardInitialisation(withTheme theme: Theme) {
+        tableView.initialise(withTheme: theme)
+    }
+    
+    func themeSettingDidChange() {
+        // Saw some weird artifacts which went away when the selected rows were deselected
+        if let selectedRows = tableView.indexPathsForSelectedRows {
+            selectedRows.forEach{tableView.deselectRow(at: $0, animated: false)}
+        }
+        tableView.reloadData()
+    }
+}
+
+extension FormViewController: ThemeableViewController {
+    func standardInitialisation(withTheme theme: Theme) {
+        tableView.initialise(withTheme: theme)
+    }
+    
+    func themeSettingDidChange() {
+        // Saw some weird artifacts which went away when the selected rows were deselected
+        if let selectedRows = tableView.indexPathsForSelectedRows {
+            selectedRows.forEach{tableView.deselectRow(at: $0, animated: false)}
+        }
+        tableView.reloadData()
+    }
+}
+
+
+class ThemedNavigationController: UINavigationController, ThemeableViewController {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        monitorThemeSetting()
+    }
+    
+    func standardInitialisation(withTheme theme: Theme) {
+        navigationBar.initialise(withTheme: theme)
+    }
+}
+
+extension UINavigationBar {
+    
+    func initialise(withTheme theme: Theme) {
+        backgroundColor = theme.viewBackgroundColor
+        barTintColor = theme.viewBackgroundColor
+        titleTextAttributes = [NSAttributedStringKey.foregroundColor: theme.titleTextColor]
+        if #available(iOS 11.0, *) {
+            largeTitleTextAttributes = [NSAttributedStringKey.foregroundColor: theme.titleTextColor]
         }
     }
 }
 
-extension UISearchBar: ThemeableView {
-    
-    func initialise(withTheme theme: Theme) { keyboardAppearance = theme == .normal ? .default : .dark }
-}
-
-extension UITableView: ThemeableView {
+extension UISearchBar {
     
     func initialise(withTheme theme: Theme) {
-        backgroundColor = theme == .normal ? .groupTableViewBackground : .veryDarkGray
-        if let visibleIndexPaths = indexPathsForVisibleRows, visibleIndexPaths.count > 0 {
-            reloadData()
-        }
-        //separatorColor = UIColor.darkGray
+        keyboardAppearance = theme == .normal ? .default : .dark
+        UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).defaultTextAttributes = [NSAttributedStringKey.foregroundColor.rawValue: theme.titleTextColor]
     }
 }
 
-extension UITabBar: ThemeableView {
+extension UITableView {
     func initialise(withTheme theme: Theme) {
-        barTintColor = theme == .normal ? nil : .black
+        backgroundColor = theme.viewBackgroundColor
+    }
+}
+
+extension UITabBar {
+    func initialise(withTheme theme: Theme) {
+        barTintColor = theme.viewBackgroundColor
     }
 }

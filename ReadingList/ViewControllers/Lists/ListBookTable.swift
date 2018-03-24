@@ -22,6 +22,7 @@ class ListBookTable: UITableViewController {
         if #available(iOS 11.0, *) {
             monitorLargeTitleSetting()
         }
+        monitorThemeSetting()
     }
     
     func registerForSaveNotifications() {

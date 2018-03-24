@@ -173,6 +173,8 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
 
         // Watch for changes in the managed object context
         NotificationCenter.default.addObserver(self, selector: #selector(saveOccurred(_:)), name: NSNotification.Name.NSManagedObjectContextDidSave, object: PersistentStoreManager.container.viewContext)
+        
+        monitorThemeSetting()
     }
     
     override func viewDidLayoutSubviews() {
@@ -339,5 +341,18 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
             })
             return previewActions
         }
+    }
+}
+
+extension BookDetails: ThemeableViewController {
+    func standardInitialisation(withTheme theme: Theme) { }
+    
+    func specificInitialisation(forTheme theme: Theme) {
+        view.backgroundColor = theme.viewBackgroundColor
+        titleAndAuthorStack.arrangedSubviews.flatMap{$0 as? UILabel}.forEach{
+            $0.textColor = theme.titleTextColor
+        }
+        bookDescription.siblings.flatMap{$0 as? HorizontalGradientView}.first!.color = theme.viewBackgroundColor
+        (navigationItem.titleView as! UINavigationBarLabel).initialise(fromTheme: theme)
     }
 }

@@ -56,6 +56,12 @@ class SearchOnline: UITableViewController {
         if let initialSearchString = initialSearchString  {
             performSearch(searchText: initialSearchString)
         }
+        
+        monitorThemeSetting()
+    }
+    
+    func specificInitialisation(forTheme theme: Theme) {
+        emptyDatasetView.initialise(fromTheme: theme)
     }
     
     override func viewDidAppear(_ animated: Bool) {

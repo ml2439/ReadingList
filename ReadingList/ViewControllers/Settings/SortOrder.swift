@@ -27,6 +27,8 @@ class SortOrder: FormViewController {
             <<< tableSortRow(.byDate)
             <<< tableSortRow(.byTitle)
             <<< tableSortRow(.byAuthor)
+        
+        monitorThemeSetting()
     }
     
     override func valueHasBeenChanged(for row: BaseRow, oldValue: Any?, newValue: Any?) {

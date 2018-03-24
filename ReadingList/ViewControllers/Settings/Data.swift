@@ -8,6 +8,11 @@ class DataVC: UITableViewController {
 
     var importUrl: URL?
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        monitorThemeSetting()
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         // This view can be loaded from an "Open In" action. If this happens, the importUrl property will be set.

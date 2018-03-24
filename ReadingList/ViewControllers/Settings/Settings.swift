@@ -2,6 +2,7 @@ import UIKit
 
 class Settings: UITableViewController {
 
+    @IBOutlet weak var header: XibView!
     static let appStoreAddress = "itunes.apple.com/gb/app/reading-list-book-tracker/id1217139955"
     static let feedbackEmailAddress = "feedback@readinglistapp.xyz"
     
@@ -11,11 +12,16 @@ class Settings: UITableViewController {
         if #available(iOS 11.0, *) {
             monitorLargeTitleSetting()
         }
-        //initialise(withTheme: UserSettings.theme)
+        monitorThemeSetting()
+    }
+    
+    func specificInitialisation(forTheme theme: Theme) {
+        (header.contentView as! SettingsHeader).initialise(withTheme: theme)
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
+        cell.defaultInitialise(withTheme: UserSettings.theme)
         if !appDelegate.tabBarController.selectedSplitViewController!.isSplit { return cell }
         
         // In split mode, change the cells a little to look more like the standard iOS settings app

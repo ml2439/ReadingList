@@ -1,7 +1,7 @@
 import Foundation
 import UIKit
 
-class BookTableViewCell: UITableViewCell, ThemeableView {
+class BookTableViewCell: UITableViewCell {
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var authorsLabel: UILabel!
     @IBOutlet weak var bookCover: UIImageView!
@@ -14,6 +14,7 @@ class BookTableViewCell: UITableViewCell, ThemeableView {
     
     func initialise(withTheme theme: Theme) {
         backgroundColor = theme.cellBackgroundColor
+        selectedBackgroundView = UIView(backgroundColor: .lightGray)
         titleLabel.textColor = theme.titleTextColor
         authorsLabel.textColor = theme.subtitleTextColor
         readTimeLabel?.textColor = theme.subtitleTextColor

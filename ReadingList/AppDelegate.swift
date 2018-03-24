@@ -34,6 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         DebugSettings.initialiseFromCommandLine()
                     #endif
                     self.window!.rootViewController = TabBarController()
+                    self.initialise(fromTheme: UserSettings.theme)
                     
                     // Once the store is loaded and the main storyboard instantiated, perform the quick action
                     // or open the CSV file, is specified. This is done here rather than in application:open, for example,
@@ -125,9 +126,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
     
-    func setTheme(_ theme: Theme) {
+    func initialise(fromTheme theme: Theme) {
         UIApplication.shared.statusBarStyle = UserSettings.theme == .normal ? .default : .lightContent
-        tabBarController.cascadeInitialise(withTheme: UserSettings.theme)
+        NotificationCenter.default.addObserver(forName: Notification.Name.ThemeSettingChanged, object: nil, queue: nil) {_ in
+            UIApplication.shared.statusBarStyle = UserSettings.theme == .normal ? .default : .lightContent
+        }
     }
 }
 

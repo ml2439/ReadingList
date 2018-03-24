@@ -22,6 +22,8 @@ class General: UITableViewController {
         darkModeSwitch.isOn = UserSettings.theme != .normal
         sendAnalyticsSwitch.isOn = UserSettings.sendAnalytics.value
         sendCrashReportsSwitch.isOn = UserSettings.sendCrashReports.value
+        
+        monitorThemeSetting()
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -79,17 +81,7 @@ class General: UITableViewController {
     
     @IBAction func darkModeSwitchToggled(_ sender: UISwitch) {
         UserSettings.theme = sender.isOn ? .dark : .normal
-        /*NotificationCenter.default.post(name: Notification.Name.ThemeSettingChanged, object: nil)
-        tableView.setThemeAnimated(UserSettings.theme)
-        navigationController!.navigationBar.setThemeAnimated(UserSettings.theme)
-        tableView.reloadData()
-        appDelegate.themeChanged()*/
-        
-        //UIView.transition(with: view, duration: 0.5, options: [UIViewAnimationOptions.beginFromCurrentState, UIViewAnimationOptions.transitionCrossDissolve], animations: {
-            //appDelegate.setTheme(UserSettings.theme)
-    let rootTabBarVC = UIApplication.shared.delegate!.window!!.rootViewController as! UITabBarController
-    rootTabBarVC.cascadeInitialise(withTheme: UserSettings.theme)
-        //}, completion: nil)
+        NotificationCenter.default.post(name: Notification.Name.ThemeSettingChanged, object: nil)
     }
     
     func persuadeToKeepOn(title: String, message: String, completion: @escaping (Bool) -> Void) {

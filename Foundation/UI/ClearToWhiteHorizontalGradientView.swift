@@ -2,9 +2,15 @@ import Foundation
 import UIKit
 
 @IBDesignable
-class ClearToWhiteHorizontalGradientView: UIView {
+class HorizontalGradientView: UIView {
     
-    @IBInspectable var whitePosition: NSNumber = 0.4 {
+    @IBInspectable var colorPosition: NSNumber = 0.4 {
+        didSet {
+            setupGradient()
+        }
+    }
+    
+    var color: UIColor = .white {
         didSet {
             setupGradient()
         }
@@ -13,10 +19,10 @@ class ClearToWhiteHorizontalGradientView: UIView {
     var gradient = CAGradientLayer()
     
     func setupGradient() {
-        let white = UIColor.white.withAlphaComponent(1.0)
-        let clear = UIColor.white.withAlphaComponent(0.0)
-        gradient.colors = [clear.cgColor, white.cgColor]
-        gradient.locations = [0.0, whitePosition]
+        let opaque = color.withAlphaComponent(1.0)
+        let clear = color.withAlphaComponent(0.0)
+        gradient.colors = [clear.cgColor, opaque.cgColor]
+        gradient.locations = [0.0, colorPosition]
         gradient.startPoint = CGPoint(x: 0, y: 0)
         gradient.endPoint = CGPoint(x: 1, y: 0)
         gradient.frame = bounds

@@ -47,7 +47,7 @@ class BookTable: UITableViewController {
         if #available(iOS 11.0, *) {
             monitorLargeTitleSetting()
         }
-        //initialise(withTheme: UserSettings.theme)
+        monitorThemeSetting()
         
         super.viewDidLoad()
     }
@@ -149,6 +149,7 @@ class BookTable: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "BookTableViewCell", for: indexPath) as! BookTableViewCell
         let book = resultsController.object(at: indexPath)
         cell.configureFrom(book)
+        cell.initialise(withTheme: UserSettings.theme)
         return cell
     }
     
@@ -182,7 +183,6 @@ class BookTable: UITableViewController {
         let selectedReadStates = sectionIndexByReadState.filter({selectedSectionIndices.contains($0.value)}).keys
         
         let optionsAlert = UIAlertController(title: "Edit \(selectedRows.count) book\(selectedRows.count == 1 ? "" : "s")", message: nil, preferredStyle: .actionSheet)
-
         optionsAlert.addAction(UIAlertAction(title: "Add to List", style: .default){ [unowned self] _ in
             let books = selectedRows.map(self.resultsController.object)
             

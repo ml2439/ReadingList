@@ -13,6 +13,12 @@ class SearchBooksEmptyDataset: UIView {
         case error
     }
     
+    func initialise(fromTheme theme: Theme) {
+        backgroundColor = theme.viewBackgroundColor
+        titleLabel.textColor = theme.titleTextColor
+        descriptionLabel.textColor = theme.subtitleTextColor
+    }
+    
     func setEmptyDatasetReason(_ reason: EmptySetReason) {
         self.reason = reason
         titleLabel.text = title

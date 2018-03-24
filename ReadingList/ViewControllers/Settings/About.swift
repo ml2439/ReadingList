@@ -6,7 +6,13 @@ class About: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        //initialise(withTheme: UserSettings.theme)
+        monitorThemeSetting()
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
+        cell.defaultInitialise(withTheme: UserSettings.theme)
+        return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -69,10 +75,33 @@ extension About: MFMailComposeViewControllerDelegate {
     }
 }
 
+class AttributionTableCell: UITableViewCell {
+    func initialise(withTheme theme: Theme) {
+        contentView.subviews.flatMap({$0 as? UILabel}).forEach{
+            $0.textColor = theme.titleTextColor
+        }
+        backgroundColor = theme.cellBackgroundColor
+        selectedBackgroundView = UIView(backgroundColor: .lightGray)
+    }
+}
+
 class Attributions: UITableViewController {
     
     override func viewDidLoad() {
+        super.viewDidLoad()
         tableView.rowHeight = UITableViewAutomaticDimension
+        monitorThemeSetting()
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
+        if let attributionCell = cell as? AttributionTableCell {
+            attributionCell.initialise(withTheme: UserSettings.theme)
+            return attributionCell
+        }
+        cell.textLabel?.textColor = UserSettings.theme.titleTextColor
+        cell.backgroundColor = UserSettings.theme.cellBackgroundColor
+        return cell
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
