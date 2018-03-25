@@ -18,6 +18,10 @@ class Storyboard {
         get { return UIStoryboard(name: "BookTable", bundle: Bundle.main) }
     }
     
+    static var BookDetails: UIStoryboard {
+        get { return UIStoryboard(name: "BookDetails", bundle: Bundle.main) }
+    }
+    
     static var Organise: UIStoryboard {
         get { return UIStoryboard(name: "Organise", bundle: Bundle.main) }
     }

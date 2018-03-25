@@ -15,6 +15,8 @@ class BookTable: UITableViewController {
         searchController.searchResultsUpdater = self
         
         tableView.keyboardDismissMode = .onDrag
+        tableView.register(UINib(BookTableViewCell.self), forCellReuseIdentifier: String(describing: BookTableViewCell.self))
+
         clearsSelectionOnViewWillAppear = false
         navigationItem.title = readStates.last!.description
         
@@ -58,6 +60,14 @@ class BookTable: UITableViewController {
             self.tableView.deselectRow(at: selectedIndexPath, animated: animated)
         }
         super.viewDidAppear(animated)
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        if traitCollection.forceTouchCapability == .available {   
+            registerForPreviewing(with: self, sourceView: tableView)
+        }
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -154,9 +164,13 @@ class BookTable: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard isEditing else { return }
-        navigationItem.rightBarButtonItem!.isEnabled = true
-        navigationItem.title = "\(tableView.indexPathsForSelectedRows!.count) Selected"
+        if isEditing {
+            navigationItem.rightBarButtonItem!.isEnabled = true
+            navigationItem.title = "\(tableView.indexPathsForSelectedRows!.count) Selected"
+        }
+        else {
+            performSegue(withIdentifier: "showDetail", sender: tableView.cellForRow(at: indexPath)!)
+        }
     }
     
     override func tableView(_ tableView: UITableView, willDisplayHeaderView view:UIView, forSection: Int) {
@@ -514,6 +528,23 @@ extension BookTable: NSFetchedResultsControllerDelegate {
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
         tableView.controller(controller, didChange: sectionInfo, atSectionIndex: sectionIndex, for: type)
+    }
+}
+
+extension BookTable: UIViewControllerPreviewingDelegate {
+    func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
+        guard let indexPath = tableView.indexPathForRow(at: location), let cell = tableView.cellForRow(at: indexPath) else {
+            return nil
+        }
+        
+        previewingContext.sourceRect = cell.frame
+        let bookDetails = Storyboard.BookDetails.instantiateViewController(withIdentifier: "BookDetails") as! BookDetails
+        bookDetails.book = resultsController.object(at: indexPath)
+        return bookDetails
+    }
+    
+    func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
+        show(viewControllerToCommit, sender: self)
     }
 }
 
