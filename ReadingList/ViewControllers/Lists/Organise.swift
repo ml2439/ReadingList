@@ -24,14 +24,11 @@ class Organise: UITableViewController {
         navigationItem.leftBarButtonItem = editButtonItem
         
         NotificationCenter.default.addObserver(self, selector: #selector(refetch), name: NSNotification.Name.PersistentStoreBatchOperationOccurred, object: nil)
+
         monitorThemeSetting()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
         if #available(iOS 11.0, *) {
-            navigationController!.navigationBar.prefersLargeTitles = UserSettings.useLargeTitles.value
+            monitorLargeTitleSetting()
         }
-        super.viewWillAppear(animated)
     }
     
     @objc func refetch() {
