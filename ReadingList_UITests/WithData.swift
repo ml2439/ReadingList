@@ -76,12 +76,10 @@ class WithData: XCTestCase {
         app.tables.staticTexts["Data"].tap()
         app.tables.staticTexts["Export"].tap()
         
-        if #available(iOS 10, *) {
-            if #available(iOS 11, *) {} else {
-                sleep(2)
-                app.collectionViews.collectionViews.buttons["Add To iCloud Drive"].tap()
-                app.navigationBars["iCloud Drive"].buttons["Cancel"].tap()
-            }
+        if #available(iOS 11, *) {} else {
+            sleep(5)
+            app.collectionViews.collectionViews.buttons["Add To iCloud Drive"].tap()
+            app.navigationBars["iCloud Drive"].buttons["Cancel"].tap()
         }
     }
     

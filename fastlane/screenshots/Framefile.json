@@ -1,0 +1,30 @@
+{
+  "default": {
+    "title": {
+      "color": "#444",
+	  "font": "./GillSans.ttc"
+    },
+    "background": "./background.jpg",
+    "padding": 50
+  },
+  "data": [
+    {
+      "filter": "ToReadList"
+    },
+    {
+      "filter": "ScanBarcode"
+    },
+    {
+      "filter": "BookDetails"
+    },
+    {
+      "filter": "SearchFinished"
+    },
+    {
+      "filter": "BulkEdit"
+    },
+    {
+      "filter": "Organise"
+    }
+  ]
+}

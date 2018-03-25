@@ -8,13 +8,16 @@ class Screenshots: XCTestCase {
         
         let app = ReadingListApplication()
         setupSnapshot(app)
-        app.launchArguments.append(contentsOf: ["--UITests_PopulateData", "--UITests_FixedBarcodeScanImage", "--UITests_PrettyStatusBar", "-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryXL"])
+        app.launchArguments.append(contentsOf: ["--UITests_PopulateData", "--UITests_Screenshots", "-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryXL"])
         app.launch()
         sleep(5)
         app.setBarcodeSimulation(.normal)
     }
     
     func testSnapshot() {
+        // Screenshot is designed for iOS 11 only
+        guard #available(iOS 11.0, *) else { return }
+        
         let app = ReadingListApplication()
         app.clickTab(.toRead)
         
@@ -45,7 +48,7 @@ class Screenshots: XCTestCase {
         
         app.tabBars.buttons["Finished"].tap()
         app.tables.element(boundBy: 0).swipeDown()
-        
+
         let yourLibrarySearchField = app.searchFields["Your Library"]
         yourLibrarySearchField.tap()
         yourLibrarySearchField.typeText("Orwell")
@@ -56,9 +59,26 @@ class Screenshots: XCTestCase {
         }
 
         snapshot("3_SearchFinished")
+        app.buttons["Cancel"].tap()
         
+        if isIpad {
+            app.tables.cells.element(boundBy: 3).tap()
+        }
+        app.navigationBars["Finished"].buttons["Edit"].tap()
+        app.tables.cells.element(boundBy: 3).tap()
+        app.tables.cells.element(boundBy: 6).tap()
+        app.tables.cells.element(boundBy: 7).tap()
+        snapshot("4_BulkEdit")
+        
+        app.tabBars.buttons["Organise"].tap()
+        app.tables.cells.element(boundBy: 0).tap()
+        if isIpad {
+            app.tables.cells.element(boundBy: 6).tap()
+        }
+        else {
+            app.swipeUp()
+        }
+        snapshot("5_Organise")
     }
 }
-
-
 

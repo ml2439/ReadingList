@@ -18,13 +18,10 @@ class ListBookTable: UITableViewController {
         tableView.emptyDataSetDelegate = self
         
         registerForSaveNotifications()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
+        
         if #available(iOS 11.0, *) {
-            navigationController!.navigationBar.prefersLargeTitles = UserSettings.useLargeTitles.value
+            monitorLargeTitleSetting()
         }
-        super.viewWillAppear(animated)
     }
     
     func registerForSaveNotifications() {

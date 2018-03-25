@@ -49,7 +49,7 @@ class About: UITableViewController {
         
         
         Extra Info:
-        App Version: \(UserEngagement.appVersion) (\(UserEngagement.appBuildNumber))
+        App Version: \(BuildInfo.appConfiguration.userFacingDescription)
         iOS Version: \(UIDevice.current.systemVersion)
         Device: \(UIDevice.current.modelName)
         """
