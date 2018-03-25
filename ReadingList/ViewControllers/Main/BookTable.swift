@@ -61,6 +61,14 @@ class BookTable: UITableViewController {
         super.viewDidAppear(animated)
     }
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        if traitCollection.forceTouchCapability == .available {   
+            registerForPreviewing(with: self, sourceView: tableView)
+        }
+    }
+    
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         // Turn the section name into a BookReadState and use its description property
         let sectionAsInt = Int16(resultsController.sections![section].name)!
@@ -513,6 +521,23 @@ extension BookTable: NSFetchedResultsControllerDelegate {
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
         tableView.controller(controller, didChange: sectionInfo, atSectionIndex: sectionIndex, for: type)
+    }
+}
+
+extension BookTable: UIViewControllerPreviewingDelegate {
+    func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
+        guard let indexPath = tableView.indexPathForRow(at: location), let cell = tableView.cellForRow(at: indexPath) else {
+            return nil
+        }
+        
+        previewingContext.sourceRect = cell.frame
+        let bookDetails = Storyboard.BookDetails.instantiateViewController(withIdentifier: "BookDetails") as! BookDetails
+        bookDetails.book = resultsController.object(at: indexPath)
+        return bookDetails
+    }
+    
+    func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
+        show(viewControllerToCommit, sender: self)
     }
 }
 
