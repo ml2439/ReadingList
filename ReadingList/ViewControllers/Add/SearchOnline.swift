@@ -21,7 +21,7 @@ class SearchOnline: UITableViewController {
         
         tableView.tableFooterView = UIView()
         tableView.backgroundView = emptyDatasetView
-        tableView.register(BookTableViewCell.self, forCellReuseIdentifier: String(describing: BookTableViewCell.self))
+        tableView.register(UINib(BookTableViewCell.self), forCellReuseIdentifier: String(describing: BookTableViewCell.self))
 
         searchController = NoCancelButtonSearchController(searchResultsController: nil)
         searchController.obscuresBackgroundDuringPresentation = false
@@ -78,7 +78,7 @@ class SearchOnline: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "BookTableViewCell", for: indexPath) as! BookTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: BookTableViewCell.self), for: indexPath) as! BookTableViewCell
         cell.configureFrom(tableItems[indexPath.row])
         return cell
     }

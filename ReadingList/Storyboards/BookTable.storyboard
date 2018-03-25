@@ -6,9 +6,6 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
-        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
-        <capability name="Segues with Peek and Pop" minToolsVersion="7.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <customFonts key="customFonts">
@@ -42,7 +39,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <label key="tableFooterView" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Reading: 1 book To Read: 17 books" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="qjR-Ii-EZk">
-                            <rect key="frame" x="0.0" y="165.5" width="375" height="44"/>
+                            <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="15"/>
                             <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
@@ -51,86 +48,6 @@
                                 <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Subhead"/>
                             </userDefinedRuntimeAttributes>
                         </label>
-                        <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="0.0" reuseIdentifier="BookTableViewCell" rowHeight="92" id="tUo-c2-thY" customClass="BookTableViewCell" customModule="Reading_List" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="55.5" width="375" height="92"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="tUo-c2-thY" id="9BK-ZB-8hU">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="91.5"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Pbv-iH-mB7">
-                                            <rect key="frame" x="67" y="11" width="220" height="20"/>
-                                            <accessibility key="accessibilityConfiguration" identifier="title"/>
-                                            <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="17"/>
-                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                            <nil key="highlightedColor"/>
-                                            <userDefinedRuntimeAttributes>
-                                                <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Headline"/>
-                                            </userDefinedRuntimeAttributes>
-                                        </label>
-                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="CoverPlaceholder" translatesAutoresizingMaskIntoConstraints="NO" id="dET-ZE-M3H">
-                                            <rect key="frame" x="6" y="6" width="53" height="79.5"/>
-                                            <constraints>
-                                                <constraint firstAttribute="width" secondItem="dET-ZE-M3H" secondAttribute="height" multiplier="1:1.5" id="z1l-FV-nq9"/>
-                                            </constraints>
-                                            <userDefinedRuntimeAttributes>
-                                                <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                                                    <real key="value" value="2"/>
-                                                </userDefinedRuntimeAttribute>
-                                                <userDefinedRuntimeAttribute type="number" keyPath="maskedCornerRadius">
-                                                    <real key="value" value="2"/>
-                                                </userDefinedRuntimeAttribute>
-                                            </userDefinedRuntimeAttributes>
-                                        </imageView>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Authors" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="beo-b8-Eue">
-                                            <rect key="frame" x="67" y="31" width="300" height="17.5"/>
-                                            <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="15"/>
-                                            <color key="textColor" white="0.33333333329999998" alpha="1" colorSpace="calibratedWhite"/>
-                                            <nil key="highlightedColor"/>
-                                            <userDefinedRuntimeAttributes>
-                                                <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Subhead"/>
-                                            </userDefinedRuntimeAttributes>
-                                        </label>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" horizontalCompressionResistancePriority="752" text="30 Oct " textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pGZ-CF-qFS">
-                                            <rect key="frame" x="287" y="13" width="80" height="17.5"/>
-                                            <constraints>
-                                                <constraint firstAttribute="width" relation="lessThanOrEqual" constant="80" id="BoS-5f-iV9"/>
-                                            </constraints>
-                                            <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="15"/>
-                                            <color key="textColor" white="0.33333333329999998" alpha="1" colorSpace="calibratedWhite"/>
-                                            <nil key="highlightedColor"/>
-                                            <userDefinedRuntimeAttributes>
-                                                <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Footnote"/>
-                                            </userDefinedRuntimeAttributes>
-                                        </label>
-                                    </subviews>
-                                    <constraints>
-                                        <constraint firstItem="dET-ZE-M3H" firstAttribute="top" secondItem="9BK-ZB-8hU" secondAttribute="top" constant="6" id="2cj-5m-TKv"/>
-                                        <constraint firstItem="pGZ-CF-qFS" firstAttribute="top" secondItem="9BK-ZB-8hU" secondAttribute="topMargin" constant="2" id="DXB-TV-35X"/>
-                                        <constraint firstItem="beo-b8-Eue" firstAttribute="leading" secondItem="Pbv-iH-mB7" secondAttribute="leading" id="F9c-pF-h4T"/>
-                                        <constraint firstAttribute="bottom" secondItem="dET-ZE-M3H" secondAttribute="bottom" constant="6" id="MWO-CT-est"/>
-                                        <constraint firstItem="Pbv-iH-mB7" firstAttribute="leading" secondItem="dET-ZE-M3H" secondAttribute="trailing" constant="8" id="WRh-Xz-eMY"/>
-                                        <constraint firstItem="pGZ-CF-qFS" firstAttribute="trailing" secondItem="beo-b8-Eue" secondAttribute="trailing" id="Y6s-Ho-rF8"/>
-                                        <constraint firstItem="pGZ-CF-qFS" firstAttribute="leading" secondItem="Pbv-iH-mB7" secondAttribute="trailing" id="ecL-uT-yFw"/>
-                                        <constraint firstItem="beo-b8-Eue" firstAttribute="top" secondItem="Pbv-iH-mB7" secondAttribute="bottom" id="edl-XC-bcW"/>
-                                        <constraint firstItem="Pbv-iH-mB7" firstAttribute="top" secondItem="9BK-ZB-8hU" secondAttribute="topMargin" id="lnm-V2-7ni"/>
-                                        <constraint firstItem="dET-ZE-M3H" firstAttribute="leading" secondItem="9BK-ZB-8hU" secondAttribute="leading" constant="6" id="tk4-5A-U4Z"/>
-                                        <constraint firstAttribute="trailing" secondItem="pGZ-CF-qFS" secondAttribute="trailing" constant="8" id="xeZ-lP-Bl6"/>
-                                    </constraints>
-                                </tableViewCellContentView>
-                                <connections>
-                                    <outlet property="authorsLabel" destination="beo-b8-Eue" id="xZj-q4-4vd"/>
-                                    <outlet property="bookCover" destination="dET-ZE-M3H" id="7Od-y6-BL9"/>
-                                    <outlet property="readTimeLabel" destination="pGZ-CF-qFS" id="d5S-6J-g33"/>
-                                    <outlet property="titleLabel" destination="Pbv-iH-mB7" id="H3l-a5-DvJ"/>
-                                    <segue destination="myb-KF-3dK" kind="showDetail" identifier="showDetail" id="FJ4-wK-Tvz">
-                                        <segue key="commit" inheritsFrom="parent" id="Ej8-uR-qF3"/>
-                                        <segue key="preview" inheritsFrom="commit" id="yzB-e3-IGS"/>
-                                    </segue>
-                                </connections>
-                            </tableViewCell>
-                        </prototypes>
                         <connections>
                             <outlet property="dataSource" destination="4HX-WC-tQz" id="E8k-dW-boW"/>
                             <outlet property="delegate" destination="4HX-WC-tQz" id="xSO-ff-FJD"/>
@@ -146,6 +63,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="tableFooter" destination="qjR-Ii-EZk" id="HmG-rb-hEC"/>
+                        <segue destination="myb-KF-3dK" kind="showDetail" identifier="showDetail" id="bOj-r5-ku9"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x3g-rQ-Wjw" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -177,10 +95,7 @@
             <point key="canvasLocation" x="-7866" y="191"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="CoverPlaceholder" width="180" height="270"/>
-    </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="FJ4-wK-Tvz"/>
+        <segue reference="bOj-r5-ku9"/>
     </inferredMetricsTieBreakers>
 </document>

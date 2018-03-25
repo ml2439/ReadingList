@@ -11,6 +11,7 @@ class ListBookTable: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        tableView.register(UINib(BookTableViewCell.self), forCellReuseIdentifier: String(describing: BookTableViewCell.self))
         navigationItem.title = list.name
         navigationItem.rightBarButtonItem = editButtonItem
         
@@ -58,10 +59,14 @@ class ListBookTable: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "BookTableViewCell", for: indexPath) as! BookTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: BookTableViewCell.self), for: indexPath) as! BookTableViewCell
         let book = list.books.object(at: indexPath.row) as! Book
         cell.configureFrom(book)
         return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        self.performSegue(withIdentifier: "showDetail", sender: indexPath)
     }
     
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
@@ -101,9 +106,8 @@ class ListBookTable: UITableViewController {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let detailsViewController = (segue.destination as? UINavigationController)?.topViewController as? BookDetails {
-            let senderCell = sender as! UITableViewCell
-            let selectedIndex = tableView.indexPath(for: senderCell)!
-            detailsViewController.book = (list.books.object(at: selectedIndex.row) as! Book)
+            let senderIndex = sender as! IndexPath
+            detailsViewController.book = (list.books.object(at: senderIndex.row) as! Book)
         }
     }
 }
