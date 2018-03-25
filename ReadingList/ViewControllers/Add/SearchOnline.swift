@@ -60,7 +60,8 @@ class SearchOnline: UITableViewController {
         monitorThemeSetting()
     }
     
-    func specificInitialisation(forTheme theme: Theme) {
+    override func initialise(withTheme theme: Theme) {
+        super.initialise(withTheme: theme)
         emptyDatasetView.initialise(fromTheme: theme)
     }
     

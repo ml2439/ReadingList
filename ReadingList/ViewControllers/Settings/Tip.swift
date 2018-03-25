@@ -84,7 +84,7 @@ class Tip: UIViewController, ThemeableViewController {
         }
     }
     
-    func standardInitialisation(withTheme theme: Theme) {
+    func initialise(withTheme theme: Theme) {
         view.backgroundColor = theme.viewBackgroundColor
         explanationLabel.textColor = theme.titleTextColor
     }

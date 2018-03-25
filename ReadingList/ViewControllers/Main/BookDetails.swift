@@ -196,11 +196,11 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     }
     
     @IBAction func updateReadingLogPressed(_ sender: Any) {
-        present(EditBookReadState(existingBookID: book!.objectID).inNavigationController(), animated: true)
+        present(EditBookReadState(existingBookID: book!.objectID).inThemedNavController(), animated: true)
     }
 
     @IBAction func editBookPressed(_ sender: Any) {
-        present(EditBookMetadata(bookToEditID: book!.objectID).inNavigationController(), animated: true)
+        present(EditBookMetadata(bookToEditID: book!.objectID).inThemedNavController(), animated: true)
     }
     
     @objc func seeMoreDescription() {
@@ -345,9 +345,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
 }
 
 extension BookDetails: ThemeableViewController {
-    func standardInitialisation(withTheme theme: Theme) { }
-    
-    func specificInitialisation(forTheme theme: Theme) {
+    func initialise(withTheme theme: Theme) {
         view.backgroundColor = theme.viewBackgroundColor
         titleAndAuthorStack.arrangedSubviews.flatMap{$0 as? UILabel}.forEach{
             $0.textColor = theme.titleTextColor

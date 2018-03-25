@@ -300,7 +300,7 @@ class BookTable: UITableViewController {
         optionsAlert.addAction(storyboardAction(title: "Scan Barcode", storyboard: Storyboard.ScanBarcode))
         optionsAlert.addAction(storyboardAction(title: "Search Online", storyboard: Storyboard.SearchOnline))
         optionsAlert.addAction(UIAlertAction(title: "Add Manually", style: .default){ [unowned self] _ in
-            self.present(EditBookMetadata(bookToCreateReadState: .toRead).inNavigationController(), animated: true, completion: nil)
+            self.present(EditBookMetadata(bookToCreateReadState: .toRead).inThemedNavController(), animated: true, completion: nil)
         })
         optionsAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         optionsAlert.popoverPresentationController?.barButtonItem = sender
@@ -348,7 +348,7 @@ class BookTable: UITableViewController {
         }
         deleteAction.image = #imageLiteral(resourceName: "Trash")
         let editAction = UIContextualAction(style: .normal, title: "Edit") { [unowned self] _,_,callback in
-            self.present(EditBookMetadata(bookToEditID: self.resultsController.object(at: indexPath).objectID).inNavigationController(), animated: true)
+            self.present(EditBookMetadata(bookToEditID: self.resultsController.object(at: indexPath).objectID).inThemedNavController(), animated: true)
             callback(true)
         }
         editAction.image = #imageLiteral(resourceName: "Literature")
@@ -359,7 +359,7 @@ class BookTable: UITableViewController {
     override func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         
         var actions = [UIContextualAction(style: .normal, title: "Log", image: #imageLiteral(resourceName: "Timetable")) { [unowned self] _,_,callback in
-            self.present(EditBookReadState(existingBookID: self.resultsController.object(at: indexPath).objectID).inNavigationController(), animated: true)
+            self.present(EditBookReadState(existingBookID: self.resultsController.object(at: indexPath).objectID).inThemedNavController(), animated: true)
             callback(true)
         }]
         

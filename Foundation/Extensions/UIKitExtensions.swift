@@ -99,6 +99,12 @@ extension UIViewController {
         nav.modalPresentationStyle = modalPresentationStyle
         return nav
     }
+    
+    func inThemedNavController(modalPresentationStyle: UIModalPresentationStyle = .formSheet) -> UINavigationController {
+        let nav = ThemedNavigationController(rootViewController: self)
+        nav.modalPresentationStyle = modalPresentationStyle
+        return nav
+    }
 }
 
 extension UISplitViewController {

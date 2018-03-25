@@ -15,7 +15,8 @@ class Settings: UITableViewController {
         monitorThemeSetting()
     }
     
-    func specificInitialisation(forTheme theme: Theme) {
+    override func initialise(withTheme theme: Theme) {
+        super.initialise(withTheme: theme)
         (header.contentView as! SettingsHeader).initialise(withTheme: theme)
     }
     
