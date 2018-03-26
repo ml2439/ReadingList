@@ -182,15 +182,6 @@ extension BaseCell {
     }
 }
 
-final class ThemedNameRow: _NameRow, RowType {
-    required init(tag: String?) {
-        super.init(tag: tag)
-        let theme = UserSettings.theme
-        baseCell.initialise(withTheme: theme)
-        self.placeholderColor = theme.titleTextColor
-    }
-}
-
 final class ThemedButtonRow: _ButtonRowOf<String>, RowType {
     required init(tag: String?) {
         super.init(tag: tag)

@@ -48,7 +48,8 @@ class EditBookMetadata: FormViewController {
         let book = self.book!
         
         form +++ Section(header: "Title", footer: "")
-            <<< ThemedNameRow() {
+            <<< ThemedTextRow() {
+                $0.cell.textField.autocapitalizationType = .words
                 $0.placeholder = "Title"
                 $0.value = book.title
                 $0.onChange{book.title = $0.value ?? ""}
@@ -323,11 +324,13 @@ class AddAuthorForm: FormViewController {
         super.viewDidLoad()
 
         form +++ Section(header: "Author Name", footer: "")
-            <<< ThemedNameRow(firstNamesRow) {
+            <<< ThemedTextRow(firstNamesRow) {
                 $0.placeholder = "First Name(s)"
+                $0.cell.textField.autocapitalizationType = .words
             }
-            <<< ThemedNameRow(lastNameRow) {
+            <<< ThemedTextRow(lastNameRow) {
                 $0.placeholder = "Last Name"
+                $0.cell.textField.autocapitalizationType = .words
             }
         
         monitorThemeSetting()
@@ -338,7 +341,7 @@ class AddAuthorForm: FormViewController {
 
         // The removal of the presenting row should be at the point of disappear, since viewWillDisappear
         // is called when a right-swipe is started - the user could reverse and bring this view back
-        let lastName = (form.rowBy(tag: lastNameRow) as! _NameRow).value
+        let lastName = (form.rowBy(tag: lastNameRow) as! _TextRow).value
         if lastName?.isEmptyOrWhitespace != false {
             presentingRow.removeSelf()
         }
@@ -347,9 +350,9 @@ class AddAuthorForm: FormViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
-        if let lastName = (form.rowBy(tag: lastNameRow) as! _NameRow).value, !lastName.isEmptyOrWhitespace {
+        if let lastName = (form.rowBy(tag: lastNameRow) as! _TextRow).value, !lastName.isEmptyOrWhitespace {
             presentingRow.lastName = lastName
-            presentingRow.firstNames = (form.rowBy(tag: firstNamesRow) as! _NameRow).value
+            presentingRow.firstNames = (form.rowBy(tag: firstNamesRow) as! _TextRow).value
             presentingRow.reload()
             (presentingRow.section as! AuthorSection).rebuildAuthors()
         }
@@ -386,13 +389,15 @@ class EditBookSubjectsForm: FormViewController {
                 }
             }
             $0.multivaluedRowToInsertAt = { _ in
-                return ThemedNameRow() {
+                return ThemedTextRow() {
                     $0.placeholder = "Subject"
+                    $0.cell.textField.autocapitalizationType = .words
                 }
             }
             for subject in book.subjects.sorted(by: {return $0.name < $1.name}) {
-                $0 <<< ThemedNameRow() {
+                $0 <<< ThemedTextRow() {
                     $0.value = subject.name
+                    $0.cell.textField.autocapitalizationType = .words
                 }
             }
         }
@@ -403,7 +408,7 @@ class EditBookSubjectsForm: FormViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
-        let subjectNames = form.rows.flatMap{($0 as? NameRow)?.value?.trimming().nilIfWhitespace()}
+        let subjectNames = form.rows.flatMap{($0 as? TextRow)?.value?.trimming().nilIfWhitespace()}
         if book.subjects.map({$0.name}) != subjectNames {
             book.subjects = Set(subjectNames.map{Subject.getOrCreate(inContext: book.managedObjectContext!, withName: $0)})
         }
