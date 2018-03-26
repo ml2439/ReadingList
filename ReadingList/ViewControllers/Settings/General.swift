@@ -1,7 +1,55 @@
 import Foundation
 import UIKit
+import Eureka
 
-class General: UITableViewController {
+class General: FormViewController {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        if #available(iOS 11.0, *) {
+            form +++ Section(header: "Appearance", footer: "")
+                <<< SwitchRow() {
+                    $0.title = "Use Large Titles"
+                    $0.value = UserSettings.useLargeTitles.value
+                    $0.onChange{ row in
+                        UserSettings.useLargeTitles.value = row.value!
+                        NotificationCenter.default.post(name: NSNotification.Name.LargeTitleSettingChanged, object: nil)
+                    }
+                }
+        }
+        
+        func themeRow(_ theme: Theme, name: String) -> ListCheckRow<Theme> {
+            return ListCheckRow<Theme>() {
+                $0.title = name
+                $0.selectableValue = theme
+                $0.value = UserSettings.theme == theme ? theme : nil
+            }
+        }
+        
+        form +++ SelectableSection<ListCheckRow<Theme>>(header: "Theme", footer: "", selectionType: .singleSelection(enableDeselection: false)) {
+                    $0.onSelectSelectableRow = { cell, row in
+                        UserSettings.theme = row.value!
+                        NotificationCenter.default.post(name: Notification.Name.ThemeSettingChanged, object: nil)
+                    }
+                }
+                <<< themeRow(.normal, name: "Default")
+                <<< themeRow(.dark, name: "Dark")
+                <<< themeRow(.black, name: "Black")
+            
+            +++ Section(header: "Analytics", footer: "Reading List ...")
+                <<< SwitchRow() {
+                    $0.title = "Crash Reports"
+                }
+                <<< SwitchRow() {
+                    $0.title = "Usage Reports"
+                }
+        
+        monitorThemeSetting()
+    }
+}
+
+
+class GeneralOld: UITableViewController {
     
     @IBOutlet weak var useLargeTitlesSwitch: UISwitch!
     @IBOutlet weak var sendAnalyticsSwitch: UISwitch!
