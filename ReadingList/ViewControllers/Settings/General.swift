@@ -7,7 +7,7 @@ class General: FormViewController {
         super.viewDidLoad()
         
         if #available(iOS 11.0, *) {
-            form +++ Section(header: "Appearance", footer: "")
+            form +++ Section(header: "Appearance", footer: "Whether to use large fonts for section titles.")
                 <<< SwitchRow() {
                     $0.title = "Use Large Titles"
                     $0.value = UserSettings.useLargeTitles.value
@@ -18,15 +18,15 @@ class General: FormViewController {
                 }
         }
         
-        func themeRow(_ theme: Theme, name: String) -> ListCheckRow<Theme> {
-            return ListCheckRow<Theme>() {
+        func themeRow(_ theme: Theme, name: String) -> ThemedListCheckRow<Theme> {
+            return ThemedListCheckRow<Theme>() {
                 $0.title = name
                 $0.selectableValue = theme
                 $0.value = UserSettings.theme == theme ? theme : nil
             }
         }
         
-        form +++ SelectableSection<ListCheckRow<Theme>>(header: "Theme", footer: "", selectionType: .singleSelection(enableDeselection: false)) {
+        form +++ SelectableSection<ThemedListCheckRow<Theme>>(header: "Theme", footer: "Change the appearance of Reading List.", selectionType: .singleSelection(enableDeselection: false)) {
                     $0.onSelectSelectableRow = { cell, row in
                         UserSettings.theme = row.value!
                         NotificationCenter.default.post(name: Notification.Name.ThemeSettingChanged, object: nil)
@@ -36,61 +36,23 @@ class General: FormViewController {
                 <<< themeRow(.dark, name: "Dark")
                 <<< themeRow(.black, name: "Black")
             
-            +++ Section(header: "Analytics", footer: "Reading List ...")
+            +++ Section(header: "Analytics", footer: "Anonymous crash reports and usage statistics can be reported to help improve Reading List.")
                 <<< SwitchRow() {
-                    $0.title = "Crash Reports"
+                    $0.title = "Send Crash Reports"
+                    $0.onChange(crashReportsSwitchChanged(_:))
                 }
                 <<< SwitchRow() {
-                    $0.title = "Usage Reports"
+                    $0.title = "Send Analytics"
+                    $0.onChange(analyticsSwitchChanged(_:))
                 }
         
         monitorThemeSetting()
     }
-}
-
-
-class GeneralOld: UITableViewController {
     
-    @IBOutlet weak var useLargeTitlesSwitch: UISwitch!
-    @IBOutlet weak var sendAnalyticsSwitch: UISwitch!
-    @IBOutlet weak var sendCrashReportsSwitch: UISwitch!
-    @IBOutlet weak var darkModeSwitch: UISwitch!
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        if #available(iOS 11.0, *) {
-            useLargeTitlesSwitch.isOn = UserSettings.useLargeTitles.value
-        }
-        else {
-            useLargeTitlesSwitch.isOn = false
-            useLargeTitlesSwitch.isEnabled = false
-        }
-        
-        darkModeSwitch.isOn = UserSettings.theme != .normal
-        sendAnalyticsSwitch.isOn = UserSettings.sendAnalytics.value
-        sendCrashReportsSwitch.isOn = UserSettings.sendCrashReports.value
-        
-        monitorThemeSetting()
-    }
-
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = super.tableView(tableView, cellForRowAt: indexPath)
-        cell.contentView.subviews.flatMap{$0 as? UILabel}.forEach{
-            $0.textColor = UserSettings.theme.titleTextColor
-        }
-        cell.backgroundColor = UserSettings.theme.cellBackgroundColor
-        return cell
-    }
-    
-    @IBAction func useLargeTitlesChanged(_ sender: UISwitch) {
-        UserSettings.useLargeTitles.value = sender.isOn
-        NotificationCenter.default.post(name: NSNotification.Name.LargeTitleSettingChanged, object: nil)
-    }
-    
-    @IBAction func crashReportsSwitchChanged(_ sender: UISwitch) {
-        UserSettings.sendCrashReports.value = sender.isOn
-        if sender.isOn {
+    func crashReportsSwitchChanged(_ sender: SwitchRow) {
+        guard let switchValue = sender.value else { return }
+        UserSettings.sendCrashReports.value = switchValue
+        if switchValue {
             UserEngagement.logEvent(.enableCrashReports)
         }
         else {
@@ -99,7 +61,8 @@ class GeneralOld: UITableViewController {
             persuadeToKeepOn(title: "Turn off crash reports?", message: "Anonymous crash reports alert me if this app crashes, to help me fix bugs. The information never include any information about your books. Are you sure you want to turn this off?") { result in
                 if result {
                     UserSettings.sendCrashReports.value = true
-                    sender.isOn = true
+                    sender.value = true
+                    sender.reload()
                 }
                 else {
                     UserEngagement.logEvent(.disableCrashReports)
@@ -108,9 +71,10 @@ class GeneralOld: UITableViewController {
         }
     }
     
-    @IBAction func analyticsSwitchChanged(_ sender: UISwitch) {
-        UserSettings.sendAnalytics.value = sender.isOn
-        if sender.isOn {
+    func analyticsSwitchChanged(_ sender: SwitchRow) {
+        guard let switchValue = sender.value else { return }
+        UserSettings.sendAnalytics.value = switchValue
+        if switchValue {
             UserEngagement.logEvent(.enableAnalytics)
         }
         else {
@@ -118,18 +82,14 @@ class GeneralOld: UITableViewController {
             persuadeToKeepOn(title: "Turn off analytics?", message: "Anonymous usage statistics help prioritise development. These never include any information about your books. Are you sure you want to turn this off?") { result in
                 if result {
                     UserSettings.sendAnalytics.value = true
-                    sender.isOn = true
+                    sender.value = true
+                    sender.reload()
                 }
                 else {
                     UserEngagement.logEvent(.disableAnalytics)
                 }
             }
         }
-    }
-    
-    @IBAction func darkModeSwitchToggled(_ sender: UISwitch) {
-        UserSettings.theme = sender.isOn ? .dark : .normal
-        NotificationCenter.default.post(name: Notification.Name.ThemeSettingChanged, object: nil)
     }
     
     func persuadeToKeepOn(title: String, message: String, completion: @escaping (Bool) -> Void) {

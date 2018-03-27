@@ -203,3 +203,17 @@ final class ThemedTextRow: _TextRow, RowType {
         self.baseCell.initialise(withTheme: UserSettings.theme)
     }
 }
+
+final class ThemedListCheckRow<T>: Row<ListCheckCell<T>>, SelectableRowType, RowType where T: Equatable {
+    public var selectableValue: T?
+    required public init(tag: String?) {
+        super.init(tag: tag)
+        displayValueFor = nil
+        self.baseCell.initialise(withTheme: UserSettings.theme)
+    }
+    
+    override func updateCell() {
+        super.updateCell()
+        self.baseCell.initialise(withTheme: UserSettings.theme)
+    }
+}
