@@ -8,7 +8,7 @@ class UserEngagement {
     static let userEngagementCountKey = "userEngagementCount"
     
     static func initialiseUserAnalytics() {
-        #if !DEBUG
+        #if RELEASE
             if UserSettings.sendAnalytics.value { FirebaseApp.configure() }
             if UserSettings.sendCrashReports.value { Fabric.with([Crashlytics.self]) }
         #endif

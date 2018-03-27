@@ -10,3 +10,4 @@ fastlane/screenshots/*/*.png
 *.ipa
 *.dSYM.zip
 .idea
+fabric

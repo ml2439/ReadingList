@@ -869,7 +869,8 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Fabric/run\" 79c3e18382aa560c2928a7c7b0371646f7828880 07b39f6a9f0f00382671716df2f61d6977e85c1119a676a593530ae35684fb3a";
+			shellScript = "if [ \"${CONFIGURATION}\" = \"Release\" ]; then\n    /usr/libexec/PlistBuddy -c \"Set :Fabric:APIKey $FABRIC_API_KEY\" Info.plist\n    \"${PODS_ROOT}/Fabric/run\" \"$FABRIC_API_KEY\" \"$FABRIC_BUILD_SECRET\"\nfi";
+			showEnvVarsInLog = 0;
 		};
 		5A4BD4901CFCA3B4FED56DFE /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
