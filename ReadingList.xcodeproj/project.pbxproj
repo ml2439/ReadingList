@@ -69,7 +69,6 @@
 		1CD1D2B4202BC64900ACA5D9 /* CSVExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD1D2B3202BC64900ACA5D9 /* CSVExport.swift */; };
 		1CD1D2B6202BC9C400ACA5D9 /* UIKitExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD1D2B5202BC9C400ACA5D9 /* UIKitExtensions.swift */; };
 		1CD1D2BA202BCAA500ACA5D9 /* NoCancelSearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD1D2B9202BCAA500ACA5D9 /* NoCancelSearchBar.swift */; };
-		1CD1D2BC202BCC0600ACA5D9 /* PreviewingNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD1D2BB202BCC0600ACA5D9 /* PreviewingNavigationController.swift */; };
 		1CD1D2BE202BCC7500ACA5D9 /* HairlineConstraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD1D2BD202BCC7500ACA5D9 /* HairlineConstraint.swift */; };
 		1CD1D2C0202BCCA000ACA5D9 /* BorderedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD1D2BF202BCCA000ACA5D9 /* BorderedButton.swift */; };
 		1CD1D2C2202BCCF400ACA5D9 /* NavigationBarLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD1D2C1202BCCF400ACA5D9 /* NavigationBarLabel.swift */; };
@@ -207,7 +206,6 @@
 		1CD1D2B3202BC64900ACA5D9 /* CSVExport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSVExport.swift; sourceTree = "<group>"; };
 		1CD1D2B5202BC9C400ACA5D9 /* UIKitExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitExtensions.swift; sourceTree = "<group>"; };
 		1CD1D2B9202BCAA500ACA5D9 /* NoCancelSearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoCancelSearchBar.swift; sourceTree = "<group>"; };
-		1CD1D2BB202BCC0600ACA5D9 /* PreviewingNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewingNavigationController.swift; sourceTree = "<group>"; };
 		1CD1D2BD202BCC7500ACA5D9 /* HairlineConstraint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HairlineConstraint.swift; sourceTree = "<group>"; };
 		1CD1D2BF202BCCA000ACA5D9 /* BorderedButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BorderedButton.swift; sourceTree = "<group>"; };
 		1CD1D2C1202BCCF400ACA5D9 /* NavigationBarLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBarLabel.swift; sourceTree = "<group>"; };
@@ -432,7 +430,6 @@
 			children = (
 				1CD83C3D1F9BC0BA00E88E31 /* XibView.swift */,
 				1CD1D2B9202BCAA500ACA5D9 /* NoCancelSearchBar.swift */,
-				1CD1D2BB202BCC0600ACA5D9 /* PreviewingNavigationController.swift */,
 				1CD1D2BD202BCC7500ACA5D9 /* HairlineConstraint.swift */,
 				1CD1D2BF202BCCA000ACA5D9 /* BorderedButton.swift */,
 				1CD1D2C1202BCCF400ACA5D9 /* NavigationBarLabel.swift */,
@@ -1150,7 +1147,6 @@
 				49CEB80A1E9D8C06003FD859 /* Debug.swift in Sources */,
 				1C1C887F1FE05A9D00A20402 /* Tip.swift in Sources */,
 				1C42F65B20605BD00024CC84 /* BuildInfo.swift in Sources */,
-				1CD1D2BC202BCC0600ACA5D9 /* PreviewingNavigationController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
