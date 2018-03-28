@@ -297,12 +297,9 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        
-        // 18 is the padding between the main stack view and the top. This should be determined programatically
-        // if any of the layout constraints from the title to the top become more complex
-        let threshold = titleAndAuthorStack.subviews.first(where: {!$0.isHidden})!.frame.maxY + 18 - scrollView.universalContentInset.top
-
-        if didShowNavigationItemTitle != (scrollView.contentOffset.y >= threshold) {
+        let titleLabel = titleAndAuthorStack.subviews.first(where: {!$0.isHidden})!
+        let titleMaxYPosition = titleLabel.convert(titleLabel.frame, to: view).maxY
+        if didShowNavigationItemTitle != (titleMaxYPosition - scrollView.universalContentInset.top < 0) {
             // Changes to the title view are to be animated
             let fadeTextAnimation = CATransition()
             fadeTextAnimation.duration = 0.2
