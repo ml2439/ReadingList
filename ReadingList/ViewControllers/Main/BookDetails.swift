@@ -154,10 +154,8 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     }
     
     override func viewDidLoad() {
-        
         super.viewDidLoad()
-        
-        view.backgroundColor = UIColor.white
+        navigationController!.view.backgroundColor = .white
         
         // Initialise the view so that by default a blank page is shown.
         // This is required for starting the app in split-screen mode, where this view is
