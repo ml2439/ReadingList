@@ -53,8 +53,12 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         cover.image = UIImage(optionalData: book.coverImage) ?? #imageLiteral(resourceName: "CoverPlaceholder")
         
         // There are 2 title and 2 author labels, one for Regular display (iPad) and one for other displays
-        titleAndAuthorStack.subviews[0...1].forEach{($0 as! UILabel).text = book.title}
-        titleAndAuthorStack.subviews[2...3].forEach{($0 as! UILabel).text = book.authorDisplay}
+        let titleAndAuthor = titleAndAuthorStack.subviews.map{$0 as! UILabel}
+        titleAndAuthor[0].text = book.title
+        titleAndAuthor[1].text = book.authorDisplay
+        if traitCollection.horizontalSizeClass == .regular && traitCollection.verticalSizeClass == .regular {
+            titleAndAuthor.forEach{$0.scaleFontBy(1.3)}
+        }
         (navigationItem.titleView as! UINavigationBarLabel).setTitle(book.title)
         
         switch book.readState {
@@ -297,7 +301,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let titleLabel = titleAndAuthorStack.subviews.first(where: {!$0.isHidden})!
+        let titleLabel = titleAndAuthorStack.subviews[0]
         let titleMaxYPosition = titleLabel.convert(titleLabel.frame, to: view).maxY
         if didShowNavigationItemTitle != (titleMaxYPosition - scrollView.universalContentInset.top < 0) {
             // Changes to the title view are to be animated

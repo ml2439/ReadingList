@@ -272,6 +272,10 @@ extension UILabel {
             font = font.scaled(forTextStyle: UIFontTextStyle("UICTFontTextStyle\(newValue)"))
         }
     }
+    
+    func scaleFontBy(_ factor: CGFloat) {
+        font = font.withSize(font.pointSize * factor)
+    }
 }
 
 extension UIColor {
