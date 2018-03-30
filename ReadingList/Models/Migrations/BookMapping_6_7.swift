@@ -14,7 +14,7 @@ class BookMapping_6_7: NSEntityMigrationPolicy {
         var components = [(lastName: String, firstNames: String?)]()
         guard let authors = authorListString?.components(separatedBy: ","), authors.count > 0 else { return components }
         
-        for authorString in (authors.flatMap{$0.trimming().nilIfWhitespace()}) {
+        for authorString in (authors.compactMap{$0.trimming().nilIfWhitespace()}) {
             if let range = authorString.range(of: " ", options: .backwards),
                 let lastName = authorString[range.upperBound...].trimming().nilIfWhitespace() {
                 components.append((lastName: lastName,
