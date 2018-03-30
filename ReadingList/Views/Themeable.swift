@@ -1,6 +1,7 @@
 import UIKit
 import Foundation
 import Eureka
+import ImageRow
 
 @objc enum Theme: Int {
     case normal = 1
@@ -19,6 +20,10 @@ extension Theme {
     
     var tintColor: UIColor {
         return self == .normal ? .buttonBlue : .red
+    }
+    
+    var placeholderTextColor: UIColor {
+        return subtitleTextColor
     }
     
     var subtitleTextColor: UIColor {
@@ -175,32 +180,63 @@ extension UITabBar {
     }
 }
 
-extension BaseCell {
+extension SwitchCell {
     func initialise(withTheme theme: Theme) {
         backgroundColor = theme.cellBackgroundColor
         textLabel?.textColor = theme.titleTextColor
     }
 }
 
-final class ThemedButtonRow: _ButtonRowOf<String>, RowType {
-    required init(tag: String?) {
-        super.init(tag: tag)
-        let theme = UserSettings.theme
-        self.baseCell.backgroundColor = theme.cellBackgroundColor
+extension DateCell {
+    func initialise(withTheme theme: Theme) {
+        backgroundColor = theme.cellBackgroundColor
+        textLabel?.textColor = theme.titleTextColor
     }
 }
 
-final class ThemedTextAreaRow: _TextAreaRow, RowType {
-    required init(tag: String?) {
-        super.init(tag: tag)
-        self.baseCell.initialise(withTheme: UserSettings.theme)
+extension ButtonCellOf {
+    func initialise(withTheme theme: Theme) {
+        backgroundColor = theme.cellBackgroundColor
     }
 }
 
-final class ThemedTextRow: _TextRow, RowType {
-    required init(tag: String?) {
-        super.init(tag: tag)
-        self.baseCell.initialise(withTheme: UserSettings.theme)
+extension IntCell {
+    func initialise(withTheme theme: Theme) {
+        backgroundColor = theme.cellBackgroundColor
+        textLabel?.textColor = theme.titleTextColor
+        textField.textColor = theme.titleTextColor
+    }
+}
+
+extension TextAreaCell {
+    func initialise(withTheme theme: Theme) {
+        backgroundColor = theme.cellBackgroundColor
+        textView.backgroundColor = theme.cellBackgroundColor
+        textView.textColor = theme.titleTextColor
+        //textLabel?.textColor = theme.titleTextColor
+        placeholderLabel?.textColor = theme.placeholderTextColor
+    }
+}
+
+extension TextCell {
+    func initialise(withTheme theme: Theme) {
+        backgroundColor = theme.cellBackgroundColor
+        textField.textColor = theme.titleTextColor
+        textLabel?.textColor = theme.titleTextColor
+    }
+}
+
+extension LabelCellOf {
+    func initialise(withTheme theme: Theme) {
+        backgroundColor = theme.cellBackgroundColor
+        textLabel?.textColor = theme.titleTextColor
+    }
+}
+
+extension ImageCell {
+    func initialise(withTheme theme: Theme) {
+        backgroundColor = theme.cellBackgroundColor
+        textLabel?.textColor = theme.titleTextColor
     }
 }
 
@@ -209,11 +245,9 @@ final class ThemedListCheckRow<T>: Row<ListCheckCell<T>>, SelectableRowType, Row
     required public init(tag: String?) {
         super.init(tag: tag)
         displayValueFor = nil
-        self.baseCell.initialise(withTheme: UserSettings.theme)
-    }
-    
-    override func updateCell() {
-        super.updateCell()
-        self.baseCell.initialise(withTheme: UserSettings.theme)
+        self.cellUpdate{ cell,_ in
+            cell.backgroundColor = UserSettings.theme.cellBackgroundColor
+            cell.textLabel?.textColor = UserSettings.theme.titleTextColor
+        }
     }
 }

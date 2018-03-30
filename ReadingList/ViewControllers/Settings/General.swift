@@ -11,6 +11,9 @@ class General: FormViewController {
                 <<< SwitchRow() {
                     $0.title = "Use Large Titles"
                     $0.value = UserSettings.useLargeTitles.value
+                    $0.cellUpdate{ cell,_ in
+                        cell.initialise(withTheme: UserSettings.theme)
+                    }
                     $0.onChange{ row in
                         UserSettings.useLargeTitles.value = row.value!
                         NotificationCenter.default.post(name: NSNotification.Name.LargeTitleSettingChanged, object: nil)
@@ -39,17 +42,23 @@ class General: FormViewController {
             +++ Section(header: "Analytics", footer: "Anonymous crash reports and usage statistics can be reported to help improve Reading List.")
                 <<< SwitchRow() {
                     $0.title = "Send Crash Reports"
+                    $0.cellUpdate{ cell,_ in
+                        cell.initialise(withTheme: UserSettings.theme)
+                    }
                     $0.onChange(crashReportsSwitchChanged(_:))
                 }
                 <<< SwitchRow() {
                     $0.title = "Send Analytics"
+                    $0.cellUpdate{ cell,_ in
+                        cell.initialise(withTheme: UserSettings.theme)
+                    }
                     $0.onChange(analyticsSwitchChanged(_:))
                 }
         
         monitorThemeSetting()
     }
     
-    func crashReportsSwitchChanged(_ sender: SwitchRow) {
+    func crashReportsSwitchChanged(_ sender: _SwitchRow) {
         guard let switchValue = sender.value else { return }
         UserSettings.sendCrashReports.value = switchValue
         if switchValue {
@@ -71,7 +80,7 @@ class General: FormViewController {
         }
     }
     
-    func analyticsSwitchChanged(_ sender: SwitchRow) {
+    func analyticsSwitchChanged(_ sender: _SwitchRow) {
         guard let switchValue = sender.value else { return }
         UserSettings.sendAnalytics.value = switchValue
         if switchValue {

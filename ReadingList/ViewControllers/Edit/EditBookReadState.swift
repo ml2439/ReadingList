@@ -103,7 +103,7 @@ class EditBookReadState: FormViewController {
             }
             
             +++ Section(header: "Notes", footer: "")
-            <<< ThemedTextAreaRow(){
+            <<< TextAreaRow(){
                 $0.placeholder = "Add your personal notes here..."
                 $0.value = book.notes
                 $0.cellSetup{ [unowned self] cell, _ in
