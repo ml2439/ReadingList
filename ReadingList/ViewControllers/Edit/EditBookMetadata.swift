@@ -282,15 +282,20 @@ class AuthorSection: MultivaluedSection {
         super.init(multivaluedOptions: multivaluedOptions, header: header, footer: footer, initializer)
     }
     
+    required init<S>(_ elements: S) where S : Sequence, S.Element == BaseRow {
+        super.init(elements)
+    }
+    
     func rebuildAuthors() {
         // It's a bit tricky with Eureka to manage an ordered set: the reordering comes through rowsHaveBeenRemoved
         // and rowsHaveBeenAdded, so we can't delete books on removal, since they might need to come back.
         // Instead, we take the brute force approach of deleting all authors and rebuilding the set each time
         // something changes. We can check whether there are any meaningful differences before we embark on this though.
         let currentAuthors = book.authors.map{$0 as! Author}
-        let newAuthors: [(String, String?)] = self.flatMap{$0 as? AuthorRow}.flatMap{
-            guard let lastName = $0.lastName else { return nil }
-            return (lastName, $0.firstNames)
+        let newAuthors: [(String, String?)] = self.compactMap{
+            guard let authorRow = $0 as? AuthorRow else { return nil }
+            guard let lastName = authorRow.lastName else { return nil }
+            return (lastName, authorRow.firstNames)
         }
         if currentAuthors.map({($0.lastName, $0.firstNames)}).elementsEqual(newAuthors, by: {return $0.0 == $1.0 && $0.1 == $1.1}) {
             return
@@ -330,7 +335,7 @@ final class AuthorRow: _LabelRow, RowType {
         cellUpdate{ [unowned self] cell,row in
             cell.initialise(withTheme: UserSettings.theme)
             cell.textLabel!.textAlignment = .left
-            cell.textLabel!.text = [self.firstNames, self.lastName].flatMap{return $0}.joined(separator: " ")
+            cell.textLabel!.text = [self.firstNames, self.lastName].compactMap{return $0}.joined(separator: " ")
         }
     }
 }
@@ -442,7 +447,7 @@ class EditBookSubjectsForm: FormViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
-        let subjectNames = form.rows.flatMap{($0 as? TextRow)?.value?.trimming().nilIfWhitespace()}
+        let subjectNames = form.rows.compactMap{($0 as? TextRow)?.value?.trimming().nilIfWhitespace()}
         if book.subjects.map({$0.name}) != subjectNames {
             book.subjects = Set(subjectNames.map{Subject.getOrCreate(inContext: book.managedObjectContext!, withName: $0)})
         }

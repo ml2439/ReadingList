@@ -30,7 +30,7 @@ class CompoundFetchedResultsController<T: NSFetchRequestResult>: NSObject, NSFet
     
     var sections: [NSFetchedResultsSectionInfo]? {
         // To get the flattened sections array, we simply reduce-by-concatenation the inner controllers' sections arrays.
-        get { return controllers.flatMap{$0.sections}.reduce([], +) }
+        get { return controllers.compactMap{$0.sections}.reduce([], +) }
     }
 
     private func sectionOffset(forController controller: NSFetchedResultsController<T>) -> Int {

@@ -139,9 +139,8 @@ class GoogleBooks {
         }
         
         static func parseSearchResults(_ searchResults: JSON) -> [SearchResult] {
-            return searchResults["items"].flatMap { itemJson in
-                guard let item = Parser.parseItem(itemJson.1) else { return nil }
-                return item
+            return searchResults["items"].compactMap { itemJson in
+                return Parser.parseItem(itemJson.1)
             }
         }
         
@@ -184,12 +183,12 @@ class GoogleBooks {
             var description = fetchResult["volumeInfo","description"].string
             
             description = description?.components(separatedBy: "<br>")
-                .flatMap{$0.trimming().nilIfWhitespace()}
+                .compactMap{$0.trimming().nilIfWhitespace()}
                 .joined(separator: "\n")
 
             description = description?.components(separatedBy: "<p>")
                 .flatMap{$0.components(separatedBy: "</p>")}
-                .flatMap{$0.trimming().nilIfWhitespace()}
+                .compactMap{$0.trimming().nilIfWhitespace()}
                 .joined(separator: "\n\n")
             
             description = description?.replacingOccurrences(of: "<[^>]+>", with: "", options: .regularExpression, range: nil)

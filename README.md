@@ -11,8 +11,8 @@
 </a>
 
 ## Requirements
- - Xcode 9.2 +
- - Swift 4 +
+ - Xcode 9.3
+ - Swift 4.1
 
 ## Dependencies
 Reading List uses [CocoaPods](https://cocoapods.org/) for including third-party libraries, and [fastlane](https://fastlane.tools/) to automate some processes. To install the correct versions, run:

@@ -8,7 +8,7 @@ class BookMapping_8_9: NSEntityMigrationPolicy {
             let author = ($0 as! NSManagedObject)
             let lastName = sortable((author.value(forKey: "lastName") as! String))
             let firstNames = sortable(author.value(forKey: "firstNames") as? String)
-            return [lastName, firstNames].flatMap{$0}.joined(separator: ".")
+            return [lastName, firstNames].compactMap{$0}.joined(separator: ".")
         }.joined(separator: "..")
     }
     
