@@ -75,16 +75,6 @@ extension About: MFMailComposeViewControllerDelegate {
     }
 }
 
-class AttributionTableCell: UITableViewCell {
-    func initialise(withTheme theme: Theme) {
-        contentView.subviews.flatMap({$0 as? UILabel}).forEach{
-            $0.textColor = theme.titleTextColor
-        }
-        backgroundColor = theme.cellBackgroundColor
-        selectedBackgroundView = UIView(backgroundColor: .lightGray)
-    }
-}
-
 class Attributions: UITableViewController {
     
     override func viewDidLoad() {
@@ -95,12 +85,14 @@ class Attributions: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
-        if let attributionCell = cell as? AttributionTableCell {
-            attributionCell.initialise(withTheme: UserSettings.theme)
-            return attributionCell
+        guard indexPath.section == 0 else { return cell }
+        
+        let theme = UserSettings.theme
+        cell.contentView.subviews.compactMap({$0 as? UILabel}).forEach{
+            $0.textColor = theme.titleTextColor
         }
-        cell.textLabel?.textColor = UserSettings.theme.titleTextColor
-        cell.backgroundColor = UserSettings.theme.cellBackgroundColor
+        cell.backgroundColor = theme.cellBackgroundColor
+        cell.selectedBackgroundView = UIView(backgroundColor: .lightGray)
         return cell
     }
 
