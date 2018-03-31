@@ -265,14 +265,14 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         // US store: readinglistio-20
         // UK store: readinglistio-21
         let refURL = "https://www.readinglistapp.xyz"
-        let localisedAffiliateAmazonSearch = URL(string: "http://lnks.io/r.php?Conf_Source=API&refURL=\(refURL.urlEncoding())&destURL=\(amazonSearch.urlEncoding())&Amzn_AfiliateID_GB=readinglistio-21&Amzn_AfiliateID_US=readinglistio-20")!
+        let localisedAffiliateAmazonSearch = "http://lnks.io/r.php?Conf_Source=API&refURL=\(refURL.urlEncoding())&destURL=\(amazonSearch.urlEncoding())&Amzn_AfiliateID_GB=readinglistio-21&Amzn_AfiliateID_US=readinglistio-20"
         UserEngagement.logEvent(.viewOnAmazon)
-        UIApplication.shared.open(localisedAffiliateAmazonSearch, options: [:], completionHandler: nil)
+        presentSafariViewController(url: localisedAffiliateAmazonSearch)
     }
     
     @objc func googleBooksButtonPressed() {
         guard let googleBooksId = book?.googleBooksId else { return }
-        UIApplication.shared.open(GoogleBooks.Request.webpage(googleBooksId).url, options: [:], completionHandler: nil)
+        presentSafariViewController(url: GoogleBooks.Request.webpage(googleBooksId).url)
     }
     
     @IBAction func addToList(_ sender: Any) {
