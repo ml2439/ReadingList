@@ -346,10 +346,10 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
 extension BookDetails: ThemeableViewController {
     func initialise(withTheme theme: Theme) {
         view.backgroundColor = theme.viewBackgroundColor
-        titleAndAuthorStack.arrangedSubviews.flatMap{$0 as? UILabel}.forEach{
+        titleAndAuthorStack.arrangedSubviews.compactMap{$0 as? UILabel}.forEach{
             $0.textColor = theme.titleTextColor
         }
-        bookDescription.siblings.flatMap{$0 as? HorizontalGradientView}.first!.color = theme.viewBackgroundColor
+        bookDescription.siblings.compactMap{$0 as? HorizontalGradientView}.first!.color = theme.viewBackgroundColor
         (navigationItem.titleView as! UINavigationBarLabel).initialise(fromTheme: theme)
     }
 }
