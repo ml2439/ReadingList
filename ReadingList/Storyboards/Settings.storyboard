@@ -359,7 +359,7 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <segue destination="DtC-Ho-Zzw" kind="show" id="EtB-BB-XOS"/>
+                                            <segue destination="DtC-Ho-Zzw" kind="showDetail" id="EtB-BB-XOS"/>
                                         </connections>
                                     </tableViewCell>
                                 </cells>

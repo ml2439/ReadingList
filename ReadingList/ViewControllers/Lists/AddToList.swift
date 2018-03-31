@@ -82,41 +82,38 @@ class AddToList: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if indexPath.section == 0 {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "ExistingListCell", for: indexPath)
-            let listObj = resultsController.object(at: indexPath)
-            cell.textLabel!.text = listObj.name
-            cell.detailTextLabel!.text = "\(listObj.books.count) book\(listObj.books.count == 1 ? "" : "s")"
-
-            let booksInThisList = listObj.books.set
-            
-            // If any of the books are already in this list:
-            // FUTURE: Check whether this is firing a lot of faults
-            if booksSet.intersects(booksInThisList) {
-                var alreadyAddedText: String
-                
-                // Disable the cell is they are *all* already in the list
-                let allAlreadyAdded = booksSet.isSubset(of: booksInThisList)
-                cell.isEnabled = !allAlreadyAdded
-                if allAlreadyAdded {
-                    alreadyAddedText = books.count == 1 ? "already added" : "all already added"
-                }
-                else {
-                    let overlapSet = booksSet.mutableCopy() as! NSMutableSet
-                    overlapSet.intersect(booksInThisList)
-                    alreadyAddedText = "\(overlapSet.count) already added" // TODO: think of better wording?
-                }
-                
-                cell.detailTextLabel!.text = cell.detailTextLabel!.text! + " (\(alreadyAddedText))"
-            }
-            return cell
-        }
-        else {
+        guard indexPath.section == 0 else {
             let cell = tableView.dequeueReusableCell(withIdentifier: "NewListCell", for: indexPath)
             cell.textLabel!.text = "Add New List"
             cell.accessoryType = .disclosureIndicator
             return cell
         }
+
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ExistingListCell", for: indexPath)
+        let listObj = resultsController.object(at: indexPath)
+        cell.textLabel!.text = listObj.name
+        cell.detailTextLabel!.text = "\(listObj.books.count) book\(listObj.books.count == 1 ? "" : "s")"
+        cell.isEnabled = true
+        
+        // If any of the books are already in this list:
+        // FUTURE: Check whether this is firing a lot of faults
+        let booksInThisList = listObj.books.set
+        if booksSet.intersects(booksInThisList) {
+            let alreadyAddedText: String
+            if booksSet.isSubset(of: booksInThisList) {
+                alreadyAddedText = books.count == 1 ? "already added" : "all already added"
+                cell.isEnabled = false
+            }
+            else {
+                let overlapSet = booksSet.mutableCopy() as! NSMutableSet
+                overlapSet.intersect(booksInThisList)
+                alreadyAddedText = "\(overlapSet.count) already added" // TODO: think of better wording?
+            }
+            
+            cell.detailTextLabel!.text?.append(" (\(alreadyAddedText))")
+        }
+
+        return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

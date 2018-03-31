@@ -1,5 +1,6 @@
 import Foundation
 import UIKit
+import SafariServices
 
 extension UINib {
     convenience init<T>(_ class: T.Type) where T : UIView {
@@ -99,11 +100,19 @@ extension UIViewController {
         nav.modalPresentationStyle = modalPresentationStyle
         return nav
     }
-    
+
     func inThemedNavController(modalPresentationStyle: UIModalPresentationStyle = .formSheet) -> UINavigationController {
         let nav = ThemedNavigationController(rootViewController: self)
         nav.modalPresentationStyle = modalPresentationStyle
         return nav
+    }
+
+    func presentSafariViewController(url: String) {
+        self.presentSafariViewController(url: URL(string: url)!)
+    }
+    
+    func presentSafariViewController(url: URL) {
+        self.present(SFSafariViewController(url: url), animated: true, completion: nil)
     }
 }
 
