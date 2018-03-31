@@ -127,9 +127,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func initialise(fromTheme theme: Theme) {
-        UIApplication.shared.statusBarStyle = UserSettings.theme == .normal ? .default : .lightContent
-        NotificationCenter.default.addObserver(forName: Notification.Name.ThemeSettingChanged, object: nil, queue: nil) {_ in
+        func globalThemeInitialisation() {
+            self.window!.tintColor = UserSettings.theme.tintColor
             UIApplication.shared.statusBarStyle = UserSettings.theme == .normal ? .default : .lightContent
+        }
+        globalThemeInitialisation()
+        NotificationCenter.default.addObserver(forName: Notification.Name.ThemeSettingChanged, object: nil, queue: nil) {_ in
+            globalThemeInitialisation()
         }
     }
 }

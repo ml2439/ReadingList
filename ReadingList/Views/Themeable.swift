@@ -19,7 +19,7 @@ extension Theme {
     }
     
     var tintColor: UIColor {
-        return self == .normal ? .buttonBlue : .red
+        return self == .normal ? .buttonBlue : .blue
     }
     
     var placeholderTextColor: UIColor {

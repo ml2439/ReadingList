@@ -30,7 +30,7 @@ class General: FormViewController {
         }
         
         form +++ SelectableSection<ThemedListCheckRow<Theme>>(header: "Theme", footer: "Change the appearance of Reading List.", selectionType: .singleSelection(enableDeselection: false)) {
-                    $0.onSelectSelectableRow = { cell, row in
+                    $0.onSelectSelectableRow = { _,row in
                         UserSettings.theme = row.value!
                         NotificationCenter.default.post(name: Notification.Name.ThemeSettingChanged, object: nil)
                     }
