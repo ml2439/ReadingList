@@ -1,22 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="n9u-1T-KRj">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="n9u-1T-KRj">
     <device id="ipad9_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
-    <customFonts key="customFonts">
-        <array key="GillSans.ttc">
-            <string>GillSans</string>
-            <string>GillSans-SemiBold</string>
-        </array>
-    </customFonts>
     <scenes>
         <!--Book Details-->
         <scene sceneID="leL-vZ-Myr">
@@ -59,7 +53,7 @@
                                                                 <rect key="frame" x="140" y="0.0" width="580" height="42"/>
                                                                 <subviews>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="La Belle Sauvage" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KUv-Qb-XLN" userLabel="BookTitle">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="580" height="21.5"/>
+                                                                        <rect key="frame" x="0.0" y="0.0" width="131" height="21.5"/>
                                                                         <fontDescription key="fontDescription" name="GillSans-SemiBold" family="Gill Sans" pointSize="18"/>
                                                                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                                         <nil key="highlightedColor"/>
@@ -68,7 +62,7 @@
                                                                         </userDefinedRuntimeAttributes>
                                                                     </label>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Phillip Pullman" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Uvq-kK-HxE" userLabel="Author">
-                                                                        <rect key="frame" x="0.0" y="23.5" width="580" height="18.5"/>
+                                                                        <rect key="frame" x="0.0" y="23.5" width="93" height="18.5"/>
                                                                         <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="16"/>
                                                                         <color key="textColor" red="0.40784313725490196" green="0.40784313725490196" blue="0.40784313725490196" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                         <nil key="highlightedColor"/>
@@ -838,21 +832,43 @@
                         <outlet property="bookDescription" destination="3dC-9n-NG8" id="Dh4-fp-OAy"/>
                         <outlet property="changeReadStateButton" destination="xYF-nW-8G6" id="yN3-e9-bhf"/>
                         <outlet property="cover" destination="3DD-HK-Aea" id="2gC-KM-MtG"/>
-                        <outlet property="dateFinished" destination="UR9-Oj-q8e" id="gfn-3P-uup"/>
-                        <outlet property="dateStarted" destination="6aZ-t0-uXB" id="Bmn-m2-0yr"/>
                         <outlet property="googleBooks" destination="NOF-Yd-fv3" id="AFe-29-WxD"/>
-                        <outlet property="isbn" destination="9xr-Xs-NDK" id="2TO-xe-poV"/>
                         <outlet property="listDetailsView" destination="Nrx-DT-QDi" id="6Ie-UP-eEE"/>
                         <outlet property="listsStack" destination="cqY-si-z1C" id="Heq-fV-egF"/>
-                        <outlet property="noLists" destination="DsS-u3-Ynr" id="MVX-JU-4ZW"/>
-                        <outlet property="notes" destination="1lx-c8-Jjp" id="CUm-uY-Cj2"/>
-                        <outlet property="pageNumber" destination="CiQ-Tc-gbA" id="bOd-zq-r8W"/>
-                        <outlet property="pages" destination="cXF-BD-6WQ" id="JeP-7B-MqX"/>
-                        <outlet property="published" destination="zoz-3C-YU5" id="e9M-31-XBk"/>
-                        <outlet property="readState" destination="P98-Ye-gdn" id="uOF-N4-yBg"/>
-                        <outlet property="readTime" destination="mtG-OO-VDn" id="Tzy-if-zBW"/>
-                        <outlet property="subjects" destination="i89-sm-QGQ" id="Eye-rB-Wrq"/>
-                        <outlet property="titleAndAuthorStack" destination="Idg-j1-qMK" id="ffl-uz-Fpq"/>
+                        <outlet property="noLists" destination="DsS-u3-Ynr" id="0nM-ZB-o3z"/>
+                        <outletCollection property="titles" destination="6j3-21-YIa" collectionClass="NSMutableArray" id="s1a-oj-kE8"/>
+                        <outletCollection property="titles" destination="l1w-iY-3mz" collectionClass="NSMutableArray" id="BwX-0M-btx"/>
+                        <outletCollection property="titles" destination="N1v-kb-kYE" collectionClass="NSMutableArray" id="oOs-D8-XHC"/>
+                        <outletCollection property="titleAuthorHeadings" destination="KUv-Qb-XLN" collectionClass="NSMutableArray" id="1lI-eM-03j"/>
+                        <outletCollection property="titleAuthorHeadings" destination="Uvq-kK-HxE" collectionClass="NSMutableArray" id="S6q-Ta-Gdw"/>
+                        <outletCollection property="tableVaules" destination="P98-Ye-gdn" collectionClass="NSMutableArray" id="3oB-mQ-fdP"/>
+                        <outletCollection property="tableVaules" destination="6aZ-t0-uXB" collectionClass="NSMutableArray" id="Cc3-0d-MJv"/>
+                        <outletCollection property="tableVaules" destination="UR9-Oj-q8e" collectionClass="NSMutableArray" id="cSe-ug-0im"/>
+                        <outletCollection property="tableVaules" destination="mtG-OO-VDn" collectionClass="NSMutableArray" id="w4B-cZ-5oD"/>
+                        <outletCollection property="tableVaules" destination="CiQ-Tc-gbA" collectionClass="NSMutableArray" id="LFM-FK-rOt"/>
+                        <outletCollection property="tableVaules" destination="1lx-c8-Jjp" collectionClass="NSMutableArray" id="p9T-jg-xSl"/>
+                        <outletCollection property="tableVaules" destination="9xr-Xs-NDK" collectionClass="NSMutableArray" id="yyC-68-6fE"/>
+                        <outletCollection property="tableVaules" destination="cXF-BD-6WQ" collectionClass="NSMutableArray" id="JNj-Nc-cMA"/>
+                        <outletCollection property="tableVaules" destination="zoz-3C-YU5" collectionClass="NSMutableArray" id="j5J-st-XRH"/>
+                        <outletCollection property="tableVaules" destination="i89-sm-QGQ" collectionClass="NSMutableArray" id="wrW-JN-x9f"/>
+                        <outletCollection property="tableSubHeadings" destination="hoh-H9-zYK" collectionClass="NSMutableArray" id="L26-fq-w6H"/>
+                        <outletCollection property="tableSubHeadings" destination="XDm-mx-SgA" collectionClass="NSMutableArray" id="7oC-cr-zAb"/>
+                        <outletCollection property="tableSubHeadings" destination="GZy-9B-WfN" collectionClass="NSMutableArray" id="gmc-sh-dIe"/>
+                        <outletCollection property="tableSubHeadings" destination="cah-EW-cNv" collectionClass="NSMutableArray" id="0ou-j3-WHU"/>
+                        <outletCollection property="tableSubHeadings" destination="QwM-ug-90X" collectionClass="NSMutableArray" id="84L-Ce-ewB"/>
+                        <outletCollection property="tableSubHeadings" destination="8HH-zh-C9L" collectionClass="NSMutableArray" id="HTv-3H-C5W"/>
+                        <outletCollection property="tableSubHeadings" destination="HIO-ZT-2aY" collectionClass="NSMutableArray" id="tjG-Ff-miD"/>
+                        <outletCollection property="tableSubHeadings" destination="wgT-jX-mIH" collectionClass="NSMutableArray" id="5tG-gP-CVP"/>
+                        <outletCollection property="tableSubHeadings" destination="5Ob-tP-Vww" collectionClass="NSMutableArray" id="Zeg-zJ-P5f"/>
+                        <outletCollection property="tableSubHeadings" destination="d0F-Jj-4CA" collectionClass="NSMutableArray" id="QEk-fd-2LA"/>
+                        <outletCollection property="tableSubHeadings" destination="ogo-6q-uuN" collectionClass="NSMutableArray" id="45l-MJ-yQt"/>
+                        <outletCollection property="tableSubHeadings" destination="DsS-u3-Ynr" collectionClass="NSMutableArray" id="vCU-YK-BaA"/>
+                        <outletCollection property="separatorLines" destination="ldU-QI-O4q" collectionClass="NSMutableArray" id="3hx-Ah-0aO"/>
+                        <outletCollection property="separatorLines" destination="Vo9-bZ-62H" collectionClass="NSMutableArray" id="PHn-b5-NGn"/>
+                        <outletCollection property="separatorLines" destination="VZx-ih-0hi" collectionClass="NSMutableArray" id="vRp-sO-hn1"/>
+                        <outletCollection property="separatorLines" destination="XWs-sG-Z2Z" collectionClass="NSMutableArray" id="hn0-xs-QXO"/>
+                        <outletCollection property="tableSubHeadings" destination="BdG-SU-Xfn" collectionClass="NSMutableArray" id="Kfg-sE-ULy"/>
+                        <outletCollection property="tableSubHeadings" destination="DsS-u3-Ynr" collectionClass="NSMutableArray" id="Gys-ES-DyJ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5dX-S1-jhF" userLabel="First Responder" sceneMemberID="firstResponder"/>

@@ -262,7 +262,22 @@ extension UIScrollView {
     }
 }
 
+extension UIStackView {
+    func removeAllSubviews() {
+        for view in arrangedSubviews {
+            self.removeArrangedSubview(view)
+        }
+    }
+}
+
 extension UILabel {
+    convenience init(font: UIFont, color: UIColor, text: String) {
+        self.init()
+        self.font = font
+        self.textColor = color
+        self.text = text
+    }
+    
     var isTruncated: Bool {
         guard let labelText = text else { return false }
         let labelTextSize = (labelText as NSString).boundingRect(

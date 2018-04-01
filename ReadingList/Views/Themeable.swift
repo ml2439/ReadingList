@@ -100,6 +100,13 @@ extension UITabBarController: ThemeableViewController {
     }
 }
 
+extension UIToolbar {
+    func initialise(withTheme theme: Theme) {
+        backgroundColor = theme.viewBackgroundColor
+        subviews.forEach{($0 as? UILabel)?.textColor = theme.tintColor}
+    }
+}
+
 extension UITableViewController: ThemeableViewController {
     func initialise(withTheme theme: Theme) {
         if #available(iOS 11.0, *) {
@@ -140,6 +147,7 @@ class ThemedNavigationController: UINavigationController, ThemeableViewControlle
     
     func initialise(withTheme theme: Theme) {
         navigationBar.initialise(withTheme: theme)
+        toolbar?.initialise(withTheme: theme)
     }
 }
 
@@ -166,7 +174,7 @@ extension UITableView {
         backgroundColor = theme.tableBackgroundColor
         //separatorColor = theme.cellBackgroundColor
         if let searchBar = tableHeaderView as? UISearchBar {
-            //searchBar.barStyle = theme == .normal ? .default : .black
+            searchBar.barStyle = theme == .normal ? .default : .black
             searchBar.backgroundColor = theme.tableBackgroundColor
             searchBar.barTintColor = theme.tableBackgroundColor
             searchBar.keyboardAppearance = theme.keyboardAppearance
@@ -205,6 +213,7 @@ extension IntCell {
         backgroundColor = theme.cellBackgroundColor
         textLabel?.textColor = theme.titleTextColor
         textField.textColor = theme.titleTextColor
+        textField.keyboardAppearance = theme.keyboardAppearance
     }
 }
 
@@ -213,7 +222,6 @@ extension TextAreaCell {
         backgroundColor = theme.cellBackgroundColor
         textView.backgroundColor = theme.cellBackgroundColor
         textView.textColor = theme.titleTextColor
-        //textLabel?.textColor = theme.titleTextColor
         placeholderLabel?.textColor = theme.placeholderTextColor
     }
 }
@@ -222,6 +230,7 @@ extension TextCell {
     func initialise(withTheme theme: Theme) {
         backgroundColor = theme.cellBackgroundColor
         textField.textColor = theme.titleTextColor
+        textField.keyboardAppearance = theme.keyboardAppearance
         textLabel?.textColor = theme.titleTextColor
     }
 }

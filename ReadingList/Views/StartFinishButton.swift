@@ -12,11 +12,11 @@ class StartFinishButton: BorderedButton {
         switch state {
         case .start:
             isHidden = false
-            setColor(UIColor.buttonBlue)
+            setColor(appDelegate.window!.tintColor)
             setTitle("START", for: .normal)
         case .finish:
             isHidden = false
-            setColor(UIColor.flatGreen)
+            setColor(.flatGreen)
             setTitle("FINISH", for: .normal)
         case .none:
             isHidden = true
