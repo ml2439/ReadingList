@@ -101,7 +101,9 @@ extension UIViewController {
     
     func presentThemedSafariViewController(url: URL) {
         let safariVC = SFSafariViewController(url: url)
-        safariVC.preferredBarTintColor = navigationController?.navigationBar.barTintColor
+        if UserSettings.theme != .normal {
+            safariVC.preferredBarTintColor = .black
+        }
         self.present(safariVC, animated: true, completion: nil)
     }
 }
