@@ -198,18 +198,17 @@ class SearchOnline: UITableViewController {
                 book.populate(fromFetchResult: fetchResult)
                 completion(book)
             }
-            else {
-                if let coverURL = searchResult.thumbnailCoverUrl {
-                    HTTP.Request.get(url: coverURL).data {
-                        book.populate(fromSearchResult: searchResult, withCoverImage: $0.isSuccess ? $0.value! : nil)
-                        completion(book)
-                    }
-                }
-                else {
-                    book.populate(fromSearchResult: searchResult)
+            else if let coverURL = searchResult.thumbnailCoverUrl {
+                HTTP.Request.get(url: coverURL).data {
+                    book.populate(fromSearchResult: searchResult, withCoverImage: $0.isSuccess ? $0.value! : nil)
                     completion(book)
                 }
             }
+            else {
+                book.populate(fromSearchResult: searchResult)
+                completion(book)
+            }
+            
         }
     }
     
