@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 import SafariServices
+import AVFoundation
 
 extension UINib {
     convenience init<T>(_ class: T.Type) where T : UIView {
@@ -365,6 +366,18 @@ extension UITableViewCell {
             isUserInteractionEnabled = newValue
             textLabel?.isEnabled = newValue
             detailTextLabel?.isEnabled = newValue
+        }
+    }
+}
+
+extension UIDeviceOrientation {
+    var videoOrientation: AVCaptureVideoOrientation? {
+        switch self {
+        case .portrait: return .portrait
+        case .portraitUpsideDown: return .portraitUpsideDown
+        case .landscapeLeft: return .landscapeRight
+        case .landscapeRight: return .landscapeLeft
+        default: return nil
         }
     }
 }

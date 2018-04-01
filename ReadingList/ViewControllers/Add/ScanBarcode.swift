@@ -277,15 +277,3 @@ class ScanBarcode: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
     
     #endif
 }
-
-extension UIDeviceOrientation {
-    var videoOrientation: AVCaptureVideoOrientation? {
-        switch self {
-        case .portrait: return .portrait
-        case .portraitUpsideDown: return .portraitUpsideDown
-        case .landscapeLeft: return .landscapeRight
-        case .landscapeRight: return .landscapeLeft
-        default: return nil
-        }
-    }
-}
