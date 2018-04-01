@@ -11,5 +11,5 @@ before_install:
   - pod install
 script:
   - set -e
-  - if [[ ! $TRAVIS_COMMIT_MESSAGE =~ '[SKIP-TESTS]' ]]; then fastlane test; fi
-  - if [[ $TRAVIS_COMMIT_MESSAGE =~ '[DEPLOY]' ]]; then fastlane deploy; fi
+  - if [[ ! $TRAVIS_COMMIT_MESSAGE =~ '[SKIP-TESTS]' ]]; then bundle exec fastlane test; fi
+  - if [[ $TRAVIS_COMMIT_MESSAGE =~ '[DEPLOY]' ]]; then bundle exec fastlane deploy; fi
