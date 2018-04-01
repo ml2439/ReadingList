@@ -1,6 +1,5 @@
 import Foundation
 import UIKit
-import SafariServices
 import AVFoundation
 
 extension UINib {
@@ -106,14 +105,6 @@ extension UIViewController {
         let nav = ThemedNavigationController(rootViewController: self)
         nav.modalPresentationStyle = modalPresentationStyle
         return nav
-    }
-
-    func presentSafariViewController(url: String) {
-        self.presentSafariViewController(url: URL(string: url)!)
-    }
-    
-    func presentSafariViewController(url: URL) {
-        self.present(SFSafariViewController(url: url), animated: true, completion: nil)
     }
 }
 
@@ -388,6 +379,16 @@ extension UITableViewCell {
             isUserInteractionEnabled = newValue
             textLabel?.isEnabled = newValue
             detailTextLabel?.isEnabled = newValue
+        }
+    }
+    
+    var selectedBackgroundColor: UIColor? {
+        get {
+            return selectedBackgroundView?.backgroundColor
+        }
+        set {
+            guard let newValue = newValue else { return }
+            selectedBackgroundView = UIView(backgroundColor: newValue)
         }
     }
 }

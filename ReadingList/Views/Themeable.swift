@@ -2,6 +2,7 @@ import UIKit
 import Foundation
 import Eureka
 import ImageRow
+import SafariServices
 
 @objc enum Theme: Int {
     case normal = 1
@@ -14,16 +15,27 @@ extension Theme {
         return self == .normal ? .default : .dark
     }
     
-    var titleTextColor: UIColor {
-        return self == .normal ? .black : .white
+    var globalTintColor: UIColor {
+        return .buttonBlue
     }
     
-    var tintColor: UIColor {
-        return self == .normal ? .buttonBlue : .blue
+    var barTintColor: UIColor {
+        switch self {
+        case .normal:
+            return .white//UIColor(displayP3Red: 0, green: 0.478431, blue: 1, alpha: 1)
+        case .dark:
+            return UIColor(fromHex: 0x2d3038)
+        case .black:
+            return .black
+        }
     }
     
     var placeholderTextColor: UIColor {
-        return subtitleTextColor
+        return tableSeparatorColor // TODO: This is too dark
+    }
+    
+    var titleTextColor: UIColor {
+        return self == .normal ? .black : .white
     }
     
     var subtitleTextColor: UIColor {
@@ -49,6 +61,14 @@ extension Theme {
         case .black: return .black
         }
     }
+
+    var tableSeparatorColor: UIColor {
+        switch self {
+        case .normal: return UIColor(displayP3Red: 0.783922, green: 0.780392, blue: 0.8, alpha: 1)
+        case .dark: return .darkGray
+        case .black: return .veryDarkGray
+        }
+    }
     
     var viewBackgroundColor: UIColor {
         switch self {
@@ -57,15 +77,6 @@ extension Theme {
         case .black: return .black
         }
     }
-    
-    var navigationBarColor: UIColor {
-        return cellBackgroundColor
-        /*switch self {
-        case .normal: return .white
-        case .dark: return UIColor(fromHex: 0x20242b)
-        case .black: return .black
-        }*/
-    }
 }
 
 extension UITableViewCell {
@@ -73,7 +84,7 @@ extension UITableViewCell {
         backgroundColor = theme.cellBackgroundColor
         textLabel?.textColor = theme.titleTextColor
         detailTextLabel?.textColor = theme.titleTextColor
-        selectedBackgroundView = UIView(backgroundColor: .lightGray)
+        selectedBackgroundColor = theme.tableSeparatorColor
     }
 }
 
@@ -94,6 +105,18 @@ extension ThemeableViewController {
     @objc optional func themeSettingDidChange()
 }
 
+extension UIViewController {
+    func presentThemedSafariViewController(url: String) {
+        self.presentThemedSafariViewController(url: URL(string: url)!)
+    }
+    
+    func presentThemedSafariViewController(url: URL) {
+        let safariVC = SFSafariViewController(url: url)
+        safariVC.preferredBarTintColor = UserSettings.theme.barTintColor
+        self.present(safariVC, animated: true, completion: nil)
+    }
+}
+
 extension UITabBarController: ThemeableViewController {
     func initialise(withTheme theme: Theme) {
         tabBar.initialise(withTheme: theme)
@@ -103,7 +126,7 @@ extension UITabBarController: ThemeableViewController {
 extension UIToolbar {
     func initialise(withTheme theme: Theme) {
         backgroundColor = theme.viewBackgroundColor
-        subviews.forEach{($0 as? UILabel)?.textColor = theme.tintColor}
+        subviews.forEach{($0 as? UIButton)?.tintColor = appDelegate.window!.tintColor}
     }
 }
 
@@ -153,8 +176,7 @@ class ThemedNavigationController: UINavigationController, ThemeableViewControlle
 
 extension UINavigationBar {
     func initialise(withTheme theme: Theme) {
-        backgroundColor = theme.navigationBarColor
-        barTintColor = theme.navigationBarColor
+        barTintColor = theme.barTintColor
         titleTextAttributes = [NSAttributedStringKey.foregroundColor: theme.titleTextColor]
         if #available(iOS 11.0, *) {
             largeTitleTextAttributes = [NSAttributedStringKey.foregroundColor: theme.titleTextColor]
@@ -172,11 +194,12 @@ extension UISearchBar {
 extension UITableView {
     func initialise(withTheme theme: Theme) {
         backgroundColor = theme.tableBackgroundColor
-        //separatorColor = theme.cellBackgroundColor
+        separatorColor = theme.tableSeparatorColor
+        sectionIndexColor = theme.subtitleTextColor
         if let searchBar = tableHeaderView as? UISearchBar {
             searchBar.barStyle = theme == .normal ? .default : .black
             searchBar.backgroundColor = theme.tableBackgroundColor
-            searchBar.barTintColor = theme.tableBackgroundColor
+            searchBar.barTintColor = theme.barTintColor
             searchBar.keyboardAppearance = theme.keyboardAppearance
         }
     }
@@ -184,7 +207,7 @@ extension UITableView {
 
 extension UITabBar {
     func initialise(withTheme theme: Theme) {
-        barTintColor = theme.navigationBarColor
+        barTintColor = theme.barTintColor
     }
 }
 
@@ -205,6 +228,7 @@ extension DateCell {
 extension ButtonCellOf {
     func initialise(withTheme theme: Theme) {
         backgroundColor = theme.cellBackgroundColor
+        selectedBackgroundColor = theme.tableSeparatorColor
     }
 }
 
@@ -226,12 +250,20 @@ extension TextAreaCell {
     }
 }
 
-extension TextCell {
+extension TextRow {
+    static func initialise(_ textCell: TextCell, _ textRow: TextRow) {
+        let theme = UserSettings.theme
+        textCell.backgroundColor = theme.cellBackgroundColor
+        textCell.textField.textColor = theme.titleTextColor
+        textCell.textField.keyboardAppearance = theme.keyboardAppearance
+        textCell.textLabel?.textColor = theme.titleTextColor
+        textRow.placeholderColor = theme.placeholderTextColor
+    }
+}
+
+extension SegmentedCell {
     func initialise(withTheme theme: Theme) {
         backgroundColor = theme.cellBackgroundColor
-        textField.textColor = theme.titleTextColor
-        textField.keyboardAppearance = theme.keyboardAppearance
-        textLabel?.textColor = theme.titleTextColor
     }
 }
 
@@ -249,14 +281,10 @@ extension ImageCell {
     }
 }
 
-final class ThemedListCheckRow<T>: Row<ListCheckCell<T>>, SelectableRowType, RowType where T: Equatable {
-    public var selectableValue: T?
-    required public init(tag: String?) {
-        super.init(tag: tag)
-        displayValueFor = nil
-        self.cellUpdate{ cell,_ in
-            cell.backgroundColor = UserSettings.theme.cellBackgroundColor
-            cell.textLabel?.textColor = UserSettings.theme.titleTextColor
-        }
+extension ListCheckCell {
+    func initialise(withTheme theme: Theme) {
+        backgroundColor = theme.cellBackgroundColor
+        textLabel?.textColor = theme.titleTextColor
+        selectedBackgroundColor = theme.tableSeparatorColor
     }
 }

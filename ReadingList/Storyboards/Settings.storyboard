@@ -35,7 +35,7 @@
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <segue destination="vFY-Rx-QFE" kind="relationship" relationship="masterViewController" id="9f9-tE-EKG"/>
-                        <segue destination="XoB-Bs-feL" kind="relationship" relationship="detailViewController" id="7WE-uk-AFp"/>
+                        <segue destination="LPf-H4-Q9r" kind="relationship" relationship="detailViewController" id="EJ8-E3-EtX"/>
                     </connections>
                 </splitViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="s52-yL-y65" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -214,7 +214,7 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <segue destination="LPf-H4-Q9r" kind="showDetail" id="R0B-Tl-MCg"/>
+                                            <segue destination="LPf-H4-Q9r" kind="showDetail" identifier="showDetail" id="R0B-Tl-MCg"/>
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" textLabel="Dcf-g1-XpQ" imageView="N18-C6-xrw" style="IBUITableViewCellStyleDefault" id="Lv1-0L-flj">
@@ -510,7 +510,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="H4I-Uv-8g9" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1958" y="395"/>
+            <point key="canvasLocation" x="-798" y="1272"/>
         </scene>
         <!--General-->
         <scene sceneID="a85-mC-3xr">
@@ -558,7 +558,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Heb-lV-f59" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1106" y="395"/>
+            <point key="canvasLocation" x="-1650" y="1272"/>
         </scene>
         <!--Attributions-->
         <scene sceneID="Iwb-BL-imb">
@@ -824,39 +824,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="PFT-Dr-5c1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2806.875" y="394.01408450704224"/>
-        </scene>
-        <!--Themed Navigation Controller-->
-        <scene sceneID="CtC-tM-XIi">
-            <objects>
-                <navigationController id="XoB-Bs-feL" customClass="ThemedNavigationController" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="67b-KJ-LNS">
-                        <rect key="frame" x="0.0" y="44" width="375" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <connections>
-                        <segue destination="R40-rz-b0a" kind="relationship" relationship="rootViewController" id="5Lb-Q4-X2j"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="2jX-7G-r50" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-1479" y="1237"/>
-        </scene>
-        <!--View Controller-->
-        <scene sceneID="dJr-ds-vzb">
-            <objects>
-                <viewController id="R40-rz-b0a" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="Xso-gI-T42">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <viewLayoutGuide key="safeArea" id="e72-Qv-VQT"/>
-                    </view>
-                    <navigationItem key="navigationItem" id="yah-vo-OgJ"/>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="K8n-3X-BHe" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-638" y="1237"/>
+            <point key="canvasLocation" x="50" y="1271"/>
         </scene>
         <!--Themed Navigation Controller-->
         <scene sceneID="9s1-BK-JI2">
@@ -872,7 +840,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2P9-px-VDD" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1095" y="1115"/>
+            <point key="canvasLocation" x="1302" y="395"/>
         </scene>
         <!--Tip-->
         <scene sceneID="IIr-lP-zEd">
@@ -953,7 +921,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Zwj-Bm-gcp" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1938.75" y="1122.8873239436621"/>
+            <point key="canvasLocation" x="2146" y="403"/>
         </scene>
         <!--Themed Navigation Controller-->
         <scene sceneID="kP2-CJ-MV1">
@@ -1004,4 +972,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         <image name="settings" width="25" height="25"/>
         <image name="settings-filled" width="25" height="25"/>
     </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="R0B-Tl-MCg"/>
+    </inferredMetricsTieBreakers>
 </document>

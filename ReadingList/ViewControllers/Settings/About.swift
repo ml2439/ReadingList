@@ -18,10 +18,10 @@ class About: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard indexPath.section == 0 else { return }
         switch indexPath.row {
-        case 0: presentSafariViewController(url: "https://www.readinglistapp.xyz")
+        case 0: presentThemedSafariViewController(url: "https://www.readinglistapp.xyz")
         case 1: share(indexPath)
         case 2: contact()
-        case 3: presentSafariViewController(url: "https://github.com/AndrewBennet/readinglist")
+        case 3: presentThemedSafariViewController(url: "https://github.com/AndrewBennet/readinglist")
         default: return
         }
         tableView.deselectRow(at: indexPath, animated: true)
@@ -85,27 +85,25 @@ class Attributions: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
-        guard indexPath.section == 0 else { return cell }
-        
         let theme = UserSettings.theme
-        cell.contentView.subviews.compactMap({$0 as? UILabel}).forEach{
-            $0.textColor = theme.titleTextColor
+        cell.defaultInitialise(withTheme: theme)
+        cell.contentView.subviews.forEach{
+            guard let label = $0 as? UILabel else { return }
+            label.textColor = theme.titleTextColor
         }
-        cell.backgroundColor = theme.cellBackgroundColor
-        cell.selectedBackgroundView = UIView(backgroundColor: .lightGray)
         return cell
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard indexPath.section == 0 else { return }
         switch indexPath.row {
-        case 0: presentSafariViewController(url: "https://icons8.com")
-        case 1: presentSafariViewController(url: "https://github.com/xmartlabs/Eureka")
-        case 2: presentSafariViewController(url: "https://github.com/dzenbot/DZNEmptyDataSet")
-        case 3: presentSafariViewController(url: "https://github.com/SwiftyJSON/SwiftyJSON")
-        case 4: presentSafariViewController(url: "https://github.com/SVProgressHUD/SVProgressHUD")
-        case 5: presentSafariViewController(url: "https://github.com/davedelong/CHCSVParser")
-        case 6: presentSafariViewController(url: "https://github.com/bizz84/SwiftyStoreKit")
+        case 0: presentThemedSafariViewController(url: "https://icons8.com")
+        case 1: presentThemedSafariViewController(url: "https://github.com/xmartlabs/Eureka")
+        case 2: presentThemedSafariViewController(url: "https://github.com/dzenbot/DZNEmptyDataSet")
+        case 3: presentThemedSafariViewController(url: "https://github.com/SwiftyJSON/SwiftyJSON")
+        case 4: presentThemedSafariViewController(url: "https://github.com/SVProgressHUD/SVProgressHUD")
+        case 5: presentThemedSafariViewController(url: "https://github.com/davedelong/CHCSVParser")
+        case 6: presentThemedSafariViewController(url: "https://github.com/bizz84/SwiftyStoreKit")
         default: return
         }
         tableView.deselectRow(at: indexPath, animated: true)

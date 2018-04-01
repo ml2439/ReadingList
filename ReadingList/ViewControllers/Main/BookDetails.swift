@@ -129,7 +129,6 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationController!.view.backgroundColor = .white
         
         // Initialise the view so that by default a blank page is shown.
         // This is required for starting the app in split-screen mode, where this view is
@@ -243,12 +242,12 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         let refURL = "https://www.readinglistapp.xyz"
         let localisedAffiliateAmazonSearch = "http://lnks.io/r.php?Conf_Source=API&refURL=\(refURL.urlEncoding())&destURL=\(amazonSearch.urlEncoding())&Amzn_AfiliateID_GB=readinglistio-21&Amzn_AfiliateID_US=readinglistio-20"
         UserEngagement.logEvent(.viewOnAmazon)
-        presentSafariViewController(url: localisedAffiliateAmazonSearch)
+        presentThemedSafariViewController(url: localisedAffiliateAmazonSearch)
     }
     
     @objc func googleBooksButtonPressed() {
         guard let googleBooksId = book?.googleBooksId else { return }
-        presentSafariViewController(url: GoogleBooks.Request.webpage(googleBooksId).url)
+        presentThemedSafariViewController(url: GoogleBooks.Request.webpage(googleBooksId).url)
     }
     
     @IBAction func addToList(_ sender: Any) {
@@ -320,7 +319,8 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
 extension BookDetails: ThemeableViewController {
     func initialise(withTheme theme: Theme) {
         view.backgroundColor = theme.viewBackgroundColor
-        
+        navigationController?.view.backgroundColor = theme.viewBackgroundColor
+        navigationController?.navigationBar.initialise(withTheme: theme)
         (navigationItem.titleView as! UINavigationBarLabel).initialise(fromTheme: theme)
         titleAuthorHeadings[0].textColor = theme.titleTextColor
         titleAuthorHeadings[1].textColor = theme.subtitleTextColor
@@ -331,7 +331,7 @@ extension BookDetails: ThemeableViewController {
         titles.forEach{$0.textColor = theme.titleTextColor}
         tableSubHeadings.forEach{$0.textColor = theme.subtitleTextColor}
         tableVaules.forEach{$0.textColor = theme.titleTextColor}
-        separatorLines.forEach{$0.backgroundColor = theme.placeholderTextColor}
+        separatorLines.forEach{$0.backgroundColor = theme.tableSeparatorColor}
         
         googleBooks.textColor = appDelegate.window!.tintColor
         amazon.textColor = appDelegate.window!.tintColor

@@ -22,6 +22,14 @@ class DataVC: UITableViewController {
         }
     }
     
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
+        let theme = UserSettings.theme
+        cell.backgroundColor = theme.cellBackgroundColor
+        cell.selectedBackgroundColor = theme.tableSeparatorColor
+        return cell
+    }
+    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch (indexPath.section, indexPath.row) {
         case (0, 0): exportData(presentingIndexPath: indexPath)

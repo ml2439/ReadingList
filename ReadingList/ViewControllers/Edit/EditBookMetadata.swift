@@ -55,10 +55,9 @@ class EditBookMetadata: FormViewController {
                 $0.cell.textField.autocapitalizationType = .words
                 $0.placeholder = "Title"
                 $0.value = book.title
-                $0.cellUpdate{ cell,_ in
-                    cell.initialise(withTheme: UserSettings.theme)
-                }
+                $0.cellUpdate(TextRow.initialise)
                 $0.onChange{book.title = $0.value ?? ""}
+                $0.placeholderColor = UserSettings.theme.placeholderTextColor // cell update is not updating the cell on load
             }
             
             +++ AuthorSection(book: book, navigationController: navigationController!)
@@ -69,9 +68,8 @@ class EditBookMetadata: FormViewController {
                 $0.value = book.isbn13
                 $0.disabled = Condition(booleanLiteral: true)
                 $0.hidden = Condition(booleanLiteral: isAddingNewBook || book.isbn13 == nil)
-                $0.cellUpdate{ cell,_ in
-                    cell.initialise(withTheme: UserSettings.theme)
-                }
+                $0.cellUpdate(TextRow.initialise)
+                $0.placeholderColor = UserSettings.theme.placeholderTextColor // cell update is not updating the cell on load
             }
             <<< IntRow() {
                 $0.title = "Page Count"
@@ -362,16 +360,14 @@ class AddAuthorForm: FormViewController {
         form +++ Section(header: "Author Name", footer: "")
             <<< TextRow(firstNamesRow) {
                 $0.placeholder = "First Name(s)"
-                $0.cellUpdate{ cell,row in
-                    cell.initialise(withTheme: UserSettings.theme)
-                }
+                $0.cellUpdate(TextRow.initialise)
+                $0.placeholderColor = UserSettings.theme.placeholderTextColor // cell update is not updating the cell on load
                 $0.cell.textField.autocapitalizationType = .words
             }
             <<< TextRow(lastNameRow) {
                 $0.placeholder = "Last Name"
-                $0.cellUpdate{ cell,row in
-                    cell.initialise(withTheme: UserSettings.theme)
-                }
+                $0.cellUpdate(TextRow.initialise)
+                $0.placeholderColor = UserSettings.theme.placeholderTextColor // cell update is not updating the cell on load
                 $0.cell.textField.autocapitalizationType = .words
             }
         

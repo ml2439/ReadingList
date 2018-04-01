@@ -21,15 +21,18 @@ class General: FormViewController {
                 }
         }
         
-        func themeRow(_ theme: Theme, name: String) -> ThemedListCheckRow<Theme> {
-            return ThemedListCheckRow<Theme>() {
+        func themeRow(_ theme: Theme, name: String) -> ListCheckRow<Theme> {
+            return ListCheckRow<Theme>() {
                 $0.title = name
                 $0.selectableValue = theme
                 $0.value = UserSettings.theme == theme ? theme : nil
+                $0.cellUpdate{cell,_ in
+                    cell.initialise(withTheme: UserSettings.theme)
+                }
             }
         }
         
-        form +++ SelectableSection<ThemedListCheckRow<Theme>>(header: "Theme", footer: "Change the appearance of Reading List.", selectionType: .singleSelection(enableDeselection: false)) {
+        form +++ SelectableSection<ListCheckRow<Theme>>(header: "Theme", footer: "Change the appearance of Reading List.", selectionType: .singleSelection(enableDeselection: false)) {
                     $0.onSelectSelectableRow = { _,row in
                         UserSettings.theme = row.value!
                         NotificationCenter.default.post(name: Notification.Name.ThemeSettingChanged, object: nil)
