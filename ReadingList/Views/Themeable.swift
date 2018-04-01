@@ -15,23 +15,12 @@ extension Theme {
         return self == .normal ? .default : .dark
     }
     
-    var globalTintColor: UIColor {
-        return .buttonBlue
-    }
-    
-    var barTintColor: UIColor {
-        switch self {
-        case .normal:
-            return .white//UIColor(displayP3Red: 0, green: 0.478431, blue: 1, alpha: 1)
-        case .dark:
-            return UIColor(fromHex: 0x2d3038)
-        case .black:
-            return .black
-        }
+    var barStyle: UIBarStyle {
+        return self == .normal ? .default : .black
     }
     
     var placeholderTextColor: UIColor {
-        return tableSeparatorColor // TODO: This is too dark
+        return subtitleTextColor // TODO: This might be too light
     }
     
     var titleTextColor: UIColor {
@@ -54,20 +43,8 @@ extension Theme {
         }
     }
     
-    var tableBackgroundColor: UIColor {
-        switch self {
-        case .normal: return .groupTableViewBackground
-        case .dark: return UIColor(fromHex: 0x2d3038)
-        case .black: return .black
-        }
-    }
-
-    var tableSeparatorColor: UIColor {
-        switch self {
-        case .normal: return UIColor(displayP3Red: 0.783922, green: 0.780392, blue: 0.8, alpha: 1)
-        case .dark: return .darkGray
-        case .black: return .veryDarkGray
-        }
+    var selectedCellBackgroundColor: UIColor {
+        return tableSeparatorColor
     }
     
     var viewBackgroundColor: UIColor {
@@ -77,6 +54,18 @@ extension Theme {
         case .black: return .black
         }
     }
+    
+    var tableBackgroundColor: UIColor {
+        return self == .normal ? .groupTableViewBackground : viewBackgroundColor
+    }
+
+    var tableSeparatorColor: UIColor {
+        switch self {
+        case .normal: return UIColor(displayP3Red: 0.783922, green: 0.780392, blue: 0.8, alpha: 1)
+        case .dark: return .darkGray
+        case .black: return .veryDarkGray
+        }
+    }
 }
 
 extension UITableViewCell {
@@ -84,7 +73,7 @@ extension UITableViewCell {
         backgroundColor = theme.cellBackgroundColor
         textLabel?.textColor = theme.titleTextColor
         detailTextLabel?.textColor = theme.titleTextColor
-        selectedBackgroundColor = theme.tableSeparatorColor
+        selectedBackgroundColor = theme.selectedCellBackgroundColor
     }
 }
 
@@ -112,7 +101,7 @@ extension UIViewController {
     
     func presentThemedSafariViewController(url: URL) {
         let safariVC = SFSafariViewController(url: url)
-        safariVC.preferredBarTintColor = UserSettings.theme.barTintColor
+        safariVC.preferredBarTintColor = navigationController?.navigationBar.barTintColor
         self.present(safariVC, animated: true, completion: nil)
     }
 }
@@ -176,7 +165,7 @@ class ThemedNavigationController: UINavigationController, ThemeableViewControlle
 
 extension UINavigationBar {
     func initialise(withTheme theme: Theme) {
-        barTintColor = theme.barTintColor
+        barStyle = theme.barStyle
         titleTextAttributes = [NSAttributedStringKey.foregroundColor: theme.titleTextColor]
         if #available(iOS 11.0, *) {
             largeTitleTextAttributes = [NSAttributedStringKey.foregroundColor: theme.titleTextColor]
@@ -186,7 +175,8 @@ extension UINavigationBar {
 
 extension UISearchBar {
     func initialise(withTheme theme: Theme) {
-        keyboardAppearance = theme == .normal ? .default : .dark
+        keyboardAppearance = theme.keyboardAppearance
+        barStyle = theme.barStyle
         UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).defaultTextAttributes = [NSAttributedStringKey.foregroundColor.rawValue: theme.titleTextColor]
     }
 }
@@ -197,17 +187,14 @@ extension UITableView {
         separatorColor = theme.tableSeparatorColor
         sectionIndexColor = theme.subtitleTextColor
         if let searchBar = tableHeaderView as? UISearchBar {
-            searchBar.barStyle = theme == .normal ? .default : .black
-            searchBar.backgroundColor = theme.tableBackgroundColor
-            searchBar.barTintColor = theme.barTintColor
-            searchBar.keyboardAppearance = theme.keyboardAppearance
+            searchBar.initialise(withTheme: theme)
         }
     }
 }
 
 extension UITabBar {
     func initialise(withTheme theme: Theme) {
-        barTintColor = theme.barTintColor
+        barStyle = theme.barStyle
     }
 }
 
@@ -221,6 +208,7 @@ extension SwitchCell {
 extension DateCell {
     func initialise(withTheme theme: Theme) {
         backgroundColor = theme.cellBackgroundColor
+        selectedBackgroundColor = theme.selectedCellBackgroundColor
         textLabel?.textColor = theme.titleTextColor
     }
 }
@@ -228,13 +216,14 @@ extension DateCell {
 extension ButtonCellOf {
     func initialise(withTheme theme: Theme) {
         backgroundColor = theme.cellBackgroundColor
-        selectedBackgroundColor = theme.tableSeparatorColor
+        selectedBackgroundColor = theme.selectedCellBackgroundColor
     }
 }
 
 extension IntCell {
     func initialise(withTheme theme: Theme) {
         backgroundColor = theme.cellBackgroundColor
+        selectedBackgroundColor = theme.selectedCellBackgroundColor
         textLabel?.textColor = theme.titleTextColor
         textField.textColor = theme.titleTextColor
         textField.keyboardAppearance = theme.keyboardAppearance
@@ -247,6 +236,7 @@ extension TextAreaCell {
         textView.backgroundColor = theme.cellBackgroundColor
         textView.textColor = theme.titleTextColor
         placeholderLabel?.textColor = theme.placeholderTextColor
+        textView.keyboardAppearance = theme.keyboardAppearance
     }
 }
 
@@ -277,6 +267,7 @@ extension LabelCellOf {
 extension ImageCell {
     func initialise(withTheme theme: Theme) {
         backgroundColor = theme.cellBackgroundColor
+        selectedBackgroundColor = theme.selectedCellBackgroundColor
         textLabel?.textColor = theme.titleTextColor
     }
 }
@@ -285,6 +276,6 @@ extension ListCheckCell {
     func initialise(withTheme theme: Theme) {
         backgroundColor = theme.cellBackgroundColor
         textLabel?.textColor = theme.titleTextColor
-        selectedBackgroundColor = theme.tableSeparatorColor
+        selectedBackgroundColor = theme.selectedCellBackgroundColor
     }
 }

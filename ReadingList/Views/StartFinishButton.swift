@@ -12,7 +12,7 @@ class StartFinishButton: BorderedButton {
         switch state {
         case .start:
             isHidden = false
-            setColor(appDelegate.window!.tintColor)
+            setColor(.buttonBlue)
             setTitle("START", for: .normal)
         case .finish:
             isHidden = false

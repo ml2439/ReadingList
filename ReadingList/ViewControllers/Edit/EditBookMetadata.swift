@@ -419,9 +419,8 @@ class EditBookSubjectsForm: FormViewController {
             $0.addButtonProvider = { _ in
                 return ButtonRow() {
                     $0.title = "Add New Subject"
-                    $0.cellUpdate{ cell,row in
-                        // AddButtonProvider returns a ButtonRow, which is a bit annoying.
-                        cell.backgroundColor = UserSettings.theme.cellBackgroundColor
+                    $0.cellUpdate{cell,_ in
+                        cell.defaultInitialise(withTheme: UserSettings.theme)
                         cell.textLabel?.textAlignment = .left
                     }
                 }
@@ -430,12 +429,14 @@ class EditBookSubjectsForm: FormViewController {
                 return TextRow() {
                     $0.placeholder = "Subject"
                     $0.cell.textField.autocapitalizationType = .words
+                    $0.cellUpdate(TextRow.initialise)
                 }
             }
             for subject in book.subjects.sorted(by: {return $0.name < $1.name}) {
                 $0 <<< TextRow() {
                     $0.value = subject.name
                     $0.cell.textField.autocapitalizationType = .words
+                    $0.cellUpdate(TextRow.initialise)
                 }
             }
         }

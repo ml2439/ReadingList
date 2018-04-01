@@ -128,9 +128,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func initialise(fromTheme theme: Theme) {
         func globalThemeInitialisation() {
-            self.window!.tintColor = UserSettings.theme.globalTintColor
             UIApplication.shared.statusBarStyle = UserSettings.theme == .normal ? .default : .lightContent
         }
+
         globalThemeInitialisation()
         NotificationCenter.default.addObserver(forName: Notification.Name.ThemeSettingChanged, object: nil, queue: nil) {_ in
             globalThemeInitialisation()

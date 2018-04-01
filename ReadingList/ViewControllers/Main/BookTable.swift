@@ -62,6 +62,11 @@ class BookTable: UITableViewController {
         super.viewDidAppear(animated)
     }
     
+    override func initialise(withTheme theme: Theme) {
+        super.initialise(withTheme: theme)
+        tableFooter.textColor = theme.subtitleTextColor
+    }
+    
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         
