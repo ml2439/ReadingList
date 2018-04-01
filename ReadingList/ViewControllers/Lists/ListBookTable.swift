@@ -62,6 +62,7 @@ class ListBookTable: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: BookTableViewCell.self), for: indexPath) as! BookTableViewCell
         let book = list.books.object(at: indexPath.row) as! Book
+        cell.initialise(withTheme: UserSettings.theme)
         cell.configureFrom(book)
         return cell
     }

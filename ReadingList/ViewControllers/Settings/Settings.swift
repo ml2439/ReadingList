@@ -13,14 +13,17 @@ class Settings: UITableViewController {
             monitorLargeTitleSetting()
         }
         monitorThemeSetting()
+        
+        DispatchQueue.main.async {
+            // isSplit does not work correctly before the view is loaded; run this later
+            if self.splitViewController!.isSplit { self.tableView.selectRow(at: IndexPath(row: 0, section: 0), animated: false, scrollPosition: .none) }
+        }
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        // If we are in split mode, the top row should be selected at the start (since its detail view will be shown)
-        if splitViewController!.isSplit && tableView.indexPathForSelectedRow == nil {
-            tableView.selectRow(at: IndexPath(row: 0, section: 0), animated: false, scrollPosition: .none)
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if let selectedIndex = tableView.indexPathForSelectedRow, !splitViewController!.isSplit {
+            tableView.deselectRow(at: selectedIndex, animated: true)
         }
     }
 
@@ -42,7 +45,6 @@ class Settings: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        super.tableView(tableView, didSelectRowAt: indexPath)
         guard indexPath == IndexPath(row: 1, section: 0) else { return }
         UIApplication.shared.open(URL(string: "itms-apps://\(Settings.appStoreAddress)?action=write-review")!, options: [:])
         tableView.deselectRow(at: indexPath, animated: true)

@@ -178,7 +178,7 @@
         <!--Settings-->
         <scene sceneID="zhJ-K2-oBR">
             <objects>
-                <tableViewController id="8gH-PF-s8P" customClass="Settings" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController clearsSelectionOnViewWillAppear="NO" id="8gH-PF-s8P" customClass="Settings" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" sectionFooterHeight="-1" id="ZqF-cs-1ND">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
