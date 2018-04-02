@@ -117,7 +117,6 @@ extension UITabBarController: ThemeableViewController {
 extension UIToolbar {
     func initialise(withTheme theme: Theme) {
         backgroundColor = theme.viewBackgroundColor
-        subviews.forEach{($0 as? UIButton)?.tintColor = appDelegate.window!.tintColor}
     }
 }
 
@@ -131,10 +130,10 @@ extension UITableViewController: ThemeableViewController {
     
     func themeSettingDidChange() {
         // Saw some weird artifacts which went away when the selected rows were deselected
-        if let selectedRows = tableView.indexPathsForSelectedRows {
-            selectedRows.forEach{tableView.deselectRow(at: $0, animated: false)}
-        }
+        let selectedRow = tableView.indexPathForSelectedRow
+        if let selectedRow = selectedRow { tableView.deselectRow(at: selectedRow, animated: false) }
         tableView.reloadData()
+        if let selectedRow = selectedRow { tableView.selectRow(at: selectedRow, animated: false, scrollPosition: .none) }
     }
 }
 
@@ -145,23 +144,58 @@ extension FormViewController: ThemeableViewController {
     
     func themeSettingDidChange() {
         // Saw some weird artifacts which went away when the selected rows were deselected
-        if let selectedRows = tableView.indexPathsForSelectedRows {
-            selectedRows.forEach{tableView.deselectRow(at: $0, animated: false)}
-        }
+        let selectedRow = tableView.indexPathForSelectedRow
+        if let selectedRow = selectedRow { tableView.deselectRow(at: selectedRow, animated: false) }
         tableView.reloadData()
+        if let selectedRow = selectedRow { tableView.selectRow(at: selectedRow, animated: false, scrollPosition: .none) }
     }
 }
 
+class ThemedSplitViewController: UISplitViewController, UISplitViewControllerDelegate, ThemeableViewController {
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        preferredDisplayMode = .allVisible
+        delegate = self
+        monitorThemeSetting()
+    }
+    
+    func splitViewController(_ splitViewController: UISplitViewController, collapseSecondary secondaryViewController: UIViewController, onto primaryViewController: UIViewController) -> Bool {
+        return true
+    }
+    
+    func initialise(withTheme theme: Theme) { }
+    
+    func themeSettingDidChange() {
+        configureBarTranslucency()
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        if previousTraitCollection?.horizontalSizeClass != traitCollection.horizontalSizeClass {
+            configureBarTranslucency()
+        }
+    }
+    
+    func configureBarTranslucency() {
+        // This attempts to allieviate this bug: https://stackoverflow.com/q/32507975/5513562
+        // When the barTintColor is set, the translucency is reduced. This is far easier than dealing with all
+        // the side affects of setting isTranslucent to false.
+        let reduceTranslucency = traitCollection.horizontalSizeClass == .regular
+        masterNavigationController.navigationBar.barTintColor = reduceTranslucency ? UserSettings.theme.viewBackgroundColor : nil
+        tabBarController!.tabBar.barTintColor = reduceTranslucency ? UserSettings.theme.viewBackgroundColor : nil
+    }
+}
 
 class ThemedNavigationController: UINavigationController, ThemeableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         monitorThemeSetting()
     }
-    
+
     func initialise(withTheme theme: Theme) {
-        navigationBar.initialise(withTheme: theme)
-        toolbar?.initialise(withTheme: theme)
+        self.navigationBar.initialise(withTheme: theme)
+        self.toolbar?.initialise(withTheme: theme)
     }
 }
 

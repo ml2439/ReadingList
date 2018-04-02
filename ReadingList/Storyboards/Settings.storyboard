@@ -30,7 +30,7 @@
         <!--Settings-->
         <scene sceneID="ixr-i2-ceR">
             <objects>
-                <splitViewController id="DTX-v0-0zO" customClass="AllVisibleSplitViewController" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
+                <splitViewController id="DTX-v0-0zO" customClass="ThemedSplitViewController" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" tag="3" title="Settings" image="settings" selectedImage="settings-filled" id="ykJ-TP-cgy"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
@@ -973,6 +973,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         <image name="settings-filled" width="25" height="25"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="R0B-Tl-MCg"/>
+        <segue reference="EJ8-E3-EtX"/>
     </inferredMetricsTieBreakers>
 </document>

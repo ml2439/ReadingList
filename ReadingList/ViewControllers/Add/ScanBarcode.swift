@@ -2,7 +2,7 @@ import UIKit
 import AVFoundation
 import SVProgressHUD
 
-class NonRotatingNavigationController: UINavigationController {
+class NonRotatingNavigationController: ThemedNavigationController {
     override var shouldAutorotate: Bool {
         // Correctly laying out the preview layer during interface rotation is tricky. Just disable it.
         get { return false }

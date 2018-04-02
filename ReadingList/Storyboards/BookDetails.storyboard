@@ -875,10 +875,10 @@
             </objects>
             <point key="canvasLocation" x="-3697.5" y="1645.7746478873239"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--Themed Navigation Controller-->
         <scene sceneID="uo9-El-qJ2">
             <objects>
-                <navigationController id="n9u-1T-KRj" sceneMemberID="viewController">
+                <navigationController id="n9u-1T-KRj" customClass="ThemedNavigationController" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="7qb-2f-sZb">
                         <rect key="frame" x="0.0" y="20" width="768" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>

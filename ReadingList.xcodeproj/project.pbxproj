@@ -13,7 +13,6 @@
 		1C0DC738204B119E0044B377 /* DebugData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0DC737204B119E0044B377 /* DebugData.swift */; };
 		1C1C887F1FE05A9D00A20402 /* Tip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C1C887E1FE05A9D00A20402 /* Tip.swift */; };
 		1C22D4A6202BBDC0004264B4 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C22D4A5202BBDC0004264B4 /* StoreKit.framework */; };
-		1C3840B220595BF900FBCC74 /* AllVisibleSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C3840B120595BF900FBCC74 /* AllVisibleSplitViewController.swift */; };
 		1C395448202F7966007ACCB1 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C395447202F7966007ACCB1 /* Extensions.swift */; };
 		1C39544A202F948B007ACCB1 /* Subject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C395449202F948B007ACCB1 /* Subject.swift */; };
 		1C39544C202F9698007ACCB1 /* UserSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C39544B202F9698007ACCB1 /* UserSetting.swift */; };
@@ -140,7 +139,6 @@
 		1C0DC737204B119E0044B377 /* DebugData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugData.swift; sourceTree = "<group>"; };
 		1C1C887E1FE05A9D00A20402 /* Tip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tip.swift; sourceTree = "<group>"; };
 		1C22D4A5202BBDC0004264B4 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
-		1C3840B120595BF900FBCC74 /* AllVisibleSplitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllVisibleSplitViewController.swift; sourceTree = "<group>"; };
 		1C395447202F7966007ACCB1 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		1C395449202F948B007ACCB1 /* Subject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subject.swift; sourceTree = "<group>"; };
 		1C39544B202F9698007ACCB1 /* UserSetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSetting.swift; sourceTree = "<group>"; };
@@ -439,7 +437,6 @@
 				1CD1D2C3202BCD6300ACA5D9 /* ClearToWhiteHorizontalGradientView.swift */,
 				1C66927E20384B91001ED046 /* TableViewFetchedResultsControllerDelegate.swift */,
 				1CC440C0204F5E2F00906120 /* TextBoxAlertController.swift */,
-				1C3840B120595BF900FBCC74 /* AllVisibleSplitViewController.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -1091,7 +1088,6 @@
 				1CD1D2C2202BCCF400ACA5D9 /* NavigationBarLabel.swift in Sources */,
 				1C6EA18C1FFAEBCC0013EE5C /* BookDetails.swift in Sources */,
 				1C39544E2030A4F0007ACCB1 /* EditBookMetadata.swift in Sources */,
-				1C3840B220595BF900FBCC74 /* AllVisibleSplitViewController.swift in Sources */,
 				1C64AB222041E7E40089CD57 /* BookMapping_8_9.swift in Sources */,
 				1C5180AC20544427008C6EA4 /* BookMapping_10_11.xcmappingmodel in Sources */,
 				1C5CDF2920113B3300A757A3 /* AddToList.swift in Sources */,
