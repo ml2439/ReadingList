@@ -72,7 +72,7 @@
 		1CD1D2BE202BCC7500ACA5D9 /* HairlineConstraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD1D2BD202BCC7500ACA5D9 /* HairlineConstraint.swift */; };
 		1CD1D2C0202BCCA000ACA5D9 /* BorderedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD1D2BF202BCCA000ACA5D9 /* BorderedButton.swift */; };
 		1CD1D2C2202BCCF400ACA5D9 /* NavigationBarLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD1D2C1202BCCF400ACA5D9 /* NavigationBarLabel.swift */; };
-		1CD1D2C4202BCD6300ACA5D9 /* ClearToWhiteHorizontalGradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD1D2C3202BCD6300ACA5D9 /* ClearToWhiteHorizontalGradientView.swift */; };
+		1CD1D2C4202BCD6300ACA5D9 /* HorizontalGradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD1D2C3202BCD6300ACA5D9 /* HorizontalGradientView.swift */; };
 		1CD83C3E1F9BC0BA00E88E31 /* XibView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD83C3D1F9BC0BA00E88E31 /* XibView.swift */; };
 		1CDD535E1FA6609600A5ED66 /* SettingsHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD535D1FA6609600A5ED66 /* SettingsHeader.swift */; };
 		1CDD53601FA7B38000A5ED66 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1CDD535F1FA7B38000A5ED66 /* Assets.xcassets */; };
@@ -209,7 +209,7 @@
 		1CD1D2BD202BCC7500ACA5D9 /* HairlineConstraint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HairlineConstraint.swift; sourceTree = "<group>"; };
 		1CD1D2BF202BCCA000ACA5D9 /* BorderedButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BorderedButton.swift; sourceTree = "<group>"; };
 		1CD1D2C1202BCCF400ACA5D9 /* NavigationBarLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBarLabel.swift; sourceTree = "<group>"; };
-		1CD1D2C3202BCD6300ACA5D9 /* ClearToWhiteHorizontalGradientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearToWhiteHorizontalGradientView.swift; sourceTree = "<group>"; };
+		1CD1D2C3202BCD6300ACA5D9 /* HorizontalGradientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HorizontalGradientView.swift; sourceTree = "<group>"; };
 		1CD83C3D1F9BC0BA00E88E31 /* XibView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XibView.swift; sourceTree = "<group>"; };
 		1CDD535D1FA6609600A5ED66 /* SettingsHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsHeader.swift; sourceTree = "<group>"; };
 		1CDD535F1FA7B38000A5ED66 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -434,7 +434,7 @@
 				1CD1D2BD202BCC7500ACA5D9 /* HairlineConstraint.swift */,
 				1CD1D2BF202BCCA000ACA5D9 /* BorderedButton.swift */,
 				1CD1D2C1202BCCF400ACA5D9 /* NavigationBarLabel.swift */,
-				1CD1D2C3202BCD6300ACA5D9 /* ClearToWhiteHorizontalGradientView.swift */,
+				1CD1D2C3202BCD6300ACA5D9 /* HorizontalGradientView.swift */,
 				1C66927E20384B91001ED046 /* TableViewFetchedResultsControllerDelegate.swift */,
 				1CC440C0204F5E2F00906120 /* TextBoxAlertController.swift */,
 			);
@@ -1138,7 +1138,7 @@
 				1C669281203A26F4001ED046 /* CSVParser.swift in Sources */,
 				1CD1D2C0202BCCA000ACA5D9 /* BorderedButton.swift in Sources */,
 				1CD1D2BA202BCAA500ACA5D9 /* NoCancelSearchBar.swift in Sources */,
-				1CD1D2C4202BCD6300ACA5D9 /* ClearToWhiteHorizontalGradientView.swift in Sources */,
+				1CD1D2C4202BCD6300ACA5D9 /* HorizontalGradientView.swift in Sources */,
 				1C87F5BA1FAE4AF500E44043 /* General.swift in Sources */,
 				1C0DC736204B0A230044B377 /* BookReadState.swift in Sources */,
 				1CD1124F202DED3600BE3E1D /* Author.swift in Sources */,

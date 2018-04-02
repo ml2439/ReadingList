@@ -43,6 +43,12 @@ extension UIView {
             return views.filter{ $0 != self }
         }
     }
+    
+    func removeAllSubviews() {
+        for view in subviews {
+            view.removeFromSuperview()
+        }
+    }
 }
 
 
@@ -250,14 +256,6 @@ extension UIScrollView {
             else {
                 return contentInset
             }
-        }
-    }
-}
-
-extension UIStackView {
-    func removeAllSubviews() {
-        for view in arrangedSubviews {
-            self.removeArrangedSubview(view)
         }
     }
 }
