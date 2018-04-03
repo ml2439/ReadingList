@@ -34,7 +34,6 @@ class General: UITableViewController {
         }
         else {
             // If this is being turned off, let's try to persuade them to turn it back on
-            UserEngagement.logEvent(.disableCrashReports)
             persuadeToKeepOn(title: "Turn off crash reports?", message: "Anonymous crash reports alert me if this app crashes, to help me fix bugs. The information never include any information about your books. Are you sure you want to turn this off?") { result in
                 if result {
                     UserSettings.sendCrashReports.value = true
