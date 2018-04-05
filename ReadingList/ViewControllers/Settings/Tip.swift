@@ -1,7 +1,7 @@
 import SwiftyStoreKit
 import StoreKit
 
-class Tip: UIViewController {
+class Tip: UIViewController, ThemeableViewController {
     static let smallTipId = "smalltip"
     static let mediumTipId = "mediumtip"
     static let largeTipId = "largetip"
@@ -25,6 +25,8 @@ class Tip: UIViewController {
             vc.tipProducts = results.retrievedProducts
             vc.displayTipPrices()
         }
+        
+        monitorThemeSetting()
     }
     
     func displayTipPrices() {
@@ -80,5 +82,10 @@ class Tip: UIViewController {
                 appDelegate.window?.rootViewController?.present(alert, animated: true)
             }
         }
+    }
+    
+    func initialise(withTheme theme: Theme) {
+        view.backgroundColor = theme.viewBackgroundColor
+        explanationLabel.textColor = theme.titleTextColor
     }
 }

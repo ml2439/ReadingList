@@ -1,0 +1,123 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:ios)
+
+platform :ios do
+
+  desc "Run tests, on iPhone 7 (iOS 10), iPhone 8 (iOS 11) and iPad Pro (iOS 11)"
+  lane :test do
+    # run tests synchronously as a bug in xcpretty will hide test results when multiple devices are used
+    scan(scheme: "ReadingList", devices: ["iPhone 7 (10.3.1)"])
+    scan(scheme: "ReadingList", devices: ["iPhone 8"], test_without_building: true)
+    scan(scheme: "ReadingList", devices: ["iPad Pro (10.5-inch) (11.3)"], test_without_building: true)
+  end
+
+  desc "Increments the build number, commits with a special commit message to trigger CI deploy"
+  lane :beta do
+    ensure_git_status_clean
+    build_number = increment_build_number
+    commit_version_bump(
+      message: "[DEPLOY] Increment to build " + build_number
+    )
+    sh("git push")
+  end
+
+  desc "Push a new beta build to TestFlight (not externally released)"
+  lane :deploy do
+    if is_ci
+      configure_keychain
+    end
+    archive
+    upload_to_testflight(skip_submission: true, skip_waiting_for_build_processing: true)
+  end
+
+  lane :archive do
+    build_app(workspace: "ReadingList.xcworkspace", scheme: "ReadingList")
+  end
+
+  lane :publish do
+    snaps
+    current_build_number = get_build_number
+    current_version = get_version_number(target: "ReadingList")
+    deliver(skip_metadata: true, build_number: current_build_number, app_version: current_version)
+  end
+
+  desc "Create framed screenshots for a range of devices"
+  lane :snaps do
+    snapshot
+    frameit(white: true, path: './fastlane/screenshots')
+  end
+
+  desc "Download DSYMs from iTunes and upload them to Crashlytics"
+  lane :dsyms do
+    download_dsyms(version: "latest")
+    upload_symbols_to_crashlytics
+    clean_build_artifacts
+  end
+
+  private_lane :configure_keychain do
+    # From https://docs.travis-ci.com/user/common-build-problems/#Mac%3A-macOS-Sierra-(10.12)-Code-Signing-Errors
+    create_keychain(
+      name: 'tmp_ci_keychain',
+      password: 'tmp_ci_keychain_password',
+      default_keychain: true,
+      unlock: true,
+      timeout: 3600,
+      add_to_search_list: true
+    )
+    sh("git config --global credential.helper osxkeychain")
+    sh("git clone https://andrew_bennet:$GIT_CERTS_PASSWORD@bitbucket.org/andrew_bennet/certificates.git")
+    sh("rm -rf certificates")
+    match(
+      type: "appstore",
+      keychain_name: 'tmp_ci_keychain',
+      keychain_password: 'tmp_ci_keychain_password',
+      readonly: true
+    )
+  end
+
+  private_lane :reset_build_number do
+    increment_build_number(build_number: "1")
+  end
+
+  private_lane :commit_detailed_version_bump do
+    version_number = get_version_number(target: "ReadingList")
+    commit_version_bump(
+      message: "Increment to version " + version_number
+    )
+  end
+
+  desc "Create a commit incrementing the patch number"
+  lane :patch do
+    ensure_git_status_clean
+    reset_build_number
+    increment_version_number(bump_type: "patch")
+    commit_detailed_version_bump
+  end
+
+  desc "Create a commit incrementing the minor version number"
+  lane :minor do
+    ensure_git_status_clean
+    reset_build_number
+    increment_version_number(bump_type: "minor")
+    commit_detailed_version_bump
+  end
+
+  desc "Create a commit incrementing the major version number"
+  lane :major do
+    ensure_git_status_clean
+    reset_build_number
+    increment_version_number(bump_type: "major")
+    commit_detailed_version_bump
+  end
+
+end

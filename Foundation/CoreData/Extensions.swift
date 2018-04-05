@@ -132,7 +132,7 @@ extension NSError {
     func getCoreDataSaveErrorDescription() -> String {
         if self.code == NSValidationMultipleErrorsError {
             guard let errors = self.userInfo[NSDetailedErrorsKey] as? [NSError] else { return "\"Multiple errors\" error without detail" }
-            return errors.flatMap{$0.getCoreDataSaveErrorDescription()}.joined(separator: "; ")
+            return errors.compactMap{$0.getCoreDataSaveErrorDescription()}.joined(separator: "; ")
         }
         
         let entityName = (self.userInfo["NSValidationErrorObject"] as? NSManagedObject)?.entity.name ?? "Unknown"

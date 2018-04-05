@@ -1,27 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="n9u-1T-KRj">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="n9u-1T-KRj">
     <device id="ipad9_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
-    <customFonts key="customFonts">
-        <array key="GillSans.ttc">
-            <string>GillSans</string>
-            <string>GillSans-SemiBold</string>
-        </array>
-    </customFonts>
     <scenes>
         <!--Book Details-->
         <scene sceneID="leL-vZ-Myr">
             <objects>
-                <viewController id="7uR-tE-cQd" customClass="BookDetails" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="BookDetails" extendedLayoutIncludesOpaqueBars="YES" id="7uR-tE-cQd" customClass="BookDetails" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8ct-o2-5pB">
                         <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -56,47 +50,30 @@
                                                                 </userDefinedRuntimeAttributes>
                                                             </imageView>
                                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="Idg-j1-qMK" userLabel="TitleAndAuthorStack">
-                                                                <rect key="frame" x="140" y="0.0" width="580" height="55.5"/>
+                                                                <rect key="frame" x="140" y="0.0" width="580" height="42"/>
                                                                 <subviews>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="La Belle Sauvage" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KUv-Qb-XLN" userLabel="BookTitle">
+                                                                        <rect key="frame" x="0.0" y="0.0" width="131" height="21.5"/>
                                                                         <fontDescription key="fontDescription" name="GillSans-SemiBold" family="Gill Sans" pointSize="18"/>
                                                                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                                         <nil key="highlightedColor"/>
                                                                         <userDefinedRuntimeAttributes>
                                                                             <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Title2"/>
                                                                         </userDefinedRuntimeAttributes>
-                                                                        <variation key="heightClass=regular-widthClass=regular" hidden="YES"/>
-                                                                    </label>
-                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="La Belle Sauvage" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="C2L-xq-Kuz" userLabel="BookTitleIpad">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="580" height="29"/>
-                                                                        <fontDescription key="fontDescription" name="GillSans-SemiBold" family="Gill Sans" pointSize="24"/>
-                                                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                                                        <nil key="highlightedColor"/>
-                                                                        <variation key="heightClass=compact" hidden="YES"/>
-                                                                        <variation key="widthClass=compact" hidden="YES"/>
                                                                     </label>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Phillip Pullman" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Uvq-kK-HxE" userLabel="Author">
-                                                                        <rect key="frame" x="0.0" y="30" width="0.0" height="0.0"/>
+                                                                        <rect key="frame" x="0.0" y="23.5" width="93" height="18.5"/>
                                                                         <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="16"/>
                                                                         <color key="textColor" red="0.40784313725490196" green="0.40784313725490196" blue="0.40784313725490196" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                         <nil key="highlightedColor"/>
                                                                         <userDefinedRuntimeAttributes>
                                                                             <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Title3"/>
                                                                         </userDefinedRuntimeAttributes>
-                                                                        <variation key="heightClass=regular-widthClass=regular" hidden="YES"/>
-                                                                    </label>
-                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Phillip Pullman" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3hQ-oK-vkl" userLabel="AuthorIpad">
-                                                                        <rect key="frame" x="0.0" y="31" width="580" height="24.5"/>
-                                                                        <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="21"/>
-                                                                        <color key="textColor" red="0.40784313729999999" green="0.40784313729999999" blue="0.40784313729999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                                        <nil key="highlightedColor"/>
-                                                                        <variation key="heightClass=compact" hidden="YES"/>
-                                                                        <variation key="widthClass=compact" hidden="YES"/>
                                                                     </label>
                                                                 </subviews>
                                                             </stackView>
                                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xYF-nW-8G6" customClass="StartFinishButton" customModule="Reading_List" customModuleProvider="target">
-                                                                <rect key="frame" x="140" y="67.5" width="64" height="25"/>
+                                                                <rect key="frame" x="140" y="54" width="64" height="25"/>
                                                                 <constraints>
                                                                     <constraint firstAttribute="width" constant="64" id="Zow-Kx-gcs"/>
                                                                     <constraint firstAttribute="height" constant="25" id="p26-Nk-Wkh"/>
@@ -108,7 +85,6 @@
                                                                 </connections>
                                                             </button>
                                                         </subviews>
-                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <constraints>
                                                             <constraint firstItem="Idg-j1-qMK" firstAttribute="top" secondItem="yhn-N0-bz4" secondAttribute="top" id="Xr2-gy-4Zn"/>
                                                             <constraint firstAttribute="bottom" secondItem="3DD-HK-Aea" secondAttribute="bottom" id="aS8-A4-d2d"/>
@@ -145,12 +121,11 @@
                                                                     <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Subhead"/>
                                                                 </userDefinedRuntimeAttributes>
                                                             </label>
-                                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JlZ-qd-SWF" customClass="ClearToWhiteHorizontalGradientView" customModule="Reading_List" customModuleProvider="target">
+                                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JlZ-qd-SWF" customClass="HorizontalGradientView" customModule="Reading_List" customModuleProvider="target">
                                                                 <rect key="frame" x="621" y="46" width="99" height="15"/>
                                                             </view>
                                                             <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="see more" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DXS-Q8-6wT">
                                                                 <rect key="frame" x="670.5" y="46" width="49.5" height="15"/>
-                                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                 <gestureRecognizers/>
                                                                 <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
                                                                 <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -160,7 +135,6 @@
                                                                 </userDefinedRuntimeAttributes>
                                                             </label>
                                                         </subviews>
-                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <constraints>
                                                             <constraint firstAttribute="bottom" secondItem="JlZ-qd-SWF" secondAttribute="bottom" id="Bg0-gx-8LE"/>
                                                             <constraint firstItem="DXS-Q8-6wT" firstAttribute="bottom" secondItem="3dC-9n-NG8" secondAttribute="bottom" id="ENk-aS-hCb"/>
@@ -205,7 +179,6 @@
                                                                         </connections>
                                                                     </button>
                                                                 </subviews>
-                                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                 <constraints>
                                                                     <constraint firstItem="6j3-21-YIa" firstAttribute="top" secondItem="KgY-4c-9LI" secondAttribute="top" id="4Dp-lj-UhZ"/>
                                                                     <constraint firstItem="6j3-21-YIa" firstAttribute="leading" secondItem="KgY-4c-9LI" secondAttribute="leading" id="CGt-b8-XkV"/>
@@ -247,7 +220,6 @@
                                                                                                 </userDefinedRuntimeAttributes>
                                                                                             </label>
                                                                                         </subviews>
-                                                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                                         <constraints>
                                                                                             <constraint firstItem="P98-Ye-gdn" firstAttribute="leading" secondItem="Vle-Xn-aLf" secondAttribute="leading" id="8wt-Hj-3Dp"/>
                                                                                             <constraint firstItem="P98-Ye-gdn" firstAttribute="top" secondItem="Vle-Xn-aLf" secondAttribute="top" id="Aju-Nj-DNe"/>
@@ -285,7 +257,6 @@
                                                                                                 </userDefinedRuntimeAttributes>
                                                                                             </label>
                                                                                         </subviews>
-                                                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                                         <constraints>
                                                                                             <constraint firstAttribute="bottom" secondItem="6aZ-t0-uXB" secondAttribute="bottom" id="AeA-nE-h7r"/>
                                                                                             <constraint firstAttribute="trailing" secondItem="6aZ-t0-uXB" secondAttribute="trailing" id="EgL-qO-OQv"/>
@@ -323,7 +294,6 @@
                                                                                                 </userDefinedRuntimeAttributes>
                                                                                             </label>
                                                                                         </subviews>
-                                                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                                         <constraints>
                                                                                             <constraint firstItem="UR9-Oj-q8e" firstAttribute="leading" secondItem="aks-wW-Y9j" secondAttribute="leading" id="HSy-bH-6Yq"/>
                                                                                             <constraint firstItem="UR9-Oj-q8e" firstAttribute="top" secondItem="aks-wW-Y9j" secondAttribute="top" id="W8z-1x-Ar4"/>
@@ -361,7 +331,6 @@
                                                                                                 </userDefinedRuntimeAttributes>
                                                                                             </label>
                                                                                         </subviews>
-                                                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                                         <constraints>
                                                                                             <constraint firstItem="mtG-OO-VDn" firstAttribute="top" secondItem="PM7-bq-oyd" secondAttribute="top" id="0cl-JS-puJ"/>
                                                                                             <constraint firstItem="mtG-OO-VDn" firstAttribute="leading" secondItem="PM7-bq-oyd" secondAttribute="leading" id="6do-JZ-nIl"/>
@@ -399,7 +368,6 @@
                                                                                                 </userDefinedRuntimeAttributes>
                                                                                             </label>
                                                                                         </subviews>
-                                                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                                         <constraints>
                                                                                             <constraint firstAttribute="trailing" secondItem="CiQ-Tc-gbA" secondAttribute="trailing" id="JV9-Hi-x92"/>
                                                                                             <constraint firstItem="CiQ-Tc-gbA" firstAttribute="top" secondItem="63S-Ui-SPZ" secondAttribute="top" id="JX4-pK-J4q"/>
@@ -437,7 +405,6 @@
                                                                                                 </userDefinedRuntimeAttributes>
                                                                                             </label>
                                                                                         </subviews>
-                                                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                                         <constraints>
                                                                                             <constraint firstItem="1lx-c8-Jjp" firstAttribute="leading" secondItem="eF0-WB-afL" secondAttribute="leading" id="OS5-9m-BMp"/>
                                                                                             <constraint firstItem="1lx-c8-Jjp" firstAttribute="top" secondItem="eF0-WB-afL" secondAttribute="top" id="PqL-ZR-8el"/>
@@ -460,7 +427,6 @@
                                                                         </constraints>
                                                                     </stackView>
                                                                 </subviews>
-                                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                 <constraints>
                                                                     <constraint firstAttribute="bottom" secondItem="e0v-jg-F1e" secondAttribute="bottom" id="CkU-3m-LAE"/>
                                                                     <constraint firstItem="e0v-jg-F1e" firstAttribute="top" secondItem="gtb-h2-j2n" secondAttribute="top" id="DGM-y4-4DI"/>
@@ -503,7 +469,6 @@
                                                                         </connections>
                                                                     </button>
                                                                 </subviews>
-                                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                 <constraints>
                                                                     <constraint firstAttribute="trailing" secondItem="0uQ-5z-XUr" secondAttribute="trailing" id="E9g-QC-lZH"/>
                                                                     <constraint firstItem="l1w-iY-3mz" firstAttribute="top" secondItem="7hf-Cy-beu" secondAttribute="top" id="OX9-aY-oF6"/>
@@ -545,7 +510,6 @@
                                                                                                 </userDefinedRuntimeAttributes>
                                                                                             </label>
                                                                                         </subviews>
-                                                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                                         <constraints>
                                                                                             <constraint firstAttribute="trailing" secondItem="9xr-Xs-NDK" secondAttribute="trailing" id="CdY-7H-67w"/>
                                                                                             <constraint firstItem="9xr-Xs-NDK" firstAttribute="leading" secondItem="p0y-Zd-LuG" secondAttribute="leading" id="Nim-FN-c5s"/>
@@ -583,7 +547,6 @@
                                                                                                 </userDefinedRuntimeAttributes>
                                                                                             </label>
                                                                                         </subviews>
-                                                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                                         <constraints>
                                                                                             <constraint firstItem="cXF-BD-6WQ" firstAttribute="leading" secondItem="qMZ-YG-lgd" secondAttribute="leading" id="CcF-oP-q1S"/>
                                                                                             <constraint firstAttribute="trailing" secondItem="cXF-BD-6WQ" secondAttribute="trailing" id="j1C-nJ-lBq"/>
@@ -621,7 +584,6 @@
                                                                                                 </userDefinedRuntimeAttributes>
                                                                                             </label>
                                                                                         </subviews>
-                                                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                                         <constraints>
                                                                                             <constraint firstItem="zoz-3C-YU5" firstAttribute="top" secondItem="w9y-V6-uj4" secondAttribute="top" id="41I-e3-bBM"/>
                                                                                             <constraint firstAttribute="bottom" secondItem="zoz-3C-YU5" secondAttribute="bottom" id="Nle-wS-dln"/>
@@ -659,7 +621,6 @@
                                                                                                 </userDefinedRuntimeAttributes>
                                                                                             </label>
                                                                                         </subviews>
-                                                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                                         <constraints>
                                                                                             <constraint firstItem="i89-sm-QGQ" firstAttribute="leading" secondItem="fes-hP-75S" secondAttribute="leading" id="ALb-Y5-clg"/>
                                                                                             <constraint firstAttribute="trailing" secondItem="i89-sm-QGQ" secondAttribute="trailing" id="QIy-ly-Dx6"/>
@@ -715,7 +676,6 @@
                                                                         </subviews>
                                                                     </stackView>
                                                                 </subviews>
-                                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                 <constraints>
                                                                     <constraint firstAttribute="bottom" secondItem="iAd-Xj-pGQ" secondAttribute="bottom" id="3B3-11-fwj"/>
                                                                     <constraint firstItem="iAd-Xj-pGQ" firstAttribute="leading" secondItem="46D-I0-I2V" secondAttribute="leading" constant="16" id="3Xj-bo-l0g"/>
@@ -756,7 +716,6 @@
                                                                         </connections>
                                                                     </button>
                                                                 </subviews>
-                                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                 <constraints>
                                                                     <constraint firstItem="5eR-3P-EAn" firstAttribute="top" secondItem="vmf-Me-0Kl" secondAttribute="top" id="7J8-SQ-ANb"/>
                                                                     <constraint firstItem="N1v-kb-kYE" firstAttribute="top" secondItem="vmf-Me-0Kl" secondAttribute="top" id="Eh5-EI-dZu"/>
@@ -802,7 +761,6 @@
                                                                         </subviews>
                                                                     </stackView>
                                                                 </subviews>
-                                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                 <constraints>
                                                                     <constraint firstAttribute="bottom" secondItem="CrF-bJ-izg" secondAttribute="bottom" id="91b-Mg-YhI"/>
                                                                     <constraint firstItem="CrF-bJ-izg" firstAttribute="top" secondItem="Nrx-DT-QDi" secondAttribute="top" id="BB7-fs-8Pn"/>
@@ -823,7 +781,6 @@
                                                 </constraints>
                                             </stackView>
                                         </subviews>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstAttribute="trailing" secondItem="bhg-kb-dQx" secondAttribute="trailing" constant="18" id="5EX-8r-hL2">
                                                 <variation key="heightClass=regular-widthClass=regular" constant="24"/>
@@ -875,31 +832,53 @@
                         <outlet property="bookDescription" destination="3dC-9n-NG8" id="Dh4-fp-OAy"/>
                         <outlet property="changeReadStateButton" destination="xYF-nW-8G6" id="yN3-e9-bhf"/>
                         <outlet property="cover" destination="3DD-HK-Aea" id="2gC-KM-MtG"/>
-                        <outlet property="dateFinished" destination="UR9-Oj-q8e" id="gfn-3P-uup"/>
-                        <outlet property="dateStarted" destination="6aZ-t0-uXB" id="Bmn-m2-0yr"/>
                         <outlet property="googleBooks" destination="NOF-Yd-fv3" id="AFe-29-WxD"/>
-                        <outlet property="isbn" destination="9xr-Xs-NDK" id="2TO-xe-poV"/>
                         <outlet property="listDetailsView" destination="Nrx-DT-QDi" id="6Ie-UP-eEE"/>
                         <outlet property="listsStack" destination="cqY-si-z1C" id="Heq-fV-egF"/>
-                        <outlet property="noLists" destination="DsS-u3-Ynr" id="MVX-JU-4ZW"/>
-                        <outlet property="notes" destination="1lx-c8-Jjp" id="CUm-uY-Cj2"/>
-                        <outlet property="pageNumber" destination="CiQ-Tc-gbA" id="bOd-zq-r8W"/>
-                        <outlet property="pages" destination="cXF-BD-6WQ" id="JeP-7B-MqX"/>
-                        <outlet property="published" destination="zoz-3C-YU5" id="e9M-31-XBk"/>
-                        <outlet property="readState" destination="P98-Ye-gdn" id="uOF-N4-yBg"/>
-                        <outlet property="readTime" destination="mtG-OO-VDn" id="Tzy-if-zBW"/>
-                        <outlet property="subjects" destination="i89-sm-QGQ" id="Eye-rB-Wrq"/>
-                        <outlet property="titleAndAuthorStack" destination="Idg-j1-qMK" id="ffl-uz-Fpq"/>
+                        <outlet property="noLists" destination="DsS-u3-Ynr" id="0nM-ZB-o3z"/>
+                        <outletCollection property="titles" destination="6j3-21-YIa" collectionClass="NSMutableArray" id="s1a-oj-kE8"/>
+                        <outletCollection property="titles" destination="l1w-iY-3mz" collectionClass="NSMutableArray" id="BwX-0M-btx"/>
+                        <outletCollection property="titles" destination="N1v-kb-kYE" collectionClass="NSMutableArray" id="oOs-D8-XHC"/>
+                        <outletCollection property="titleAuthorHeadings" destination="KUv-Qb-XLN" collectionClass="NSMutableArray" id="1lI-eM-03j"/>
+                        <outletCollection property="titleAuthorHeadings" destination="Uvq-kK-HxE" collectionClass="NSMutableArray" id="S6q-Ta-Gdw"/>
+                        <outletCollection property="tableVaules" destination="P98-Ye-gdn" collectionClass="NSMutableArray" id="3oB-mQ-fdP"/>
+                        <outletCollection property="tableVaules" destination="6aZ-t0-uXB" collectionClass="NSMutableArray" id="Cc3-0d-MJv"/>
+                        <outletCollection property="tableVaules" destination="UR9-Oj-q8e" collectionClass="NSMutableArray" id="cSe-ug-0im"/>
+                        <outletCollection property="tableVaules" destination="mtG-OO-VDn" collectionClass="NSMutableArray" id="w4B-cZ-5oD"/>
+                        <outletCollection property="tableVaules" destination="CiQ-Tc-gbA" collectionClass="NSMutableArray" id="LFM-FK-rOt"/>
+                        <outletCollection property="tableVaules" destination="1lx-c8-Jjp" collectionClass="NSMutableArray" id="p9T-jg-xSl"/>
+                        <outletCollection property="tableVaules" destination="9xr-Xs-NDK" collectionClass="NSMutableArray" id="yyC-68-6fE"/>
+                        <outletCollection property="tableVaules" destination="cXF-BD-6WQ" collectionClass="NSMutableArray" id="JNj-Nc-cMA"/>
+                        <outletCollection property="tableVaules" destination="zoz-3C-YU5" collectionClass="NSMutableArray" id="j5J-st-XRH"/>
+                        <outletCollection property="tableVaules" destination="i89-sm-QGQ" collectionClass="NSMutableArray" id="wrW-JN-x9f"/>
+                        <outletCollection property="tableSubHeadings" destination="hoh-H9-zYK" collectionClass="NSMutableArray" id="L26-fq-w6H"/>
+                        <outletCollection property="tableSubHeadings" destination="XDm-mx-SgA" collectionClass="NSMutableArray" id="7oC-cr-zAb"/>
+                        <outletCollection property="tableSubHeadings" destination="GZy-9B-WfN" collectionClass="NSMutableArray" id="gmc-sh-dIe"/>
+                        <outletCollection property="tableSubHeadings" destination="cah-EW-cNv" collectionClass="NSMutableArray" id="0ou-j3-WHU"/>
+                        <outletCollection property="tableSubHeadings" destination="QwM-ug-90X" collectionClass="NSMutableArray" id="84L-Ce-ewB"/>
+                        <outletCollection property="tableSubHeadings" destination="8HH-zh-C9L" collectionClass="NSMutableArray" id="HTv-3H-C5W"/>
+                        <outletCollection property="tableSubHeadings" destination="HIO-ZT-2aY" collectionClass="NSMutableArray" id="tjG-Ff-miD"/>
+                        <outletCollection property="tableSubHeadings" destination="wgT-jX-mIH" collectionClass="NSMutableArray" id="5tG-gP-CVP"/>
+                        <outletCollection property="tableSubHeadings" destination="5Ob-tP-Vww" collectionClass="NSMutableArray" id="Zeg-zJ-P5f"/>
+                        <outletCollection property="tableSubHeadings" destination="d0F-Jj-4CA" collectionClass="NSMutableArray" id="QEk-fd-2LA"/>
+                        <outletCollection property="tableSubHeadings" destination="ogo-6q-uuN" collectionClass="NSMutableArray" id="45l-MJ-yQt"/>
+                        <outletCollection property="tableSubHeadings" destination="DsS-u3-Ynr" collectionClass="NSMutableArray" id="vCU-YK-BaA"/>
+                        <outletCollection property="separatorLines" destination="ldU-QI-O4q" collectionClass="NSMutableArray" id="3hx-Ah-0aO"/>
+                        <outletCollection property="separatorLines" destination="Vo9-bZ-62H" collectionClass="NSMutableArray" id="PHn-b5-NGn"/>
+                        <outletCollection property="separatorLines" destination="VZx-ih-0hi" collectionClass="NSMutableArray" id="vRp-sO-hn1"/>
+                        <outletCollection property="separatorLines" destination="XWs-sG-Z2Z" collectionClass="NSMutableArray" id="hn0-xs-QXO"/>
+                        <outletCollection property="tableSubHeadings" destination="BdG-SU-Xfn" collectionClass="NSMutableArray" id="Kfg-sE-ULy"/>
+                        <outletCollection property="tableSubHeadings" destination="DsS-u3-Ynr" collectionClass="NSMutableArray" id="Gys-ES-DyJ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5dX-S1-jhF" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-3697.5" y="1645.7746478873239"/>
         </scene>
-        <!--Previewing Navigation Controller-->
+        <!--Themed Navigation Controller-->
         <scene sceneID="uo9-El-qJ2">
             <objects>
-                <navigationController id="n9u-1T-KRj" customClass="PreviewingNavigationController" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
+                <navigationController id="n9u-1T-KRj" customClass="ThemedNavigationController" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="7qb-2f-sZb">
                         <rect key="frame" x="0.0" y="20" width="768" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>

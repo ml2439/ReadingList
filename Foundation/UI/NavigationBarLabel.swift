@@ -14,4 +14,8 @@ class UINavigationBarLabel: UILabel {
         text = title
         sizeToFit()
     }
+    
+    func initialise(fromTheme theme: Theme) {
+        textColor = theme.titleTextColor
+    }
 }

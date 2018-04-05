@@ -3,5 +3,11 @@ xcuserdata
 .DS_Store
 Pods/
 screenshots.html
-.sass-cache/
-_site
+fastlane/report.xml
+fastlane/test_output
+fastlane/metadata
+fastlane/screenshots/*/*.png
+*.ipa
+*.dSYM.zip
+.idea
+fabric

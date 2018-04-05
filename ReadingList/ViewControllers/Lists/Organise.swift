@@ -24,13 +24,11 @@ class Organise: UITableViewController {
         navigationItem.leftBarButtonItem = editButtonItem
         
         NotificationCenter.default.addObserver(self, selector: #selector(refetch), name: NSNotification.Name.PersistentStoreBatchOperationOccurred, object: nil)
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
+
+        monitorThemeSetting()
         if #available(iOS 11.0, *) {
-            navigationController!.navigationBar.prefersLargeTitles = UserSettings.useLargeTitles.value
+            monitorLargeTitleSetting()
         }
-        super.viewWillAppear(animated)
     }
     
     @objc func refetch() {
@@ -51,6 +49,7 @@ class Organise: UITableViewController {
         let list = resultsController.object(at: indexPath)
         cell.textLabel!.text = list.name
         cell.detailTextLabel!.text = "\(list.books.count) book\(list.books.count == 1 ? "" : "s")"
+        cell.defaultInitialise(withTheme: UserSettings.theme)
         return cell
     }
     

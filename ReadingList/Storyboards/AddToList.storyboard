@@ -78,10 +78,10 @@
             </objects>
             <point key="canvasLocation" x="-548" y="-250"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--Themed Navigation Controller-->
         <scene sceneID="Q5b-6l-g1N">
             <objects>
-                <navigationController id="z2k-y0-3FA" sceneMemberID="viewController">
+                <navigationController id="z2k-y0-3FA" customClass="ThemedNavigationController" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="fjP-Uw-ckN">
                         <rect key="frame" x="0.0" y="20" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>

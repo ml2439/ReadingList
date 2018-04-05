@@ -32,7 +32,7 @@
                     <color key="textColor" red="0.40000000000000002" green="0.40000000000000002" blue="0.40000000000000002" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="PoweredByGoogle" translatesAutoresizingMaskIntoConstraints="NO" id="Wvj-q8-JKE">
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="PoweredByGoogle_White" translatesAutoresizingMaskIntoConstraints="NO" id="Wvj-q8-JKE">
                     <rect key="frame" x="115" y="167.5" width="144" height="18"/>
                 </imageView>
             </subviews>
@@ -51,6 +51,7 @@
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>
                 <outlet property="descriptionLabel" destination="MDN-K1-ihI" id="Ywt-Re-giJ"/>
+                <outlet property="poweredByGoogle" destination="Wvj-q8-JKE" id="Tjl-VH-MVc"/>
                 <outlet property="titleLabel" destination="l4p-oO-OTM" id="zc5-1n-OLO"/>
                 <outlet property="topConstraint" destination="IwK-lj-SCz" id="2O7-te-Rba"/>
             </connections>
@@ -58,6 +59,6 @@
         </view>
     </objects>
     <resources>
-        <image name="PoweredByGoogle" width="144" height="18"/>
+        <image name="PoweredByGoogle_White" width="144" height="18"/>
     </resources>
 </document>

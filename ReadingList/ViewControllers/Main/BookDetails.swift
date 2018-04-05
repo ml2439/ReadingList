@@ -4,26 +4,20 @@ import CoreData
 
 class BookDetails: UIViewController, UIScrollViewDelegate {
     @IBOutlet weak var cover: UIImageView!
-
-    @IBOutlet weak var bookDescription: UILabel!
-    @IBOutlet weak var titleAndAuthorStack: UIStackView!
     @IBOutlet weak var changeReadStateButton: StartFinishButton!
     
-    @IBOutlet weak var readState: UILabel!
-    @IBOutlet weak var dateStarted: UILabel!
-    @IBOutlet weak var dateFinished: UILabel!
-    @IBOutlet weak var readTime: UILabel!
-    @IBOutlet weak var notes: UILabel!
-    @IBOutlet weak var pageNumber: UILabel!
+    @IBOutlet var titles: [UILabel]!
     
-    @IBOutlet weak var isbn: UILabel!
-    @IBOutlet weak var pages: UILabel!
-    @IBOutlet weak var published: UILabel!
-    @IBOutlet weak var subjects: UILabel!
+    @IBOutlet var titleAuthorHeadings: [UILabel]!
+    @IBOutlet weak var bookDescription: UILabel!
     
+    @IBOutlet var tableVaules: [UILabel]!
+    @IBOutlet var tableSubHeadings: [UILabel]!
+
     @IBOutlet weak var googleBooks: UILabel!
     @IBOutlet weak var amazon: UILabel!
     
+    @IBOutlet var separatorLines: [UIView]!
     @IBOutlet weak var listsStack: UIStackView!
     @IBOutlet weak var listDetailsView: UIView!
     @IBOutlet weak var noLists: UILabel!
@@ -31,14 +25,14 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     var didShowNavigationItemTitle = false
     var shouldTruncateLongDescriptions = true
     
-    var parentSplitViewController: SplitViewController? {
-        get { return appDelegate.tabBarController.selectedViewController as? SplitViewController }
+    var parentSplitViewController: UISplitViewController? {
+        get { return appDelegate.tabBarController.selectedSplitViewController }
     }
     
-    func setViewEnabled(enabled: Bool) {
+    func setViewEnabled(_ enabled: Bool) {
         // Show the whole view and nav bar buttons
         view.isHidden = !enabled
-        navigationItem.rightBarButtonItems?.forEach({$0.toggleHidden(hidden: !enabled)})
+        navigationItem.rightBarButtonItems?.forEach({$0.setHidden(!enabled)})
     }
     
     var book: Book? {
@@ -47,14 +41,15 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     
     func setupViewFromBook() {
         // Hide the whole view and nav bar buttons if there's no book
-        guard let book = book else { setViewEnabled(enabled: false); return }
-        setViewEnabled(enabled: true)
+        guard let book = book else { setViewEnabled(false); return }
+        setViewEnabled(true)
         
         cover.image = UIImage(optionalData: book.coverImage) ?? #imageLiteral(resourceName: "CoverPlaceholder")
-        
-        // There are 2 title and 2 author labels, one for Regular display (iPad) and one for other displays
-        titleAndAuthorStack.subviews[0...1].forEach{($0 as! UILabel).text = book.title}
-        titleAndAuthorStack.subviews[2...3].forEach{($0 as! UILabel).text = book.authorDisplay}
+        titleAuthorHeadings[0].text = book.title
+        titleAuthorHeadings[1].text = book.authorDisplay
+        if traitCollection.horizontalSizeClass == .regular && traitCollection.verticalSizeClass == .regular {
+            titleAuthorHeadings.forEach{$0.scaleFontBy(1.3)}
+        }
         (navigationItem.titleView as! UINavigationBarLabel).setTitle(book.title)
         
         switch book.readState {
@@ -74,22 +69,16 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         bookDescription.superview!.nextSibling!.isHidden = book.bookDescription == nil
         
         func setTextOrHideLine(_ label: UILabel, _ string: String?) {
-            // The detail labels are arranged in the following hierachy:
-            /*
-             vertical-stack
-                horizontal-stack
-                    property label
-                    property value view
-                        property value label
-            */
+            // The detail labels are within a view, within a horizonal-stack
             // If a property is nil, we should hide the enclosing horizontal stack
             label.text = string
             label.superview!.superview!.isHidden = string == nil
         }
+        
         // Read state is always present
-        readState.text = book.readState.longDescription
-        setTextOrHideLine(dateStarted, book.startedReading?.toPrettyString(short: false))
-        setTextOrHideLine(dateFinished, book.finishedReading?.toPrettyString(short: false))
+        tableVaules[0].text = book.readState.longDescription
+        setTextOrHideLine(tableVaules[1], book.startedReading?.toPrettyString(short: false))
+        setTextOrHideLine(tableVaules[2], book.finishedReading?.toPrettyString(short: false))
         
         let readTimeText: String?
         if book.readState == .toRead {
@@ -107,7 +96,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
                 readTimeText = "\(dayCount) days"
             }
         }
-        setTextOrHideLine(readTime, readTimeText)
+        setTextOrHideLine(tableVaules[3], readTimeText)
         let pageNumberText: String?
         if let currentPage = book.currentPage?.intValue {
             if let totalPages = book.pageCount?.intValue, currentPage <= totalPages, currentPage > 0 {
@@ -119,46 +108,32 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         }
         else { pageNumberText = nil }
         
-        setTextOrHideLine(pageNumber, pageNumberText)
-        setTextOrHideLine(notes, book.notes)
-
-        setTextOrHideLine(isbn, book.isbn13)
-        setTextOrHideLine(pages, book.pageCount?.intValue.string)
-        setTextOrHideLine(published, book.publicationDate?.toPrettyString(short: false))
-        setTextOrHideLine(subjects,  book.subjects.map{$0.name}.sorted().joined(separator: ", ").nilIfWhitespace())
+        setTextOrHideLine(tableVaules[4], pageNumberText)
+        setTextOrHideLine(tableVaules[5], book.notes)
+        setTextOrHideLine(tableVaules[6], book.isbn13)
+        setTextOrHideLine(tableVaules[7], book.pageCount?.intValue.string)
+        setTextOrHideLine(tableVaules[8], book.publicationDate?.toPrettyString(short: false))
+        setTextOrHideLine(tableVaules[9], book.subjects.map{$0.name}.sorted().joined(separator: ", ").nilIfWhitespace())
         googleBooks.isHidden = book.googleBooksId == nil
         
-        // Remove all the existing list labels
-        for existingList in listsStack.subviews {
-            existingList.removeFromSuperview()
-        }
-        
-        // And then add a label per list.
+        // Remove all the existing list labels, then add a label per list. Copy the list properties from another similar label, that's easier
+        listsStack.removeAllSubviews()
         for list in book.lists {
-            
-            // Copy the list properties from another similar label, that's easier
-            let label = UILabel()
-            label.font = subjects.font
-            label.textColor = subjects.textColor
-            label.text = list.name
-            listsStack.addArrangedSubview(label)
+            listsStack.addArrangedSubview(UILabel(font: tableVaules[0].font, color: tableVaules[0].textColor, text: list.name))
         }
         
-        // There is a placeholder view for the case of no lists
+        // There is a placeholder view for the case of no lists. Lists are stored in 3 nested stack views
         noLists.isHidden = !book.lists.isEmpty
-        listDetailsView.isHidden = book.lists.isEmpty
+        listsStack.superview!.superview!.superview!.isHidden = book.lists.isEmpty
     }
     
     override func viewDidLoad() {
-        
         super.viewDidLoad()
-        
-        view.backgroundColor = UIColor.white
         
         // Initialise the view so that by default a blank page is shown.
         // This is required for starting the app in split-screen mode, where this view is
         // shown without any books being selected.
-        setViewEnabled(enabled: false)
+        setViewEnabled(false)
         
         // Listen for taps on the book description, which should remove any truncation
         bookDescription.superview!.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(seeMoreDescription)))
@@ -173,6 +148,8 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
 
         // Watch for changes in the managed object context
         NotificationCenter.default.addObserver(self, selector: #selector(saveOccurred(_:)), name: NSNotification.Name.NSManagedObjectContextDidSave, object: PersistentStoreManager.container.viewContext)
+        
+        monitorThemeSetting()
     }
     
     override func viewDidLayoutSubviews() {
@@ -194,11 +171,11 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     }
     
     @IBAction func updateReadingLogPressed(_ sender: Any) {
-        present(EditBookReadState(existingBookID: book!.objectID).inNavigationController(), animated: true)
+        present(EditBookReadState(existingBookID: book!.objectID).inThemedNavController(), animated: true)
     }
 
     @IBAction func editBookPressed(_ sender: Any) {
-        present(EditBookMetadata(bookToEditID: book!.objectID).inNavigationController(), animated: true)
+        present(EditBookMetadata(bookToEditID: book!.objectID).inThemedNavController(), animated: true)
     }
     
     @objc func seeMoreDescription() {
@@ -230,7 +207,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         let updatedObjects = userInfo[NSUpdatedObjectsKey] as? NSSet ?? NSSet()
         let createdObjects = userInfo[NSInsertedObjectsKey] as? NSSet ?? NSSet()
         func setContainsRelatedList(_ set: NSSet) -> Bool {
-           return set.flatMap({$0 as? List}).any(where: {$0.books.contains(book)})
+            return set.compactMap({$0 as? List}).any(where: {$0.books.contains(book)})
         }
         
         if updatedObjects.contains(book) || setContainsRelatedList(deletedObjects) || setContainsRelatedList(updatedObjects) || setContainsRelatedList(createdObjects) {
@@ -260,17 +237,16 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         let amazonSearch = "https://www.amazon.com/s?url=search-alias%3Dstripbooks&field-author=\(authorText ?? "")&field-title=\(book.title)"
         
         // Use https://bestazon.io/#WebService to localize Amazon links
-        // US store: readinglistio-20
-        // UK store: readinglistio-21
+        // US store: readinglistio-20; UK store: readinglistio-21
         let refURL = "https://www.readinglistapp.xyz"
-        let localisedAffiliateAmazonSearch = URL(string: "http://lnks.io/r.php?Conf_Source=API&refURL=\(refURL.urlEncoding())&destURL=\(amazonSearch.urlEncoding())&Amzn_AfiliateID_GB=readinglistio-21&Amzn_AfiliateID_US=readinglistio-20")!
+        let localisedAffiliateAmazonSearch = "http://lnks.io/r.php?Conf_Source=API&refURL=\(refURL.urlEncoding())&destURL=\(amazonSearch.urlEncoding())&Amzn_AfiliateID_GB=readinglistio-21&Amzn_AfiliateID_US=readinglistio-20"
         UserEngagement.logEvent(.viewOnAmazon)
-        UIApplication.shared.open(localisedAffiliateAmazonSearch, options: [:], completionHandler: nil)
+        presentThemedSafariViewController(url: localisedAffiliateAmazonSearch)
     }
     
     @objc func googleBooksButtonPressed() {
         guard let googleBooksId = book?.googleBooksId else { return }
-        UIApplication.shared.open(GoogleBooks.Request.webpage(googleBooksId).url, options: [:], completionHandler: nil)
+        presentThemedSafariViewController(url: GoogleBooks.Request.webpage(googleBooksId).url)
     }
     
     @IBAction func addToList(_ sender: Any) {
@@ -282,7 +258,6 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     }
     
     @IBAction func shareButtonPressed(_ sender: UIBarButtonItem) {
-
         guard let book = book else { return }
 
         let activityViewController = UIActivityViewController(activityItems: ["\(book.title)\n\(book.authorDisplay)"], applicationActivities: nil)
@@ -298,12 +273,9 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        
-        // 18 is the padding between the main stack view and the top. This should be determined programatically
-        // if any of the layout constraints from the title to the top become more complex
-        let threshold = titleAndAuthorStack.subviews.first(where: {!$0.isHidden})!.frame.maxY + 18 - scrollView.universalContentInset.top
-
-        if didShowNavigationItemTitle != (scrollView.contentOffset.y >= threshold) {
+        let titleLabel = titleAuthorHeadings[0]
+        let titleMaxYPosition = titleLabel.convert(titleLabel.frame, to: view).maxY
+        if didShowNavigationItemTitle != (titleMaxYPosition - scrollView.universalContentInset.top < 0) {
             // Changes to the title view are to be animated
             let fadeTextAnimation = CATransition()
             fadeTextAnimation.duration = 0.2
@@ -343,44 +315,22 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     }
 }
 
-class StartFinishButton: BorderedButton {
-    enum State {
-        case start
-        case finish
-        case none
-    }
-    
-    func setState(_ state: State) {
-        switch state {
-        case .start:
-            isHidden = false
-            setColor(UIColor.buttonBlue)
-            setTitle("START", for: .normal)
-        case .finish:
-            isHidden = false
-            setColor(UIColor.flatGreen)
-            setTitle("FINISH", for: .normal)
-        case .none:
-            isHidden = true
-        }
-    }
-}
-
-extension UIView {
-
-    var nextSibling: UIView? {
-        get {
-            guard let views = superview?.subviews else { return nil }
-            let thisIndex = views.index(of: self)!
-            guard thisIndex + 1 < views.count else { return nil }
-            return views[thisIndex + 1]
-        }
-    }
-    
-    var siblings: [UIView] {
-        get {
-            guard let views = superview?.subviews else { return [] }
-            return views.filter{ $0 != self }
-        }
+extension BookDetails: ThemeableViewController {
+    func initialise(withTheme theme: Theme) {
+        view.backgroundColor = theme.viewBackgroundColor
+        navigationController?.view.backgroundColor = theme.viewBackgroundColor
+        navigationController?.navigationBar.initialise(withTheme: theme)
+        (navigationItem.titleView as! UINavigationBarLabel).initialise(fromTheme: theme)
+        titleAuthorHeadings[0].textColor = theme.titleTextColor
+        titleAuthorHeadings[1].textColor = theme.subtitleTextColor
+        
+        bookDescription.textColor = theme.subtitleTextColor
+        bookDescription.siblings.compactMap{$0 as? HorizontalGradientView}.first!.color = theme.viewBackgroundColor
+        
+        titles.forEach{$0.textColor = theme.titleTextColor}
+        tableSubHeadings.forEach{$0.textColor = theme.subtitleTextColor}
+        tableVaules.forEach{$0.textColor = theme.titleTextColor}
+        separatorLines.forEach{$0.backgroundColor = theme.cellSeparatorColor}
+        listsStack.arrangedSubviews.forEach{($0 as! UILabel).textColor = theme.titleTextColor}
     }
 }

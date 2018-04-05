@@ -33,7 +33,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     #if DEBUG
                         DebugSettings.initialiseFromCommandLine()
                     #endif
-                    self.window!.rootViewController = Storyboard.Main.instantiateRoot()
+                    self.window!.rootViewController = TabBarController()
+                    self.initialise(fromTheme: UserSettings.theme)
                     
                     // Once the store is loaded and the main storyboard instantiated, perform the quick action
                     // or open the CSV file, is specified. This is done here rather than in application:open, for example,
@@ -93,7 +94,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func openCsvImport(url: URL) {
         UserEngagement.logEvent(.openCsvInApp)
-        tabBarController.selectTab(.settings)
+        tabBarController.selectedTab = .settings
         
         let settingsSplitView = tabBarController.selectedSplitViewController!
         let navController = settingsSplitView.masterNavigationController
@@ -107,7 +108,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func performQuickAction(_ action: QuickAction) {
         func presentFromToRead(_ viewController: UIViewController) {
             // All quick actions are presented from the To Read tab
-            tabBarController.selectTab(.toRead)
+            tabBarController.selectedTab = .toRead
             
             // Dismiss any modal views before presenting
             let navController = tabBarController.selectedSplitViewController!.masterNavigationController
@@ -122,6 +123,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         case .searchOnline:
             UserEngagement.logEvent(.searchOnlineQuickAction)
             presentFromToRead(Storyboard.SearchOnline.rootAsFormSheet())
+        }
+    }
+    
+    func initialise(fromTheme theme: Theme) {
+        func globalThemeInitialisation() {
+            UIApplication.shared.statusBarStyle = UserSettings.theme == .normal ? .default : .lightContent
+        }
+
+        globalThemeInitialisation()
+        NotificationCenter.default.addObserver(forName: Notification.Name.ThemeSettingChanged, object: nil, queue: nil) {_ in
+            globalThemeInitialisation()
         }
     }
 }

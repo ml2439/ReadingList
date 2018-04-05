@@ -7,7 +7,6 @@ class BookTable: UITableViewController {
     var resultsController: CompoundFetchedResultsController<Book>!
     var readStates: [BookReadState]!
     var searchController: UISearchController!
-    var navigationItemTitle: String!
 
     @IBOutlet weak var tableFooter: UILabel!
     
@@ -16,9 +15,10 @@ class BookTable: UITableViewController {
         searchController.searchResultsUpdater = self
         
         tableView.keyboardDismissMode = .onDrag
+        tableView.register(UINib(BookTableViewCell.self), forCellReuseIdentifier: String(describing: BookTableViewCell.self))
+
         clearsSelectionOnViewWillAppear = false
-        navigationItemTitle = readStates.last!.description
-        navigationItem.title = navigationItemTitle
+        navigationItem.title = readStates.last!.description
         
         // Handle the data fetch, sort and filtering
         buildResultsController()
@@ -36,30 +36,43 @@ class BookTable: UITableViewController {
         // Set the table footer text
         tableFooter.text = footerText()
         
+        configureNavBarButtons()
+        
         // Set the DZN data set source
         tableView.emptyDataSetSource = self
         tableView.emptyDataSetDelegate = self
 
-        // Watch for changes in book sort order
+        // Watch for changes
         NotificationCenter.default.addObserver(self, selector: #selector(bookSortChanged), name: NSNotification.Name.BookSortOrderChanged, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(refetch), name: NSNotification.Name.PersistentStoreBatchOperationOccurred, object: nil)
         
-        super.viewDidLoad()
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
         if #available(iOS 11.0, *) {
-            navigationController!.navigationBar.prefersLargeTitles = UserSettings.useLargeTitles.value
+            monitorLargeTitleSetting()
         }
-        super.viewWillAppear(animated)
+        monitorThemeSetting()
+        
+        super.viewDidLoad()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         // Deselect selected rows, so they don't stay highlighted, but only when in non-split mode
-        if let selectedIndexPath = self.tableView.indexPathForSelectedRow, !(splitViewController as! SplitViewController).detailIsPresented {
+        if let selectedIndexPath = self.tableView.indexPathForSelectedRow, !splitViewController!.detailIsPresented {
             self.tableView.deselectRow(at: selectedIndexPath, animated: animated)
         }
         super.viewDidAppear(animated)
+    }
+    
+    override func initialise(withTheme theme: Theme) {
+        super.initialise(withTheme: theme)
+        tableFooter.textColor = theme.subtitleTextColor
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        if traitCollection.forceTouchCapability == .available {   
+            registerForPreviewing(with: self, sourceView: tableView)
+        }
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -69,8 +82,8 @@ class BookTable: UITableViewController {
     }
     
     lazy var defaultPredicates: [BookReadState: NSPredicate] = {
-        return readStates.reduce(into: [BookReadState: NSPredicate]()) {
-            $0[$1] = NSPredicate(format: "%K == %ld", #keyPath(Book.readState), $1.rawValue)
+        return readStates.reduce(into: [BookReadState: NSPredicate]()) { dict, readState in
+            dict[readState] = NSPredicate(format: "%K == %ld", #keyPath(Book.readState), readState.rawValue)
         }
     }()
     
@@ -84,6 +97,8 @@ class BookTable: UITableViewController {
         
         resultsController = CompoundFetchedResultsController(controllers: controllers)
         try! resultsController.performFetch()
+        // FUTURE: This is causing causing a retain cycle, but since we don't expect this view controller
+        // to get deallocated anyway, it doesn't matter too much.
         resultsController.delegate = self
     }
     
@@ -93,40 +108,48 @@ class BookTable: UITableViewController {
         // The search bar should be disabled if editing: searches will clear selections in edit mode,
         // so it's probably better to just prevent searches from occuring.
         searchController.searchBar.isActive = !editing
-        
+
+        // If we have stopped editing, reset the navigation title
+        if !isEditing {
+            navigationItem.title = readStates.last!.description
+        }
+
+        configureNavBarButtons()
+    }
+    
+    func configureNavBarButtons() {
         let leftButton, rightButton: UIBarButtonItem
-        if editing {
+        if isEditing {
             // If we're editing, the right button should become an "edit action" button, but be disabled until any books are selected
-            leftButton = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(editWasPressed(_:)))
+            leftButton = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(toggleEditingAnimated))
             rightButton = UIBarButtonItem(image: #imageLiteral(resourceName: "MoreFilledIcon"), style: .plain, target: self, action: #selector(editActionButtonPressed(_:)))
             rightButton.isEnabled = false
         }
         else {
-            // If we're not editing, the right button should revert back to being an Add button, and the title should be reset
-            navigationItem.title = navigationItemTitle
-            leftButton = UIBarButtonItem(title: "Edit", style: .plain, target: self, action: #selector(editWasPressed(_:)))
+            // If we're not editing, the right button should revert back to being an Add button
+            leftButton = UIBarButtonItem(title: "Edit", style: .plain, target: self, action: #selector(toggleEditingAnimated))
             rightButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addWasPressed(_:)))
         }
         
         // The edit state may be updated after the emptydataset is shown; the left button should be hidden when empty
-        leftButton.toggleHidden(hidden: tableView.isEmptyDataSetVisible)
+        leftButton.setHidden(tableView.isEmptyDataSetVisible)
         
         navigationItem.leftBarButtonItem = leftButton
         navigationItem.rightBarButtonItem = rightButton
     }
     
     @objc func bookSortChanged() {
-        DispatchQueue.main.async {
+        DispatchQueue.main.async { // I should've commented why this is async; I don't remember why
             self.buildResultsController()
             self.tableView.reloadData()
         }
     }
     
     @objc func refetch() {
+        // FUTURE: This can leave the EmptyDataSet off-screen if a bulk delete has occurred. Can't find a way to prevent this.
         try! self.resultsController.performFetch()
         self.tableFooter.text = self.footerText()
         self.tableView.reloadData()
-        // FUTURE: This can leave the empty data set off-screen. Can't find a way to prevent this.
     }
 
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -141,13 +164,24 @@ class BookTable: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "BookTableViewCell", for: indexPath) as! BookTableViewCell
         let book = resultsController.object(at: indexPath)
         cell.configureFrom(book)
+        cell.initialise(withTheme: UserSettings.theme)
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard isEditing else { return }
-        navigationItem.rightBarButtonItem!.isEnabled = true
-        navigationItem.title = "\(tableView.indexPathsForSelectedRows!.count) Selected"
+        if isEditing {
+            navigationItem.rightBarButtonItem!.isEnabled = true
+            navigationItem.title = "\(tableView.indexPathsForSelectedRows!.count) Selected"
+        }
+        else {
+            performSegue(withIdentifier: "showDetail", sender: tableView.cellForRow(at: indexPath)!)
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, willDisplayHeaderView view:UIView, forSection: Int) {
+        if let headerTitle = view as? UITableViewHeaderFooterView {
+            headerTitle.textLabel?.textColor = .lightGray
+        }
     }
     
     override func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
@@ -155,7 +189,7 @@ class BookTable: UITableViewController {
         // If this deselection was deselecting the only selected row, disable the edit action button and reset the title
         if tableView.indexPathsForSelectedRows?.isEmpty ?? true {
             navigationItem.rightBarButtonItem!.isEnabled = false
-            navigationItem.title = navigationItemTitle
+            navigationItem.title = readStates.last!.description
         }
         else {
             navigationItem.title = "\(tableView.indexPathsForSelectedRows!.count) Selected"
@@ -164,10 +198,10 @@ class BookTable: UITableViewController {
     
     @objc func editActionButtonPressed(_ sender: UIBarButtonItem) {
         guard let selectedRows = tableView.indexPathsForSelectedRows, selectedRows.count > 0 else { return }
-        let selectedReadStates = selectedRows.map{$0.section}.distinct().map{readStateForSection($0)}
+        let selectedSectionIndices = selectedRows.map{$0.section}.distinct()
+        let selectedReadStates = sectionIndexByReadState.filter({selectedSectionIndices.contains($0.value)}).keys
         
         let optionsAlert = UIAlertController(title: "Edit \(selectedRows.count) book\(selectedRows.count == 1 ? "" : "s")", message: nil, preferredStyle: .actionSheet)
-
         optionsAlert.addAction(UIAlertAction(title: "Add to List", style: .default){ [unowned self] _ in
             let books = selectedRows.map(self.resultsController.object)
             
@@ -178,12 +212,8 @@ class BookTable: UITableViewController {
             }, animated: true)
         })
         
-        if selectedReadStates.count == 1 && selectedReadStates.first! != .finished {
-            let readState = selectedReadStates.first!
-            var title = readState == .toRead ? "Start" : "Finish"
-            if selectedRows.count > 1 {
-                title += " All"
-            }
+        if let readState = selectedReadStates.first, readState != .finished, selectedReadStates.count == 1 {
+            let title = (readState == .toRead ? "Start" : "Finish") + (selectedRows.count > 1 ? " All" : "")
             optionsAlert.addAction(UIAlertAction(title: title, style: .default) { [unowned self] _ in
                 for book in selectedRows.map(self.resultsController.object) {
                     if readState == .toRead {
@@ -203,21 +233,9 @@ class BookTable: UITableViewController {
         }
         
         optionsAlert.addAction(UIAlertAction(title: "Delete\(selectedRows.count > 1 ? " All" : "")", style: .destructive) { [unowned self] _ in
-            // Are you sure?
-            let confirmDeleteAlert = UIAlertController(title: "Confirm deletion of \(selectedRows.count) book\(selectedRows.count == 1 ? "" : "s")", message: nil, preferredStyle: .actionSheet)
-            confirmDeleteAlert.popoverPresentationController?.barButtonItem = sender
-            confirmDeleteAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-            confirmDeleteAlert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [unowned self] _ in
-                // Collect the books up-front, since the selected row indexes will change as we modify them
-                for book in selectedRows.map(self.resultsController.object) {
-                    book.delete()
-                }
-                PersistentStoreManager.container.viewContext.saveAndLogIfErrored()
-                self.setEditing(false, animated: true)
-                UserEngagement.logEvent(.bulkDeleteBook)
-                UserEngagement.onReviewTrigger()
-            })
-            self.present(confirmDeleteAlert, animated: true)
+            let confirm = self.confirmDeleteAlert(indexPaths: selectedRows)
+            confirm.popoverPresentationController?.barButtonItem = sender
+            self.present(confirm, animated: true)
         })
         optionsAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         optionsAlert.popoverPresentationController?.barButtonItem = sender
@@ -225,17 +243,18 @@ class BookTable: UITableViewController {
         self.present(optionsAlert, animated: true, completion: nil)
     }
     
-    func footerText() -> String? { fatalError("footerText() not overriden") }
-    
-    func sectionIndex(forReadState readState: BookReadState) -> Int? {
-        if let sectionIndex = resultsController.sections?.index(where: {$0.name == String.init(describing: readState.rawValue)}) {
-            return resultsController.sections!.startIndex.distance(to: sectionIndex)
-        }
-        return nil
+    func footerText() -> String? {
+        return sectionIndexByReadState.map{
+            let count = tableView(tableView, numberOfRowsInSection: $0.value)
+            return "\($0.key.description): \(count) book\(count == 1 ? "" : "s")"
+        }.reversed().joined(separator: "\n")
     }
     
-    func readStateForSection(_ section: Int) -> BookReadState {
-        return readStates.first{sectionIndex(forReadState: $0) == section}!
+    var sectionIndexByReadState: [BookReadState: Int] {
+        return resultsController.sections!.enumerated().reduce(into: [BookReadState: Int]()) { dict, section in
+            let readState = BookReadState(rawValue: Int16(section.element.name)!)!
+            dict[readState] = section.offset
+        }
     }
 
     func simulateBookSelection(_ bookID: NSManagedObjectID, allowTableObscuring: Bool = true) {
@@ -250,15 +269,14 @@ class BookTable: UITableViewController {
         }
         
         // allowTableObscuring determines whether the book details page should actually be shown, if showing it will obscure this table
-        let parentSplitViewController = splitViewController as! SplitViewController
-        if allowTableObscuring || parentSplitViewController.isSplit {
+        if allowTableObscuring || splitViewController!.isSplit {
             if let indexPathOfSelectedBook = indexPathOfSelectedBook {
                 tableView.selectRow(at: indexPathOfSelectedBook, animated: true, scrollPosition: .none)
             }
             
             // If there is a detail view presented, update the book
-            if parentSplitViewController.detailIsPresented {
-                (parentSplitViewController.displayedDetailViewController as? BookDetails)?.book =  book
+            if splitViewController!.detailIsPresented {
+                (splitViewController!.displayedDetailViewController as? BookDetails)?.book =  book
             }
             else {
                 // Segue to the details view, with the cell corresponding to the book as the sender.
@@ -288,11 +306,7 @@ class BookTable: UITableViewController {
             detailsViewController.book = (sender as! Book)
         }
     }
-    
-    @objc @IBAction func editWasPressed(_ sender: UIBarButtonItem) {
-        setEditing(!isEditing, animated: true)
-    }
-    
+
     @IBAction func addWasPressed(_ sender: UIBarButtonItem) {
     
         func storyboardAction(title: String, storyboard: UIStoryboard) -> UIAlertAction {
@@ -305,7 +319,7 @@ class BookTable: UITableViewController {
         optionsAlert.addAction(storyboardAction(title: "Scan Barcode", storyboard: Storyboard.ScanBarcode))
         optionsAlert.addAction(storyboardAction(title: "Search Online", storyboard: Storyboard.SearchOnline))
         optionsAlert.addAction(UIAlertAction(title: "Add Manually", style: .default){ [unowned self] _ in
-            self.present(EditBookMetadata(bookToCreateReadState: .toRead).inNavigationController(), animated: true, completion: nil)
+            self.present(EditBookMetadata(bookToCreateReadState: .toRead).inThemedNavController(), animated: true, completion: nil)
         })
         optionsAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         optionsAlert.popoverPresentationController?.barButtonItem = sender
@@ -314,31 +328,29 @@ class BookTable: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-        let toReadIndex = sectionIndex(forReadState: .toRead)
-        let readingIndex = sectionIndex(forReadState: .reading)
-        
+
         // Start with the delete action
         var rowActions = [UITableViewRowAction(style: .destructive, title: "Delete") { [unowned self] _, indexPath in
-            self.presentDeleteBookAlert(indexPath: indexPath, callback: nil)
+            let confirm = self.confirmDeleteAlert(indexPaths: [indexPath])
+            confirm.popoverPresentationController?.setSourceCell(atIndexPath: indexPath, inTable: tableView)
+            self.present(confirm, animated: true)
         }]
         
         // Add the other state change actions where appropriate
-        if indexPath.section == toReadIndex {
-            let startAction = UITableViewRowAction(style: .normal, title: "Start") { [unowned self] rowAction, indexPath in
+        if indexPath.section == sectionIndexByReadState[.toRead] {
+            let startAction = UITableViewRowAction(style: .normal, title: "Start", color: UIColor.buttonBlue) { [unowned self] rowAction, indexPath in
                 self.resultsController.object(at: indexPath).startReading()
                 PersistentStoreManager.container.viewContext.saveAndLogIfErrored()
             }
-            startAction.backgroundColor = UIColor.buttonBlue
             rowActions.append(startAction)
         }
-        else if indexPath.section == readingIndex {
+        else if indexPath.section == sectionIndexByReadState[.reading] {
             let readingBook = self.resultsController.object(at: indexPath)
             if readingBook.startedReading! < Date() {
-                let finishAction = UITableViewRowAction(style: .normal, title: "Finish") { rowAction, indexPath in
+                let finishAction = UITableViewRowAction(style: .normal, title: "Finish", color: UIColor.flatGreen) { rowAction, indexPath in
                     readingBook.finishReading()
                     PersistentStoreManager.container.viewContext.saveAndLogIfErrored()
                 }
-                finishAction.backgroundColor = UIColor.flatGreen
                 rowActions.append(finishAction)
             }
         }
@@ -349,44 +361,67 @@ class BookTable: UITableViewController {
     @available(iOS 11.0, *)
     override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { [unowned self] _,_,callback in
-            self.presentDeleteBookAlert(indexPath: indexPath, callback: callback)
+            let confirm = self.confirmDeleteAlert(indexPaths: [indexPath], callback: callback)
+            confirm.popoverPresentationController?.setSourceCell(atIndexPath: indexPath, inTable: tableView)
+            self.present(confirm, animated: true, completion: nil)
         }
         deleteAction.image = #imageLiteral(resourceName: "Trash")
         let editAction = UIContextualAction(style: .normal, title: "Edit") { [unowned self] _,_,callback in
-            self.present(EditBookMetadata(bookToEditID: self.resultsController.object(at: indexPath).objectID).inNavigationController(), animated: true)
+            self.present(EditBookMetadata(bookToEditID: self.resultsController.object(at: indexPath).objectID).inThemedNavController(), animated: true)
             callback(true)
         }
         editAction.image = #imageLiteral(resourceName: "Literature")
-        let configuration = UISwipeActionsConfiguration(actions: [deleteAction, editAction])
-        configuration.performsFirstActionWithFullSwipe = false
-        return configuration
+        return UISwipeActionsConfiguration(performFirstActionWithFullSwipe: false, actions: [deleteAction, editAction])
     }
     
     @available(iOS 11.0, *)
     override func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let editReadStateAction = UIContextualAction(style: .normal, title: "Log") { [unowned self] _,_,callback in
-            self.present(EditBookReadState(existingBookID: self.resultsController.object(at: indexPath).objectID).inNavigationController(), animated: true)
+        
+        var actions = [UIContextualAction(style: .normal, title: "Log", image: #imageLiteral(resourceName: "Timetable")) { [unowned self] _,_,callback in
+            self.present(EditBookReadState(existingBookID: self.resultsController.object(at: indexPath).objectID).inThemedNavController(), animated: true)
+            callback(true)
+        }]
+        
+        let readStateOfSection = sectionIndexByReadState.first{$0.value == indexPath.section}!.key
+        guard readStateOfSection == .toRead || (readStateOfSection == .reading && resultsController.object(at: indexPath).startedReading! < Date()) else {
+            // It is not "invalid" to have a book with a started date in the future; but it is invalid
+            // to have a finish date before the start date. Therefore, hide the finish action if
+            // this would be the case.
+            return UISwipeActionsConfiguration(performFirstActionWithFullSwipe: false, actions: actions)
+        }
+        
+        let leadingSwipeAction = UIContextualAction(style: .normal, title: readStateOfSection == .toRead ? "Start" : "Finish") { [unowned self] _,_,callback in
+            let book = self.resultsController.object(at: indexPath)
+            if readStateOfSection == .toRead {
+                book.startReading()
+            }
+            else {
+                book.finishReading()
+            }
+            book.managedObjectContext!.saveAndLogIfErrored()
+            UserEngagement.logEvent(.transitionReadState)
             callback(true)
         }
-        editReadStateAction.image = #imageLiteral(resourceName: "Timetable")
-        let configuration = UISwipeActionsConfiguration(actions: [editReadStateAction])
-        configuration.performsFirstActionWithFullSwipe = false
-        return configuration
+        leadingSwipeAction.backgroundColor = readStateOfSection == .toRead ? UIColor.buttonBlue : UIColor.flatGreen
+        leadingSwipeAction.image = readStateOfSection == .toRead ? #imageLiteral(resourceName: "Play") : #imageLiteral(resourceName: "Complete")
+        actions.insert(leadingSwipeAction, at: 0)
+        
+        return UISwipeActionsConfiguration(actions: actions)
     }
     
-    func presentDeleteBookAlert(indexPath: IndexPath, callback: ((Bool) -> ())?) {
-        let bookToDelete = self.resultsController.object(at: indexPath)
-        let confirmDeleteAlert = UIAlertController(title: "Confirm delete", message: nil, preferredStyle: .actionSheet)
-        confirmDeleteAlert.popoverPresentationController?.setSourceCell(atIndexPath: indexPath, inTable: tableView)
-        
+    func confirmDeleteAlert(indexPaths: [IndexPath], callback: ((Bool) -> Void)? = nil) -> UIAlertController {
+        let confirmDeleteAlert = UIAlertController(title: indexPaths.count == 1 ? "Confirm delete" : "Confirm deletion of \(indexPaths.count) books", message: nil, preferredStyle: .actionSheet)
         confirmDeleteAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { _ in
             callback?(false)
         })
-        confirmDeleteAlert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
-            bookToDelete.deleteAndSave()
+        confirmDeleteAlert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [unowned self] _ in
+            indexPaths.map(self.resultsController.object).forEach{$0.delete()}
+            PersistentStoreManager.container.viewContext.saveAndLogIfErrored()
+            self.setEditing(false, animated: true)
+            UserEngagement.logEvent(indexPaths.count > 1 ? .bulkDeleteBook : .deleteBook)
             callback?(true)
         })
-        self.present(confirmDeleteAlert, animated: true, completion: nil)
+        return confirmDeleteAlert
     }
 }
 
@@ -415,6 +450,68 @@ extension BookTable: UISearchResultsUpdating {
             tableFooter.text = footerText()
         }
     }
+    
+    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+        // Disable reorderng when searching, or when the sort order is not by date
+        guard !searchController.hasActiveSearchTerms else { return false }
+        guard UserSettings.tableSortOrder == .byDate else { return false }
+        guard let toReadSectionIndex = sectionIndexByReadState[.toRead] else { return false }
+        
+        // We can reorder the "ToRead" books if there are more than one
+        return indexPath.section == toReadSectionIndex && self.tableView(tableView, numberOfRowsInSection: toReadSectionIndex) > 1
+    }
+    
+    override func tableView(_ tableView: UITableView, targetIndexPathForMoveFromRowAt sourceIndexPath: IndexPath, toProposedIndexPath proposedDestinationIndexPath: IndexPath) -> IndexPath {
+        if sourceIndexPath.section == proposedDestinationIndexPath.section {
+            return proposedDestinationIndexPath
+        }
+        else {
+            // FUTURE: To work best in the general case, this should see whether the proposed section is lower or higher
+            // than the source section, and use that to set the returned IndexPath's row to either 0 or the maximum (respectively)
+            return IndexPath(row: 0, section: sourceIndexPath.section)
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        
+        // We should only have movement in the ToRead secion. We also ignore moves which have no effect
+        guard let toReadSectionIndex = sectionIndexByReadState[.toRead] else { return }
+        guard sourceIndexPath.section == toReadSectionIndex && destinationIndexPath.section == toReadSectionIndex else { return }
+        guard sourceIndexPath.row != destinationIndexPath.row else { return }
+        
+        // Get the range of objects that the move affects
+        let topRow = [sourceIndexPath.row, destinationIndexPath.row].min()!
+        let bottomRow = [sourceIndexPath.row, destinationIndexPath.row].max()!
+        var booksInMovementRange = (topRow...bottomRow).map{IndexPath(row: $0, section: toReadSectionIndex)}.map(resultsController.object)
+        
+        // Move the objects array to reflect the desired order
+        let wasDownwardsMovement = destinationIndexPath.row == bottomRow
+        if wasDownwardsMovement {
+            let first = booksInMovementRange.removeFirst()
+            booksInMovementRange.append(first)
+        }
+        else {
+            let last = booksInMovementRange.removeLast()
+            booksInMovementRange.insert(last, at: 0)
+        }
+        
+        // Turn off updates while we manipulate the object context
+        resultsController.delegate = nil
+        
+        // Update the model sort indexes. The lowest sort number should be the sort of the book immediately
+        // above the range, plus 1, or - if the range starts at the top - 0.
+        var sortIndex: Int32 = topRow == 0 ? 0 : (resultsController.object(at: IndexPath(row: topRow - 1, section: toReadSectionIndex)).sort!.int32 + 1)
+        for book in booksInMovementRange {
+            book.sort = sortIndex.nsNumber
+            sortIndex += 1
+        }
+        
+        PersistentStoreManager.container.viewContext.saveAndLogIfErrored()
+        try! resultsController.performFetch()
+        
+        // Enable updates again
+        resultsController.delegate = self
+    }
 }
 
 extension BookTable: NSFetchedResultsControllerDelegate {
@@ -436,6 +533,24 @@ extension BookTable: NSFetchedResultsControllerDelegate {
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
         tableView.controller(controller, didChange: sectionInfo, atSectionIndex: sectionIndex, for: type)
+    }
+}
+
+extension BookTable: UIViewControllerPreviewingDelegate {
+    func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
+        guard !tableView.isEditing else { return nil }
+        guard let indexPath = tableView.indexPathForRow(at: location), let cell = tableView.cellForRow(at: indexPath) else {
+            return nil
+        }
+        
+        previewingContext.sourceRect = cell.frame
+        let bookDetails = Storyboard.BookDetails.instantiateViewController(withIdentifier: "BookDetails") as! BookDetails
+        bookDetails.book = resultsController.object(at: indexPath)
+        return bookDetails
+    }
+    
+    func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
+        show(viewControllerToCommit, sender: self)
     }
 }
 
@@ -493,11 +608,11 @@ extension BookTable: DZNEmptyDataSetDelegate {
             if searchController.isActive { searchController.isActive = false }
             searchController.searchBar.isActiveOrVisible = false
         }
-        navigationItem.leftBarButtonItem!.toggleHidden(hidden: true)
+        navigationItem.leftBarButtonItem!.setHidden(true)
     }
     
     func emptyDataSetDidDisappear(_ scrollView: UIScrollView!) {
         searchController.searchBar.isActiveOrVisible = true
-        navigationItem.leftBarButtonItem!.toggleHidden(hidden: false)
+        navigationItem.leftBarButtonItem!.setHidden(false)
     }
 }

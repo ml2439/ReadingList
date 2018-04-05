@@ -15,26 +15,13 @@ class SearchOnline: UITableViewController {
     private var searchController: UISearchController!
     private let feedbackGenerator = UINotificationFeedbackGenerator()
     private let emptyDatasetView = UINib.instantiate(SearchBooksEmptyDataset.self)
-
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        return tableItems.isEmpty ? 0 : 1
-    }
-    
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return section == 0 ? tableItems.count : 0
-    }
-    
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "SearchResultCell", for: indexPath) as! SearchResultCell
-        cell.updateDisplay(from: tableItems[indexPath.row])
-        return cell
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         tableView.tableFooterView = UIView()
         tableView.backgroundView = emptyDatasetView
+        tableView.register(UINib(BookTableViewCell.self), forCellReuseIdentifier: String(describing: BookTableViewCell.self))
 
         searchController = NoCancelButtonSearchController(searchResultsController: nil)
         searchController.obscuresBackgroundDuringPresentation = false
@@ -56,6 +43,14 @@ class SearchOnline: UITableViewController {
         if let initialSearchString = initialSearchString  {
             performSearch(searchText: initialSearchString)
         }
+        
+        monitorThemeSetting()
+    }
+    
+    override func initialise(withTheme theme: Theme) {
+        super.initialise(withTheme: theme)
+        emptyDatasetView.initialise(fromTheme: theme)
+        navigationController!.toolbar.barStyle = theme.barStyle
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -80,6 +75,20 @@ class SearchOnline: UITableViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         navigationController!.setToolbarHidden(true, animated: true)
+    }
+    
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return tableItems.isEmpty ? 0 : 1
+    }
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return section == 0 ? tableItems.count : 0
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: BookTableViewCell.self), for: indexPath) as! BookTableViewCell
+        cell.configureFrom(tableItems[indexPath.row])
+        return cell
     }
     
     override func viewDidLayoutSubviews() {
@@ -190,18 +199,17 @@ class SearchOnline: UITableViewController {
                 book.populate(fromFetchResult: fetchResult)
                 completion(book)
             }
-            else {
-                if let coverURL = searchResult.thumbnailCoverUrl {
-                    HTTP.Request.get(url: coverURL).data {
-                        book.populate(fromSearchResult: searchResult, withCoverImage: $0.isSuccess ? $0.value! : nil)
-                        completion(book)
-                    }
-                }
-                else {
-                    book.populate(fromSearchResult: searchResult)
+            else if let coverURL = searchResult.thumbnailCoverUrl {
+                HTTP.Request.get(url: coverURL).data {
+                    book.populate(fromSearchResult: searchResult, withCoverImage: $0.isSuccess ? $0.value! : nil)
                     completion(book)
                 }
             }
+            else {
+                book.populate(fromSearchResult: searchResult)
+                completion(book)
+            }
+            
         }
     }
     

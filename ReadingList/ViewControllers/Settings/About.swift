@@ -4,13 +4,24 @@ import MessageUI
 
 class About: UITableViewController {
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        monitorThemeSetting()
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
+        cell.defaultInitialise(withTheme: UserSettings.theme)
+        return cell
+    }
+    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard indexPath.section == 0 else { return }
         switch indexPath.row {
-        case 0: UIApplication.shared.open(URL(string: "https://www.readinglistapp.xyz")!, options: [:])
+        case 0: presentThemedSafariViewController(url: "https://www.readinglistapp.xyz")
         case 1: share(indexPath)
         case 2: contact()
-        case 3: UIApplication.shared.open(URL(string: "https://github.com/AndrewBennet/readinglist")!, options: [:])
+        case 3: presentThemedSafariViewController(url: "https://github.com/AndrewBennet/readinglist")
         default: return
         }
         tableView.deselectRow(at: indexPath, animated: true)
@@ -49,7 +60,7 @@ class About: UITableViewController {
         
         
         Extra Info:
-        App Version: \(UserEngagement.appVersion) (\(UserEngagement.appBuildNumber))
+        App Version: \(BuildInfo.appConfiguration.userFacingDescription)
         iOS Version: \(UIDevice.current.systemVersion)
         Device: \(UIDevice.current.modelName)
         """
@@ -67,19 +78,32 @@ extension About: MFMailComposeViewControllerDelegate {
 class Attributions: UITableViewController {
     
     override func viewDidLoad() {
+        super.viewDidLoad()
         tableView.rowHeight = UITableViewAutomaticDimension
+        monitorThemeSetting()
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
+        let theme = UserSettings.theme
+        cell.defaultInitialise(withTheme: theme)
+        cell.contentView.subviews.forEach{
+            guard let label = $0 as? UILabel else { return }
+            label.textColor = theme.titleTextColor
+        }
+        return cell
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard indexPath.section == 0 else { return }
         switch indexPath.row {
-        case 0: UIApplication.shared.open(URL(string: "https://icons8.com")!, options: [:])
-        case 1: UIApplication.shared.open(URL(string: "https://github.com/xmartlabs/Eureka")!, options: [:])
-        case 2: UIApplication.shared.open(URL(string: "https://github.com/dzenbot/DZNEmptyDataSet")!, options: [:])
-        case 3: UIApplication.shared.open(URL(string: "https://github.com/SwiftyJSON/SwiftyJSON")!, options: [:])
-        case 4: UIApplication.shared.open(URL(string: "https://github.com/SVProgressHUD/SVProgressHUD")!, options: [:])
-        case 5: UIApplication.shared.open(URL(string: "https://github.com/davedelong/CHCSVParser")!, options: [:])
-        case 6: UIApplication.shared.open(URL(string: "https://github.com/bizz84/SwiftyStoreKit")!, options: [:])
+        case 0: presentThemedSafariViewController(url: "https://icons8.com")
+        case 1: presentThemedSafariViewController(url: "https://github.com/xmartlabs/Eureka")
+        case 2: presentThemedSafariViewController(url: "https://github.com/dzenbot/DZNEmptyDataSet")
+        case 3: presentThemedSafariViewController(url: "https://github.com/SwiftyJSON/SwiftyJSON")
+        case 4: presentThemedSafariViewController(url: "https://github.com/SVProgressHUD/SVProgressHUD")
+        case 5: presentThemedSafariViewController(url: "https://github.com/davedelong/CHCSVParser")
+        case 6: presentThemedSafariViewController(url: "https://github.com/bizz84/SwiftyStoreKit")
         default: return
         }
         tableView.deselectRow(at: indexPath, animated: true)

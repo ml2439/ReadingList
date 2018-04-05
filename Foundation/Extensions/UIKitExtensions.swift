@@ -1,5 +1,6 @@
 import Foundation
 import UIKit
+import AVFoundation
 
 extension UINib {
     convenience init<T>(_ class: T.Type) where T : UIView {
@@ -26,6 +27,28 @@ extension UIView {
         self.init()
         self.backgroundColor = backgroundColor
     }
+        
+    var nextSibling: UIView? {
+        get {
+            guard let views = superview?.subviews else { return nil }
+            let thisIndex = views.index(of: self)!
+            guard thisIndex + 1 < views.count else { return nil }
+            return views[thisIndex + 1]
+        }
+    }
+    
+    var siblings: [UIView] {
+        get {
+            guard let views = superview?.subviews else { return [] }
+            return views.filter{ $0 != self }
+        }
+    }
+    
+    func removeAllSubviews() {
+        for view in subviews {
+            view.removeFromSuperview()
+        }
+    }
 }
 
 
@@ -51,6 +74,18 @@ extension UISwipeActionsConfiguration {
     }
 }
 
+@available(iOS 11.0, *)
+extension UIContextualAction {
+    convenience init(style: UIContextualAction.Style, title: String?, image: UIImage?, backgroundColor: UIColor? = nil, handler: @escaping UIContextualActionHandler) {
+        self.init(style: style, title: title, handler: handler)
+        self.image = image
+        if let backgroundColor = backgroundColor {
+            // Don't set the background color to nil just because it was not provided
+            self.backgroundColor = backgroundColor
+        }
+    }
+}
+
 extension UISearchController {
     convenience init(filterPlaceholderText: String) {
         self.init(searchResultsController: nil)
@@ -70,6 +105,51 @@ extension UIViewController {
         let nav = UINavigationController(rootViewController: self)
         nav.modalPresentationStyle = modalPresentationStyle
         return nav
+    }
+
+    func inThemedNavController(modalPresentationStyle: UIModalPresentationStyle = .formSheet) -> UINavigationController {
+        let nav = ThemedNavigationController(rootViewController: self)
+        nav.modalPresentationStyle = modalPresentationStyle
+        return nav
+    }
+}
+
+extension UISplitViewController {
+    
+    var masterNavigationController: UINavigationController {
+        return viewControllers[0] as! UINavigationController
+    }
+    
+    var detailNavigationController: UINavigationController? {
+        return viewControllers[safe: 1] as? UINavigationController
+    }
+    
+    var masterNavigationRoot: UIViewController {
+        return masterNavigationController.viewControllers.first!
+    }
+    
+    var detailIsPresented: Bool {
+        return isSplit || masterNavigationController.viewControllers.count >= 2
+    }
+    
+    var isSplit: Bool {
+        return viewControllers.count >= 2
+    }
+    
+    var displayedDetailViewController: UIViewController? {
+        // If the master and detail are separate, the detail will be the second item in viewControllers
+        if isSplit, let detailNavController = detailNavigationController {
+            return detailNavController.viewControllers.first
+        }
+        
+        // Otherwise, navigate to where the Details view controller should be (if it is displayed)
+        if masterNavigationController.viewControllers.count >= 2,
+            let previewNavController = masterNavigationController.viewControllers[1] as? UINavigationController {
+            return previewNavController.viewControllers.first
+        }
+        
+        // The controller is not present
+        return nil
     }
 }
 
@@ -91,6 +171,16 @@ extension UIPopoverPresentationController {
     func setSourceCell(atIndexPath indexPath: IndexPath, inTable tableView: UITableView, arrowDirections: UIPopoverArrowDirection = .any) {
         let cell = tableView.cellForRow(at: indexPath)!
         setSourceCell(cell, inTableView: tableView, arrowDirections: arrowDirections)
+    }
+}
+
+extension UITabBarItem {
+    
+    func configure(tag: Int, title: String, image: UIImage, selectedImage: UIImage) {
+        self.tag = tag
+        self.image = image
+        self.selectedImage = selectedImage
+        self.title = title
     }
 }
 
@@ -141,9 +231,22 @@ extension UISearchBar {
 }
 
 extension UIBarButtonItem {
-    func toggleHidden(hidden: Bool) {
+    func setHidden(_ hidden: Bool) {
         isEnabled = !hidden
         tintColor = hidden ? UIColor.clear : nil
+    }
+}
+
+extension UITableViewController {
+    @objc func toggleEditingAnimated() {
+        setEditing(!isEditing, animated: true)
+    }
+}
+
+extension UITableViewRowAction {
+    convenience init(style: UITableViewRowActionStyle, title: String?, color: UIColor, handler: @escaping (UITableViewRowAction, IndexPath) -> Void) {
+        self.init(style: style, title: title, handler: handler)
+        self.backgroundColor = color
     }
 }
 
@@ -161,6 +264,13 @@ extension UIScrollView {
 }
 
 extension UILabel {
+    convenience init(font: UIFont, color: UIColor, text: String) {
+        self.init()
+        self.font = font
+        self.textColor = color
+        self.text = text
+    }
+    
     var isTruncated: Bool {
         guard let labelText = text else { return false }
         let labelTextSize = (labelText as NSString).boundingRect(
@@ -185,6 +295,10 @@ extension UILabel {
             font = font.scaled(forTextStyle: UIFontTextStyle("UICTFontTextStyle\(newValue)"))
         }
     }
+    
+    func scaleFontBy(_ factor: CGFloat) {
+        font = font.withSize(font.pointSize * factor)
+    }
 }
 
 extension UIColor {
@@ -197,8 +311,7 @@ extension UIColor {
         )
     }
     
-    static let flatGreen: UIColor = UIColor(fromHex: 0x2ecc71)
-    static let darkGray: UIColor = UIColor(fromHex: 0x4A4A4A)
+    static let flatGreen = UIColor(fromHex: 0x2ecc71)
     static let buttonBlue = UIColor(red: 0, green: 0.478431, blue: 1, alpha: 1)
 }
 
@@ -265,6 +378,28 @@ extension UITableViewCell {
             isUserInteractionEnabled = newValue
             textLabel?.isEnabled = newValue
             detailTextLabel?.isEnabled = newValue
+        }
+    }
+    
+    var selectedBackgroundColor: UIColor? {
+        get {
+            return selectedBackgroundView?.backgroundColor
+        }
+        set {
+            guard let newValue = newValue else { return }
+            selectedBackgroundView = UIView(backgroundColor: newValue)
+        }
+    }
+}
+
+extension UIDeviceOrientation {
+    var videoOrientation: AVCaptureVideoOrientation? {
+        switch self {
+        case .portrait: return .portrait
+        case .portraitUpsideDown: return .portraitUpsideDown
+        case .landscapeLeft: return .landscapeRight
+        case .landscapeRight: return .landscapeLeft
+        default: return nil
         }
     }
 }

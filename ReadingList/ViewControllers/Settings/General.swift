@@ -1,43 +1,81 @@
 import Foundation
 import UIKit
+import Eureka
 
-class General: UITableViewController {
-    
-    @IBOutlet weak var useLargeTitlesSwitch: UISwitch!
-    @IBOutlet weak var sendAnalyticsSwitch: UISwitch!
-    @IBOutlet weak var sendCrashReportsSwitch: UISwitch!
-    
+class General: FormViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
         if #available(iOS 11.0, *) {
-            useLargeTitlesSwitch.isOn = UserSettings.useLargeTitles.value
-        }
-        else {
-            useLargeTitlesSwitch.isOn = false
-            useLargeTitlesSwitch.isEnabled = false
+            form +++ Section(header: "Appearance", footer: "Whether to use large fonts for section titles.")
+                <<< SwitchRow() {
+                    $0.title = "Use Large Titles"
+                    $0.value = UserSettings.useLargeTitles.value
+                    $0.cellUpdate{ cell,_ in
+                        cell.initialise(withTheme: UserSettings.theme)
+                    }
+                    $0.onChange{ row in
+                        UserSettings.useLargeTitles.value = row.value!
+                        NotificationCenter.default.post(name: NSNotification.Name.LargeTitleSettingChanged, object: nil)
+                    }
+                }
         }
         
-        sendAnalyticsSwitch.isOn = UserSettings.sendAnalytics.value
-        sendCrashReportsSwitch.isOn = UserSettings.sendCrashReports.value
+        func themeRow(_ theme: Theme, name: String) -> ListCheckRow<Theme> {
+            return ListCheckRow<Theme>() {
+                $0.title = name
+                $0.selectableValue = theme
+                $0.value = UserSettings.theme == theme ? theme : nil
+                $0.cellUpdate{cell,_ in
+                    cell.initialise(withTheme: UserSettings.theme)
+                }
+            }
+        }
+        
+        form +++ SelectableSection<ListCheckRow<Theme>>(header: "Theme", footer: "Change the appearance of Reading List.", selectionType: .singleSelection(enableDeselection: false)) {
+                    $0.onSelectSelectableRow = { _,row in
+                        UserSettings.theme = row.value!
+                        NotificationCenter.default.post(name: Notification.Name.ThemeSettingChanged, object: nil)
+                    }
+                }
+                <<< themeRow(.normal, name: "Default")
+                <<< themeRow(.dark, name: "Dark")
+                <<< themeRow(.black, name: "Black")
+            
+            +++ Section(header: "Analytics", footer: "Anonymous crash reports and usage statistics can be reported to help improve Reading List.")
+                <<< SwitchRow() {
+                    $0.title = "Send Crash Reports"
+                    $0.cellUpdate{ cell,_ in
+                        cell.initialise(withTheme: UserSettings.theme)
+                    }
+                    $0.onChange(crashReportsSwitchChanged(_:))
+                    $0.value = UserSettings.sendAnalytics.value
+                }
+                <<< SwitchRow() {
+                    $0.title = "Send Analytics"
+                    $0.cellUpdate{ cell,_ in
+                        cell.initialise(withTheme: UserSettings.theme)
+                    }
+                    $0.onChange(analyticsSwitchChanged(_:))
+                    $0.value = UserSettings.sendCrashReports.value
+                }
+        
+        monitorThemeSetting()
     }
     
-    @IBAction func useLargeTitlesChanged(_ sender: UISwitch) {
-        UserSettings.useLargeTitles.value = sender.isOn
-    }
-    
-    @IBAction func crashReportsSwitchChanged(_ sender: UISwitch) {
-        UserSettings.sendCrashReports.value = sender.isOn
-        if sender.isOn {
+    func crashReportsSwitchChanged(_ sender: _SwitchRow) {
+        guard let switchValue = sender.value else { return }
+        UserSettings.sendCrashReports.value = switchValue
+        if switchValue {
             UserEngagement.logEvent(.enableCrashReports)
         }
         else {
             // If this is being turned off, let's try to persuade them to turn it back on
-            UserEngagement.logEvent(.disableCrashReports)
             persuadeToKeepOn(title: "Turn off crash reports?", message: "Anonymous crash reports alert me if this app crashes, to help me fix bugs. The information never include any information about your books. Are you sure you want to turn this off?") { result in
                 if result {
                     UserSettings.sendCrashReports.value = true
-                    sender.isOn = true
+                    sender.value = true
+                    sender.reload()
                 }
                 else {
                     UserEngagement.logEvent(.disableCrashReports)
@@ -46,9 +84,10 @@ class General: UITableViewController {
         }
     }
     
-    @IBAction func analyticsSwitchChanged(_ sender: UISwitch) {
-        UserSettings.sendAnalytics.value = sender.isOn
-        if sender.isOn {
+    func analyticsSwitchChanged(_ sender: _SwitchRow) {
+        guard let switchValue = sender.value else { return }
+        UserSettings.sendAnalytics.value = switchValue
+        if switchValue {
             UserEngagement.logEvent(.enableAnalytics)
         }
         else {
@@ -56,7 +95,8 @@ class General: UITableViewController {
             persuadeToKeepOn(title: "Turn off analytics?", message: "Anonymous usage statistics help prioritise development. These never include any information about your books. Are you sure you want to turn this off?") { result in
                 if result {
                     UserSettings.sendAnalytics.value = true
-                    sender.isOn = true
+                    sender.value = true
+                    sender.reload()
                 }
                 else {
                     UserEngagement.logEvent(.disableAnalytics)
@@ -74,5 +114,24 @@ class General: UITableViewController {
             completion(true)
         })
         present(alert, animated: true)
+    }
+}
+
+extension Notification.Name {
+    static let LargeTitleSettingChanged = Notification.Name("large-title-setting-changed")
+    static let ThemeSettingChanged = Notification.Name("theme-setting-changed")
+}
+
+extension UIViewController {
+    @available(iOS 11.0, *)
+    func monitorLargeTitleSetting() {
+        updateLargeTitleFromSetting()
+        NotificationCenter.default.addObserver(self, selector: #selector(updateLargeTitleFromSetting), name: NSNotification.Name.LargeTitleSettingChanged, object: nil)
+    }
+    
+    @available(iOS 11.0, *)
+    @objc private func updateLargeTitleFromSetting() {
+        guard let navController = navigationController else { return }
+        navController.navigationBar.prefersLargeTitles = UserSettings.useLargeTitles.value
     }
 }

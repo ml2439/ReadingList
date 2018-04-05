@@ -6,20 +6,13 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
-        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
-    <customFonts key="customFonts">
-        <array key="GillSans.ttc">
-            <string>GillSans</string>
-        </array>
-    </customFonts>
     <scenes>
-        <!--Navigation Controller-->
+        <!--Themed Navigation Controller-->
         <scene sceneID="LYU-Tg-nSL">
             <objects>
-                <navigationController id="u1U-1R-a4c" sceneMemberID="viewController">
+                <navigationController id="u1U-1R-a4c" customClass="ThemedNavigationController" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="csC-qd-88Z">
                         <rect key="frame" x="0.0" y="20" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -40,67 +33,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="0.0" reuseIdentifier="SearchResultCell" rowHeight="92" id="Dt1-Hz-udy" customClass="SearchResultCell" customModule="Reading_List" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="18" width="375" height="92"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Dt1-Hz-udy" id="k1s-Ma-rHQ">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="91.5"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iKu-Lo-dau">
-                                            <rect key="frame" x="67" y="11" width="292" height="20"/>
-                                            <accessibility key="accessibilityConfiguration" identifier="title"/>
-                                            <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="17"/>
-                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                            <nil key="highlightedColor"/>
-                                            <userDefinedRuntimeAttributes>
-                                                <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Headline"/>
-                                            </userDefinedRuntimeAttributes>
-                                        </label>
-                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="CoverPlaceholder" translatesAutoresizingMaskIntoConstraints="NO" id="7OI-Rt-2wK">
-                                            <rect key="frame" x="6" y="6" width="53" height="79.5"/>
-                                            <constraints>
-                                                <constraint firstAttribute="width" secondItem="7OI-Rt-2wK" secondAttribute="height" multiplier="1:1.5" id="Mv9-Q7-OlA"/>
-                                            </constraints>
-                                            <userDefinedRuntimeAttributes>
-                                                <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                                                    <real key="value" value="2"/>
-                                                </userDefinedRuntimeAttribute>
-                                                <userDefinedRuntimeAttribute type="number" keyPath="maskedCornerRadius">
-                                                    <real key="value" value="2"/>
-                                                </userDefinedRuntimeAttribute>
-                                            </userDefinedRuntimeAttributes>
-                                        </imageView>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Authors" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yKv-yI-wGM">
-                                            <rect key="frame" x="67" y="31" width="292" height="17.5"/>
-                                            <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="15"/>
-                                            <color key="textColor" white="0.33333333329999998" alpha="1" colorSpace="calibratedWhite"/>
-                                            <nil key="highlightedColor"/>
-                                            <userDefinedRuntimeAttributes>
-                                                <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Subhead"/>
-                                            </userDefinedRuntimeAttributes>
-                                        </label>
-                                    </subviews>
-                                    <constraints>
-                                        <constraint firstItem="7OI-Rt-2wK" firstAttribute="leading" secondItem="k1s-Ma-rHQ" secondAttribute="leading" constant="6" id="07g-Us-NGV"/>
-                                        <constraint firstItem="yKv-yI-wGM" firstAttribute="top" secondItem="iKu-Lo-dau" secondAttribute="bottom" id="6OX-FX-lLt"/>
-                                        <constraint firstItem="7OI-Rt-2wK" firstAttribute="top" secondItem="k1s-Ma-rHQ" secondAttribute="top" constant="6" id="LqY-qt-3Bv"/>
-                                        <constraint firstAttribute="bottom" secondItem="7OI-Rt-2wK" secondAttribute="bottom" constant="6" id="Os2-Tq-A3A"/>
-                                        <constraint firstItem="iKu-Lo-dau" firstAttribute="top" secondItem="k1s-Ma-rHQ" secondAttribute="topMargin" id="QPu-3D-fUv"/>
-                                        <constraint firstItem="iKu-Lo-dau" firstAttribute="leading" secondItem="7OI-Rt-2wK" secondAttribute="trailing" constant="8" id="iNs-07-YCj"/>
-                                        <constraint firstItem="yKv-yI-wGM" firstAttribute="leading" secondItem="iKu-Lo-dau" secondAttribute="leading" id="l8w-LV-GVY"/>
-                                        <constraint firstItem="yKv-yI-wGM" firstAttribute="trailing" secondItem="iKu-Lo-dau" secondAttribute="trailing" id="t7v-sM-MdT"/>
-                                        <constraint firstAttribute="trailingMargin" secondItem="iKu-Lo-dau" secondAttribute="trailing" id="wDP-vZ-gt3"/>
-                                    </constraints>
-                                </tableViewCellContentView>
-                                <connections>
-                                    <outlet property="authorOutlet" destination="yKv-yI-wGM" id="ihe-yx-FTN"/>
-                                    <outlet property="imageOutlet" destination="7OI-Rt-2wK" id="Mfp-y4-4fC"/>
-                                    <outlet property="titleOutlet" destination="iKu-Lo-dau" id="vaq-8O-o66"/>
-                                </connections>
-                            </tableViewCell>
-                        </prototypes>
                         <connections>
                             <outlet property="dataSource" destination="jSD-sd-NlC" id="b6g-eT-7oc"/>
                             <outlet property="delegate" destination="jSD-sd-NlC" id="lvs-K9-1Jx"/>
@@ -137,7 +69,4 @@
             <point key="canvasLocation" x="-1458" y="705"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="CoverPlaceholder" width="180" height="270"/>
-    </resources>
 </document>
