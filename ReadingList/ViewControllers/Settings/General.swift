@@ -49,6 +49,7 @@ class General: FormViewController {
                         cell.initialise(withTheme: UserSettings.theme)
                     }
                     $0.onChange(crashReportsSwitchChanged(_:))
+                    $0.value = UserSettings.sendAnalytics.value
                 }
                 <<< SwitchRow() {
                     $0.title = "Send Analytics"
@@ -56,6 +57,7 @@ class General: FormViewController {
                         cell.initialise(withTheme: UserSettings.theme)
                     }
                     $0.onChange(analyticsSwitchChanged(_:))
+                    $0.value = UserSettings.sendCrashReports.value
                 }
         
         monitorThemeSetting()
