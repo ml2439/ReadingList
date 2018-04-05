@@ -49,6 +49,7 @@ class BookTable: UITableViewController {
         if #available(iOS 11.0, *) {
             monitorLargeTitleSetting()
         }
+        monitorThemeSetting()
         
         super.viewDidLoad()
     }
@@ -59,6 +60,11 @@ class BookTable: UITableViewController {
             self.tableView.deselectRow(at: selectedIndexPath, animated: animated)
         }
         super.viewDidAppear(animated)
+    }
+    
+    override func initialise(withTheme theme: Theme) {
+        super.initialise(withTheme: theme)
+        tableFooter.textColor = theme.subtitleTextColor
     }
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -158,6 +164,7 @@ class BookTable: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "BookTableViewCell", for: indexPath) as! BookTableViewCell
         let book = resultsController.object(at: indexPath)
         cell.configureFrom(book)
+        cell.initialise(withTheme: UserSettings.theme)
         return cell
     }
     
@@ -168,6 +175,12 @@ class BookTable: UITableViewController {
         }
         else {
             performSegue(withIdentifier: "showDetail", sender: tableView.cellForRow(at: indexPath)!)
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, willDisplayHeaderView view:UIView, forSection: Int) {
+        if let headerTitle = view as? UITableViewHeaderFooterView {
+            headerTitle.textLabel?.textColor = .lightGray
         }
     }
     
@@ -189,7 +202,6 @@ class BookTable: UITableViewController {
         let selectedReadStates = sectionIndexByReadState.filter({selectedSectionIndices.contains($0.value)}).keys
         
         let optionsAlert = UIAlertController(title: "Edit \(selectedRows.count) book\(selectedRows.count == 1 ? "" : "s")", message: nil, preferredStyle: .actionSheet)
-
         optionsAlert.addAction(UIAlertAction(title: "Add to List", style: .default){ [unowned self] _ in
             let books = selectedRows.map(self.resultsController.object)
             
@@ -307,7 +319,7 @@ class BookTable: UITableViewController {
         optionsAlert.addAction(storyboardAction(title: "Scan Barcode", storyboard: Storyboard.ScanBarcode))
         optionsAlert.addAction(storyboardAction(title: "Search Online", storyboard: Storyboard.SearchOnline))
         optionsAlert.addAction(UIAlertAction(title: "Add Manually", style: .default){ [unowned self] _ in
-            self.present(EditBookMetadata(bookToCreateReadState: .toRead).inNavigationController(), animated: true, completion: nil)
+            self.present(EditBookMetadata(bookToCreateReadState: .toRead).inThemedNavController(), animated: true, completion: nil)
         })
         optionsAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         optionsAlert.popoverPresentationController?.barButtonItem = sender
@@ -355,7 +367,7 @@ class BookTable: UITableViewController {
         }
         deleteAction.image = #imageLiteral(resourceName: "Trash")
         let editAction = UIContextualAction(style: .normal, title: "Edit") { [unowned self] _,_,callback in
-            self.present(EditBookMetadata(bookToEditID: self.resultsController.object(at: indexPath).objectID).inNavigationController(), animated: true)
+            self.present(EditBookMetadata(bookToEditID: self.resultsController.object(at: indexPath).objectID).inThemedNavController(), animated: true)
             callback(true)
         }
         editAction.image = #imageLiteral(resourceName: "Literature")
@@ -366,7 +378,7 @@ class BookTable: UITableViewController {
     override func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         
         var actions = [UIContextualAction(style: .normal, title: "Log", image: #imageLiteral(resourceName: "Timetable")) { [unowned self] _,_,callback in
-            self.present(EditBookReadState(existingBookID: self.resultsController.object(at: indexPath).objectID).inNavigationController(), animated: true)
+            self.present(EditBookReadState(existingBookID: self.resultsController.object(at: indexPath).objectID).inThemedNavController(), animated: true)
             callback(true)
         }]
         

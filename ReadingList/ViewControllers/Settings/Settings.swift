@@ -2,6 +2,7 @@ import UIKit
 
 class Settings: UITableViewController {
 
+    @IBOutlet weak var header: XibView!
     static let appStoreAddress = "itunes.apple.com/gb/app/reading-list-book-tracker/id1217139955"
     static let feedbackEmailAddress = "feedback@readinglistapp.xyz"
     
@@ -11,10 +12,29 @@ class Settings: UITableViewController {
         if #available(iOS 11.0, *) {
             monitorLargeTitleSetting()
         }
+        monitorThemeSetting()
+        
+        DispatchQueue.main.async {
+            // isSplit does not work correctly before the view is loaded; run this later
+            if self.splitViewController!.isSplit { self.tableView.selectRow(at: IndexPath(row: 0, section: 0), animated: false, scrollPosition: .none) }
+        }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if let selectedIndex = tableView.indexPathForSelectedRow, !splitViewController!.isSplit {
+            tableView.deselectRow(at: selectedIndex, animated: true)
+        }
+    }
+
+    override func initialise(withTheme theme: Theme) {
+        super.initialise(withTheme: theme)
+        (header.contentView as! SettingsHeader).initialise(withTheme: theme)
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
+        cell.defaultInitialise(withTheme: UserSettings.theme)
         if !appDelegate.tabBarController.selectedSplitViewController!.isSplit { return cell }
         
         // In split mode, change the cells a little to look more like the standard iOS settings app
@@ -25,10 +45,8 @@ class Settings: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        switch (indexPath.section, indexPath.row) {
-        case (0, 1): UIApplication.shared.open(URL(string: "itms-apps://\(Settings.appStoreAddress)?action=write-review")!, options: [:])
-        default: return
-        }
+        guard indexPath == IndexPath(row: 1, section: 0) else { return }
+        UIApplication.shared.open(URL(string: "itms-apps://\(Settings.appStoreAddress)?action=write-review")!, options: [:])
         tableView.deselectRow(at: indexPath, animated: true)
     }
     

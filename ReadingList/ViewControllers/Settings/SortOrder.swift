@@ -10,6 +10,9 @@ class SortOrder: FormViewController {
             return ListCheckRow<TableSortOrder>() {
                 $0.title = tableSort.displayName
                 $0.selectableValue = tableSort
+                $0.cellUpdate{ cell,_ in
+                    cell.initialise(withTheme: UserSettings.theme)
+                }
                 $0.value = UserSettings.tableSortOrder == tableSort ? tableSort : nil
             }
         }
@@ -27,6 +30,8 @@ class SortOrder: FormViewController {
             <<< tableSortRow(.byDate)
             <<< tableSortRow(.byTitle)
             <<< tableSortRow(.byAuthor)
+        
+        monitorThemeSetting()
     }
     
     override func valueHasBeenChanged(for row: BaseRow, oldValue: Any?, newValue: Any?) {

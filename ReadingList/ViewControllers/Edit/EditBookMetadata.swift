@@ -55,7 +55,9 @@ class EditBookMetadata: FormViewController {
                 $0.cell.textField.autocapitalizationType = .words
                 $0.placeholder = "Title"
                 $0.value = book.title
+                $0.cellUpdate(TextRow.initialise)
                 $0.onChange{book.title = $0.value ?? ""}
+                $0.placeholderColor = UserSettings.theme.placeholderTextColor // cell update is not updating the cell on load
             }
             
             +++ AuthorSection(book: book, navigationController: navigationController!)
@@ -66,10 +68,15 @@ class EditBookMetadata: FormViewController {
                 $0.value = book.isbn13
                 $0.disabled = Condition(booleanLiteral: true)
                 $0.hidden = Condition(booleanLiteral: isAddingNewBook || book.isbn13 == nil)
+                $0.cellUpdate(TextRow.initialise)
+                $0.placeholderColor = UserSettings.theme.placeholderTextColor // cell update is not updating the cell on load
             }
             <<< IntRow() {
                 $0.title = "Page Count"
                 $0.value = book.pageCount?.intValue
+                $0.cellUpdate{ cell,_ in
+                    cell.initialise(withTheme: UserSettings.theme)
+                }
                 $0.onChange{
                     guard let pageCount = $0.value else { book.pageCount = nil; return }
                     guard pageCount >= 0 && pageCount <= Int32.max else { book.pageCount = nil; return }
@@ -79,6 +86,9 @@ class EditBookMetadata: FormViewController {
             <<< DateRow() {
                 $0.title = "Publication Date"
                 $0.value = book.publicationDate
+                $0.cellUpdate{ cell,_ in
+                    cell.initialise(withTheme: UserSettings.theme)
+                }
                 $0.onChange{book.publicationDate = $0.value}
             }
             <<< ButtonRow() { row in
@@ -86,9 +96,10 @@ class EditBookMetadata: FormViewController {
                 row.cellStyle = .value1
                 row.cellUpdate{cell,_ in
                     cell.textLabel!.textAlignment = .left
-                    cell.textLabel!.textColor = .black
                     cell.accessoryType = .disclosureIndicator
                     cell.detailTextLabel?.text = self.book.subjects.map{$0.name}.sorted().joined(separator: ", ")
+                    cell.initialise(withTheme: UserSettings.theme)
+                    cell.textLabel?.textColor = UserSettings.theme.titleTextColor
                 }
                 row.onCellSelection{ [unowned self] _,_ in
                     self.navigationController!.pushViewController(EditBookSubjectsForm(book: book, sender: row), animated: true)
@@ -98,6 +109,9 @@ class EditBookMetadata: FormViewController {
                 $0.title = "Cover Image"
                 $0.cell.height = {return 100}
                 $0.value = UIImage(optionalData: book.coverImage)
+                $0.cellUpdate{ cell,_ in
+                    cell.initialise(withTheme: UserSettings.theme)
+                }
                 $0.onChange{book.coverImage = $0.value == nil ? nil : UIImageJPEGRepresentation($0.value!, 0.7)}
             }
 
@@ -106,6 +120,9 @@ class EditBookMetadata: FormViewController {
                 $0.placeholder = "Description"
                 $0.value = book.bookDescription
                 $0.onChange{book.bookDescription = $0.value}
+                $0.cellUpdate{ cell,_ in
+                    cell.initialise(withTheme: UserSettings.theme)
+                }
                 $0.cellSetup{ [unowned self] cell, _ in
                     cell.height = {return (self.view.frame.height / 3) - 10}
                 }
@@ -116,17 +133,25 @@ class EditBookMetadata: FormViewController {
             <<< ButtonRow(updateFromGoogleRowKey){
                 $0.title = "Update from Google Books"
                 $0.hidden = Condition(booleanLiteral: isAddingNewBook || book.googleBooksId == nil)
+                $0.cellUpdate{ cell,_ in
+                    cell.initialise(withTheme: UserSettings.theme)
+                }
                 $0.onCellSelection(updateFromGooglePressed(cell:row:))
             }
             <<< ButtonRow(deleteRowKey){
                 $0.title = "Delete"
                 $0.cellSetup{cell, _ in cell.tintColor = UIColor.red}
                 $0.onCellSelection(deletePressed(cell:row:))
+                $0.cellUpdate{ cell,_ in
+                    cell.initialise(withTheme: UserSettings.theme)
+                }
                 $0.hidden = Condition(booleanLiteral: isAddingNewBook)
             }
         
         // Validate on start
         validate()
+        
+        monitorThemeSetting()
     }
     
     func configureNavigationItem() {
@@ -141,7 +166,7 @@ class EditBookMetadata: FormViewController {
         }
     }
     
-    func deletePressed(cell: ButtonCellOf<String>, row: ButtonRow) {
+    func deletePressed(cell: ButtonCellOf<String>, row: _ButtonRowOf<String>) {
         guard !isAddingNewBook else { return }
         
         let confirmDeleteAlert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
@@ -158,7 +183,7 @@ class EditBookMetadata: FormViewController {
         self.present(confirmDeleteAlert, animated: true, completion: nil)
     }
     
-    func updateFromGooglePressed(cell: ButtonCellOf<String>, row: ButtonRow) {
+    func updateFromGooglePressed(cell: ButtonCellOf<String>, row: _ButtonRowOf<String>) {
         let areYouSure = UIAlertController(title: "Confirm Update", message: "Updating from Google Books will overwrite any book metadata changes you have made manually. Are you sure you wish to proceed?", preferredStyle: .alert)
         areYouSure.addAction(UIAlertAction(title: "Update", style: .default){[unowned self] _ in self.updateBookFromGoogle()})
         areYouSure.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
@@ -233,7 +258,10 @@ class AuthorSection: MultivaluedSection {
             $0.addButtonProvider = { _ in
                 return ButtonRow() {
                     $0.title = "Add Author"
-                    $0.cellUpdate{ cell,_ in cell.textLabel!.textAlignment = .left }
+                    $0.cellUpdate{cell,_ in
+                        cell.textLabel!.textAlignment = .left
+                        cell.initialise(withTheme: UserSettings.theme)
+                    }
                 }
             }
             
@@ -306,7 +334,7 @@ final class AuthorRow: _LabelRow, RowType {
         cellStyle = .value1
 
         cellUpdate{ [unowned self] cell,row in
-            cell.textLabel!.textColor = UIColor.black
+            cell.initialise(withTheme: UserSettings.theme)
             cell.textLabel!.textAlignment = .left
             cell.textLabel!.text = [self.firstNames, self.lastName].compactMap{return $0}.joined(separator: " ")
         }
@@ -330,16 +358,20 @@ class AddAuthorForm: FormViewController {
         super.viewDidLoad()
 
         form +++ Section(header: "Author Name", footer: "")
-            <<< TextRow() {
-                $0.tag = firstNamesRow
+            <<< TextRow(firstNamesRow) {
                 $0.placeholder = "First Name(s)"
+                $0.cellUpdate(TextRow.initialise)
+                $0.placeholderColor = UserSettings.theme.placeholderTextColor // cell update is not updating the cell on load
                 $0.cell.textField.autocapitalizationType = .words
             }
-            <<< TextRow() {
-                $0.tag = lastNameRow
+            <<< TextRow(lastNameRow) {
                 $0.placeholder = "Last Name"
+                $0.cellUpdate(TextRow.initialise)
+                $0.placeholderColor = UserSettings.theme.placeholderTextColor // cell update is not updating the cell on load
                 $0.cell.textField.autocapitalizationType = .words
             }
+        
+        monitorThemeSetting()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -347,7 +379,7 @@ class AddAuthorForm: FormViewController {
 
         // The removal of the presenting row should be at the point of disappear, since viewWillDisappear
         // is called when a right-swipe is started - the user could reverse and bring this view back
-        let lastName = (form.rowBy(tag: lastNameRow) as! TextRow).value
+        let lastName = (form.rowBy(tag: lastNameRow) as! _TextRow).value
         if lastName?.isEmptyOrWhitespace != false {
             presentingRow.removeSelf()
         }
@@ -356,9 +388,9 @@ class AddAuthorForm: FormViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
-        if let lastName = (form.rowBy(tag: lastNameRow) as! TextRow).value, !lastName.isEmptyOrWhitespace {
+        if let lastName = (form.rowBy(tag: lastNameRow) as! _TextRow).value, !lastName.isEmptyOrWhitespace {
             presentingRow.lastName = lastName
-            presentingRow.firstNames = (form.rowBy(tag: firstNamesRow) as! TextRow).value
+            presentingRow.firstNames = (form.rowBy(tag: firstNamesRow) as! _TextRow).value
             presentingRow.reload()
             (presentingRow.section as! AuthorSection).rebuildAuthors()
         }
@@ -368,13 +400,13 @@ class AddAuthorForm: FormViewController {
 
 class EditBookSubjectsForm: FormViewController {
 
-    convenience init(book: Book, sender: ButtonRow) {
+    convenience init(book: Book, sender: _ButtonRowOf<String>) {
         self.init()
         self.book = book
         self.sendingRow = sender
     }
 
-    weak var sendingRow: ButtonRow!
+    weak var sendingRow: _ButtonRowOf<String>!
     
     // This form is only presented by a metadata form, so does not need to maintain
     // a strong reference to the book's object context
@@ -385,9 +417,10 @@ class EditBookSubjectsForm: FormViewController {
         
         form +++ MultivaluedSection(multivaluedOptions: [.Insert, .Delete], header: "Subjects", footer: "Add subjects to categorise this book") {
             $0.addButtonProvider = { _ in
-                return ButtonRow(){
+                return ButtonRow() {
                     $0.title = "Add New Subject"
-                    $0.cellUpdate{ cell,row in
+                    $0.cellUpdate{cell,_ in
+                        cell.defaultInitialise(withTheme: UserSettings.theme)
                         cell.textLabel?.textAlignment = .left
                     }
                 }
@@ -396,15 +429,19 @@ class EditBookSubjectsForm: FormViewController {
                 return TextRow() {
                     $0.placeholder = "Subject"
                     $0.cell.textField.autocapitalizationType = .words
+                    $0.cellUpdate(TextRow.initialise)
                 }
             }
             for subject in book.subjects.sorted(by: {return $0.name < $1.name}) {
                 $0 <<< TextRow() {
                     $0.value = subject.name
                     $0.cell.textField.autocapitalizationType = .words
+                    $0.cellUpdate(TextRow.initialise)
                 }
             }
         }
+        
+        monitorThemeSetting()
     }
     
     override func viewWillDisappear(_ animated: Bool) {

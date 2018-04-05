@@ -60,6 +60,8 @@ class AddToList: UITableViewController {
         fetchRequest.sortDescriptors = [NSSortDescriptor(\List.name)]
         resultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: PersistentStoreManager.container.viewContext, sectionNameKeyPath: nil, cacheName: nil)
         try! resultsController.performFetch()
+        
+        monitorThemeSetting()
     }
 
     @IBAction func cancelWasPressed(_ sender: Any) { navigationController!.dismiss(animated: true) }
@@ -82,6 +84,7 @@ class AddToList: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard indexPath.section == 0 else {
             let cell = tableView.dequeueReusableCell(withIdentifier: "NewListCell", for: indexPath)
+            cell.defaultInitialise(withTheme: UserSettings.theme)
             cell.textLabel!.text = "Add New List"
             cell.accessoryType = .disclosureIndicator
             return cell
@@ -89,6 +92,7 @@ class AddToList: UITableViewController {
 
         let cell = tableView.dequeueReusableCell(withIdentifier: "ExistingListCell", for: indexPath)
         let listObj = resultsController.object(at: indexPath)
+        cell.defaultInitialise(withTheme: UserSettings.theme)
         cell.textLabel!.text = listObj.name
         cell.detailTextLabel!.text = "\(listObj.books.count) book\(listObj.books.count == 1 ? "" : "s")"
         cell.isEnabled = true

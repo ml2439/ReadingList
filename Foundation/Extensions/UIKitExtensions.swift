@@ -1,6 +1,5 @@
 import Foundation
 import UIKit
-import SafariServices
 import AVFoundation
 
 extension UINib {
@@ -42,6 +41,12 @@ extension UIView {
         get {
             guard let views = superview?.subviews else { return [] }
             return views.filter{ $0 != self }
+        }
+    }
+    
+    func removeAllSubviews() {
+        for view in subviews {
+            view.removeFromSuperview()
         }
     }
 }
@@ -101,13 +106,11 @@ extension UIViewController {
         nav.modalPresentationStyle = modalPresentationStyle
         return nav
     }
-    
-    func presentSafariViewController(url: String) {
-        self.presentSafariViewController(url: URL(string: url)!)
-    }
-    
-    func presentSafariViewController(url: URL) {
-        self.present(SFSafariViewController(url: url), animated: true, completion: nil)
+
+    func inThemedNavController(modalPresentationStyle: UIModalPresentationStyle = .formSheet) -> UINavigationController {
+        let nav = ThemedNavigationController(rootViewController: self)
+        nav.modalPresentationStyle = modalPresentationStyle
+        return nav
     }
 }
 
@@ -115,6 +118,10 @@ extension UISplitViewController {
     
     var masterNavigationController: UINavigationController {
         return viewControllers[0] as! UINavigationController
+    }
+    
+    var detailNavigationController: UINavigationController? {
+        return viewControllers[safe: 1] as? UINavigationController
     }
     
     var masterNavigationRoot: UIViewController {
@@ -131,8 +138,7 @@ extension UISplitViewController {
     
     var displayedDetailViewController: UIViewController? {
         // If the master and detail are separate, the detail will be the second item in viewControllers
-        if isSplit,
-            let detailNavController = viewControllers[1] as? UINavigationController {
+        if isSplit, let detailNavController = detailNavigationController {
             return detailNavController.viewControllers.first
         }
         
@@ -258,6 +264,13 @@ extension UIScrollView {
 }
 
 extension UILabel {
+    convenience init(font: UIFont, color: UIColor, text: String) {
+        self.init()
+        self.font = font
+        self.textColor = color
+        self.text = text
+    }
+    
     var isTruncated: Bool {
         guard let labelText = text else { return false }
         let labelTextSize = (labelText as NSString).boundingRect(
@@ -298,8 +311,7 @@ extension UIColor {
         )
     }
     
-    static let flatGreen: UIColor = UIColor(fromHex: 0x2ecc71)
-    static let darkGray: UIColor = UIColor(fromHex: 0x4A4A4A)
+    static let flatGreen = UIColor(fromHex: 0x2ecc71)
     static let buttonBlue = UIColor(red: 0, green: 0.478431, blue: 1, alpha: 1)
 }
 
@@ -366,6 +378,16 @@ extension UITableViewCell {
             isUserInteractionEnabled = newValue
             textLabel?.isEnabled = newValue
             detailTextLabel?.isEnabled = newValue
+        }
+    }
+    
+    var selectedBackgroundColor: UIColor? {
+        get {
+            return selectedBackgroundView?.backgroundColor
+        }
+        set {
+            guard let newValue = newValue else { return }
+            selectedBackgroundView = UIView(backgroundColor: newValue)
         }
     }
 }

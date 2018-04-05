@@ -9,6 +9,19 @@ class BookTableViewCell: UITableViewCell {
 
     private var coverImageRequest: HTTP.Request?
     
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        initialise(withTheme: UserSettings.theme)
+    }
+    
+    func initialise(withTheme theme: Theme) {
+        backgroundColor = theme.cellBackgroundColor
+        selectedBackgroundColor = theme.selectedCellBackgroundColor
+        titleLabel.textColor = theme.titleTextColor
+        authorsLabel.textColor = theme.subtitleTextColor
+        readTimeLabel?.textColor = theme.subtitleTextColor
+    }
+    
     func configureFrom(_ book: Book) {
         titleLabel.text = book.title
         authorsLabel.text = book.authorDisplay

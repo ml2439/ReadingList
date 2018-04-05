@@ -84,6 +84,12 @@ extension NSSortDescriptor {
     }
 }
 
+extension Collection {
+    subscript (safe index: Index) -> Element? {
+        return indices.contains(index) ? self[index] : nil
+    }
+}
+
 extension URL {
     static func temporary(fileWithName fileName: String) -> URL {
         return URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(fileName)

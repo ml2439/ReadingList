@@ -8,6 +8,11 @@ class DataVC: UITableViewController {
 
     var importUrl: URL?
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        monitorThemeSetting()
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         // This view can be loaded from an "Open In" action. If this happens, the importUrl property will be set.
@@ -15,6 +20,14 @@ class DataVC: UITableViewController {
             confirmImport(fromFile: importUrl)
             self.importUrl = nil
         }
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
+        let theme = UserSettings.theme
+        cell.backgroundColor = theme.cellBackgroundColor
+        cell.selectedBackgroundColor = theme.cellSeparatorColor
+        return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

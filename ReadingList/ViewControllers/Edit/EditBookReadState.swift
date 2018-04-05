@@ -41,6 +41,9 @@ class EditBookReadState: FormViewController {
             <<< SegmentedRow<BookReadState>(readStateKey) {
                 $0.options = [.toRead, .reading, .finished]
                 $0.value = book.readState
+                $0.cellUpdate{ cell,_ in
+                    cell.initialise(withTheme: UserSettings.theme)
+                }
                 $0.onChange {[unowned self] row in
                     self.book.readState = row.value!
                     
@@ -74,6 +77,9 @@ class EditBookReadState: FormViewController {
                 $0.title = "Started"
                 //$0.maximumDate = Date.startOfToday()
                 $0.value = book.startedReading ?? now
+                $0.cellUpdate{ cell,_ in
+                    cell.initialise(withTheme: UserSettings.theme)
+                }
                 $0.onChange {[unowned self] cell in
                     print("set started reading")
                     self.book.startedReading = cell.value
@@ -85,6 +91,9 @@ class EditBookReadState: FormViewController {
                 $0.hidden = Condition.function([readStateKey]) {[unowned self] _ in
                     return self.book.readState != .finished
                 }
+                $0.cellUpdate{ cell,_ in
+                    cell.initialise(withTheme: UserSettings.theme)
+                }
                 $0.value = book.finishedReading ?? now
                 $0.onChange {[unowned self] cell in
                     print("set finished reading")
@@ -94,6 +103,9 @@ class EditBookReadState: FormViewController {
             <<< IntRow(currentPageKey) {
                 $0.title = "Current Page"
                 $0.value = book.currentPage?.intValue
+                $0.cellUpdate{ cell,_ in
+                    cell.initialise(withTheme: UserSettings.theme)
+                }
                 $0.hidden = Condition.function([readStateKey]) { [unowned self] _ in
                     return self.book.readState != .reading
                 }
@@ -106,6 +118,9 @@ class EditBookReadState: FormViewController {
             <<< TextAreaRow(){
                 $0.placeholder = "Add your personal notes here..."
                 $0.value = book.notes
+                $0.cellUpdate{ cell,_ in
+                    cell.initialise(withTheme: UserSettings.theme)
+                }
                 $0.cellSetup{ [unowned self] cell, _ in
                     cell.height = {return (self.view.frame.height / 3) - 10}
                 }
@@ -113,6 +128,8 @@ class EditBookReadState: FormViewController {
                     self.book.notes = cell.value
                 }
         }
+        
+        monitorThemeSetting()
     }
     
     func configureNavigationItem() {

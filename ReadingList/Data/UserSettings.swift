@@ -54,6 +54,13 @@ class UserSettings {
     static var useLargeTitles = UserSetting<Bool>(key: "useLargeTitles", defaultValue: true)
     // This is not always true, tip functionality predates this setting...
     static var hasEverTipped = UserSetting<Bool>(key: "hasEverTipped", defaultValue: false)
+    
+    private static var innerTheme = UserSetting<Int>(key: "theme", defaultValue: Theme.normal.rawValue)
+    
+    static var theme: Theme {
+        get { return Theme(rawValue: innerTheme.value)! }
+        set { innerTheme.value = newValue.rawValue }
+    }
 }
 
 extension Notification.Name {
