@@ -15,7 +15,7 @@
         <!--Book Details-->
         <scene sceneID="leL-vZ-Myr">
             <objects>
-                <viewController storyboardIdentifier="BookDetails" id="7uR-tE-cQd" customClass="BookDetails" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="BookDetails" extendedLayoutIncludesOpaqueBars="YES" id="7uR-tE-cQd" customClass="BookDetails" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8ct-o2-5pB">
                         <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

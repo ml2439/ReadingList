@@ -11,59 +11,71 @@ import SafariServices
 }
 
 extension Theme {
+    var isDark: Bool {
+        return self == .dark || self == .black
+    }
+    
     var keyboardAppearance: UIKeyboardAppearance {
-        return self == .normal ? .default : .dark
+        return isDark ? .dark : .default
     }
     
     var barStyle: UIBarStyle {
-        return self == .normal ? .default : .black
-    }
-    
-    var placeholderTextColor: UIColor {
-        return subtitleTextColor // TODO: This might be too light
+        return isDark ? .black : .default
     }
     
     var titleTextColor: UIColor {
-        return self == .normal ? .black : .white
+        return isDark ? .white : .black
     }
     
     var subtitleTextColor: UIColor {
         switch self {
-        case .normal: return .darkGray
-        case .dark: return .lightGray
-        case .black: return .lightGray
+        case .normal: return UIColor(fromHex: 0x686868)
+        case .dark: return .lightGray // TODO
+        case .black: return .lightGray // TODO
+        }
+    }
+    
+    var placeholderTextColor: UIColor {
+        switch self {
+        case .normal: return UIColor(fromHex: 0xcdcdd3)
+        case .dark: return UIColor(fromHex: 0x303030)
+        case .black: return UIColor(fromHex: 0x262626)
+        }
+    }
+    
+    var tableBackgroundColor: UIColor {
+        switch self {
+        case .normal: return .groupTableViewBackground
+        case .dark: return UIColor(fromHex: 0x282828)
+        case .black: return UIColor(fromHex: 0x080808)
         }
     }
     
     var cellBackgroundColor: UIColor {
-        switch self {
-        case .normal: return .white
-        case .dark: return UIColor(fromHex: 0x22252e)
-        case .black: return .black
-        }
+        return viewBackgroundColor
     }
     
     var selectedCellBackgroundColor: UIColor {
-        return tableSeparatorColor
+        switch self {
+        case .normal: return UIColor(fromHex: 0xd9d9d9)
+        case .dark: return .black
+        case .black: return UIColor(fromHex: 0x191919)
+        }
+    }
+    
+    var cellSeparatorColor: UIColor {
+        switch self {
+        case .normal: return UIColor(fromHex: 0xd6d6d6)
+        case .dark: return UIColor(fromHex: 0x4A4A4A)
+        case .black: return UIColor(fromHex: 0x282828)
+        }
     }
     
     var viewBackgroundColor: UIColor {
         switch self {
         case .normal: return .white
-        case .dark: return UIColor(fromHex: 0x2d3038)
+        case .dark: return UIColor(fromHex: 0x191919)
         case .black: return .black
-        }
-    }
-    
-    var tableBackgroundColor: UIColor {
-        return self == .normal ? .groupTableViewBackground : viewBackgroundColor
-    }
-
-    var tableSeparatorColor: UIColor {
-        switch self {
-        case .normal: return UIColor(displayP3Red: 0.783922, green: 0.780392, blue: 0.8, alpha: 1)
-        case .dark: return .darkGray
-        case .black: return .veryDarkGray
         }
     }
 }
@@ -101,7 +113,7 @@ extension UIViewController {
     
     func presentThemedSafariViewController(url: URL) {
         let safariVC = SFSafariViewController(url: url)
-        if UserSettings.theme != .normal {
+        if UserSettings.theme.isDark {
             safariVC.preferredBarTintColor = .black
         }
         self.present(safariVC, animated: true, completion: nil)
@@ -111,6 +123,9 @@ extension UIViewController {
 extension UITabBarController: ThemeableViewController {
     func initialise(withTheme theme: Theme) {
         tabBar.initialise(withTheme: theme)
+
+        let useTranslucency = traitCollection.horizontalSizeClass != .regular
+        tabBar.setTranslucency(useTranslucency, colorIfNotTranslucent: theme.viewBackgroundColor)
     }
 }
 
@@ -157,6 +172,7 @@ class ThemedSplitViewController: UISplitViewController, UISplitViewControllerDel
         super.viewDidLoad()
         preferredDisplayMode = .allVisible
         delegate = self
+
         monitorThemeSetting()
     }
     
@@ -164,38 +180,46 @@ class ThemedSplitViewController: UISplitViewController, UISplitViewControllerDel
         return true
     }
     
-    func initialise(withTheme theme: Theme) { }
-    
-    func themeSettingDidChange() {
-        configureBarTranslucency()
-    }
-    
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        // This is called at app startup
         super.traitCollectionDidChange(previousTraitCollection)
         if previousTraitCollection?.horizontalSizeClass != traitCollection.horizontalSizeClass {
-            configureBarTranslucency()
+            initialise(withTheme: UserSettings.theme)
         }
     }
     
-    func configureBarTranslucency() {
+    func initialise(withTheme theme: Theme) {
+        view.backgroundColor = theme.cellSeparatorColor
+        
         // This attempts to allieviate this bug: https://stackoverflow.com/q/32507975/5513562
-        // When the barTintColor is set, the translucency is reduced. This is far easier than dealing with all
-        // the side affects of setting isTranslucent to false.
-        let reduceTranslucency = traitCollection.horizontalSizeClass == .regular
-        masterNavigationController.navigationBar.barTintColor = reduceTranslucency ? UserSettings.theme.viewBackgroundColor : nil
-        tabBarController!.tabBar.barTintColor = reduceTranslucency ? UserSettings.theme.viewBackgroundColor : nil
+        (masterNavigationController as! ThemedNavigationController).initialise(withTheme: theme)
+        (detailNavigationController as? ThemedNavigationController)?.initialise(withTheme: theme)
+        (tabBarController as! TabBarController).initialise(withTheme: theme)
     }
 }
 
 class ThemedNavigationController: UINavigationController, ThemeableViewController {
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        monitorThemeSetting()
+    var hasAppeared = false
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        // Determine whether the nav bar should be transparent or not from the horizontal
+        // size class of the parent split view controller. We can't ask *this* view controller,
+        // as its size class is not necessarily the same as the whole app.
+        // Run this after the view has loaded so that the parent VC is available.
+        if !hasAppeared {
+            monitorThemeSetting()
+            hasAppeared = true
+        }
     }
 
     func initialise(withTheme theme: Theme) {
-        self.navigationBar.initialise(withTheme: theme)
-        self.toolbar?.initialise(withTheme: theme)
+        toolbar?.initialise(withTheme: theme)
+        navigationBar.initialise(withTheme: theme)
+        
+        let translucent = splitViewController?.traitCollection.horizontalSizeClass != .regular
+        navigationBar.setTranslucency(translucent, colorIfNotTranslucent: UserSettings.theme.viewBackgroundColor)
     }
 }
 
@@ -206,6 +230,11 @@ extension UINavigationBar {
         if #available(iOS 11.0, *) {
             largeTitleTextAttributes = [NSAttributedStringKey.foregroundColor: theme.titleTextColor]
         }
+    }
+    
+    func setTranslucency(_ translucent: Bool, colorIfNotTranslucent: UIColor) {
+        isTranslucent = translucent
+        barTintColor = translucent ? nil : colorIfNotTranslucent
     }
 }
 
@@ -220,8 +249,7 @@ extension UISearchBar {
 extension UITableView {
     func initialise(withTheme theme: Theme) {
         backgroundColor = theme.tableBackgroundColor
-        separatorColor = theme.tableSeparatorColor
-        sectionIndexColor = theme.subtitleTextColor
+        separatorColor = theme.cellSeparatorColor
         if let searchBar = tableHeaderView as? UISearchBar {
             searchBar.initialise(withTheme: theme)
         }
@@ -231,6 +259,11 @@ extension UITableView {
 extension UITabBar {
     func initialise(withTheme theme: Theme) {
         barStyle = theme.barStyle
+    }
+    
+    func setTranslucency(_ translucent: Bool, colorIfNotTranslucent: UIColor) {
+        isTranslucent = translucent
+        barTintColor = translucent ? nil : colorIfNotTranslucent
     }
 }
 

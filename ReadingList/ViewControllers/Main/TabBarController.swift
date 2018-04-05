@@ -61,12 +61,6 @@ class TabBarController: UITabBarController {
         selectedBookTable!.simulateBookSelection(book.objectID, allowTableObscuring: allowTableObscuring)
     }
     
-    func themeSettingDidChange() {
-        viewControllers!.map{$0 as! UISplitViewController}.forEach{
-            $0.view.backgroundColor = UserSettings.theme.tableSeparatorColor
-        }
-    }
-    
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
         // Scroll to top of table if the selected tab is already selected
         guard let selectedSplitViewController = selectedSplitViewController, item.tag == selectedIndex else { return }

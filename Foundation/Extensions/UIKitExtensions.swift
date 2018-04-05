@@ -120,6 +120,10 @@ extension UISplitViewController {
         return viewControllers[0] as! UINavigationController
     }
     
+    var detailNavigationController: UINavigationController? {
+        return viewControllers[safe: 1] as? UINavigationController
+    }
+    
     var masterNavigationRoot: UIViewController {
         return masterNavigationController.viewControllers.first!
     }
@@ -134,8 +138,7 @@ extension UISplitViewController {
     
     var displayedDetailViewController: UIViewController? {
         // If the master and detail are separate, the detail will be the second item in viewControllers
-        if isSplit,
-            let detailNavController = viewControllers[1] as? UINavigationController {
+        if isSplit, let detailNavController = detailNavigationController {
             return detailNavController.viewControllers.first
         }
         
@@ -308,9 +311,7 @@ extension UIColor {
         )
     }
     
-    static let flatGreen: UIColor = UIColor(fromHex: 0x2ecc71)
-    static let darkGray: UIColor = UIColor(fromHex: 0x4A4A4A)
-    static let veryDarkGray: UIColor = UIColor(fromHex: 0x171717)
+    static let flatGreen = UIColor(fromHex: 0x2ecc71)
     static let buttonBlue = UIColor(red: 0, green: 0.478431, blue: 1, alpha: 1)
 }
 

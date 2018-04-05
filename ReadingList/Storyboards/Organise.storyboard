@@ -21,7 +21,7 @@
         <!--Organise-->
         <scene sceneID="WvJ-QL-gyx">
             <objects>
-                <tableViewController clearsSelectionOnViewWillAppear="NO" id="RiX-qo-4E3" customClass="Organise" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController extendedLayoutIncludesOpaqueBars="YES" clearsSelectionOnViewWillAppear="NO" id="RiX-qo-4E3" customClass="Organise" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="yuf-Gn-OLe">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -74,7 +74,7 @@
         <!--My List-->
         <scene sceneID="31O-I5-KfZ">
             <objects>
-                <tableViewController title="My List" id="ggN-hf-l8Q" customClass="ListBookTable" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController title="My List" extendedLayoutIncludesOpaqueBars="YES" id="ggN-hf-l8Q" customClass="ListBookTable" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="92" sectionHeaderHeight="18" sectionFooterHeight="18" id="gO0-S4-wGF">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -130,6 +130,6 @@
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="QZG-yd-ESl"/>
-        <segue reference="xJE-Yc-3El"/>
+        <segue reference="C7a-WA-Ju3"/>
     </inferredMetricsTieBreakers>
 </document>

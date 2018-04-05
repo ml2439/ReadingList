@@ -61,7 +61,7 @@
         <!--Sort-->
         <scene sceneID="5sE-wh-F5j">
             <objects>
-                <viewController id="ZZe-aQ-lAa" customClass="SortOrder" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController extendedLayoutIncludesOpaqueBars="YES" id="ZZe-aQ-lAa" customClass="SortOrder" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Jbn-GJ-4TP">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -93,7 +93,7 @@
         <!--Data-->
         <scene sceneID="pnL-8r-dkH">
             <objects>
-                <tableViewController title="Data" id="cE8-jq-0ch" customClass="DataVC" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController title="Data" extendedLayoutIncludesOpaqueBars="YES" id="cE8-jq-0ch" customClass="DataVC" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" sectionFooterHeight="-1" id="oBy-tm-xDQ">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -178,7 +178,7 @@
         <!--Settings-->
         <scene sceneID="zhJ-K2-oBR">
             <objects>
-                <tableViewController clearsSelectionOnViewWillAppear="NO" id="8gH-PF-s8P" customClass="Settings" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController extendedLayoutIncludesOpaqueBars="YES" clearsSelectionOnViewWillAppear="NO" id="8gH-PF-s8P" customClass="Settings" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" sectionFooterHeight="-1" id="ZqF-cs-1ND">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -382,7 +382,7 @@
         <!--About-->
         <scene sceneID="Maf-fZ-t6z">
             <objects>
-                <tableViewController id="IOC-QW-2ti" customClass="About" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController extendedLayoutIncludesOpaqueBars="YES" id="IOC-QW-2ti" customClass="About" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" sectionFooterHeight="-1" id="zoS-iR-X6u">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -515,7 +515,7 @@
         <!--General-->
         <scene sceneID="a85-mC-3xr">
             <objects>
-                <viewController id="kjU-uA-m7B" customClass="General" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController extendedLayoutIncludesOpaqueBars="YES" id="kjU-uA-m7B" customClass="General" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="30c-Ac-DNi">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -563,7 +563,7 @@
         <!--Attributions-->
         <scene sceneID="Iwb-BL-imb">
             <objects>
-                <tableViewController id="JrL-ql-2d7" customClass="Attributions" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController extendedLayoutIncludesOpaqueBars="YES" id="JrL-ql-2d7" customClass="Attributions" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="60" estimatedRowHeight="70" sectionHeaderHeight="18" sectionFooterHeight="18" id="XCM-GF-8zF">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -845,7 +845,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         <!--Tip-->
         <scene sceneID="IIr-lP-zEd">
             <objects>
-                <viewController id="PnR-pR-8bR" customClass="Tip" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController extendedLayoutIncludesOpaqueBars="YES" id="PnR-pR-8bR" customClass="Tip" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="4Wh-yM-ls1">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -942,7 +942,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         <!--Debug-->
         <scene sceneID="22m-IV-Wuh">
             <objects>
-                <viewController id="fPM-z4-aAz" customClass="Debug" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController extendedLayoutIncludesOpaqueBars="YES" id="fPM-z4-aAz" customClass="Debug" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="VER-G2-dTe">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -973,6 +973,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         <image name="settings-filled" width="25" height="25"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="EJ8-E3-EtX"/>
+        <segue reference="R0B-Tl-MCg"/>
     </inferredMetricsTieBreakers>
 </document>

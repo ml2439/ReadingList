@@ -26,7 +26,7 @@ class DataVC: UITableViewController {
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
         let theme = UserSettings.theme
         cell.backgroundColor = theme.cellBackgroundColor
-        cell.selectedBackgroundColor = theme.tableSeparatorColor
+        cell.selectedBackgroundColor = theme.cellSeparatorColor
         return cell
     }
     

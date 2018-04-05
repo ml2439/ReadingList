@@ -16,7 +16,7 @@ class BookTableViewCell: UITableViewCell {
     
     func initialise(withTheme theme: Theme) {
         backgroundColor = theme.cellBackgroundColor
-        selectedBackgroundColor = theme.tableSeparatorColor
+        selectedBackgroundColor = theme.selectedCellBackgroundColor
         titleLabel.textColor = theme.titleTextColor
         authorsLabel.textColor = theme.subtitleTextColor
         readTimeLabel?.textColor = theme.subtitleTextColor

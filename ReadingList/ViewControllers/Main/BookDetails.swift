@@ -330,7 +330,7 @@ extension BookDetails: ThemeableViewController {
         titles.forEach{$0.textColor = theme.titleTextColor}
         tableSubHeadings.forEach{$0.textColor = theme.subtitleTextColor}
         tableVaules.forEach{$0.textColor = theme.titleTextColor}
-        separatorLines.forEach{$0.backgroundColor = theme.tableSeparatorColor}
+        separatorLines.forEach{$0.backgroundColor = theme.cellSeparatorColor}
         listsStack.arrangedSubviews.forEach{($0 as! UILabel).textColor = theme.titleTextColor}
     }
 }
