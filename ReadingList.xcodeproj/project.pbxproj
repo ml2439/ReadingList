@@ -866,7 +866,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ \"${CONFIGURATION}\" = \"Release\" ]; then\n    /usr/libexec/PlistBuddy -c \"Set :Fabric:APIKey $FABRIC_API_KEY\" Info.plist\n    \"${PODS_ROOT}/Fabric/run\" \"$FABRIC_API_KEY\" \"$FABRIC_BUILD_SECRET\"\nfi";
+			shellScript = "if [ \"${CONFIGURATION}\" = \"Release\" ]; then\n    /usr/libexec/PlistBuddy -c \"Set :Fabric:APIKey $FABRIC_API_KEY\" \"${SRCROOT}/ReadingList/Info.plist\"\n    \"${PODS_ROOT}/Fabric/run\" \"$FABRIC_API_KEY\" \"$FABRIC_BUILD_SECRET\"\nfi";
 			showEnvVarsInLog = 0;
 		};
 		5A4BD4901CFCA3B4FED56DFE /* [CP] Copy Pods Resources */ = {
