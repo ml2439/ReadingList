@@ -538,6 +538,7 @@ extension BookTable: NSFetchedResultsControllerDelegate {
 
 extension BookTable: UIViewControllerPreviewingDelegate {
     func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
+        guard !tableView.isEditing else { return nil }
         guard let indexPath = tableView.indexPathForRow(at: location), let cell = tableView.cellForRow(at: indexPath) else {
             return nil
         }
