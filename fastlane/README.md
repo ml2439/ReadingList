@@ -31,6 +31,11 @@ Increments the build number, commits with a special commit message to trigger CI
 fastlane ios deploy
 ```
 Push a new beta build to TestFlight (not externally released)
+### ios archive
+```
+fastlane ios archive
+```
+
 ### ios publish
 ```
 fastlane ios publish

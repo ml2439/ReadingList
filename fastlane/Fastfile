@@ -36,10 +36,13 @@ platform :ios do
     if is_ci
       configure_keychain
     end
-    build_app(workspace: "ReadingList.xcworkspace", scheme: "ReadingList")
+    archive
     upload_to_testflight(skip_submission: true, skip_waiting_for_build_processing: true)
   end
 
+  lane :archive do
+    build_app(workspace: "ReadingList.xcworkspace", scheme: "ReadingList")
+  end
 
   lane :publish do
     snaps

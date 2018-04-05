@@ -689,13 +689,14 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 495C5D341BF1404D00E00C07 /* Build configuration list for PBXNativeTarget "ReadingList" */;
 			buildPhases = (
+				1C4C25CB2076D45F004A69B8 /* Set Fabric API Key */,
 				B2E0720CB7A9216CA8E003A9 /* [CP] Check Pods Manifest.lock */,
 				495C5D081BF1404D00E00C07 /* Sources */,
 				495C5D091BF1404D00E00C07 /* Frameworks */,
 				495C5D0A1BF1404D00E00C07 /* Resources */,
 				0D8E30982D54AB308B0C0608 /* [CP] Embed Pods Frameworks */,
 				F60DDB1727D6F85A9BA8603E /* [CP] Copy Pods Resources */,
-				4937A1491EA0323200A3B0D1 /* ShellScript */,
+				4937A1491EA0323200A3B0D1 /* Run Fabric script */,
 			);
 			buildRules = (
 			);
@@ -855,18 +856,34 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ReadingList/Pods-ReadingList-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		4937A1491EA0323200A3B0D1 /* ShellScript */ = {
+		1C4C25CB2076D45F004A69B8 /* Set Fabric API Key */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
+			name = "Set Fabric API Key";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ \"${CONFIGURATION}\" = \"Release\" ]; then\n    /usr/libexec/PlistBuddy -c \"Set :Fabric:APIKey $FABRIC_API_KEY\" \"${SRCROOT}/ReadingList/Info.plist\"\n    \"${PODS_ROOT}/Fabric/run\" \"$FABRIC_API_KEY\" \"$FABRIC_BUILD_SECRET\"\nfi";
+			shellScript = "if [ \"${CONFIGURATION}\" = \"Release\" ]; then\n    /usr/libexec/PlistBuddy -c \"Set :Fabric:APIKey $FABRIC_API_KEY\" \"${SRCROOT}/ReadingList/Info.plist\"\nfi";
+			showEnvVarsInLog = 0;
+		};
+		4937A1491EA0323200A3B0D1 /* Run Fabric script */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Run Fabric script";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ \"${CONFIGURATION}\" = \"Release\" ]; then\n    \"${PODS_ROOT}/Fabric/run\" \"$FABRIC_API_KEY\" \"$FABRIC_BUILD_SECRET\"\nfi";
 			showEnvVarsInLog = 0;
 		};
 		5A4BD4901CFCA3B4FED56DFE /* [CP] Copy Pods Resources */ = {
