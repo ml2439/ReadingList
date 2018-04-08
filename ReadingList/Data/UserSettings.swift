@@ -21,7 +21,6 @@ enum TableSortOrder: Int {
 class UserSettings {
     
     static func selectedBookSortDescriptors(forReadState readState: BookReadState) -> [NSSortDescriptor] {
-        
         switch UserSettings.tableSortOrders[readState]! {
         case .byTitle:
             return [NSSortDescriptor(\Book.title)]
@@ -36,14 +35,25 @@ class UserSettings {
         }
     }
     
+    static func defaultSortOrder(forReadState readState: BookReadState) -> TableSortOrder {
+        /*
+         Legacy sort orders:
+         case byDate = 0; case byTitle = 1; case byAuthor = 2
+        */
+        let legacySortOrder = UserDefaults.standard.integer(forKey: "tableSortOrder")
+        if legacySortOrder == 1 { return .byTitle }
+        if legacySortOrder == 2 { return .byAuthor }
+        switch readState {
+        case .toRead: return .customOrder
+        case .reading: return .byStartDate
+        case .finished: return .byFinishDate
+        }
+    }
+    
     static var tableSortOrders: [BookReadState: TableSortOrder] {
-        return [BookReadState: TableSortOrder](dictionaryLiteral:
-                                                (.toRead, toReadSortOrder.value),
-                                                (.reading, readingSortOrder.value),
-                                                (.finished, finishedSortOrder.value))
+        return [BookReadState: TableSortOrder](dictionaryLiteral: (.toRead, toReadSortOrder.value), (.reading, readingSortOrder.value), (.finished, finishedSortOrder.value))
     }
 
-    static private var legacyTableSortOrder = UserSetting<Int?>(key: "tableSortOrder", defaultValue: nil)
     static var sendAnalytics = UserSetting<Bool>(key: "sendAnalytics", defaultValue: true)
     static var sendCrashReports = UserSetting<Bool>(key: "sendCrashReports", defaultValue: true)
     static var useLargeTitles = UserSetting<Bool>(key: "useLargeTitles", defaultValue: true)
@@ -53,9 +63,9 @@ class UserSettings {
     
     static var theme = WrappedUserSetting<Theme>(key: "theme", defaultValue: Theme.normal)
 
-    static var toReadSortOrder = WrappedUserSetting<TableSortOrder>(key: "toReadSortOrder", defaultValue: .customOrder)
-    static var readingSortOrder = WrappedUserSetting<TableSortOrder>(key: "readingSortOrder", defaultValue: .byStartDate)
-    static var finishedSortOrder = WrappedUserSetting<TableSortOrder>(key: "finishedSortOrder", defaultValue: .byFinishDate)
+    static var toReadSortOrder = WrappedUserSetting<TableSortOrder>(key: "toReadSortOrder", defaultValue: defaultSortOrder(forReadState: .toRead))
+    static var readingSortOrder = WrappedUserSetting<TableSortOrder>(key: "readingSortOrder", defaultValue: defaultSortOrder(forReadState: .reading))
+    static var finishedSortOrder = WrappedUserSetting<TableSortOrder>(key: "finishedSortOrder", defaultValue: defaultSortOrder(forReadState: .finished))
 }
 
 extension Notification.Name {
