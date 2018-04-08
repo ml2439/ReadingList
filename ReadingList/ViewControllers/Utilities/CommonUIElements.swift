@@ -23,7 +23,7 @@ class StandardEmptyDataset {
     
     static func title(withText text: String) -> NSAttributedString {
         return NSAttributedString(string: text, attributes: [NSAttributedStringKey.font: UIFont.gillSans(ofSize: 32),
-                                                             NSAttributedStringKey.foregroundColor: UserSettings.theme.titleTextColor])
+                                                             NSAttributedStringKey.foregroundColor: UserSettings.theme.value.titleTextColor])
     }
     
     static func description(withMarkdownText markdownText: String) -> NSAttributedString {
@@ -31,7 +31,7 @@ class StandardEmptyDataset {
         let boldFont = UIFont.gillSansSemiBold(forTextStyle: .title2)
         
         let markedUpString = NSAttributedString.createFromMarkdown(markdownText, font: bodyFont, boldFont: boldFont)
-        markedUpString.addAttribute(NSAttributedStringKey.foregroundColor, value: UserSettings.theme.subtitleTextColor, range: NSRange(location: 0, length:             markedUpString.string.count))
+        markedUpString.addAttribute(NSAttributedStringKey.foregroundColor, value: UserSettings.theme.value.subtitleTextColor, range: NSRange(location: 0, length:             markedUpString.string.count))
         return markedUpString
     }
 }

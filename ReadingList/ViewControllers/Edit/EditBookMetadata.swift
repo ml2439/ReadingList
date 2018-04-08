@@ -57,7 +57,7 @@ class EditBookMetadata: FormViewController {
                 $0.value = book.title
                 $0.cellUpdate(TextRow.initialise)
                 $0.onChange{book.title = $0.value ?? ""}
-                $0.placeholderColor = UserSettings.theme.placeholderTextColor // cell update is not updating the cell on load
+                $0.placeholderColor = UserSettings.theme.value.placeholderTextColor // cell update is not updating the cell on load
             }
             
             +++ AuthorSection(book: book, navigationController: navigationController!)
@@ -69,13 +69,13 @@ class EditBookMetadata: FormViewController {
                 $0.disabled = Condition(booleanLiteral: true)
                 $0.hidden = Condition(booleanLiteral: isAddingNewBook || book.isbn13 == nil)
                 $0.cellUpdate(TextRow.initialise)
-                $0.placeholderColor = UserSettings.theme.placeholderTextColor // cell update is not updating the cell on load
+                $0.placeholderColor = UserSettings.theme.value.placeholderTextColor // cell update is not updating the cell on load
             }
             <<< IntRow() {
                 $0.title = "Page Count"
                 $0.value = book.pageCount?.intValue
                 $0.cellUpdate{ cell,_ in
-                    cell.initialise(withTheme: UserSettings.theme)
+                    cell.initialise(withTheme: UserSettings.theme.value)
                 }
                 $0.onChange{
                     guard let pageCount = $0.value else { book.pageCount = nil; return }
@@ -87,7 +87,7 @@ class EditBookMetadata: FormViewController {
                 $0.title = "Publication Date"
                 $0.value = book.publicationDate
                 $0.cellUpdate{ cell,_ in
-                    cell.initialise(withTheme: UserSettings.theme)
+                    cell.initialise(withTheme: UserSettings.theme.value)
                 }
                 $0.onChange{book.publicationDate = $0.value}
             }
@@ -98,8 +98,8 @@ class EditBookMetadata: FormViewController {
                     cell.textLabel!.textAlignment = .left
                     cell.accessoryType = .disclosureIndicator
                     cell.detailTextLabel?.text = self.book.subjects.map{$0.name}.sorted().joined(separator: ", ")
-                    cell.initialise(withTheme: UserSettings.theme)
-                    cell.textLabel?.textColor = UserSettings.theme.titleTextColor
+                    cell.initialise(withTheme: UserSettings.theme.value)
+                    cell.textLabel?.textColor = UserSettings.theme.value.titleTextColor
                 }
                 row.onCellSelection{ [unowned self] _,_ in
                     self.navigationController!.pushViewController(EditBookSubjectsForm(book: book, sender: row), animated: true)
@@ -110,7 +110,7 @@ class EditBookMetadata: FormViewController {
                 $0.cell.height = {return 100}
                 $0.value = UIImage(optionalData: book.coverImage)
                 $0.cellUpdate{ cell,_ in
-                    cell.initialise(withTheme: UserSettings.theme)
+                    cell.initialise(withTheme: UserSettings.theme.value)
                 }
                 $0.onChange{book.coverImage = $0.value == nil ? nil : UIImageJPEGRepresentation($0.value!, 0.7)}
             }
@@ -121,7 +121,7 @@ class EditBookMetadata: FormViewController {
                 $0.value = book.bookDescription
                 $0.onChange{book.bookDescription = $0.value}
                 $0.cellUpdate{ cell,_ in
-                    cell.initialise(withTheme: UserSettings.theme)
+                    cell.initialise(withTheme: UserSettings.theme.value)
                 }
                 $0.cellSetup{ [unowned self] cell, _ in
                     cell.height = {return (self.view.frame.height / 3) - 10}
@@ -134,7 +134,7 @@ class EditBookMetadata: FormViewController {
                 $0.title = "Update from Google Books"
                 $0.hidden = Condition(booleanLiteral: isAddingNewBook || book.googleBooksId == nil)
                 $0.cellUpdate{ cell,_ in
-                    cell.initialise(withTheme: UserSettings.theme)
+                    cell.initialise(withTheme: UserSettings.theme.value)
                 }
                 $0.onCellSelection(updateFromGooglePressed(cell:row:))
             }
@@ -143,7 +143,7 @@ class EditBookMetadata: FormViewController {
                 $0.cellSetup{cell, _ in cell.tintColor = UIColor.red}
                 $0.onCellSelection(deletePressed(cell:row:))
                 $0.cellUpdate{ cell,_ in
-                    cell.initialise(withTheme: UserSettings.theme)
+                    cell.initialise(withTheme: UserSettings.theme.value)
                 }
                 $0.hidden = Condition(booleanLiteral: isAddingNewBook)
             }
@@ -260,7 +260,7 @@ class AuthorSection: MultivaluedSection {
                     $0.title = "Add Author"
                     $0.cellUpdate{cell,_ in
                         cell.textLabel!.textAlignment = .left
-                        cell.initialise(withTheme: UserSettings.theme)
+                        cell.initialise(withTheme: UserSettings.theme.value)
                     }
                 }
             }
@@ -334,7 +334,7 @@ final class AuthorRow: _LabelRow, RowType {
         cellStyle = .value1
 
         cellUpdate{ [unowned self] cell,row in
-            cell.initialise(withTheme: UserSettings.theme)
+            cell.initialise(withTheme: UserSettings.theme.value)
             cell.textLabel!.textAlignment = .left
             cell.textLabel!.text = [self.firstNames, self.lastName].compactMap{return $0}.joined(separator: " ")
         }
@@ -361,13 +361,13 @@ class AddAuthorForm: FormViewController {
             <<< TextRow(firstNamesRow) {
                 $0.placeholder = "First Name(s)"
                 $0.cellUpdate(TextRow.initialise)
-                $0.placeholderColor = UserSettings.theme.placeholderTextColor // cell update is not updating the cell on load
+                $0.placeholderColor = UserSettings.theme.value.placeholderTextColor // cell update is not updating the cell on load
                 $0.cell.textField.autocapitalizationType = .words
             }
             <<< TextRow(lastNameRow) {
                 $0.placeholder = "Last Name"
                 $0.cellUpdate(TextRow.initialise)
-                $0.placeholderColor = UserSettings.theme.placeholderTextColor // cell update is not updating the cell on load
+                $0.placeholderColor = UserSettings.theme.value.placeholderTextColor // cell update is not updating the cell on load
                 $0.cell.textField.autocapitalizationType = .words
             }
         
@@ -420,7 +420,7 @@ class EditBookSubjectsForm: FormViewController {
                 return ButtonRow() {
                     $0.title = "Add New Subject"
                     $0.cellUpdate{cell,_ in
-                        cell.defaultInitialise(withTheme: UserSettings.theme)
+                        cell.defaultInitialise(withTheme: UserSettings.theme.value)
                         cell.textLabel?.textAlignment = .left
                     }
                 }

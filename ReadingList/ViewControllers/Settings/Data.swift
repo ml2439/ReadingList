@@ -24,7 +24,7 @@ class DataVC: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
-        let theme = UserSettings.theme
+        let theme = UserSettings.theme.value
         cell.backgroundColor = theme.cellBackgroundColor
         cell.selectedBackgroundColor = theme.cellSeparatorColor
         return cell

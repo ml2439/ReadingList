@@ -49,7 +49,7 @@ class Organise: UITableViewController {
         let list = resultsController.object(at: indexPath)
         cell.textLabel!.text = list.name
         cell.detailTextLabel!.text = "\(list.books.count) book\(list.books.count == 1 ? "" : "s")"
-        cell.defaultInitialise(withTheme: UserSettings.theme)
+        cell.defaultInitialise(withTheme: UserSettings.theme.value)
         return cell
     }
     

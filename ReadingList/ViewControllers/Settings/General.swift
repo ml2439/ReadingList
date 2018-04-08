@@ -12,7 +12,7 @@ class General: FormViewController {
                     $0.title = "Use Large Titles"
                     $0.value = UserSettings.useLargeTitles.value
                     $0.cellUpdate{ cell,_ in
-                        cell.initialise(withTheme: UserSettings.theme)
+                        cell.initialise(withTheme: UserSettings.theme.value)
                     }
                     $0.onChange{ row in
                         UserSettings.useLargeTitles.value = row.value!
@@ -25,16 +25,16 @@ class General: FormViewController {
             return ListCheckRow<Theme>() {
                 $0.title = name
                 $0.selectableValue = theme
-                $0.value = UserSettings.theme == theme ? theme : nil
+                $0.value = UserSettings.theme.value == theme ? theme : nil
                 $0.cellUpdate{cell,_ in
-                    cell.initialise(withTheme: UserSettings.theme)
+                    cell.initialise(withTheme: UserSettings.theme.value)
                 }
             }
         }
         
         form +++ SelectableSection<ListCheckRow<Theme>>(header: "Theme", footer: "Change the appearance of Reading List.", selectionType: .singleSelection(enableDeselection: false)) {
                     $0.onSelectSelectableRow = { _,row in
-                        UserSettings.theme = row.value!
+                        UserSettings.theme.value = row.value!
                         NotificationCenter.default.post(name: Notification.Name.ThemeSettingChanged, object: nil)
                     }
                 }
@@ -46,7 +46,7 @@ class General: FormViewController {
                 <<< SwitchRow() {
                     $0.title = "Send Crash Reports"
                     $0.cellUpdate{ cell,_ in
-                        cell.initialise(withTheme: UserSettings.theme)
+                        cell.initialise(withTheme: UserSettings.theme.value)
                     }
                     $0.onChange(crashReportsSwitchChanged(_:))
                     $0.value = UserSettings.sendAnalytics.value
@@ -54,7 +54,7 @@ class General: FormViewController {
                 <<< SwitchRow() {
                     $0.title = "Send Analytics"
                     $0.cellUpdate{ cell,_ in
-                        cell.initialise(withTheme: UserSettings.theme)
+                        cell.initialise(withTheme: UserSettings.theme.value)
                     }
                     $0.onChange(analyticsSwitchChanged(_:))
                     $0.value = UserSettings.sendCrashReports.value

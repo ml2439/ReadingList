@@ -34,7 +34,7 @@ class Settings: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
-        cell.defaultInitialise(withTheme: UserSettings.theme)
+        cell.defaultInitialise(withTheme: UserSettings.theme.value)
         if !appDelegate.tabBarController.selectedSplitViewController!.isSplit { return cell }
         
         // In split mode, change the cells a little to look more like the standard iOS settings app

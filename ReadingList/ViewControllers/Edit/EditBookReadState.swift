@@ -42,7 +42,7 @@ class EditBookReadState: FormViewController {
                 $0.options = [.toRead, .reading, .finished]
                 $0.value = book.readState
                 $0.cellUpdate{ cell,_ in
-                    cell.initialise(withTheme: UserSettings.theme)
+                    cell.initialise(withTheme: UserSettings.theme.value)
                 }
                 $0.onChange {[unowned self] row in
                     self.book.readState = row.value!
@@ -78,7 +78,7 @@ class EditBookReadState: FormViewController {
                 //$0.maximumDate = Date.startOfToday()
                 $0.value = book.startedReading ?? now
                 $0.cellUpdate{ cell,_ in
-                    cell.initialise(withTheme: UserSettings.theme)
+                    cell.initialise(withTheme: UserSettings.theme.value)
                 }
                 $0.onChange {[unowned self] cell in
                     print("set started reading")
@@ -92,7 +92,7 @@ class EditBookReadState: FormViewController {
                     return self.book.readState != .finished
                 }
                 $0.cellUpdate{ cell,_ in
-                    cell.initialise(withTheme: UserSettings.theme)
+                    cell.initialise(withTheme: UserSettings.theme.value)
                 }
                 $0.value = book.finishedReading ?? now
                 $0.onChange {[unowned self] cell in
@@ -104,7 +104,7 @@ class EditBookReadState: FormViewController {
                 $0.title = "Current Page"
                 $0.value = book.currentPage?.intValue
                 $0.cellUpdate{ cell,_ in
-                    cell.initialise(withTheme: UserSettings.theme)
+                    cell.initialise(withTheme: UserSettings.theme.value)
                 }
                 $0.hidden = Condition.function([readStateKey]) { [unowned self] _ in
                     return self.book.readState != .reading
@@ -119,7 +119,7 @@ class EditBookReadState: FormViewController {
                 $0.placeholder = "Add your personal notes here..."
                 $0.value = book.notes
                 $0.cellUpdate{ cell,_ in
-                    cell.initialise(withTheme: UserSettings.theme)
+                    cell.initialise(withTheme: UserSettings.theme.value)
                 }
                 $0.cellSetup{ [unowned self] cell, _ in
                     cell.height = {return (self.view.frame.height / 3) - 10}

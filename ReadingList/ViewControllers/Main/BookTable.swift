@@ -164,7 +164,7 @@ class BookTable: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "BookTableViewCell", for: indexPath) as! BookTableViewCell
         let book = resultsController.object(at: indexPath)
         cell.configureFrom(book)
-        cell.initialise(withTheme: UserSettings.theme)
+        cell.initialise(withTheme: UserSettings.theme.value)
         return cell
     }
     
@@ -452,10 +452,10 @@ extension BookTable: UISearchResultsUpdating {
     }
     
     override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Disable reorderng when searching, or when the sort order is not by date
+        // Disable reorderng when searching, or when the sort order is not custom
         guard !searchController.hasActiveSearchTerms else { return false }
-        guard UserSettings.tableSortOrder == .byDate else { return false }
         guard let toReadSectionIndex = sectionIndexByReadState[.toRead] else { return false }
+        guard UserSettings.tableSortOrders[.toRead]! == .customOrder else { return false }
         
         // We can reorder the "ToRead" books if there are more than one
         return indexPath.section == toReadSectionIndex && self.tableView(tableView, numberOfRowsInSection: toReadSectionIndex) > 1

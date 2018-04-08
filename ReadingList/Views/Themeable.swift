@@ -91,10 +91,10 @@ extension UITableViewCell {
 
 extension ThemeableViewController {
     func monitorThemeSetting() {
-        initialise(withTheme: UserSettings.theme)
+        initialise(withTheme: UserSettings.theme.value)
         NotificationCenter.default.addObserver(forName: NSNotification.Name.ThemeSettingChanged, object: nil, queue: nil) {_ in
             UIView.transition(with: self.view, duration: 0.3, options: [.beginFromCurrentState, .transitionCrossDissolve], animations: {
-                self.initialise(withTheme: UserSettings.theme)
+                self.initialise(withTheme: UserSettings.theme.value)
                 self.themeSettingDidChange?()
             }, completion: nil)
         }
@@ -113,7 +113,7 @@ extension UIViewController {
     
     func presentThemedSafariViewController(url: URL) {
         let safariVC = SFSafariViewController(url: url)
-        if UserSettings.theme.isDark {
+        if UserSettings.theme.value.isDark {
             safariVC.preferredBarTintColor = .black
         }
         self.present(safariVC, animated: true, completion: nil)
@@ -184,7 +184,7 @@ class ThemedSplitViewController: UISplitViewController, UISplitViewControllerDel
         // This is called at app startup
         super.traitCollectionDidChange(previousTraitCollection)
         if previousTraitCollection?.horizontalSizeClass != traitCollection.horizontalSizeClass {
-            initialise(withTheme: UserSettings.theme)
+            initialise(withTheme: UserSettings.theme.value)
         }
     }
     
@@ -219,7 +219,7 @@ class ThemedNavigationController: UINavigationController, ThemeableViewControlle
         navigationBar.initialise(withTheme: theme)
         
         let translucent = splitViewController?.traitCollection.horizontalSizeClass != .regular
-        navigationBar.setTranslucency(translucent, colorIfNotTranslucent: UserSettings.theme.viewBackgroundColor)
+        navigationBar.setTranslucency(translucent, colorIfNotTranslucent: UserSettings.theme.value.viewBackgroundColor)
     }
 }
 
@@ -311,7 +311,7 @@ extension TextAreaCell {
 
 extension TextRow {
     static func initialise(_ textCell: TextCell, _ textRow: TextRow) {
-        let theme = UserSettings.theme
+        let theme = UserSettings.theme.value
         textCell.backgroundColor = theme.cellBackgroundColor
         textCell.textField.textColor = theme.titleTextColor
         textCell.textField.keyboardAppearance = theme.keyboardAppearance

@@ -34,7 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         DebugSettings.initialiseFromCommandLine()
                     #endif
                     self.window!.rootViewController = TabBarController()
-                    self.initialise(fromTheme: UserSettings.theme)
+                    self.initialise(fromTheme: UserSettings.theme.value)
                     
                     // Once the store is loaded and the main storyboard instantiated, perform the quick action
                     // or open the CSV file, is specified. This is done here rather than in application:open, for example,
@@ -69,7 +69,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
     }
-    
+
     func applicationDidBecomeActive(_ application: UIApplication) {
         #if DEBUG
             if DebugSettings.quickActionSimulation == .barcodeScan {
@@ -128,7 +128,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func initialise(fromTheme theme: Theme) {
         func globalThemeInitialisation() {
-            UIApplication.shared.statusBarStyle = UserSettings.theme == .normal ? .default : .lightContent
+            UIApplication.shared.statusBarStyle = UserSettings.theme.value == .normal ? .default : .lightContent
         }
 
         globalThemeInitialisation()

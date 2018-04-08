@@ -20,24 +20,9 @@ enum TableSortOrder: Int {
 
 class UserSettings {
     
-    static let toReadSortOrderKey = "toReadSortOrder"
-    static var toReadSortOrder: TableSortOrder {
-        get {
-            let int = UserDefaults.standard.integer(forKey: UserSettings.toReadSortOrderKey)
-            guard int != 0 else { return .customOrder } // TODO: Use old setting
-            let result = TableSortOrder(rawValue: int)!
-            guard result != .byStartDate && result != .byFinishDate else { fatalError("Table sort order was \(int) which is not supported") }
-            return result
-        }
-        set {
-            guard newValue != .byStartDate && newValue != .byFinishDate else { fatalError("Cannot set \(newValue.rawValue) to table sort order") }
-            UserDefaults.standard.set(newValue.rawValue, forKey: UserSettings.toReadSortOrderKey)
-        }
-    }
-    
     static func selectedBookSortDescriptors(forReadState readState: BookReadState) -> [NSSortDescriptor] {
         
-        switch UserSettings.toReadSortOrder {
+        switch UserSettings.tableSortOrders[readState]! {
         case .byTitle:
             return [NSSortDescriptor(\Book.title)]
         case .byAuthor:
@@ -50,20 +35,27 @@ class UserSettings {
             return [NSSortDescriptor(\Book.sort)]
         }
     }
+    
+    static var tableSortOrders: [BookReadState: TableSortOrder] {
+        return [BookReadState: TableSortOrder](dictionaryLiteral:
+                                                (.toRead, toReadSortOrder.value),
+                                                (.reading, readingSortOrder.value),
+                                                (.finished, finishedSortOrder.value))
+    }
 
     static private var legacyTableSortOrder = UserSetting<Int?>(key: "tableSortOrder", defaultValue: nil)
     static var sendAnalytics = UserSetting<Bool>(key: "sendAnalytics", defaultValue: true)
     static var sendCrashReports = UserSetting<Bool>(key: "sendCrashReports", defaultValue: true)
     static var useLargeTitles = UserSetting<Bool>(key: "useLargeTitles", defaultValue: true)
+    
     // This is not always true, tip functionality predates this setting...
     static var hasEverTipped = UserSetting<Bool>(key: "hasEverTipped", defaultValue: false)
     
-    private static var innerTheme = UserSetting<Int>(key: "theme", defaultValue: Theme.normal.rawValue)
-    
-    static var theme: Theme {
-        get { return Theme(rawValue: innerTheme.value)! }
-        set { innerTheme.value = newValue.rawValue }
-    }
+    static var theme = WrappedUserSetting<Theme>(key: "theme", defaultValue: Theme.normal)
+
+    static var toReadSortOrder = WrappedUserSetting<TableSortOrder>(key: "toReadSortOrder", defaultValue: .customOrder)
+    static var readingSortOrder = WrappedUserSetting<TableSortOrder>(key: "readingSortOrder", defaultValue: .byStartDate)
+    static var finishedSortOrder = WrappedUserSetting<TableSortOrder>(key: "finishedSortOrder", defaultValue: .byFinishDate)
 }
 
 extension Notification.Name {

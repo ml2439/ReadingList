@@ -11,7 +11,7 @@ class About: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
-        cell.defaultInitialise(withTheme: UserSettings.theme)
+        cell.defaultInitialise(withTheme: UserSettings.theme.value)
         return cell
     }
     
@@ -85,7 +85,7 @@ class Attributions: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
-        let theme = UserSettings.theme
+        let theme = UserSettings.theme.value
         cell.defaultInitialise(withTheme: theme)
         cell.contentView.subviews.forEach{
             guard let label = $0 as? UILabel else { return }

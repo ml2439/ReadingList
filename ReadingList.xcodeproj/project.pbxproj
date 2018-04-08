@@ -689,8 +689,8 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 495C5D341BF1404D00E00C07 /* Build configuration list for PBXNativeTarget "ReadingList" */;
 			buildPhases = (
-				1C4C25CB2076D45F004A69B8 /* Set Fabric API Key */,
 				B2E0720CB7A9216CA8E003A9 /* [CP] Check Pods Manifest.lock */,
+				1C4C25CB2076D45F004A69B8 /* Set Fabric API Key */,
 				495C5D081BF1404D00E00C07 /* Sources */,
 				495C5D091BF1404D00E00C07 /* Frameworks */,
 				495C5D0A1BF1404D00E00C07 /* Resources */,

@@ -11,7 +11,7 @@ class BookTableViewCell: UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        initialise(withTheme: UserSettings.theme)
+        initialise(withTheme: UserSettings.theme.value)
     }
     
     func initialise(withTheme theme: Theme) {
