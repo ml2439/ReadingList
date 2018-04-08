@@ -32,8 +32,8 @@ class Organise: UITableViewController {
     }
     
     @objc func refetch() {
-        try! self.resultsController.performFetch()
-        self.tableView.reloadData()
+        try! resultsController.performFetch()
+        tableView.reloadData()
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -107,6 +107,9 @@ class Organise: UITableViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let listBookTable = segue.destination as? ListBookTable {
             listBookTable.list = resultsController.object(at: tableView.indexPath(for: (sender as! UITableViewCell))!)
+        }
+        else {
+            super.prepare(for: segue, sender: sender)
         }
     }
     

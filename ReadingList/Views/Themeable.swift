@@ -92,7 +92,7 @@ extension UITableViewCell {
 extension ThemeableViewController {
     func monitorThemeSetting() {
         initialise(withTheme: UserSettings.theme.value)
-        NotificationCenter.default.addObserver(forName: NSNotification.Name.ThemeSettingChanged, object: nil, queue: nil) {_ in
+        NotificationCenter.default.addObserver(forName: NSNotification.Name.ThemeSettingChanged, object: nil, queue: nil) { [unowned self] _ in
             UIView.transition(with: self.view, duration: 0.3, options: [.beginFromCurrentState, .transitionCrossDissolve], animations: {
                 self.initialise(withTheme: UserSettings.theme.value)
                 self.themeSettingDidChange?()

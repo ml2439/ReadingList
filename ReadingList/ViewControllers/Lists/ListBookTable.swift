@@ -76,8 +76,7 @@ class ListBookTable: UITableViewController {
     }
     
     private func removeBook(at indexPath: IndexPath) {
-        let bookToRemove = list.books[indexPath.row]
-        list.removeBooks(NSSet(array: ([bookToRemove])))
+        list.removeBooks(NSSet(object: list.books[indexPath.row]))
         list.managedObjectContext!.saveAndLogIfErrored()
         UserEngagement.logEvent(.removeBookFromList)
     }
