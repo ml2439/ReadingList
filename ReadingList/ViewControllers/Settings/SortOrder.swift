@@ -36,12 +36,12 @@ class SortOrder: FormViewController {
             <<< tableSortRow(forReadState: .toRead, .byTitle)
             <<< tableSortRow(forReadState: .toRead, .byAuthor)
         
-        +++ SelectableSection<ListCheckRow<TableSortOrder>>(header: "Reading", footer: "Start Date orders the books with the most recently started first.", selectionType: .singleSelection(enableDeselection: false))
+        +++ SelectableSection<ListCheckRow<TableSortOrder>>(header: "Reading", footer: "Start Date orders the books with the most recently started book first.", selectionType: .singleSelection(enableDeselection: false))
             <<< tableSortRow(forReadState: .reading, .byStartDate)
             <<< tableSortRow(forReadState: .reading, .byTitle)
             <<< tableSortRow(forReadState: .reading, .byAuthor)
         
-        +++ SelectableSection<ListCheckRow<TableSortOrder>>(header: "Finished", footer: "Finish Date orders the books with the most recently finished first.", selectionType: .singleSelection(enableDeselection: false))
+        +++ SelectableSection<ListCheckRow<TableSortOrder>>(header: "Finished", footer: "Finish Date orders the books with the most recently finished book first.", selectionType: .singleSelection(enableDeselection: false))
             <<< tableSortRow(forReadState: .finished, .byStartDate)
             <<< tableSortRow(forReadState: .finished, .byFinishDate)
             <<< tableSortRow(forReadState: .finished, .byTitle)
