@@ -7,10 +7,20 @@ class UserEngagement {
     static let appStartupCountKey = "appStartupCount"
     static let userEngagementCountKey = "userEngagementCount"
     
+    // Note: TestFlight users are automatically enrolled in analytics and crash reporting. This should be reflected
+    // on the corresponding Settings page.
+    static var sendAnalytics: Bool {
+        return BuildInfo.appConfiguration == .testFlight || UserSettings.sendAnalytics.value
+    }
+    
+    static var sendCrashReports: Bool {
+        return BuildInfo.appConfiguration == .testFlight || UserSettings.sendCrashReports.value
+    }
+    
     static func initialiseUserAnalytics() {
         #if RELEASE
-            if UserSettings.sendAnalytics.value { FirebaseApp.configure() }
-            if UserSettings.sendCrashReports.value { Fabric.with([Crashlytics.self]) }
+            if sendAnalytics { FirebaseApp.configure() }
+            if sendCrashReports { Fabric.with([Crashlytics.self]) }
         #endif
     }
     
@@ -63,6 +73,7 @@ class UserEngagement {
         case disableCrashReports = "Disable_Crash_Reports"
         case enableCrashReports = "Enable_Crash_Reports"
         case changeTheme = "Change_Theme"
+        case changeSortOrder = "Change_Sort"
         
         // Other
         case viewOnAmazon = "View_On_Amazon"

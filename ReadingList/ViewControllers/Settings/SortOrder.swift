@@ -21,6 +21,8 @@ class SortOrder: FormViewController {
                         case .finished: UserSettings.finishedSortOrder.value = selectedValue
                     }
                     NotificationCenter.default.post(name: NSNotification.Name.BookSortOrderChanged, object: nil)
+                    UserEngagement.logEvent(.changeSortOrder)
+                    UserEngagement.onReviewTrigger()
                 }
                 $0.value = UserSettings.tableSortOrders[readState] == tableSort ? tableSort : nil
             }

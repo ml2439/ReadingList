@@ -37,28 +37,31 @@ class General: FormViewController {
                         UserSettings.theme.value = row.value!
                         NotificationCenter.default.post(name: Notification.Name.ThemeSettingChanged, object: nil)
                         UserEngagement.logEvent(.changeTheme)
+                        UserEngagement.onReviewTrigger()
                     }
                 }
                 <<< themeRow(.normal, name: "Default")
                 <<< themeRow(.dark, name: "Dark")
                 <<< themeRow(.black, name: "Black")
             
-            +++ Section(header: "Analytics", footer: "Anonymous crash reports and usage statistics can be reported to help improve Reading List.")
+            +++ Section(header: "Analytics", footer: "Crash reports can be automatically sent to help me detect and fix issues. Analytics can be used to help gather usage statistics for different features. This never includes any details of your books.\(BuildInfo.appConfiguration != .testFlight ? "" : " If Beta testing, these cannot be disabled.")")
                 <<< SwitchRow() {
                     $0.title = "Send Crash Reports"
                     $0.cellUpdate{ cell,_ in
                         cell.initialise(withTheme: UserSettings.theme.value)
                     }
+                    $0.disabled = Condition(booleanLiteral: BuildInfo.appConfiguration == .testFlight)
                     $0.onChange(crashReportsSwitchChanged(_:))
-                    $0.value = UserSettings.sendAnalytics.value
+                    $0.value = UserEngagement.sendCrashReports
                 }
                 <<< SwitchRow() {
                     $0.title = "Send Analytics"
                     $0.cellUpdate{ cell,_ in
                         cell.initialise(withTheme: UserSettings.theme.value)
                     }
+                    $0.disabled = Condition(booleanLiteral: BuildInfo.appConfiguration == .testFlight)
                     $0.onChange(analyticsSwitchChanged(_:))
-                    $0.value = UserSettings.sendCrashReports.value
+                    $0.value = UserEngagement.sendAnalytics
                 }
         
         monitorThemeSetting()
