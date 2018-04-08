@@ -36,6 +36,7 @@ class General: FormViewController {
                     $0.onSelectSelectableRow = { _,row in
                         UserSettings.theme.value = row.value!
                         NotificationCenter.default.post(name: Notification.Name.ThemeSettingChanged, object: nil)
+                        UserEngagement.logEvent(.changeTheme)
                     }
                 }
                 <<< themeRow(.normal, name: "Default")
