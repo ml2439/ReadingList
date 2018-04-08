@@ -55,7 +55,7 @@ Download DSYMs from iTunes and upload them to Crashlytics
 ```
 fastlane ios build_number
 ```
-
+Increments the build number
 ### ios patch
 ```
 fastlane ios patch

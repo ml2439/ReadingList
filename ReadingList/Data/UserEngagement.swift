@@ -81,7 +81,7 @@ class UserEngagement {
     }
     
     static func logEvent(_ event: Event) {
-        guard UserSettings.sendAnalytics.value else { return }
+        guard sendAnalytics else { return }
         Analytics.logEvent(event.rawValue, parameters: nil)
     }
     
