@@ -128,7 +128,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func initialise(fromTheme theme: Theme) {
         func globalThemeInitialisation() {
-            UIApplication.shared.statusBarStyle = UserSettings.theme.value == .normal ? .default : .lightContent
+            UIApplication.shared.statusBarStyle = UserSettings.theme.value.statusBarStyle
         }
 
         globalThemeInitialisation()

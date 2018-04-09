@@ -34,6 +34,10 @@ extension Theme {
         return isDark ? .black : .default
     }
     
+    var statusBarStyle: UIStatusBarStyle {
+        return isDark ? .lightContent : .default
+    }
+    
     var titleTextColor: UIColor {
         return isDark ? .white : .black
     }
