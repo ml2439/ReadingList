@@ -259,17 +259,17 @@ class AuthorSection: MultivaluedSection {
             for author in book.authors.map({$0 as! Author}) {
                 $0 <<< AuthorRow(author: author)
             }
-        }
-        self.navigationController = navigationController
-        self.addButtonProvider = { _ in
-            return ButtonRow() {
-                $0.title = "Add Author"
-                $0.cellUpdate{cell,_ in
-                    cell.textLabel!.textAlignment = .left
-                    cell.initialise(withTheme: UserSettings.theme.value)
+            $0.addButtonProvider = { _ in
+                return ButtonRow() {
+                    $0.title = "Add Author"
+                    $0.cellUpdate{cell,_ in
+                        cell.textLabel!.textAlignment = .left
+                        cell.initialise(withTheme: UserSettings.theme.value)
+                    }
                 }
             }
         }
+        self.navigationController = navigationController
         self.multivaluedRowToInsertAt = { [unowned self] _ in
             let authorRow = AuthorRow()
             self.navigationController.pushViewController(AddAuthorForm(authorRow), animated: true)
