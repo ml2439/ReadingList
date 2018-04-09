@@ -63,7 +63,7 @@ class Organise: UITableViewController {
                 let list = self.resultsController.object(at: indexPath)
                 
                 let existingListNames = List.names(fromContext: PersistentStoreManager.container.viewContext)
-                let renameListAlert = TextBoxAlertController(title: "Rename List", message: "Choose a new name for this list", initialValue: list.name, placeholder: "New list name", textValidator: { listName in
+                let renameListAlert = TextBoxAlertController(title: "Rename List", message: "Choose a new name for this list", initialValue: list.name, placeholder: "New list name", keyboardAppearance: UserSettings.theme.value.keyboardAppearance, textValidator: { listName in
                         guard let listName = listName, !listName.isEmptyOrWhitespace else { return false }
                         return listName == list.name || !existingListNames.contains(listName)
                     }, onOK: {
