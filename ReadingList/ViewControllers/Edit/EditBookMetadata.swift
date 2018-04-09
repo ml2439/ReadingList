@@ -91,17 +91,17 @@ class EditBookMetadata: FormViewController {
                 }
                 $0.onChange{book.publicationDate = $0.value}
             }
-            <<< ButtonRow() { row in
-                row.title = "Subjects"
-                row.cellStyle = .value1
-                row.cellUpdate{cell,_ in
+            <<< ButtonRow() {
+                $0.title = "Subjects"
+                $0.cellStyle = .value1
+                $0.cellUpdate{cell,_ in
                     cell.textLabel!.textAlignment = .left
                     cell.accessoryType = .disclosureIndicator
-                    cell.detailTextLabel?.text = self.book.subjects.map{$0.name}.sorted().joined(separator: ", ")
+                    cell.detailTextLabel?.text = book.subjects.map{$0.name}.sorted().joined(separator: ", ")
                     cell.initialise(withTheme: UserSettings.theme.value)
                     cell.textLabel?.textColor = UserSettings.theme.value.titleTextColor
                 }
-                row.onCellSelection{ [unowned self] _,_ in
+                $0.onCellSelection{ [unowned self] _,row in
                     self.navigationController!.pushViewController(EditBookSubjectsForm(book: book, sender: row), animated: true)
                 }
             }
@@ -130,18 +130,22 @@ class EditBookMetadata: FormViewController {
             
             // Update and delete buttons
             +++ Section()
-            <<< ButtonRow(updateFromGoogleRowKey){
+            <<< ButtonRow(updateFromGoogleRowKey) {
                 $0.title = "Update from Google Books"
                 $0.hidden = Condition(booleanLiteral: isAddingNewBook || book.googleBooksId == nil)
                 $0.cellUpdate{ cell,_ in
                     cell.initialise(withTheme: UserSettings.theme.value)
                 }
-                $0.onCellSelection(updateFromGooglePressed(cell:row:))
+                $0.onCellSelection { [unowned self] _,_ in
+                    self.updateBookFromGoogle()
+                }
             }
-            <<< ButtonRow(deleteRowKey){
+            <<< ButtonRow(deleteRowKey) {
                 $0.title = "Delete"
                 $0.cellSetup{cell, _ in cell.tintColor = UIColor.red}
-                $0.onCellSelection(deletePressed(cell:row:))
+                $0.onCellSelection{ [unowned self] _,_ in
+                    self.deletePressed()
+                }
                 $0.cellUpdate{ cell,_ in
                     cell.initialise(withTheme: UserSettings.theme.value)
                 }
@@ -166,7 +170,7 @@ class EditBookMetadata: FormViewController {
         }
     }
     
-    func deletePressed(cell: ButtonCellOf<String>, row: _ButtonRowOf<String>) {
+    func deletePressed() {
         guard !isAddingNewBook else { return }
         
         let confirmDeleteAlert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
@@ -248,28 +252,28 @@ class AuthorSection: MultivaluedSection {
     var book: Book!
 
     var isInitialising = true
+    weak var navigationController: UINavigationController!
     
     required init(book: Book, navigationController: UINavigationController) {
         super.init(multivaluedOptions: [.Insert, .Delete, .Reorder], header: "Authors", footer: "") {
             for author in book.authors.map({$0 as! Author}) {
                 $0 <<< AuthorRow(author: author)
             }
-            
-            $0.addButtonProvider = { _ in
-                return ButtonRow() {
-                    $0.title = "Add Author"
-                    $0.cellUpdate{cell,_ in
-                        cell.textLabel!.textAlignment = .left
-                        cell.initialise(withTheme: UserSettings.theme.value)
-                    }
+        }
+        self.navigationController = navigationController
+        self.addButtonProvider = { _ in
+            return ButtonRow() {
+                $0.title = "Add Author"
+                $0.cellUpdate{cell,_ in
+                    cell.textLabel!.textAlignment = .left
+                    cell.initialise(withTheme: UserSettings.theme.value)
                 }
             }
-            
-            $0.multivaluedRowToInsertAt = { _ in
-                let authorRow = AuthorRow()
-                navigationController.pushViewController(AddAuthorForm(authorRow), animated: true)
-                return authorRow
-            }
+        }
+        self.multivaluedRowToInsertAt = { [unowned self] _ in
+            let authorRow = AuthorRow()
+            self.navigationController.pushViewController(AddAuthorForm(authorRow), animated: true)
+            return authorRow
         }
         self.book = book
         isInitialising = false

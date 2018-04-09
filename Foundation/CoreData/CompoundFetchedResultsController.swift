@@ -20,7 +20,7 @@ class CompoundFetchedResultsController<T: NSFetchRequestResult>: NSObject, NSFet
     
     // A delegate to notify of changes. Each of the controllers' delegates are set to this class,
     // so that we can map the index paths in the notifications before forwarding to this delegate.
-    var delegate: NSFetchedResultsControllerDelegate? {
+    weak var delegate: NSFetchedResultsControllerDelegate? {
         didSet { controllers.forEach{$0.delegate = self} }
     }
     

@@ -22,6 +22,18 @@ class BookTableViewCell: UITableViewCell {
         readTimeLabel?.textColor = theme.subtitleTextColor
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        // Cancel any pending cover data request task
+        coverImageRequest?.cancel()
+        coverImageRequest = nil
+        titleLabel.text = nil
+        authorsLabel.text = nil
+        readTimeLabel.text = nil
+        bookCover.image = nil
+    }
+    
     func configureFrom(_ book: Book) {
         titleLabel.text = book.title
         authorsLabel.text = book.authorDisplay
@@ -41,17 +53,6 @@ class BookTableViewCell: UITableViewCell {
                 titleLabel.text =  "(\(book.sort?.intValue.string ?? "none")) \(book.title)"
             }
         #endif
-    }
-    
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        
-        // Cancel any pending cover data request task
-        coverImageRequest?.cancel()
-        
-        titleLabel.text = nil
-        authorsLabel.text = nil
-        bookCover.image = nil
     }
     
     func configureFrom(_ searchResult: GoogleBooks.SearchResult) {

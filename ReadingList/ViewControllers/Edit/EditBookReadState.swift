@@ -81,7 +81,6 @@ class EditBookReadState: FormViewController {
                     cell.initialise(withTheme: UserSettings.theme.value)
                 }
                 $0.onChange {[unowned self] cell in
-                    print("set started reading")
                     self.book.startedReading = cell.value
                 }
             }
@@ -96,7 +95,6 @@ class EditBookReadState: FormViewController {
                 }
                 $0.value = book.finishedReading ?? now
                 $0.onChange {[unowned self] cell in
-                    print("set finished reading")
                     self.book.finishedReading = cell.value
                 }
             }
