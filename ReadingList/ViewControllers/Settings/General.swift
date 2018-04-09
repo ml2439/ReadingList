@@ -51,7 +51,9 @@ class General: FormViewController {
                         cell.initialise(withTheme: UserSettings.theme.value)
                     }
                     $0.disabled = Condition(booleanLiteral: BuildInfo.appConfiguration == .testFlight)
-                    $0.onChange(crashReportsSwitchChanged(_:))
+                    $0.onChange{ [unowned self] in
+                        self.crashReportsSwitchChanged($0)
+                    }
                     $0.value = UserEngagement.sendCrashReports
                 }
                 <<< SwitchRow() {
@@ -60,7 +62,9 @@ class General: FormViewController {
                         cell.initialise(withTheme: UserSettings.theme.value)
                     }
                     $0.disabled = Condition(booleanLiteral: BuildInfo.appConfiguration == .testFlight)
-                    $0.onChange(analyticsSwitchChanged(_:))
+                    $0.onChange{ [unowned self] in
+                        self.analyticsSwitchChanged($0)
+                    }
                     $0.value = UserEngagement.sendAnalytics
                 }
         
