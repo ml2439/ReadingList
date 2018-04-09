@@ -10,6 +10,17 @@ import SafariServices
     case black = 3
 }
 
+extension UIColor {
+    static var customHexColorCache = [UInt32: UIColor]()
+    
+    static func hex(_ hex: UInt32) -> UIColor {
+        if let cachedColor = UIColor.customHexColorCache[hex] { return cachedColor }
+        let color = UIColor(fromHex: hex)
+        customHexColorCache[hex] = color
+        return color
+    }
+}
+
 extension Theme {
     var isDark: Bool {
         return self == .dark || self == .black
@@ -29,25 +40,25 @@ extension Theme {
     
     var subtitleTextColor: UIColor {
         switch self {
-        case .normal: return UIColor(fromHex: 0x686868)
-        case .dark: return .lightGray // TODO
-        case .black: return .lightGray // TODO
+        case .normal: return UIColor.hex(0x686868)
+        case .dark: return .lightGray
+        case .black: return .lightGray
         }
     }
     
     var placeholderTextColor: UIColor {
         switch self {
-        case .normal: return UIColor(fromHex: 0xcdcdd3)
-        case .dark: return UIColor(fromHex: 0x303030)
-        case .black: return UIColor(fromHex: 0x262626)
+        case .normal: return UIColor.hex(0xCDCDD3)
+        case .dark: return UIColor.hex(0x303030)
+        case .black: return UIColor.hex(0x262626)
         }
     }
     
     var tableBackgroundColor: UIColor {
         switch self {
         case .normal: return .groupTableViewBackground
-        case .dark: return UIColor(fromHex: 0x282828)
-        case .black: return UIColor(fromHex: 0x080808)
+        case .dark: return UIColor.hex(0x282828)
+        case .black: return UIColor.hex(0x080808)
         }
     }
     
@@ -57,24 +68,24 @@ extension Theme {
     
     var selectedCellBackgroundColor: UIColor {
         switch self {
-        case .normal: return UIColor(fromHex: 0xd9d9d9)
+        case .normal: return UIColor.hex(0xD9D9D9)
         case .dark: return .black
-        case .black: return UIColor(fromHex: 0x191919)
+        case .black: return UIColor.hex(0x191919)
         }
     }
     
     var cellSeparatorColor: UIColor {
         switch self {
-        case .normal: return UIColor(fromHex: 0xd6d6d6)
-        case .dark: return UIColor(fromHex: 0x4A4A4A)
-        case .black: return UIColor(fromHex: 0x282828)
+        case .normal: return UIColor.hex(0xD6D6D6)
+        case .dark: return UIColor.hex(0x4A4A4A)
+        case .black: return UIColor.hex(0x282828)
         }
     }
     
     var viewBackgroundColor: UIColor {
         switch self {
         case .normal: return .white
-        case .dark: return UIColor(fromHex: 0x191919)
+        case .dark: return UIColor.hex(0x191919)
         case .black: return .black
         }
     }
@@ -89,15 +100,18 @@ extension UITableViewCell {
     }
 }
 
-extension ThemeableViewController {
-    func monitorThemeSetting() {
-        initialise(withTheme: UserSettings.theme.value)
-        NotificationCenter.default.addObserver(forName: NSNotification.Name.ThemeSettingChanged, object: nil, queue: nil) { [unowned self] _ in
-            UIView.transition(with: self.view, duration: 0.3, options: [.beginFromCurrentState, .transitionCrossDissolve], animations: {
-                self.initialise(withTheme: UserSettings.theme.value)
-                self.themeSettingDidChange?()
-            }, completion: nil)
-        }
+fileprivate extension UIViewController {
+    /**
+     Must only called on a ThemableViewController.
+    */
+    @objc func transitionThemeChange() {
+        // This function is defined as an extension of UIViewController rather than in ThemableViewController
+        // since it must be @objc, and that is not possible in protocol extensions.
+        guard let themable = self as? ThemeableViewController else { fatalError("transitionThemeChange called on a non-themable controller") }
+        UIView.transition(with: self.view, duration: 0.3, options: [.beginFromCurrentState, .transitionCrossDissolve], animations: {
+            themable.initialise(withTheme: UserSettings.theme.value)
+            themable.themeSettingDidChange?()
+        }, completion: nil)
     }
 }
 
@@ -106,9 +120,16 @@ extension ThemeableViewController {
     @objc optional func themeSettingDidChange()
 }
 
+extension ThemeableViewController {
+    func monitorThemeSetting() {
+        initialise(withTheme: UserSettings.theme.value)
+        NotificationCenter.default.addObserver(self, selector: #selector(transitionThemeChange), name: NSNotification.Name.ThemeSettingChanged, object: nil)
+    }
+}
+
 extension UIViewController {
     func presentThemedSafariViewController(url: String) {
-        self.presentThemedSafariViewController(url: URL(string: url)!)
+        presentThemedSafariViewController(url: URL(string: url)!)
     }
     
     func presentThemedSafariViewController(url: URL) {
@@ -116,7 +137,7 @@ extension UIViewController {
         if UserSettings.theme.value.isDark {
             safariVC.preferredBarTintColor = .black
         }
-        self.present(safariVC, animated: true, completion: nil)
+        present(safariVC, animated: true, completion: nil)
     }
 }
 
