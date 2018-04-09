@@ -9,9 +9,17 @@ class BookTableViewCell: UITableViewCell {
 
     private var coverImageRequest: HTTP.Request?
     
+    func resetUI() {
+        titleLabel.text = nil
+        authorsLabel.text = nil
+        readTimeLabel.text = nil
+        bookCover.image = nil
+    }
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         initialise(withTheme: UserSettings.theme.value)
+        resetUI()
     }
     
     func initialise(withTheme theme: Theme) {
@@ -28,24 +36,20 @@ class BookTableViewCell: UITableViewCell {
         // Cancel any pending cover data request task
         coverImageRequest?.cancel()
         coverImageRequest = nil
-        titleLabel.text = nil
-        authorsLabel.text = nil
-        readTimeLabel.text = nil
-        bookCover.image = nil
+        
+        resetUI()
     }
     
-    func configureFrom(_ book: Book) {
+    func configureFrom(_ book: Book, includeReadDates: Bool = true) {
         titleLabel.text = book.title
         authorsLabel.text = book.authorDisplay
         bookCover.image = UIImage(optionalData: book.coverImage) ?? #imageLiteral(resourceName: "CoverPlaceholder")
-        if book.readState == .reading {
-            readTimeLabel.text = book.startedReading!.toPrettyString()
-        }
-        else if book.readState == .finished {
-            readTimeLabel.text = book.finishedReading!.toPrettyString()
-        }
-        else {
-            readTimeLabel.text = nil
+        if includeReadDates {
+            switch book.readState {
+            case .reading: readTimeLabel.text = book.startedReading!.toPrettyString()
+            case .finished: readTimeLabel.text = book.finishedReading!.toPrettyString()
+            default: readTimeLabel.text = nil
+            }
         }
         
         #if DEBUG
@@ -58,8 +62,6 @@ class BookTableViewCell: UITableViewCell {
     func configureFrom(_ searchResult: GoogleBooks.SearchResult) {
         titleLabel.text = searchResult.title
         authorsLabel.text = searchResult.authors.joined(separator: ", ")
-        bookCover.image = nil
-        readTimeLabel.text = nil
         
         guard let coverURL = searchResult.thumbnailCoverUrl else { bookCover.image = #imageLiteral(resourceName: "CoverPlaceholder"); return }
         coverImageRequest = HTTP.Request.get(url: coverURL).data { [weak self] result in

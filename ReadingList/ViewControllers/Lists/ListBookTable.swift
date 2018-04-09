@@ -63,7 +63,7 @@ class ListBookTable: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: BookTableViewCell.self), for: indexPath) as! BookTableViewCell
         let book = list.books.object(at: indexPath.row) as! Book
         cell.initialise(withTheme: UserSettings.theme.value)
-        cell.configureFrom(book)
+        cell.configureFrom(book, includeReadDates: false)
         return cell
     }
     
