@@ -10,11 +10,19 @@ class UserEngagement {
     // Note: TestFlight users are automatically enrolled in analytics and crash reporting. This should be reflected
     // on the corresponding Settings page.
     static var sendAnalytics: Bool {
+        #if DEBUG
+        return false
+        #else
         return BuildInfo.appConfiguration == .testFlight || UserSettings.sendAnalytics.value
+        #endif
     }
     
     static var sendCrashReports: Bool {
+        #if DEBUG
+        return false
+        #else
         return BuildInfo.appConfiguration == .testFlight || UserSettings.sendCrashReports.value
+        #endif
     }
     
     static func initialiseUserAnalytics() {
