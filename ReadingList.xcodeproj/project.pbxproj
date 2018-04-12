@@ -26,6 +26,7 @@
 		1C5CDF2620113A3900A757A3 /* AddToList.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1C5CDF2520113A3900A757A3 /* AddToList.storyboard */; };
 		1C5CDF2920113B3300A757A3 /* AddToList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5CDF2820113B3300A757A3 /* AddToList.swift */; };
 		1C60922A1F922A0D0055AC5E /* Storyboards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6092291F922A0D0055AC5E /* Storyboards.swift */; };
+		1C63EA14207F491D00F3B608 /* TableHeaderSearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C63EA13207F491D00F3B608 /* TableHeaderSearchBar.swift */; };
 		1C64AB222041E7E40089CD57 /* BookMapping_8_9.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C64AB212041E7E40089CD57 /* BookMapping_8_9.swift */; };
 		1C66927B20343D63001ED046 /* EditBookReadState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C66927A20343D63001ED046 /* EditBookReadState.swift */; };
 		1C66927D203849EA001ED046 /* BookTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C66927C203849EA001ED046 /* BookTableViewCell.swift */; };
@@ -152,6 +153,7 @@
 		1C5CDF2520113A3900A757A3 /* AddToList.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = AddToList.storyboard; sourceTree = "<group>"; };
 		1C5CDF2820113B3300A757A3 /* AddToList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddToList.swift; sourceTree = "<group>"; };
 		1C6092291F922A0D0055AC5E /* Storyboards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storyboards.swift; sourceTree = "<group>"; };
+		1C63EA13207F491D00F3B608 /* TableHeaderSearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableHeaderSearchBar.swift; sourceTree = "<group>"; };
 		1C64AB212041E7E40089CD57 /* BookMapping_8_9.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookMapping_8_9.swift; sourceTree = "<group>"; };
 		1C66927A20343D63001ED046 /* EditBookReadState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditBookReadState.swift; sourceTree = "<group>"; };
 		1C66927C203849EA001ED046 /* BookTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookTableViewCell.swift; sourceTree = "<group>"; };
@@ -437,6 +439,7 @@
 				1CD1D2C3202BCD6300ACA5D9 /* HorizontalGradientView.swift */,
 				1C66927E20384B91001ED046 /* TableViewFetchedResultsControllerDelegate.swift */,
 				1CC440C0204F5E2F00906120 /* TextBoxAlertController.swift */,
+				1C63EA13207F491D00F3B608 /* TableHeaderSearchBar.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -1136,6 +1139,7 @@
 				1C66927D203849EA001ED046 /* BookTableViewCell.swift in Sources */,
 				1C87F5B81FAE4A5200E44043 /* About.swift in Sources */,
 				1CD11200202DA47C00BE3E1D /* ISBN13.swift in Sources */,
+				1C63EA14207F491D00F3B608 /* TableHeaderSearchBar.swift in Sources */,
 				1C66927F20384B91001ED046 /* TableViewFetchedResultsControllerDelegate.swift in Sources */,
 				49E95D0F1DD7D9EC00C215F8 /* GoogleBooks.swift in Sources */,
 				49D0FAAB1F2B284000101EE1 /* UserEngagement.swift in Sources */,

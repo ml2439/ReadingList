@@ -248,6 +248,13 @@ class ThemedNavigationController: UINavigationController, ThemeableViewControlle
     }
 }
 
+extension TableHeaderSearchBar {
+    func initialise(withTheme theme: Theme) {
+        backgroundColor = theme.tableBackgroundColor
+        searchBar.initialise(withTheme: theme)
+    }
+}
+
 extension UINavigationBar {
     func initialise(withTheme theme: Theme) {
         barStyle = theme.barStyle
@@ -275,8 +282,15 @@ extension UITableView {
     func initialise(withTheme theme: Theme) {
         backgroundColor = theme.tableBackgroundColor
         separatorColor = theme.cellSeparatorColor
-        if let searchBar = tableHeaderView as? UISearchBar {
-            searchBar.initialise(withTheme: theme)
+        guard #available(iOS 11.0, *) else {
+            // iOS 10.x search bars are not integrated in the navigation bar; handle these separately
+            if let tableHeaderSearchBar = tableHeaderView as? TableHeaderSearchBar {
+                tableHeaderSearchBar.initialise(withTheme: theme)
+            }
+            else if let searchBar = tableHeaderView as? UISearchBar {
+                searchBar.initialise(withTheme: theme)
+            }
+            return
         }
     }
 }

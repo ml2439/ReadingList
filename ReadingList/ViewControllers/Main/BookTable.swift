@@ -28,8 +28,7 @@ class BookTable: UITableViewController {
             navigationItem.searchController = searchController
         }
         else {
-            searchController.searchBar.backgroundColor = tableView.backgroundColor!
-            tableView.tableHeaderView = searchController.searchBar
+            tableView.tableHeaderView = TableHeaderSearchBar(searchBar: searchController.searchBar)
             tableView.setContentOffset(CGPoint(x: 0, y: searchController.searchBar.frame.height), animated: false)
         }
         
