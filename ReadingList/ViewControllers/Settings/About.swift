@@ -18,10 +18,10 @@ class About: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard indexPath.section == 0 else { return }
         switch indexPath.row {
-        case 0: presentThemedSafariViewController(url: "https://www.readinglistapp.xyz")
+        case 0: presentThemedSafariViewController(URL(string: "https://www.readinglistapp.xyz")!)
         case 1: share(indexPath)
         case 2: contact()
-        case 3: presentThemedSafariViewController(url: "https://github.com/AndrewBennet/readinglist")
+        case 3: presentThemedSafariViewController(URL(string: "https://github.com/AndrewBennet/readinglist")!)
         default: return
         }
         tableView.deselectRow(at: indexPath, animated: true)
@@ -97,13 +97,13 @@ class Attributions: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard indexPath.section == 0 else { return }
         switch indexPath.row {
-        case 0: presentThemedSafariViewController(url: "https://icons8.com")
-        case 1: presentThemedSafariViewController(url: "https://github.com/xmartlabs/Eureka")
-        case 2: presentThemedSafariViewController(url: "https://github.com/dzenbot/DZNEmptyDataSet")
-        case 3: presentThemedSafariViewController(url: "https://github.com/SwiftyJSON/SwiftyJSON")
-        case 4: presentThemedSafariViewController(url: "https://github.com/SVProgressHUD/SVProgressHUD")
-        case 5: presentThemedSafariViewController(url: "https://github.com/davedelong/CHCSVParser")
-        case 6: presentThemedSafariViewController(url: "https://github.com/bizz84/SwiftyStoreKit")
+        case 0: presentThemedSafariViewController(URL(string: "https://icons8.com")!)
+        case 1: presentThemedSafariViewController(URL(string: "https://github.com/xmartlabs/Eureka")!)
+        case 2: presentThemedSafariViewController(URL(string: "https://github.com/dzenbot/DZNEmptyDataSet")!)
+        case 3: presentThemedSafariViewController(URL(string: "https://github.com/SwiftyJSON/SwiftyJSON")!)
+        case 4: presentThemedSafariViewController(URL(string: "https://github.com/SVProgressHUD/SVProgressHUD")!)
+        case 5: presentThemedSafariViewController(URL(string: "https://github.com/davedelong/CHCSVParser")!)
+        case 6: presentThemedSafariViewController(URL(string: "https://github.com/bizz84/SwiftyStoreKit")!)
         default: return
         }
         tableView.deselectRow(at: indexPath, animated: true)

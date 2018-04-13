@@ -132,11 +132,7 @@ extension ThemeableViewController {
 }
 
 extension UIViewController {
-    func presentThemedSafariViewController(url: String) {
-        presentThemedSafariViewController(url: URL(string: url)!)
-    }
-    
-    func presentThemedSafariViewController(url: URL) {
+    func presentThemedSafariViewController(_ url: URL) {
         let safariVC = SFSafariViewController(url: url)
         if UserSettings.theme.value.isDark {
             safariVC.preferredBarTintColor = .black

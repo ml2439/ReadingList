@@ -4,8 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Added:
-- New dark-mode theme.
-- More configurable sorting: books can now be sorted differently per section.
+- New dark-mode theme: in Settings -> General, you can choose your theme.
+- More configurable sorting: in Settings -> Sort, books can now be sorted differently per section.
 
 ### Changed:
 - External links open in the app, rather than opening in Safari.
@@ -13,4 +13,5 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed:
 - When adding a book manually, book titles could not always be entered using a non-default keyboard.
 - When adding a book to a list, some of the options were incorrectly disabled.
-- Minor stability and performance improvements.
+- Tapping the Amazon link for a book could occasionally cause the app to crash.
+- Other stability and performance improvements.

@@ -114,7 +114,11 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         setTextOrHideLine(tableVaules[7], book.pageCount?.intValue.string)
         setTextOrHideLine(tableVaules[8], book.publicationDate?.toPrettyString(short: false))
         setTextOrHideLine(tableVaules[9], book.subjects.map{$0.name}.sorted().joined(separator: ", ").nilIfWhitespace())
+        
+        // Show or hide the links, depending on whether we have valid URLs. If both links are hidden, the enclosing stack should be too.
         googleBooks.isHidden = book.googleBooksId == nil
+        amazon.isHidden = book.amazonAffiliateLink == nil
+        amazon.superview!.superview!.isHidden = googleBooks.isHidden && amazon.isHidden
         
         // Remove all the existing list labels, then add a label per list. Copy the list properties from another similar label, that's easier
         listsStack.removeAllSubviews()
@@ -232,21 +236,14 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     }
     
     @objc func amazonButtonPressed() {
-        guard let book = book else { return }
-        let authorText = (book.authors.firstObject as? Author)?.displayFirstLast
-        let amazonSearch = "https://www.amazon.com/s?url=search-alias%3Dstripbooks&field-author=\(authorText ?? "")&field-title=\(book.title)"
-        
-        // Use https://bestazon.io/#WebService to localize Amazon links
-        // US store: readinglistio-20; UK store: readinglistio-21
-        let refURL = "https://www.readinglistapp.xyz"
-        let localisedAffiliateAmazonSearch = "http://lnks.io/r.php?Conf_Source=API&refURL=\(refURL.urlEncoding())&destURL=\(amazonSearch.urlEncoding())&Amzn_AfiliateID_GB=readinglistio-21&Amzn_AfiliateID_US=readinglistio-20"
+        guard let book = book, let amazonLink = book.amazonAffiliateLink else { return }
         UserEngagement.logEvent(.viewOnAmazon)
-        presentThemedSafariViewController(url: localisedAffiliateAmazonSearch)
+        presentThemedSafariViewController(amazonLink)
     }
     
     @objc func googleBooksButtonPressed() {
         guard let googleBooksId = book?.googleBooksId else { return }
-        presentThemedSafariViewController(url: GoogleBooks.Request.webpage(googleBooksId).url)
+        presentThemedSafariViewController(GoogleBooks.Request.webpage(googleBooksId).url)
     }
     
     @IBAction func addToList(_ sender: Any) {
@@ -332,5 +329,17 @@ extension BookDetails: ThemeableViewController {
         tableVaules.forEach{$0.textColor = theme.titleTextColor}
         separatorLines.forEach{$0.backgroundColor = theme.cellSeparatorColor}
         listsStack.arrangedSubviews.forEach{($0 as! UILabel).textColor = theme.titleTextColor}
+    }
+}
+
+extension Book {
+    var amazonAffiliateLink: URL? {
+        let authorText = (authors.firstObject as? Author)?.displayFirstLast
+        let amazonSearch = "https://www.amazon.com/s?url=search-alias%3Dstripbooks&field-author=\(authorText ?? "")&field-title=\(title)"
+        
+        // Use https://bestazon.io/#WebService to localize Amazon links
+        // US store: readinglistio-20; UK store: readinglistio-21
+        let refURL = "https://www.readinglistapp.xyz"
+        return URL(string: "http://lnks.io/r.php?Conf_Source=API&refURL=\(refURL.urlEncoding())&destURL=\(amazonSearch.urlEncoding())&Amzn_AfiliateID_GB=readinglistio-21&Amzn_AfiliateID_US=readinglistio-20")
     }
 }
