@@ -40,6 +40,7 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      systemAttachmentLifetime = "keepAlways"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <PreActions>
          <ExecutionAction

@@ -12,6 +12,8 @@ languages([
 scheme("Screenshots")
 workspace("ReadingList.xcworkspace")
 clear_previous_screenshots(true)
+reinstall_app(true)
+concurrent_simulators(false)
 
 # Arguments to pass to the app on launch. See https://docs.fastlane.tools/actions/snapshot/#launch-arguments
 # launch_arguments(["-favColor red"])

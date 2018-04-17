@@ -3,6 +3,8 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## 1.8.0
 ### Added:
 - New dark-mode theme: in Settings -> General, you can choose your theme.
 - More configurable sorting: in Settings -> Sort, books can now be sorted differently per section.

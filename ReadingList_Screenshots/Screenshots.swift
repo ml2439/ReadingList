@@ -79,6 +79,12 @@ class Screenshots: XCTestCase {
             app.swipeUp()
         }
         snapshot("5_Organise")
+        
+        app.tabBars.buttons["Settings"].tap()
+        app.tables.staticTexts["General"].tap()
+        app.tables.staticTexts["Black"].tap()
+        app.tabBars.buttons["To Read"].tap()
+        snapshot("6_DarkMode")
     }
 }
 
