@@ -159,8 +159,17 @@ class EditBookReadState: FormViewController {
     }
     
     @objc func donePressed() {
-        self.view.endEditing(true)
+        view.endEditing(true)
         editContext.saveIfChanged()
+        
+        // FUTURE: Figure out a better way to solve this problem.
+        // If the previous view controller was the SearchOnline VC, then we need to deactivate its search controller
+        // so that it doesn't end up being leaked. We can't do that on viewWillDissappear, since that would clear the
+        // search bar, which is annoying if the user navigates back to that view.
+        if let searchOnline = navigationController!.viewControllers.first as? SearchOnline {
+            searchOnline.searchController.isActive = false
+        }
+        
         presentingViewController!.dismiss(animated: true) { [unowned self] in
             if self.newBook {
                 appDelegate.tabBarController.simulateBookSelection(self.book, allowTableObscuring: false)

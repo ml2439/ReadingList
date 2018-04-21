@@ -12,7 +12,7 @@ class SearchOnline: UITableViewController {
     @IBOutlet weak var addAllButton: UIBarButtonItem!
     @IBOutlet weak var selectModeButton: UIBarButtonItem!
     
-    private var searchController: UISearchController!
+    var searchController: UISearchController!
     private let feedbackGenerator = UINotificationFeedbackGenerator()
     private let emptyDatasetView = UINib.instantiate(SearchBooksEmptyDataset.self)
     
