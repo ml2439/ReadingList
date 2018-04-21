@@ -4,6 +4,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## 1.8.1
+### Fixed:
+- Changing the theme could occasionally cause the app to crash.
+
 ## 1.8.0
 ### Added:
 - New dark-mode theme: in Settings -> General, you can choose your theme.
