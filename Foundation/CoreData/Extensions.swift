@@ -110,8 +110,8 @@ extension NSPersistentStoreCoordinator {
 }
 
 extension NSError {
-    func descriptiveCode() -> String {
-        switch self.code {
+    var descriptiveCode: String {
+        switch code {
         case NSManagedObjectValidationError: return "NSManagedObjectValidationError"
         case NSValidationMissingMandatoryPropertyError: return "NSValidationMissingMandatoryPropertyError"
         case NSValidationRelationshipLacksMinimumCountError: return "NSValidationRelationshipLacksMinimumCountError"
@@ -125,19 +125,21 @@ extension NSError {
         case NSValidationStringTooLongError: return "NSValidationStringTooLongError"
         case NSValidationStringTooShortError: return "NSValidationStringTooShortError"
         case NSValidationStringPatternMatchingError: return "NSValidationStringPatternMatchingError"
-        default: return String(self.code)
+        default: return String(code)
         }
     }
     
     func getCoreDataSaveErrorDescription() -> String {
-        if self.code == NSValidationMultipleErrorsError {
-            guard let errors = self.userInfo[NSDetailedErrorsKey] as? [NSError] else { return "\"Multiple errors\" error without detail" }
+        if code == NSValidationMultipleErrorsError {
+            guard let errors = userInfo[NSDetailedErrorsKey] as? [NSError] else { return "\"Multiple errors\" error without detail" }
             return errors.compactMap{$0.getCoreDataSaveErrorDescription()}.joined(separator: "; ")
         }
-        
-        let entityName = (self.userInfo["NSValidationErrorObject"] as? NSManagedObject)?.entity.name ?? "Unknown"
-        let attributeName = self.userInfo["NSValidationErrorKey"] as? String ?? "Unknown"
-        return "Save error for entity \"\(entityName)\", attribute \"\(attributeName)\": \(self.descriptiveCode())"
+
+        guard let entityName = (userInfo["NSValidationErrorObject"] as? NSManagedObject)?.entity.name,
+            let attributeName = userInfo["NSValidationErrorKey"] as? String else {
+                return "Unknown error with code \(descriptiveCode), domain \(domain): \(localizedDescription)"
+        }
+        return "Save error for entity \"\(entityName)\", attribute \"\(attributeName)\": \(descriptiveCode)"
     }
 }
 
