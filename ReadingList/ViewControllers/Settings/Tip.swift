@@ -57,7 +57,15 @@ class Tip: UIViewController, ThemeableViewController {
         guard let tipProducts = tipProducts else { return }
 
         let productId: String
-        if sender == smallTip { productId = Tip.smallTipId } else if sender == mediumTip { productId = Tip.mediumTipId } else if sender == largeTip { productId = Tip.largeTipId } else { return }
+        if sender == smallTip {
+            productId = Tip.smallTipId
+        } else if sender == mediumTip {
+            productId = Tip.mediumTipId
+        } else if sender == largeTip {
+            productId = Tip.largeTipId
+        } else {
+            return
+        }
 
         guard let product = tipProducts.first(where: {$0.productIdentifier == productId}) else { return }
 

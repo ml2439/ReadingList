@@ -206,13 +206,17 @@ class ScanBarcode: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
                 let context = PersistentStoreManager.container.viewContext.childContext()
                 let book = Book(context: context, readState: .toRead)
                 book.populate(fromFetchResult: fetchResult)
-                viewController.navigationController!.pushViewController(EditBookReadState(newUnsavedBook: book, scratchpadContext: context), animated: true)
+                viewController.navigationController!.pushViewController(
+                    EditBookReadState(newUnsavedBook: book, scratchpadContext: context),
+                    animated: true)
             }
         }
     }
 
     func presentNoExactMatchAlert(forIsbn isbn: String) {
-        let alert = UIAlertController(title: "No Exact Match", message: "We couldn't find an exact match. Would you like to do a more general search instead?", preferredStyle: UIAlertControllerStyle.alert)
+        let alert = UIAlertController(title: "No Exact Match",
+                                      message: "We couldn't find an exact match. Would you like to do a more general search instead?",
+                                      preferredStyle: UIAlertControllerStyle.alert)
         alert.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.cancel, handler: { [unowned self] _ in
             self.session?.startRunning()
         }))

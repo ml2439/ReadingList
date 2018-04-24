@@ -34,7 +34,12 @@ class General: FormViewController {
                 <<< themeRow(.dark, name: "Dark")
                 <<< themeRow(.black, name: "Black")
 
-            +++ Section(header: "Analytics", footer: "Crash reports can be automatically sent to help me detect and fix issues. Analytics can be used to help gather usage statistics for different features. This never includes any details of your books.\(BuildInfo.appConfiguration != .testFlight ? "" : " If Beta testing, these cannot be disabled.")")
+            +++ Section(header: "Analytics", footer: """
+                Crash reports can be automatically sent to help me detect and fix issues. Analytics can \
+                be used to help gather usage statistics for different features. This never includes any \
+                details of your books.\
+                \(BuildInfo.appConfiguration != .testFlight ? "" : " If Beta testing, these cannot be disabled.")
+                """)
                 <<< SwitchRow {
                     $0.title = "Send Crash Reports"
                     $0.cellUpdate { cell, _ in
@@ -79,7 +84,11 @@ class General: FormViewController {
             UserEngagement.logEvent(.enableCrashReports)
         } else {
             // If this is being turned off, let's try to persuade them to turn it back on
-            persuadeToKeepOn(title: "Turn off crash reports?", message: "Anonymous crash reports alert me if this app crashes, to help me fix bugs. The information never includes any information about your books. Are you sure you want to turn this off?") { result in
+            persuadeToKeepOn(title: "Turn off crash reports?", message: """
+                Anonymous crash reports alert me if this app crashes, to help me fix bugs. \
+                The information never includes any information about your books. Are you \
+                sure you want to turn this off?
+                """) { result in
                 if result {
                     UserSettings.sendCrashReports.value = true
                     sender.value = true
@@ -98,7 +107,10 @@ class General: FormViewController {
             UserEngagement.logEvent(.enableAnalytics)
         } else {
             // If this is being turned off, let's try to persuade them to turn it back on
-            persuadeToKeepOn(title: "Turn off analytics?", message: "Anonymous usage statistics help prioritise development. These never include any information about your books. Are you sure you want to turn this off?") { result in
+            persuadeToKeepOn(title: "Turn off analytics?", message: """
+                Anonymous usage statistics help prioritise development. These never include \
+                any information about your books. Are you sure you want to turn this off?
+                """) { result in
                 if result {
                     UserSettings.sendAnalytics.value = true
                     sender.value = true

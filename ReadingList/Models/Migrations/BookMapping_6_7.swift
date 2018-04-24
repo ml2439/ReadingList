@@ -48,7 +48,10 @@ class BookMapping_6_7: NSEntityMigrationPolicy { //swiftlint:disable:this type_n
         @NSManaged var subjects: NSOrderedSet
         @NSManaged var authors: NSOrderedSet *** NEW ***
          */
-        copyValues(oldObject: sInstance, newObject: newBook, keys: "title", "isbn13", "googleBooksId", "pageCount", "publicationDate", "bookDescription", "coverImage", "readState", "startedReading", "finishedReading", "notes", "currentPage", "sort", "createdWhen")
+        copyValues(oldObject: sInstance, newObject: newBook,
+                   keys: "title", "isbn13", "googleBooksId", "pageCount", "publicationDate",
+                   "bookDescription", "coverImage", "readState", "startedReading",
+                   "finishedReading", "notes", "currentPage", "sort", "createdWhen")
 
         // Copy subjects
         let sourceSubjects = (sInstance.value(forKey: "subjects") as! NSOrderedSet).map {$0 as! NSManagedObject}

@@ -28,7 +28,8 @@ class About: UITableViewController {
     }
 
     func share(_ indexPath: IndexPath) {
-        let activityViewController = UIActivityViewController(activityItems: [URL(string: "https://\(Settings.appStoreAddress)")!], applicationActivities: nil)
+        let appStoreUrl = URL(string: "https://\(Settings.appStoreAddress)")!
+        let activityViewController = UIActivityViewController(activityItems: [appStoreUrl], applicationActivities: nil)
         activityViewController.popoverPresentationController?.setSourceCell(atIndexPath: indexPath, inTable: tableView)
         present(activityViewController, animated: true)
     }
@@ -36,7 +37,11 @@ class About: UITableViewController {
     func contact() {
         let canSendEmail = MFMailComposeViewController.canSendMail()
 
-        let alert = UIAlertController(title: "Send Feedback?", message: "If you have any questions or suggestions, please email me\(canSendEmail ? "." : " at \(Settings.feedbackEmailAddress).") I'll do my best to respond.", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Send Feedback?", message: """
+            If you have any questions or suggestions, please email me\
+            \(canSendEmail ? "." : " at \(Settings.feedbackEmailAddress).") \
+            I'll do my best to respond.
+            """, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default) { [unowned self] _ in
             if canSendEmail {
                 self.presentMailComposeWindow()

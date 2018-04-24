@@ -48,7 +48,11 @@ class DataVC: UITableViewController {
     }
 
     func confirmImport(fromFile url: URL) {
-        let alert = UIAlertController(title: "Confirm Import", message: "Are you sure you want to import books from this file? This will skip any rows which have an ISBN or Google Books ID which corresponds to a book already in the app; other rows will be added as new books.", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Confirm Import", message: """
+            Are you sure you want to import books from this file? This will skip any rows which \
+            have an ISBN or Google Books ID which corresponds to a book already in the app; \
+            other rows will be added as new books.
+            """, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Import", style: .default) { _ in
             SVProgressHUD.show(withStatus: "Importing")
             UserEngagement.logEvent(.csvImport)
@@ -75,7 +79,11 @@ class DataVC: UITableViewController {
         let exporter = CsvExporter(filePath: temporaryFilePath, csvExport: BookCSVExport.build(withLists: listNames))
 
         let exportAll = NSManagedObject.fetchRequest(Book.self)
-        exportAll.sortDescriptors = [NSSortDescriptor(\Book.readState), NSSortDescriptor(\Book.sort), NSSortDescriptor(\Book.startedReading), NSSortDescriptor(\Book.finishedReading)]
+        exportAll.sortDescriptors = [
+            NSSortDescriptor(\Book.readState),
+            NSSortDescriptor(\Book.sort),
+            NSSortDescriptor(\Book.startedReading),
+            NSSortDescriptor(\Book.finishedReading)]
         exportAll.relationshipKeyPathsForPrefetching = [#keyPath(Book.subjects), #keyPath(Book.authors), #keyPath(Book.lists)]
         exportAll.returnsObjectsAsFaults = false
         exportAll.fetchBatchSize = 50

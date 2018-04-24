@@ -487,8 +487,15 @@ extension BookTable: UISearchResultsUpdating {
         resultsController.delegate = nil
 
         // Update the model sort indexes. The lowest sort number should be the sort of the book immediately
-        // above the range, plus 1, or - if the range starts at the top - 0.
-        var sortIndex: Int32 = topRow == 0 ? 0 : (resultsController.object(at: IndexPath(row: topRow - 1, section: toReadSectionIndex)).sort!.int32 + 1)
+        // above the range, plus 1, or (if the range starts at the top) 0.
+        var sortIndex: Int32
+        if topRow == 0 {
+            sortIndex = 0
+        } else {
+            let indexPath = IndexPath(row: topRow - 1, section: toReadSectionIndex)
+            sortIndex = resultsController.object(at: indexPath).sort!.int32 + 1
+        }
+
         for book in booksInMovementRange {
             book.sort = sortIndex.nsNumber
             sortIndex += 1
@@ -571,12 +578,22 @@ extension BookTable: DZNEmptyDataSetSource {
 
     func description(forEmptyDataSet scrollView: UIScrollView!) -> NSAttributedString! {
         if searchController.hasActiveSearchTerms {
-            return StandardEmptyDataset.description(withMarkdownText: "Try changing your search, or add a new book by tapping the **+** button above.")
+            return StandardEmptyDataset.description(withMarkdownText: """
+                Try changing your search, or add a new book by tapping the **+** button above.
+                """)
         }
         if readStates.contains(.reading) {
-            return StandardEmptyDataset.description(withMarkdownText: "Books you add to your **To Read** list, or mark as currently **Reading** will show up here.\n\nAdd a book by tapping the **+** button above.")
+            return StandardEmptyDataset.description(withMarkdownText: """
+                Books you add to your **To Read** list, or mark as currently **Reading** will show up here.
+
+                Add a book by tapping the **+** button above.
+                """)
         } else {
-            return StandardEmptyDataset.description(withMarkdownText: "Books you mark as **Finished** will show up here.\n\nAdd a book by tapping the **+** button above.")
+            return StandardEmptyDataset.description(withMarkdownText: """
+                Books you mark as **Finished** will show up here.
+
+                Add a book by tapping the **+** button above.
+                """)
         }
     }
 }

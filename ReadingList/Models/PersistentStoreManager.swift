@@ -36,7 +36,12 @@ class PersistentStoreManager {
         if FileManager.default.fileExists(atPath: legacyStoreLocation.path) && !FileManager.default.fileExists(atPath: newLocation.path) {
             print("Store located in Documents directory; migrating to Application Support directory")
             let tempStoreCoordinator = NSPersistentStoreCoordinator()
-            try! tempStoreCoordinator.replacePersistentStore(at: newLocation, destinationOptions: nil, withPersistentStoreFrom: legacyStoreLocation, sourceOptions: nil, ofType: NSSQLiteStoreType)
+            try! tempStoreCoordinator.replacePersistentStore(
+                at: newLocation,
+                destinationOptions: nil,
+                withPersistentStoreFrom: legacyStoreLocation,
+                sourceOptions: nil,
+                ofType: NSSQLiteStoreType)
 
             // Delete the old store
             tempStoreCoordinator.destroyAndDeleteStore(at: legacyStoreLocation)
