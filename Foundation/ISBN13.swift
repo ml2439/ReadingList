@@ -1,15 +1,15 @@
 import Foundation
 
 struct ISBN13 {
-    
+
     let string: String
-    
+
     init?(_ input: String?) {
         guard let input = input else { return nil }
-        
+
         let sanitisedInput = input.replacingOccurrences(of: "-", with: "")
         guard sanitisedInput.count == 13, sanitisedInput.hasPrefix("978") || sanitisedInput.hasPrefix("979"),
-            let _ = Int64(sanitisedInput) else {
+            Int64(sanitisedInput) != nil else {
             return nil
         }
 
@@ -30,12 +30,11 @@ struct ISBN13 {
                 if Int(string: String(character)) != checkDigit {
                     return nil
                 }
-            }
-            else {
+            } else {
                 sum += (index % 2 == 1 ? 3 : 1) * thisDigit
             }
         }
-        
+
         string = sanitisedInput
     }
 }

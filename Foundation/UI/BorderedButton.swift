@@ -3,7 +3,7 @@ import UIKit
 
 @IBDesignable
 class BorderedButton: UIButton {
-    
+
     override func awakeFromNib() {
         super.awakeFromNib()
         layer.cornerRadius = 12
@@ -11,11 +11,11 @@ class BorderedButton: UIButton {
         setTitleColor(UIColor.white, for: state)
         setColor(tintColor)
     }
-    
+
     func setColor(_ colour: UIColor) {
         backgroundColor = colour
     }
-    
+
     override func prepareForInterfaceBuilder() {
         super.prepareForInterfaceBuilder()
         awakeFromNib()

@@ -1,0 +1,19 @@
+excluded:
+  - Pods
+  - ReadingList_Screenshots/SnapshotHelper.swift
+identifier_name:
+  excluded:
+    - id
+    - at
+disabled_rules:
+  # Force casts and trys are used a bit in the CodeData code...
+  - force_cast
+  - force_try
+
+  # There are too many long things; in due course, these could be reduced
+  - line_length
+  - file_length
+  - function_body_length
+
+  # This is a bit of an opinionated rule...  
+  - nesting 

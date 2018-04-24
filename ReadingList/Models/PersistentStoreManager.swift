@@ -2,16 +2,16 @@ import CoreData
 import CoreSpotlight
 
 class PersistentStoreManager {
-    
+
     private(set) static var container: NSPersistentContainer!
-    
+
     private static let storeName = "books"
     private static var storeFileName: String { return "\(storeName).sqlite" }
-    
+
     /**
      Creates the NSPersistentContainer, migrating if necessary.
     */
-    static func initalisePersistentStore(completion: @escaping () -> ()) {
+    static func initalisePersistentStore(completion: @escaping () -> Void) {
         guard container == nil else { fatalError("Attempting to reinitialise the PersistentStoreManager") }
         let storeLocation = URL.applicationSupport.appendingPathComponent(storeFileName)
 
@@ -26,7 +26,7 @@ class PersistentStoreManager {
             completion()
         }
     }
-    
+
     /**
      If a store exists in the Documents directory, copies it to the Application Support directory and destroys
      the old store.
@@ -37,17 +37,17 @@ class PersistentStoreManager {
             print("Store located in Documents directory; migrating to Application Support directory")
             let tempStoreCoordinator = NSPersistentStoreCoordinator()
             try! tempStoreCoordinator.replacePersistentStore(at: newLocation, destinationOptions: nil, withPersistentStoreFrom: legacyStoreLocation, sourceOptions: nil, ofType: NSSQLiteStoreType)
-            
+
             // Delete the old store
             tempStoreCoordinator.destroyAndDeleteStore(at: legacyStoreLocation)
-            
+
             // The same version (1.7.1) also removed support for spotlight indexing, so deindex everything
             if CSSearchableIndex.isIndexingAvailable() {
                 CSSearchableIndex.default().deleteAllSearchableItems()
             }
         }
     }
-    
+
     /**
      Deletes all objects of the given type
     */
@@ -56,7 +56,7 @@ class PersistentStoreManager {
         let batchDelete = NSBatchDeleteRequest(fetchRequest: type.fetchRequest())
         try! PersistentStoreManager.container.persistentStoreCoordinator.execute(batchDelete, with: container.viewContext)
     }
-    
+
     /**
      Deletes all data from the persistent store.
     */

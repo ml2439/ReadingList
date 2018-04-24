@@ -2,7 +2,7 @@
 
 import Foundation
 import SimulatorStatusMagic
-    
+
 enum BarcodeScanSimulation: Int {
     case none = 0
     case normal = 1
@@ -10,7 +10,7 @@ enum BarcodeScanSimulation: Int {
     case validIsbn = 3
     case unfoundIsbn = 4
     case existingIsbn = 5
-    
+
     var titleText: String {
         switch self {
         case .none:
@@ -33,7 +33,7 @@ enum QuickActionSimulation: Int {
     case none = 0
     case barcodeScan = 1
     case searchOnline = 2
-    
+
     var titleText: String {
         switch self {
         case .none:
@@ -48,14 +48,14 @@ enum QuickActionSimulation: Int {
 
 // FUTURE: Move all to using command line switches?
 class DebugSettings {
-    
+
     private static let useFixedBarcodeScanImageKey = "useFixedBarcodeScanImage"
-    
+
     /**
      This string should be an ISBN which is included in the test debug import data.
     */
     static let existingIsbn = "9780547345666"
-    
+
     static var useFixedBarcodeScanImage: Bool {
         get {
             return (UserDefaults.standard.value(forKey: useFixedBarcodeScanImageKey) as? Bool) ?? false
@@ -64,9 +64,9 @@ class DebugSettings {
             UserDefaults.standard.setValue(newValue, forKey: useFixedBarcodeScanImageKey)
         }
     }
-    
+
     private static let barcodeScanSimulationKey = "barcodeScanSimulation"
-    
+
     static var barcodeScanSimulation: BarcodeScanSimulation {
         get {
             guard let rawValue = UserDefaults.standard.value(forKey: barcodeScanSimulationKey) as? Int else { return .none }
@@ -76,9 +76,9 @@ class DebugSettings {
             UserDefaults.standard.setValue(newValue.rawValue, forKey: barcodeScanSimulationKey)
         }
     }
-    
+
     private static let showSortNumberKey = "showSortNumber"
-    
+
     static var showSortNumber: Bool {
         get {
             return UserDefaults.standard.value(forKey: showSortNumberKey) as? Bool ?? false
@@ -87,9 +87,9 @@ class DebugSettings {
             UserDefaults.standard.setValue(newValue, forKey: showSortNumberKey)
         }
     }
-    
+
     private static let quickActionSimulationKey = "quickActionSimulation"
-    
+
     static var quickActionSimulation: QuickActionSimulation {
         get {
             guard let simulation = UserDefaults.standard.value(forKey: quickActionSimulationKey) as? Int else { return .none }

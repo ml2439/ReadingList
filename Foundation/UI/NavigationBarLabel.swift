@@ -9,12 +9,12 @@ class UINavigationBarLabel: UILabel {
         textColor = UINavigationBar.appearance().tintColor
         font = UIFont.boldSystemFont(ofSize: 16)
     }
-    
+
     func setTitle(_ title: String?) {
         text = title
         sizeToFit()
     }
-    
+
     func initialise(fromTheme theme: Theme) {
         textColor = theme.titleTextColor
     }

@@ -15,20 +15,20 @@ import CoreData
 // is OK provided that, going forward, we remember to always add a version hash for any model versions
 // which do not change anything about the store (i.e. exist just for data modification).
 
-class BookMapping_10_11: NSEntityMigrationPolicy {
+class BookMapping_10_11: NSEntityMigrationPolicy { //swiftlint:disable:this type_name
     // This mapping exists to recalculate any author display / sort values which were missed out in v1.7.3
-    
+
     @objc func authorSort(forAuthors: NSOrderedSet) -> String {
-        return forAuthors.map{
+        return forAuthors.map {
             let author = ($0 as! NSManagedObject)
             let lastName = sortable((author.value(forKey: "lastName") as! String))
             let firstNames = sortable(author.value(forKey: "firstNames") as? String)
-            return [lastName, firstNames].compactMap{$0}.joined(separator: ".")
+            return [lastName, firstNames].compactMap {$0}.joined(separator: ".")
             }.joined(separator: "..")
     }
-    
+
     @objc func authorDisplay(forAuthors: NSOrderedSet) -> String {
-        return forAuthors.map{
+        return forAuthors.map {
             let author = ($0 as! NSManagedObject)
             if let firstName = author.value(forKey: "firstNames") {
                 return "\(firstName) \(author.value(forKey: "lastName")!)"
@@ -36,10 +36,9 @@ class BookMapping_10_11: NSEntityMigrationPolicy {
             return author.value(forKey: "lastName") as! String
             }.joined(separator: ", ")
     }
-    
+
     func sortable(_ str: String?) -> String? {
         guard let str = str else { return nil }
         return str.folding(options: [.diacriticInsensitive, .caseInsensitive], locale: Locale.current)
     }
 }
-

@@ -6,7 +6,7 @@ enum TableSortOrder: Int {
     case byFinishDate = 3
     case byTitle = 4
     case byAuthor = 5
-    
+
     var displayName: String {
         switch self {
         case .customOrder: return "Custom"
@@ -19,7 +19,7 @@ enum TableSortOrder: Int {
 }
 
 class UserSettings {
-    
+
     static func selectedBookSortDescriptors(forReadState readState: BookReadState) -> [NSSortDescriptor] {
         switch UserSettings.tableSortOrders[readState]! {
         case .byTitle:
@@ -34,7 +34,7 @@ class UserSettings {
             return [NSSortDescriptor(\Book.sort)]
         }
     }
-    
+
     static func defaultSortOrder(forReadState readState: BookReadState) -> TableSortOrder {
         /*
          Legacy sort orders:
@@ -49,7 +49,7 @@ class UserSettings {
         case .finished: return .byFinishDate
         }
     }
-    
+
     static var tableSortOrders: [BookReadState: TableSortOrder] {
         return [BookReadState: TableSortOrder](dictionaryLiteral: (.toRead, toReadSortOrder.value), (.reading, readingSortOrder.value), (.finished, finishedSortOrder.value))
     }
@@ -57,10 +57,10 @@ class UserSettings {
     static var sendAnalytics = UserSetting<Bool>(key: "sendAnalytics", defaultValue: true)
     static var sendCrashReports = UserSetting<Bool>(key: "sendCrashReports", defaultValue: true)
     static var useLargeTitles = UserSetting<Bool>(key: "useLargeTitles", defaultValue: true)
-    
+
     // This is not always true, tip functionality predates this setting...
     static var hasEverTipped = UserSetting<Bool>(key: "hasEverTipped", defaultValue: false)
-    
+
     static var theme = WrappedUserSetting<Theme>(key: "theme", defaultValue: Theme.normal)
 
     static var toReadSortOrder = WrappedUserSetting<TableSortOrder>(key: "toReadSortOrder", defaultValue: defaultSortOrder(forReadState: .toRead))

@@ -3,38 +3,40 @@ import CoreData
 
 public protocol ModelVersion: Equatable {
     static var orderedModelVersions: [Self] { get }
-    
+
     var name: String { get }
     var modelBundle: Bundle { get }
     var modelDirectoryName: String { get }
 }
 
 extension ModelVersion {
-    
+
     public static var latest: Self {
-        get {
-            return Self.orderedModelVersions.last!
-        }
+        return Self.orderedModelVersions.last!
     }
-    
+
     public var successor: Self? {
         let index = Self.orderedModelVersions.index(of: self)!
         guard index != Self.orderedModelVersions.endIndex else { return nil }
         return Self.orderedModelVersions[index + 1]
     }
-    
+
     public init?(storeURL: URL) {
-        guard let metadata = try? NSPersistentStoreCoordinator.metadataForPersistentStore(ofType: NSSQLiteStoreType, at: storeURL, options: nil) else { return nil }
-        
+        guard let metadata = try? NSPersistentStoreCoordinator.metadataForPersistentStore(ofType: NSSQLiteStoreType,
+                                                                                          at: storeURL, options: nil) else { return nil }
+
         #if DEBUG
             // Validation check - if multiple model versions match the store, we are in trouble.
             // Run this check in debug mode only as an optimisation.
-            let matchingModels = Self.orderedModelVersions.filter{$0.managedObjectModel().isConfiguration(withName: nil, compatibleWithStoreMetadata: metadata)}
+            let matchingModels = Self.orderedModelVersions.filter {
+                $0.managedObjectModel().isConfiguration(withName: nil, compatibleWithStoreMetadata: metadata)
+            }
             if matchingModels.count > 1 {
-                fatalError("\(matchingModels.count) model versions matched the current store (\(matchingModels.map{$0.name}.joined(separator: ","))). Cannot guarantee that migrations will be performed correctly")
+                let modelNames = matchingModels.map {$0.name}.joined(separator: ",")
+                fatalError("\(matchingModels.count) model versions matched the current store (\(modelNames)). Cannot guarantee that migrations will be performed correctly")
             }
         #endif
-        
+
         // Small optimisation: reverse the model versions so the most recent is first; if the store is already
         // at the latest version, only one managed object model will need to be loaded.
         let version = Self.orderedModelVersions.reversed().first {
@@ -52,13 +54,15 @@ extension ModelVersion {
         }
         self = result
     }
-    
+
     public func managedObjectModel() -> NSManagedObjectModel {
-        guard let momURL = modelBundle.url(forResource: name, withExtension: "mom", subdirectory: modelDirectoryName) else { fatalError("model version \(self) not found") }
+        guard let momURL = modelBundle.url(forResource: name, withExtension: "mom", subdirectory: modelDirectoryName) else {
+            fatalError("model version \(self) not found")
+        }
         guard let model = NSManagedObjectModel(contentsOf: momURL) else { fatalError("cannot open model at \(momURL)") }
         return model
     }
-    
+
     public func mappingModelToSuccessor() -> NSMappingModel? {
         guard let nextVersion = successor else { return nil }
         guard let mapping = NSMappingModel(from: [modelBundle], forSourceModel: managedObjectModel(), destinationModel: nextVersion.managedObjectModel()) else {
@@ -82,7 +86,7 @@ public final class MigrationStep {
     var source: NSManagedObjectModel
     var destination: NSManagedObjectModel
     var mapping: NSMappingModel
-    
+
     init(source: NSManagedObjectModel, destination: NSManagedObjectModel, mapping: NSMappingModel) {
         self.source = source
         self.destination = destination

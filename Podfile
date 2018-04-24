@@ -16,6 +16,7 @@ target 'ReadingList' do
   pod 'CHCSVParser', :git => 'https://github.com/davedelong/CHCSVParser.git'
   pod 'Firebase/Core'
   pod 'SwiftyStoreKit'
+  pod 'SwiftLint'
 
   target 'ReadingList_UITests' do
     inherit! :complete

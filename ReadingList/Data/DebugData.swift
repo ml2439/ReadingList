@@ -1,11 +1,11 @@
 #if DEBUG
 import SimulatorStatusMagic
 import Foundation
-    
+
 extension DebugSettings {
-    public static func loadTestData(includeImages: Bool = true, completion: (() -> ())? = nil) {
+    public static func loadTestData(includeImages: Bool = true, completion: (() -> Void)? = nil) {
         PersistentStoreManager.deleteAll()
-        
+
         print("Loading test data")
         let csvPath = Bundle.main.url(forResource: "examplebooks", withExtension: "csv")!
         BookCSVImporter(includeImages: includeImages).startImport(fromFileAt: csvPath) { _ in
@@ -22,7 +22,7 @@ extension DebugSettings {
         if screenshots {
             SDStatusBarManager.sharedInstance().enableOverrides()
         }
-        
+
         // long running setup
         if CommandLine.arguments.contains("--UITests_PopulateData") {
             loadTestData(includeImages: screenshots) {

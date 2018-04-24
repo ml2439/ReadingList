@@ -3,11 +3,11 @@ import UIKit
 import AVFoundation
 
 extension UINib {
-    convenience init<T>(_ class: T.Type) where T : UIView {
+    convenience init<T>(_ class: T.Type) where T: UIView {
         self.init(nibName: String(describing: T.self), bundle: nil)
     }
-    
-    static func instantiate<T>(_ class: T.Type) -> T where T : UIView {
+
+    static func instantiate<T>(_ class: T.Type) -> T where T: UIView {
         return UINib(T.self).instantiate(withOwner: nil, options: nil)[0] as! T
     }
 }
@@ -22,28 +22,24 @@ extension UIView {
             layer.masksToBounds = newValue > 0
         }
     }
-    
+
     convenience init(backgroundColor: UIColor) {
         self.init()
         self.backgroundColor = backgroundColor
     }
-        
+
     var nextSibling: UIView? {
-        get {
-            guard let views = superview?.subviews else { return nil }
-            let thisIndex = views.index(of: self)!
-            guard thisIndex + 1 < views.count else { return nil }
-            return views[thisIndex + 1]
-        }
+        guard let views = superview?.subviews else { return nil }
+        let thisIndex = views.index(of: self)!
+        guard thisIndex + 1 < views.count else { return nil }
+        return views[thisIndex + 1]
     }
-    
+
     var siblings: [UIView] {
-        get {
-            guard let views = superview?.subviews else { return [] }
-            return views.filter{ $0 != self }
-        }
+        guard let views = superview?.subviews else { return [] }
+        return views.filter { $0 != self }
     }
-    
+
     func removeAllSubviews() {
         for view in subviews {
             view.removeFromSuperview()
@@ -51,16 +47,15 @@ extension UIView {
     }
 }
 
-
 extension UIStoryboard {
     func instantiateRoot(withStyle style: UIModalPresentationStyle? = nil) -> UIViewController {
-        let vc = self.instantiateInitialViewController()!
+        let viewController = self.instantiateInitialViewController()!
         if let style = style {
-            vc.modalPresentationStyle = style
+            viewController.modalPresentationStyle = style
         }
-        return vc
+        return viewController
     }
-    
+
     func rootAsFormSheet() -> UIViewController {
         return instantiateRoot(withStyle: .formSheet)
     }
@@ -76,7 +71,8 @@ extension UISwipeActionsConfiguration {
 
 @available(iOS 11.0, *)
 extension UIContextualAction {
-    convenience init(style: UIContextualAction.Style, title: String?, image: UIImage?, backgroundColor: UIColor? = nil, handler: @escaping UIContextualActionHandler) {
+    convenience init(style: UIContextualAction.Style, title: String?, image: UIImage?,
+                     backgroundColor: UIColor? = nil, handler: @escaping UIContextualActionHandler) {
         self.init(style: style, title: title, handler: handler)
         self.image = image
         if let backgroundColor = backgroundColor {
@@ -94,7 +90,7 @@ extension UISearchController {
         searchBar.placeholder = filterPlaceholderText
         searchBar.searchBarStyle = .default
     }
-    
+
     var hasActiveSearchTerms: Bool {
         return self.isActive && self.searchBar.text?.isEmpty == false
     }
@@ -115,39 +111,39 @@ extension UIViewController {
 }
 
 extension UISplitViewController {
-    
+
     var masterNavigationController: UINavigationController {
         return viewControllers[0] as! UINavigationController
     }
-    
+
     var detailNavigationController: UINavigationController? {
         return viewControllers[safe: 1] as? UINavigationController
     }
-    
+
     var masterNavigationRoot: UIViewController {
         return masterNavigationController.viewControllers.first!
     }
-    
+
     var detailIsPresented: Bool {
         return isSplit || masterNavigationController.viewControllers.count >= 2
     }
-    
+
     var isSplit: Bool {
         return viewControllers.count >= 2
     }
-    
+
     var displayedDetailViewController: UIViewController? {
         // If the master and detail are separate, the detail will be the second item in viewControllers
         if isSplit, let detailNavController = detailNavigationController {
             return detailNavController.viewControllers.first
         }
-        
+
         // Otherwise, navigate to where the Details view controller should be (if it is displayed)
         if masterNavigationController.viewControllers.count >= 2,
             let previewNavController = masterNavigationController.viewControllers[1] as? UINavigationController {
             return previewNavController.viewControllers.first
         }
-        
+
         // The controller is not present
         return nil
     }
@@ -161,13 +157,13 @@ extension UINavigationController {
 }
 
 extension UIPopoverPresentationController {
-    
+
     func setSourceCell(_ cell: UITableViewCell, inTableView tableView: UITableView, arrowDirections: UIPopoverArrowDirection = .any) {
         self.sourceRect = cell.frame
         self.sourceView = tableView
         self.permittedArrowDirections = arrowDirections
     }
-    
+
     func setSourceCell(atIndexPath indexPath: IndexPath, inTable tableView: UITableView, arrowDirections: UIPopoverArrowDirection = .any) {
         let cell = tableView.cellForRow(at: indexPath)!
         setSourceCell(cell, inTableView: tableView, arrowDirections: arrowDirections)
@@ -175,7 +171,7 @@ extension UIPopoverPresentationController {
 }
 
 extension UITabBarItem {
-    
+
     func configure(tag: Int, title: String, image: UIImage, selectedImage: UIImage) {
         self.tag = tag
         self.image = image
@@ -186,14 +182,12 @@ extension UITabBarItem {
 
 extension UIActivityType {
     static var documentUnsuitableTypes: [UIActivityType] {
-        get {
-            var types: [UIActivityType] = [addToReadingList, assignToContact, saveToCameraRoll, postToFlickr, postToVimeo,
-                                           postToTencentWeibo, postToTwitter, postToFacebook, openInIBooks]
-            if #available(iOS 11.0, *) {
-                types.append(.markupAsPDF)
-            }
-            return types
+        var types: [UIActivityType] = [addToReadingList, assignToContact, saveToCameraRoll, postToFlickr, postToVimeo,
+                                       postToTencentWeibo, postToTwitter, postToFacebook, openInIBooks]
+        if #available(iOS 11.0, *) {
+            types.append(.markupAsPDF)
         }
+        return types
     }
 }
 
@@ -207,13 +201,12 @@ extension UISearchBar {
             alpha = newValue ? 1.0 : 0.5
         }
     }
-    
+
     var isActiveOrVisible: Bool {
         get {
             if #available(iOS 11.0, *) {
                 return isActive
-            }
-            else {
+            } else {
                 return !isHidden
             }
         }
@@ -222,8 +215,7 @@ extension UISearchBar {
             // iOS 11 search bars are part of navigation items, which makes hiding them look weird. Instead we "disable" them.
             if #available(iOS 11.0, *) {
                 isActive = newValue
-            }
-            else {
+            } else {
                 isHidden = !newValue
             }
         }
@@ -252,13 +244,10 @@ extension UITableViewRowAction {
 
 extension UIScrollView {
     var universalContentInset: UIEdgeInsets {
-        get {
-            if #available(iOS 11.0, *) {
-                return adjustedContentInset
-            }
-            else {
-                return contentInset
-            }
+        if #available(iOS 11.0, *) {
+            return adjustedContentInset
+        } else {
+            return contentInset
         }
     }
 }
@@ -270,7 +259,7 @@ extension UILabel {
         self.textColor = color
         self.text = text
     }
-    
+
     var isTruncated: Bool {
         guard let labelText = text else { return false }
         let labelTextSize = (labelText as NSString).boundingRect(
@@ -280,12 +269,12 @@ extension UILabel {
             context: nil).size
         return labelTextSize.height > bounds.size.height
     }
-    
+
     func setTextOrHide(_ text: String?) {
         self.text = text
         self.isHidden = text == nil
     }
-    
+
     @IBInspectable var dynamicFontSize: String? {
         get {
             return nil
@@ -295,14 +284,14 @@ extension UILabel {
             font = font.scaled(forTextStyle: UIFontTextStyle("UICTFontTextStyle\(newValue)"))
         }
     }
-    
+
     func scaleFontBy(_ factor: CGFloat) {
         font = font.withSize(font.pointSize * factor)
     }
 }
 
 extension UIColor {
-    convenience init(fromHex hex: UInt32){
+    convenience init(fromHex hex: UInt32) {
         self.init(
             red: CGFloat((hex & 0xFF0000) >> 16) / 255.0,
             green: CGFloat((hex & 0x00FF00) >> 8) / 255.0,
@@ -310,7 +299,7 @@ extension UIColor {
             alpha: CGFloat(1.0)
         )
     }
-    
+
     static let flatGreen = UIColor(fromHex: 0x2ecc71)
     static let buttonBlue = UIColor(red: 0, green: 0.478431, blue: 1, alpha: 1)
 }
@@ -318,19 +307,19 @@ extension UIColor {
 extension UIFont {
     static let gillSans = UIFont(name: "GillSans", size: 12)!
     static let gillSansSemiBold = UIFont(name: "GillSans-Semibold", size: 12)!
-    
+
     static func gillSans(ofSize: CGFloat) -> UIFont {
         return gillSans.withSize(ofSize)
     }
-        
+
     static func gillSans(forTextStyle textStyle: UIFontTextStyle) -> UIFont {
         return gillSans.scaled(forTextStyle: textStyle)
     }
-        
+
     static func gillSansSemiBold(forTextStyle textStyle: UIFontTextStyle) -> UIFont {
         return gillSansSemiBold.scaled(forTextStyle: textStyle)
     }
-    
+
     func scaled(forTextStyle textStyle: UIFontTextStyle) -> UIFont {
         let fontSize = UIFont.preferredFont(forTextStyle: textStyle).pointSize
         return self.withSize(fontSize)
@@ -341,19 +330,17 @@ extension UIImage {
     convenience init?(optionalData: Data?) {
         if let data = optionalData {
             self.init(data: data)
-        }
-        else {
+        } else {
             return nil
         }
     }
 }
 
-
 public extension NSAttributedString {
     @objc public convenience init(_ string: String, withFont font: UIFont) {
         self.init(string: string, attributes: [NSAttributedStringKey.font: font])
     }
-    
+
     static func createFromMarkdown(_ markdown: String, font: UIFont, boldFont: UIFont) -> NSMutableAttributedString {
         let boldedResult = NSMutableAttributedString()
         for (index, component) in markdown.components(separatedBy: "**").enumerated() {
@@ -380,7 +367,7 @@ extension UITableViewCell {
             detailTextLabel?.isEnabled = newValue
         }
     }
-    
+
     var selectedBackgroundColor: UIColor? {
         get {
             return selectedBackgroundView?.backgroundColor
@@ -405,7 +392,7 @@ extension UIDeviceOrientation {
 }
 
 extension UIDevice {
-    
+
     // From https://stackoverflow.com/a/26962452/5513562
     var modelIdentifier: String {
         var systemInfo = utsname()
@@ -416,7 +403,7 @@ extension UIDevice {
             return identifier + String(UnicodeScalar(UInt8(value)))
         }
     }
-    
+
     var modelName: String {
         let identifier = modelIdentifier
         switch identifier {

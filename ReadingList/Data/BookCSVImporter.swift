@@ -4,13 +4,13 @@ import CoreData
 class BookCSVImporter {
     let backgroundContext: NSManagedObjectContext
     let includeImages: Bool
-    
+
     init(includeImages: Bool = true) {
         self.backgroundContext = PersistentStoreManager.container.newBackgroundContext()
         self.includeImages = includeImages
     }
-    
-    public func startImport(fromFileAt fileLocation: URL, _ completion: @escaping (BookCSVImportResults) -> ()) {
+
+    public func startImport(fromFileAt fileLocation: URL, _ completion: @escaping (BookCSVImportResults) -> Void) {
         let parser = CSVParser(csvFileUrl: fileLocation)
         parser.delegate = BookCSVParserDelegate(context: backgroundContext, includeImages: includeImages, completion: completion)
         parser.begin()
@@ -23,29 +23,29 @@ struct BookCSVImportResults {
     let duplicate: Int
 }
 
-fileprivate class BookCSVParserDelegate: CSVParserDelegate {
+private class BookCSVParserDelegate: CSVParserDelegate {
     private let context: NSManagedObjectContext
-    private let onCompletion: (BookCSVImportResults) -> ()
+    private let onCompletion: (BookCSVImportResults) -> Void
     private let includeImages: Bool
     private var currentSort: Int32?
     private let dispatchGroup = DispatchGroup()
     private var listMappings = [String: [(bookID: NSManagedObjectID, index: Int)]]()
     private var listNames = [String]()
-    
-    init(context: NSManagedObjectContext, includeImages: Bool = true, completion: @escaping (BookCSVImportResults) -> ()) {
+
+    init(context: NSManagedObjectContext, includeImages: Bool = true, completion: @escaping (BookCSVImportResults) -> Void) {
         self.context = context
         self.includeImages = includeImages
         self.onCompletion = completion
     }
-    
+
     func headersRead(_ headers: [String]) -> Bool {
         if !headers.contains("Title") || !headers.contains("Authors") {
             return false
         }
-        listNames = headers.filter{!BookCSVExport.headers.contains($0)}
+        listNames = headers.filter {!BookCSVExport.headers.contains($0)}
         return true
     }
-    
+
     private func createBook(_ values: [String: String]) -> Book? {
         guard let title = values["Title"] else { return nil }
         guard let authors = values["Authors"] else { return nil }
@@ -64,37 +64,36 @@ fileprivate class BookCSVParserDelegate: CSVParserDelegate {
         book.subjects = Set(createSubjects(values["Subjects"]))
         return book
     }
-    
+
     private func createAuthors(_ authorString: String) -> [Author] {
         return authorString.components(separatedBy: ";").compactMap {
             guard let authorString = $0.trimming().nilIfWhitespace() else { return nil }
             if let firstCommaPos = authorString.range(of: ","), let lastName = authorString[..<firstCommaPos.lowerBound].trimming().nilIfWhitespace() {
                 return Author(context: context, lastName: lastName, firstNames: authorString[firstCommaPos.upperBound...].trimming().nilIfWhitespace())
-            }
-            else {
+            } else {
                 return Author(context: context, lastName: authorString, firstNames: nil)
             }
         }
     }
-    
+
     private func createSubjects(_ subjects: String?) -> [Subject] {
         guard let subjects = subjects else { return [] }
-        return subjects.components(separatedBy: ";").compactMap{
+        return subjects.components(separatedBy: ";").compactMap {
             guard let subjectString = $0.trimming().nilIfWhitespace() else { return nil }
             return Subject.getOrCreate(inContext: context, withName: subjectString)
         }
     }
-    
+
     private func populateLists() {
         for listMapping in listMappings {
             let list = List.getOrCreate(fromContext: self.context, withName: listMapping.key)
             let orderedBooks = listMapping.value.sorted(by: {$0.1 < $1.1})
-                .map{context.object(with: $0.bookID) as! Book}
-                .filter{!list.books.contains($0)}
+                .map {context.object(with: $0.bookID) as! Book}
+                .filter {!list.books.contains($0)}
             list.addBooks(NSOrderedSet(array: orderedBooks))
         }
     }
-    
+
     private func populateCover(forBook book: Book, withGoogleID googleID: String) {
         dispatchGroup.enter()
         GoogleBooks.getCover(googleBooksId: googleID) { [unowned self] result in
@@ -106,8 +105,8 @@ fileprivate class BookCSVParserDelegate: CSVParserDelegate {
             }
         }
     }
-    
-    func lineParseSuccess(_ values: [String: String]){
+
+    func lineParseSuccess(_ values: [String: String]) {
         // FUTURE: Batch save
         context.performAndWait { [unowned self] in
             // Check for duplicates
@@ -115,17 +114,15 @@ fileprivate class BookCSVParserDelegate: CSVParserDelegate {
                 print("Duplicate book skipped")
                 duplicateCount += 1; return
             }
-            
+
             guard let newBook = createBook(values) else { invalidCount += 1; return }
-            
+
             // FUTURE: the read state could be inferred from the dates at save time
             if newBook.finishedReading != nil {
                 newBook.readState = .finished
-            }
-            else if newBook.startedReading != nil {
+            } else if newBook.startedReading != nil {
                 newBook.readState = .reading
-            }
-            else {
+            } else {
                 // Get the current sort value if we have not done so yet
                 if currentSort == nil {
                     currentSort = Book.maxSort(fromContext: context) ?? -1
@@ -133,7 +130,7 @@ fileprivate class BookCSVParserDelegate: CSVParserDelegate {
                 currentSort! += 1
                 newBook.sort = currentSort?.nsNumber
             }
-            
+
             // If the book is not valid, delete it
             guard newBook.isValidForUpdate() else {
                 invalidCount += 1
@@ -142,7 +139,7 @@ fileprivate class BookCSVParserDelegate: CSVParserDelegate {
                 return
             }
             successCount += 1
-            
+
             // Record the list memberships
             for listName in listNames {
                 if let listPosition = Int(values[listName]) {
@@ -150,22 +147,22 @@ fileprivate class BookCSVParserDelegate: CSVParserDelegate {
                     listMappings[listName]!.append((newBook.objectID, listPosition))
                 }
             }
-            
+
             // Supplement the book with the cover image
             if self.includeImages, let googleBookdID = newBook.googleBooksId {
                 populateCover(forBook: newBook, withGoogleID: googleBookdID)
             }
         }
     }
-    
+
     private var duplicateCount = 0
     private var invalidCount = 0
     private var successCount = 0
-    
+
     func lineParseError() {
         invalidCount += 1
     }
-    
+
     func completion() {
         dispatchGroup.notify(queue: .main) {
             self.context.performAndWait {

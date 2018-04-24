@@ -3,16 +3,16 @@ import UIKit
 
 // From https://medium.com/zenchef-tech-and-product/how-to-visualize-reusable-xibs-in-storyboards-using-ibdesignable-c0488c7f525d
 class XibView: UIView {
-    
+
     var contentView: UIView?
-    
+
     @IBInspectable var nibName: String?
-    
+
     override func awakeFromNib() {
         super.awakeFromNib()
         xibSetup()
     }
-    
+
     func xibSetup() {
         guard let view = loadViewFromNib() else { return }
         view.frame = bounds
@@ -20,7 +20,7 @@ class XibView: UIView {
         addSubview(view)
         contentView = view
     }
-    
+
     func loadViewFromNib() -> UIView? {
         guard let nibName = nibName else { return nil }
         let bundle = Bundle(for: type(of: self))

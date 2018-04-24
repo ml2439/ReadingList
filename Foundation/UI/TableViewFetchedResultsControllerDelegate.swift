@@ -6,7 +6,7 @@ extension UITableView: NSFetchedResultsControllerDelegate {
     public func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         beginUpdates()
     }
-    
+
     public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange object: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         switch type {
         case .update:
@@ -20,7 +20,7 @@ extension UITableView: NSFetchedResultsControllerDelegate {
             deleteRows(at: [indexPath!], with: .automatic)
         }
     }
-    
+
     public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
         switch type {
         case .insert:
@@ -31,9 +31,8 @@ extension UITableView: NSFetchedResultsControllerDelegate {
             break
         }
     }
-    
+
     public func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         endUpdates()
     }
 }
-

@@ -7,19 +7,19 @@ class HTTP {
         case noJsonData
         case noData
     }
-    
+
     class Request {
         private let request: URLRequest
         private var task: URLSessionDataTask?
-        
+
         private init(_ request: URLRequest) {
             self.request = request
         }
-        
+
         static func get(url: URL) -> Request {
             return Request(URLRequest(url: url))
         }
-        
+
         @discardableResult func json(callback: @escaping (Result<JSON>) -> Void) -> Request {
             task = URLSession.shared.dataTask(with: request) { (data, _, error) in
                 DispatchQueue.main.async {
@@ -31,7 +31,7 @@ class HTTP {
             task!.resume()
             return self
         }
-        
+
         @discardableResult func data(callback: @escaping (Result<Data>) -> Void) -> Request {
             task = URLSession.shared.dataTask(with: request) { (data, _, error) in
                 DispatchQueue.main.async {
@@ -43,18 +43,17 @@ class HTTP {
             task!.resume()
             return self
         }
-        
+
         func cancel() {
             task?.cancel()
         }
     }
 }
 
-
 enum Result<Value> {
     case success(Value)
     case failure(Error)
-    
+
     var isSuccess: Bool {
         switch self {
         case .success:
@@ -63,7 +62,7 @@ enum Result<Value> {
             return false
         }
     }
-    
+
     var value: Value? {
         switch self {
         case let .success(value):
@@ -72,7 +71,7 @@ enum Result<Value> {
             return nil
         }
     }
-    
+
     var error: Error? {
         switch self {
         case let .failure(error):
@@ -81,7 +80,7 @@ enum Result<Value> {
             return nil
         }
     }
-    
+
     func toOptional() -> Result<Value?> {
         switch self {
         case let .success(value):
@@ -91,4 +90,3 @@ enum Result<Value> {
         }
     }
 }
-

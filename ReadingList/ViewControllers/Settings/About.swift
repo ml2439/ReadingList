@@ -3,18 +3,18 @@ import UIKit
 import MessageUI
 
 class About: UITableViewController {
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         monitorThemeSetting()
     }
-    
+
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
         cell.defaultInitialise(withTheme: UserSettings.theme.value)
         return cell
     }
-    
+
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard indexPath.section == 0 else { return }
         switch indexPath.row {
@@ -26,7 +26,7 @@ class About: UITableViewController {
         }
         tableView.deselectRow(at: indexPath, animated: true)
     }
-    
+
     func share(_ indexPath: IndexPath) {
         let activityViewController = UIActivityViewController(activityItems: [URL(string: "https://\(Settings.appStoreAddress)")!], applicationActivities: nil)
         activityViewController.popoverPresentationController?.setSourceCell(atIndexPath: indexPath, inTable: tableView)
@@ -35,9 +35,9 @@ class About: UITableViewController {
 
     func contact() {
         let canSendEmail = MFMailComposeViewController.canSendMail()
-        
+
         let alert = UIAlertController(title: "Send Feedback?", message: "If you have any questions or suggestions, please email me\(canSendEmail ? "." : " at \(Settings.feedbackEmailAddress).") I'll do my best to respond.", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default){ [unowned self] _ in
+        alert.addAction(UIAlertAction(title: "OK", style: .default) { [unowned self] _ in
             if canSendEmail {
                 self.presentMailComposeWindow()
             }
@@ -47,7 +47,7 @@ class About: UITableViewController {
         }
         present(alert, animated: true)
     }
-    
+
     func presentMailComposeWindow() {
         let mailComposer = MFMailComposeViewController()
         mailComposer.mailComposeDelegate = self
@@ -55,10 +55,10 @@ class About: UITableViewController {
         mailComposer.setSubject("Reading List Feedback")
         let messageBody = """
         Your Message Here:
-        
-        
-        
-        
+
+
+
+
         Extra Info:
         App Version: \(BuildInfo.appConfiguration.userFacingDescription)
         iOS Version: \(UIDevice.current.systemVersion)
@@ -76,18 +76,18 @@ extension About: MFMailComposeViewControllerDelegate {
 }
 
 class Attributions: UITableViewController {
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.rowHeight = UITableViewAutomaticDimension
         monitorThemeSetting()
     }
-    
+
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
         let theme = UserSettings.theme.value
         cell.defaultInitialise(withTheme: theme)
-        cell.contentView.subviews.forEach{
+        cell.contentView.subviews.forEach {
             guard let label = $0 as? UILabel else { return }
             label.textColor = theme.titleTextColor
         }
@@ -109,4 +109,3 @@ class Attributions: UITableViewController {
         tableView.deselectRow(at: indexPath, animated: true)
     }
 }
-

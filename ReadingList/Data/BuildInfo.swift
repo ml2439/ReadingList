@@ -6,13 +6,13 @@ class BuildInfo {
         case testFlight
         case appStore
     }
-    
+
     static var appVersion: String {
-        get { return Bundle.main.infoDictionary!["CFBundleShortVersionString"] as! String }
+        return Bundle.main.infoDictionary!["CFBundleShortVersionString"] as! String
     }
 
     static var appBuildNumber: String {
-        get { return Bundle.main.infoDictionary!["CFBundleVersion"] as! String }
+        return Bundle.main.infoDictionary!["CFBundleVersion"] as! String
     }
 
     private static let isTestFlight = Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt"
@@ -24,15 +24,13 @@ class BuildInfo {
             return false
         #endif
     }
-    
+
     static var appConfiguration: BuildType {
         if isDebug {
             return .debug
-        }
-        else if isTestFlight {
+        } else if isTestFlight {
             return .testFlight
-        }
-        else {
+        } else {
             return .appStore
         }
     }

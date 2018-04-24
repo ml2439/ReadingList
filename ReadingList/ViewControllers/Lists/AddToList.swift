@@ -3,11 +3,11 @@ import UIKit
 import CoreData
 
 class AddToList: UITableViewController {
-    
+
     // Since this view is only brought up as a modal dispay, it is probably not necessary to implement
     // change detection via a NSFetchedResultsControllerDelegate.
     var resultsController: NSFetchedResultsController<List>!
-    
+
     // Holds the books which are to be added to a list. The set form is just for convenience.
     var books: [Book]! {
         didSet {
@@ -15,16 +15,16 @@ class AddToList: UITableViewController {
         }
     }
     var booksSet: NSSet!
-    
+
     // When the add-to-list operation is complete, this callback will be called
-    var onCompletion: (() -> ())?
-    
+    var onCompletion: (() -> Void)?
+
     /*
      Returns the appropriate View Controller for adding a book (or books) to a list.
      If there are no lists, this will be a UIAlertController; if there are lists, this will be a UINavigationController.
      The completion action will run at the end of a list addition if a UIAlertController was returned.
     */
-    static func getAppropriateVcForAddingBooksToList(_ booksToAdd: [Book], completion: (() -> ())? = nil) -> UIViewController {
+    static func getAppropriateVcForAddingBooksToList(_ booksToAdd: [Book], completion: (() -> Void)? = nil) -> UIViewController {
         let listCount = NSManagedObject.fetchRequest(List.self, limit: 1)
         if try! PersistentStoreManager.container.viewContext.count(for: listCount) > 0 {
             let rootAddToList = Storyboard.AddToList.instantiateRoot(withStyle: .formSheet) as! UINavigationController
@@ -32,13 +32,12 @@ class AddToList: UITableViewController {
             addToList.books = booksToAdd
             addToList.onCompletion = completion
             return rootAddToList
-        }
-        else {
+        } else {
             return AddToList.newListAlertController(booksToAdd, completion: completion)
         }
     }
-    
-    static func newListAlertController(_ books: [Book], completion: (() -> ())? = nil) -> UIAlertController {
+
+    static func newListAlertController(_ books: [Book], completion: (() -> Void)? = nil) -> UIAlertController {
         let existingListNames = List.names(fromContext: PersistentStoreManager.container.viewContext)
 
         func textValidator(listName: String?) -> Bool {
@@ -54,29 +53,29 @@ class AddToList: UITableViewController {
             completion?()
         })
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         let fetchRequest = NSManagedObject.fetchRequest(List.self, batch: 40)
         fetchRequest.sortDescriptors = [NSSortDescriptor(\List.name)]
         resultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: PersistentStoreManager.container.viewContext, sectionNameKeyPath: nil, cacheName: nil)
         try! resultsController.performFetch()
-        
+
         monitorThemeSetting()
     }
 
     @IBAction func cancelWasPressed(_ sender: Any) { navigationController!.dismiss(animated: true) }
-    
+
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 1 { return 1 }
         return resultsController.fetchedObjects!.count
     }
-    
+
     override func numberOfSections(in tableView: UITableView) -> Int {
         // One "Add new" section, one "existing" section
         return 2
     }
-    
+
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if section == 0 { return "Add to an existing list" }
         return "Or add to a new list"
@@ -97,7 +96,7 @@ class AddToList: UITableViewController {
         cell.textLabel!.text = listObj.name
         cell.detailTextLabel!.text = "\(listObj.books.count) book\(listObj.books.count == 1 ? "" : "s")"
         cell.isEnabled = true
-        
+
         // If any of the books are already in this list:
         // FUTURE: Check whether this is firing a lot of faults
         let booksInThisList = listObj.books.set
@@ -106,19 +105,18 @@ class AddToList: UITableViewController {
             if booksSet.isSubset(of: booksInThisList) {
                 alreadyAddedText = books.count == 1 ? "already added" : "all already added"
                 cell.isEnabled = false
-            }
-            else {
+            } else {
                 let overlapSet = booksSet.mutableCopy() as! NSMutableSet
                 overlapSet.intersect(booksInThisList)
-                alreadyAddedText = "\(overlapSet.count) already added" // TODO: think of better wording?
+                alreadyAddedText = "\(overlapSet.count) already added"
             }
-            
+
             cell.detailTextLabel!.text?.append(" (\(alreadyAddedText))")
         }
 
         return cell
     }
-    
+
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 0 {
             // Append the books to the end of the selected list
@@ -128,8 +126,7 @@ class AddToList: UITableViewController {
             }
 
             navigationController!.dismiss(animated: true, completion: onCompletion)
-        }
-        else {
+        } else {
             present(AddToList.newListAlertController(books) { [unowned self] in
                 self.navigationController!.dismiss(animated: true, completion: self.onCompletion)
             }, animated: true)

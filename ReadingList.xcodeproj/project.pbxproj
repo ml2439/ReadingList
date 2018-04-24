@@ -693,6 +693,7 @@
 			buildConfigurationList = 495C5D341BF1404D00E00C07 /* Build configuration list for PBXNativeTarget "ReadingList" */;
 			buildPhases = (
 				B2E0720CB7A9216CA8E003A9 /* [CP] Check Pods Manifest.lock */,
+				1C3E4E48208CF89400E66CCC /* SwiftLint */,
 				1C4C25CB2076D45F004A69B8 /* Set Fabric API Key */,
 				495C5D081BF1404D00E00C07 /* Sources */,
 				495C5D091BF1404D00E00C07 /* Frameworks */,
@@ -858,6 +859,20 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ReadingList/Pods-ReadingList-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		1C3E4E48208CF89400E66CCC /* SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = SwiftLint;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\"";
 		};
 		1C4C25CB2076D45F004A69B8 /* Set Fabric API Key */ = {
 			isa = PBXShellScriptBuildPhase;

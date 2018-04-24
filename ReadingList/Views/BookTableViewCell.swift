@@ -8,20 +8,20 @@ class BookTableViewCell: UITableViewCell {
     @IBOutlet weak var readTimeLabel: UILabel!
 
     private var coverImageRequest: HTTP.Request?
-    
+
     func resetUI() {
         titleLabel.text = nil
         authorsLabel.text = nil
         readTimeLabel.text = nil
         bookCover.image = nil
     }
-    
+
     override func awakeFromNib() {
         super.awakeFromNib()
         initialise(withTheme: UserSettings.theme.value)
         resetUI()
     }
-    
+
     func initialise(withTheme theme: Theme) {
         backgroundColor = theme.cellBackgroundColor
         selectedBackgroundColor = theme.selectedCellBackgroundColor
@@ -29,17 +29,17 @@ class BookTableViewCell: UITableViewCell {
         authorsLabel.textColor = theme.subtitleTextColor
         readTimeLabel?.textColor = theme.subtitleTextColor
     }
-    
+
     override func prepareForReuse() {
         super.prepareForReuse()
-        
+
         // Cancel any pending cover data request task
         coverImageRequest?.cancel()
         coverImageRequest = nil
-        
+
         resetUI()
     }
-    
+
     func configureFrom(_ book: Book, includeReadDates: Bool = true) {
         titleLabel.text = book.title
         authorsLabel.text = book.authorDisplay
@@ -51,18 +51,18 @@ class BookTableViewCell: UITableViewCell {
             default: readTimeLabel.text = nil
             }
         }
-        
+
         #if DEBUG
             if DebugSettings.showSortNumber {
                 titleLabel.text =  "(\(book.sort?.intValue.string ?? "none")) \(book.title)"
             }
         #endif
     }
-    
+
     func configureFrom(_ searchResult: GoogleBooks.SearchResult) {
         titleLabel.text = searchResult.title
         authorsLabel.text = searchResult.authors.joined(separator: ", ")
-        
+
         guard let coverURL = searchResult.thumbnailCoverUrl else { bookCover.image = #imageLiteral(resourceName: "CoverPlaceholder"); return }
         coverImageRequest = HTTP.Request.get(url: coverURL).data { [weak self] result in
             // Cancellations appear to be reported as errors. Ideally we would detect non-cancellation

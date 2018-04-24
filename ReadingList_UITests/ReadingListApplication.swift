@@ -1,14 +1,14 @@
 import Foundation
 import XCTest
 
-class ReadingListApplication : XCUIApplication {
-    enum tab : Int {
+class ReadingListApplication: XCUIApplication {
+    enum Tab: Int {
         case toRead = 0
         case finished = 1
         case organise = 2
         case settings = 3
     }
-    
+
     enum BarcodeScanSimulation: Int {
         case none = 0
         case normal = 1
@@ -16,7 +16,7 @@ class ReadingListApplication : XCUIApplication {
         case validIsbn = 3
         case unfoundIsbn = 4
         case existingIsbn = 5
-        
+
         var titleText: String {
             switch self {
             case .none:
@@ -34,24 +34,24 @@ class ReadingListApplication : XCUIApplication {
             }
         }
     }
-    
-    enum addMethod : Int {
+
+    enum AddMethod: Int {
         case scanBarcode = 0
         case searchOnline = 1
         case enterManually = 2
     }
-    
-    func clickTab(_ tab: tab) {
+
+    func clickTab(_ tab: Tab) {
         getTab(tab).tap()
     }
-    
-    func getTab(_ tab: tab) -> XCUIElement {
+
+    func getTab(_ tab: Tab) -> XCUIElement {
         return tabBars.buttons.element(boundBy: tab.rawValue)
     }
-    
+
     func waitUntilHittable(_ element: XCUIElement, failureMessage: String) {
         let startTime = NSDate.timeIntervalSinceReferenceDate
-        
+
         while !element.isHittable {
             if NSDate.timeIntervalSinceReferenceDate - startTime > 30 {
                 XCTAssert(false, failureMessage)
@@ -59,25 +59,23 @@ class ReadingListApplication : XCUIApplication {
             CFRunLoopRunInMode(CFRunLoopMode.defaultMode, 0.1, false)
         }
     }
-    
+
     func setBarcodeSimulation(_ mode: BarcodeScanSimulation) {
         clickTab(.settings)
         tables.cells.staticTexts["Debug"].tap()
-        
+
         tables.cells.staticTexts[mode.titleText].tap()
         if navigationBars.count == 1 {
             topNavBar.buttons["Settings"].tap()
         }
     }
-    
-    func clickAddButton(addMethod: addMethod) {
+
+    func clickAddButton(addMethod: AddMethod) {
         navigationBars.element(boundBy: 0).buttons["Add"].tap()
         sheets.buttons.element(boundBy: addMethod.rawValue).tap()
     }
-    
+
     var topNavBar: XCUIElement {
-        get {
-            return navigationBars.element(boundBy: navigationBars.count - 1)
-        }
+        return navigationBars.element(boundBy: navigationBars.count - 1)
     }
 }

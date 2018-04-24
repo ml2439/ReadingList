@@ -7,12 +7,12 @@ extension NSManagedObject {
         guard let context = managedObjectContext else { fatalError("Attempted to delete a book which was not in a context") }
         context.delete(self)
     }
-    
+
     func deleteAndSave() {
         delete()
         managedObjectContext!.saveAndLogIfErrored()
     }
-    
+
     static func fetchRequest<T: NSManagedObject>(_ type: T.Type, limit: Int? = nil, batch: Int? = nil) -> NSFetchRequest<T> {
         // Apple bug: the following lines do not work when run from a test target
         // let fetchRequest = T.fetchRequest() as! NSFetchRequest<T>
@@ -22,33 +22,31 @@ extension NSManagedObject {
         if let batch = batch { fetchRequest.fetchBatchSize = batch }
         return fetchRequest
     }
-    
+
     func isValidForUpdate() -> Bool {
         do {
             try self.validateForUpdate()
             return true
-        }
-        catch {
+        } catch {
             return false
         }
     }
 }
 
 extension NSManagedObjectContext {
-    
+
     /**
      Tries to save the managed object context and logs an event and raises a fatal error if failure occurs.
     */
     func saveAndLogIfErrored() {
         do {
             try self.save()
-        }
-        catch let error {
+        } catch let error {
             Fabric.log((error as NSError).getCoreDataSaveErrorDescription())
             fatalError(error.localizedDescription)
         }
     }
-    
+
     /**
      Creates a child managed object context, and adds an observer to the child context's save event in order to trigger a merge and save
     */
@@ -56,24 +54,24 @@ extension NSManagedObjectContext {
         let childContext = NSManagedObjectContext(concurrencyType: concurrencyType)
         childContext.parent = self
         childContext.automaticallyMergesChangesFromParent = autoMerge
-        
+
         NotificationCenter.default.addObserver(self, selector: #selector(mergeAndSave(fromChildContextDidSave:)), name: NSNotification.Name.NSManagedObjectContextDidSave, object: childContext)
-        
+
         return childContext
     }
-    
+
     @objc private func mergeAndSave(fromChildContextDidSave notification: Notification) {
         self.mergeChanges(fromContextDidSave: notification)
         self.saveAndLogIfErrored()
     }
-    
+
     /**
      With a valid URL representation of a Managed Object ID, returns the managed object.
     */
     func object(withID id: URL) -> NSManagedObject {
         return object(with: persistentStoreCoordinator!.managedObjectID(forURIRepresentation: id)!)
     }
-    
+
     /**
      Saves if changes are present in the context.
     */
@@ -82,8 +80,8 @@ extension NSManagedObjectContext {
         self.saveAndLogIfErrored()
         return true
     }
-    
-    func performAndSave(block: @escaping () -> ()) {
+
+    func performAndSave(block: @escaping () -> Void) {
         perform { [unowned self] in
             block()
             self.saveAndLogIfErrored()
@@ -92,7 +90,7 @@ extension NSManagedObjectContext {
 }
 
 extension NSPersistentStoreCoordinator {
-    
+
     /**
      Attempts to destory and then delete the store at the specified URL. If an error occurs, prints the error; does not rethrow.
      */
@@ -102,9 +100,8 @@ extension NSPersistentStoreCoordinator {
             try FileManager.default.removeItem(at: url)
             try FileManager.default.removeItem(at: URL(fileURLWithPath: url.path.appending("-shm")))
             try FileManager.default.removeItem(at: URL(fileURLWithPath: url.path.appending("-wal")))
-        }
-        catch let e {
-            print("failed to destroy or delete persistent store at \(url)", e)
+        } catch let error {
+            print("failed to destroy or delete persistent store at \(url)", error)
         }
     }
 }
@@ -128,11 +125,11 @@ extension NSError {
         default: return String(code)
         }
     }
-    
+
     func getCoreDataSaveErrorDescription() -> String {
         if code == NSValidationMultipleErrorsError {
             guard let errors = userInfo[NSDetailedErrorsKey] as? [NSError] else { return "\"Multiple errors\" error without detail" }
-            return errors.compactMap{$0.getCoreDataSaveErrorDescription()}.joined(separator: "; ")
+            return errors.compactMap {$0.getCoreDataSaveErrorDescription()}.joined(separator: "; ")
         }
 
         guard let entityName = (userInfo["NSValidationErrorObject"] as? NSManagedObject)?.entity.name,
@@ -144,11 +141,11 @@ extension NSError {
 }
 
 extension NSEntityMigrationPolicy {
-    
+
     func copyValue(oldObject: NSManagedObject, newObject: NSManagedObject, key: String) {
         newObject.setValue(oldObject.value(forKey: key), forKey: key)
     }
-    
+
     func copyValues(oldObject: NSManagedObject, newObject: NSManagedObject, keys: String...) {
         for key in keys {
             copyValue(oldObject: oldObject, newObject: newObject, key: key)
@@ -157,7 +154,7 @@ extension NSEntityMigrationPolicy {
 }
 
 extension NSFetchedResultsController {
-    @objc func withoutUpdates(_ block: () -> ()) {
+    @objc func withoutUpdates(_ block: () -> Void) {
         let delegate = self.delegate
         self.delegate = nil
         block()

@@ -7,7 +7,7 @@ class StartFinishButton: BorderedButton {
         case finish
         case none
     }
-    
+
     func setState(_ state: State) {
         switch state {
         case .start:

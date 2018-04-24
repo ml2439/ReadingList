@@ -12,7 +12,7 @@ import SafariServices
 
 extension UIColor {
     static var customHexColorCache = [UInt32: UIColor]()
-    
+
     static func hex(_ hex: UInt32) -> UIColor {
         if let cachedColor = UIColor.customHexColorCache[hex] { return cachedColor }
         let color = UIColor(fromHex: hex)
@@ -25,23 +25,23 @@ extension Theme {
     var isDark: Bool {
         return self == .dark || self == .black
     }
-    
+
     var keyboardAppearance: UIKeyboardAppearance {
         return isDark ? .dark : .default
     }
-    
+
     var barStyle: UIBarStyle {
         return isDark ? .black : .default
     }
-    
+
     var statusBarStyle: UIStatusBarStyle {
         return isDark ? .lightContent : .default
     }
-    
+
     var titleTextColor: UIColor {
         return isDark ? .white : .black
     }
-    
+
     var subtitleTextColor: UIColor {
         switch self {
         case .normal: return UIColor.hex(0x686868)
@@ -49,7 +49,7 @@ extension Theme {
         case .black: return .lightGray
         }
     }
-    
+
     var placeholderTextColor: UIColor {
         switch self {
         case .normal: return UIColor.hex(0xCDCDD3)
@@ -57,7 +57,7 @@ extension Theme {
         case .black: return UIColor.hex(0x262626)
         }
     }
-    
+
     var tableBackgroundColor: UIColor {
         switch self {
         case .normal: return .groupTableViewBackground
@@ -65,11 +65,11 @@ extension Theme {
         case .black: return UIColor.hex(0x080808)
         }
     }
-    
+
     var cellBackgroundColor: UIColor {
         return viewBackgroundColor
     }
-    
+
     var selectedCellBackgroundColor: UIColor {
         switch self {
         case .normal: return UIColor.hex(0xD9D9D9)
@@ -77,7 +77,7 @@ extension Theme {
         case .black: return UIColor.hex(0x191919)
         }
     }
-    
+
     var cellSeparatorColor: UIColor {
         switch self {
         case .normal: return UIColor.hex(0xD6D6D6)
@@ -85,7 +85,7 @@ extension Theme {
         case .black: return UIColor.hex(0x282828)
         }
     }
-    
+
     var viewBackgroundColor: UIColor {
         switch self {
         case .normal: return .white
@@ -163,7 +163,7 @@ extension UITableViewController: ThemeableViewController {
         }
         tableView.initialise(withTheme: theme)
     }
-    
+
     func themeSettingDidChange() {
         // Saw some weird artifacts which went away when the selected rows were deselected
         let selectedRow = tableView.indexPathForSelectedRow
@@ -177,7 +177,7 @@ extension FormViewController: ThemeableViewController {
     func initialise(withTheme theme: Theme) {
         tableView.initialise(withTheme: theme)
     }
-    
+
     func themeSettingDidChange() {
         // Saw some weird artifacts which went away when the selected rows were deselected
         let selectedRow = tableView.indexPathForSelectedRow
@@ -188,7 +188,7 @@ extension FormViewController: ThemeableViewController {
 }
 
 class ThemedSplitViewController: UISplitViewController, UISplitViewControllerDelegate, ThemeableViewController {
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         preferredDisplayMode = .allVisible
@@ -196,11 +196,11 @@ class ThemedSplitViewController: UISplitViewController, UISplitViewControllerDel
 
         monitorThemeSetting()
     }
-    
+
     func splitViewController(_ splitViewController: UISplitViewController, collapseSecondary secondaryViewController: UIViewController, onto primaryViewController: UIViewController) -> Bool {
         return true
     }
-    
+
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         // This is called at app startup
         super.traitCollectionDidChange(previousTraitCollection)
@@ -208,10 +208,10 @@ class ThemedSplitViewController: UISplitViewController, UISplitViewControllerDel
             initialise(withTheme: UserSettings.theme.value)
         }
     }
-    
+
     func initialise(withTheme theme: Theme) {
         view.backgroundColor = theme.cellSeparatorColor
-        
+
         // This attempts to allieviate this bug: https://stackoverflow.com/q/32507975/5513562
         (masterNavigationController as! ThemedNavigationController).initialise(withTheme: theme)
         (detailNavigationController as? ThemedNavigationController)?.initialise(withTheme: theme)
@@ -221,7 +221,7 @@ class ThemedSplitViewController: UISplitViewController, UISplitViewControllerDel
 
 class ThemedNavigationController: UINavigationController, ThemeableViewController {
     var hasAppeared = false
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
@@ -238,7 +238,7 @@ class ThemedNavigationController: UINavigationController, ThemeableViewControlle
     func initialise(withTheme theme: Theme) {
         toolbar?.initialise(withTheme: theme)
         navigationBar.initialise(withTheme: theme)
-        
+
         let translucent = splitViewController?.traitCollection.horizontalSizeClass != .regular
         navigationBar.setTranslucency(translucent, colorIfNotTranslucent: UserSettings.theme.value.viewBackgroundColor)
     }
@@ -259,7 +259,7 @@ extension UINavigationBar {
             largeTitleTextAttributes = [NSAttributedStringKey.foregroundColor: theme.titleTextColor]
         }
     }
-    
+
     func setTranslucency(_ translucent: Bool, colorIfNotTranslucent: UIColor) {
         isTranslucent = translucent
         barTintColor = translucent ? nil : colorIfNotTranslucent
@@ -282,8 +282,7 @@ extension UITableView {
             // iOS 10.x search bars are not integrated in the navigation bar; handle these separately
             if let tableHeaderSearchBar = tableHeaderView as? TableHeaderSearchBar {
                 tableHeaderSearchBar.initialise(withTheme: theme)
-            }
-            else if let searchBar = tableHeaderView as? UISearchBar {
+            } else if let searchBar = tableHeaderView as? UISearchBar {
                 searchBar.initialise(withTheme: theme)
             }
             return
@@ -295,7 +294,7 @@ extension UITabBar {
     func initialise(withTheme theme: Theme) {
         barStyle = theme.barStyle
     }
-    
+
     func setTranslucency(_ translucent: Bool, colorIfNotTranslucent: UIColor) {
         isTranslucent = translucent
         barTintColor = translucent ? nil : colorIfNotTranslucent
