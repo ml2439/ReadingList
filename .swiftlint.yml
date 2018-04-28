@@ -5,6 +5,9 @@ identifier_name:
   excluded:
     - id
     - at
+line_length:
+  - 200
+  - 300
 disabled_rules:
   # Force casts and trys are used a bit in the CodeData code...
   - force_cast
@@ -14,6 +17,9 @@ disabled_rules:
   - line_length
   - file_length
   - function_body_length
+  
+  # Trailing whitespace is just annoying to fix
+  - trailing_whitespace
 
   # This is a bit of an opinionated rule...  
   - nesting 

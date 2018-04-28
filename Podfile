@@ -10,13 +10,12 @@ target 'ReadingList' do
   pod 'Eureka', '~> 4.1'
   pod 'ImageRow', '~> 3.0'
   pod 'SVProgressHUD', '~> 2.2'
+  pod 'SwiftyStoreKit', '~> 0.13'
+  pod 'CHCSVParser', :git => 'https://github.com/davedelong/CHCSVParser.git'
   pod 'SimulatorStatusMagic', :configurations => ['Debug']
   pod 'Fabric'
   pod 'Crashlytics'
-  pod 'CHCSVParser', :git => 'https://github.com/davedelong/CHCSVParser.git'
   pod 'Firebase/Core'
-  pod 'SwiftyStoreKit'
-  pod 'SwiftLint'
 
   target 'ReadingList_UITests' do
     inherit! :complete

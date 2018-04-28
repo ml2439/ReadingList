@@ -29,7 +29,6 @@ PODS:
   - nanopb/encode (0.3.8)
   - SimulatorStatusMagic (2.1)
   - SVProgressHUD (2.2.5)
-  - SwiftLint (0.25.1)
   - SwiftyJSON (4.1.0)
   - SwiftyStoreKit (0.13.1)
 
@@ -43,9 +42,8 @@ DEPENDENCIES:
   - ImageRow (~> 3.0)
   - SimulatorStatusMagic
   - SVProgressHUD (~> 2.2)
-  - SwiftLint
   - SwiftyJSON (~> 4.0)
-  - SwiftyStoreKit
+  - SwiftyStoreKit (~> 0.13)
 
 EXTERNAL SOURCES:
   CHCSVParser:
@@ -71,10 +69,9 @@ SPEC CHECKSUMS:
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
   SimulatorStatusMagic: 481558caf2b9ccb2ceba2cc193728d4db3dcac07
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
-  SwiftLint: ce933681be10c3266e82576dad676fa815a602e9
   SwiftyJSON: c29297daf073d2aa016295d5809cdd68045c39b3
   SwiftyStoreKit: c36bb7841dd51a485ce5c38abf9e96fba988741f
 
-PODFILE CHECKSUM: dd36ffaa70cfbec071d0e97b95086f77a378657d
+PODFILE CHECKSUM: bed3a7b4820a8845315ef5e460506734bfed1de1
 
 COCOAPODS: 1.4.0
