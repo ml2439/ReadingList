@@ -871,7 +871,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if which /usr/local/bin/swiftlint >/dev/null; then\n    /usr/local/bin/swiftlint\nelse\n    echo \"warning: SwiftLint not installed.\"\nfi";
+			shellScript = "export PATH=/usr/local/bin:$PATH\nif which swiftlint >/dev/null; then\n    swiftlint\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi";
 		};
 		4937A1491EA0323200A3B0D1 /* Run Fabric script */ = {
 			isa = PBXShellScriptBuildPhase;
