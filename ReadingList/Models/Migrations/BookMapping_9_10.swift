@@ -9,19 +9,19 @@ class BookMapping_9_10: NSEntityMigrationPolicy { //swiftlint:disable:this type_
     //FUNCTION($entityPolicy, "destinationInstancesForSourceInstances:manager", $source.authors, $manager)
     @objc func destinationInstances(forSourceInstances: [NSManagedObject], manager: NSMigrationManager) -> [NSManagedObject] {
         let authors = manager.destinationInstances(forEntityMappingName: "AuthorToAuthor", sourceInstances: forSourceInstances)
-        if authors.count > 0 { return authors }
+        if !authors.isEmpty { return authors }
         let newAuthor = NSEntityDescription.insertNewObject(forEntityName: "Author", into: manager.destinationContext)
         newAuthor.setValue("Unknown", forKey: "lastName")
         return [newAuthor]
     }
 
     @objc func authorDisplay(forSource source: String) -> String {
-        if source == "" { return "Unknown" }
+        if source.isEmpty { return "Unknown" }
         return source
     }
 
     @objc func authorSort(forSource source: String) -> String {
-        if source == "" { return "unknown" }
+        if source.isEmpty { return "unknown" }
         return source
     }
 }

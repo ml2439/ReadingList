@@ -23,16 +23,16 @@ class General: FormViewController {
 
         form +++ SelectableSection<ListCheckRow<Theme>>(header: "Theme", footer: "Change the appearance of Reading List.",
                                                         selectionType: .singleSelection(enableDeselection: false)) {
-                    $0.onSelectSelectableRow = { _, row in
-                        UserSettings.theme.value = row.value!
-                        NotificationCenter.default.post(name: Notification.Name.ThemeSettingChanged, object: nil)
-                        UserEngagement.logEvent(.changeTheme)
-                        UserEngagement.onReviewTrigger()
-                    }
-                }
-                <<< themeRow(.normal, name: "Default")
-                <<< themeRow(.dark, name: "Dark")
-                <<< themeRow(.black, name: "Black")
+            $0.onSelectSelectableRow = { _, row in
+                UserSettings.theme.value = row.value!
+                NotificationCenter.default.post(name: Notification.Name.ThemeSettingChanged, object: nil)
+                UserEngagement.logEvent(.changeTheme)
+                UserEngagement.onReviewTrigger()
+            }
+        }
+        <<< themeRow(.normal, name: "Default")
+        <<< themeRow(.dark, name: "Dark")
+        <<< themeRow(.black, name: "Black")
 
             +++ Section(header: "Analytics", footer: """
                 Crash reports can be automatically sent to help me detect and fix issues. Analytics can \

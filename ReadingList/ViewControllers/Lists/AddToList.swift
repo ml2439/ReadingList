@@ -46,12 +46,12 @@ class AddToList: UITableViewController {
         }
 
         return TextBoxAlertController(title: "Add New List", message: "Enter a name for your list", placeholder: "Enter list name",
-                                      keyboardAppearance: UserSettings.theme.value.keyboardAppearance, textValidator: textValidator, onOK: { title in
+                                      keyboardAppearance: UserSettings.theme.value.keyboardAppearance, textValidator: textValidator) { title in
             let createdList = List(context: PersistentStoreManager.container.viewContext, name: title!)
             createdList.books = NSOrderedSet(array: books)
             PersistentStoreManager.container.viewContext.saveAndLogIfErrored()
             completion?()
-        })
+        }
     }
 
     override func viewDidLoad() {
@@ -64,7 +64,7 @@ class AddToList: UITableViewController {
         monitorThemeSetting()
     }
 
-    @IBAction func cancelWasPressed(_ sender: Any) { navigationController!.dismiss(animated: true) }
+    @IBAction private func cancelWasPressed(_ sender: Any) { navigationController!.dismiss(animated: true) }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 1 { return 1 }

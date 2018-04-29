@@ -18,11 +18,11 @@ class CsvExport<TData> {
     }
 
     func headers() -> [String] {
-        return columns.map {$0.header}
+        return columns.map { $0.header }
     }
 
     func cellValues(data: TData) -> [String] {
-        return columns.map {$0.cellValue(data) ?? ""}
+        return columns.map { $0.cellValue(data) ?? "" }
     }
 }
 

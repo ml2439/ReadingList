@@ -8,6 +8,36 @@ identifier_name:
 line_length:
   - 200
   - 300
+opt_in_rules:
+  - array_init
+  - closure_end_indentation
+  - closure_spacing
+  - contains_over_first_not_nil
+  - empty_count
+  - empty_string
+  - explicit_enum_raw_value
+  - explicit_init
+  - extension_access_modifier
+  - fatal_error_message
+  - first_where
+  - implicit_return
+  - joined_default_parameter
+  - literal_expression_end_indentation
+  - lower_acl_than_parent
+  - operator_usage_whitespace
+  - overridden_super_call
+  - private_action
+  - private_outlet
+  - prohibited_super_call
+  - redundant_nil_coalescing
+  - required_enum_case
+  - single_test_class
+  - sorted_first_last
+  - trailing_closure
+  - unneeded_parentheses_in_closure_argument
+  - untyped_error_in_catch
+  - vertical_parameter_alignment_on_call
+  - yoda_condition
 disabled_rules:
   # Force casts and trys are used a bit in the CodeData code...
   - force_cast
@@ -17,9 +47,6 @@ disabled_rules:
   - line_length
   - file_length
   - function_body_length
-  
-  # Trailing whitespace is just annoying to fix
-  - trailing_whitespace
 
   # This is a bit of an opinionated rule...  
   - nesting 

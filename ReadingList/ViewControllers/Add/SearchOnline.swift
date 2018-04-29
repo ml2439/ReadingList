@@ -9,8 +9,8 @@ class SearchOnline: UITableViewController {
     var initialSearchString: String?
     var tableItems = [GoogleBooks.SearchResult]()
 
-    @IBOutlet weak var addAllButton: UIBarButtonItem!
-    @IBOutlet weak var selectModeButton: UIBarButtonItem!
+    @IBOutlet private weak var addAllButton: UIBarButtonItem!
+    @IBOutlet private weak var selectModeButton: UIBarButtonItem!
 
     var searchController: UISearchController!
     private let feedbackGenerator = UINotificationFeedbackGenerator()
@@ -101,14 +101,14 @@ class SearchOnline: UITableViewController {
         emptyDatasetView.setTopDistance(navigationHeaderHeight + 20)
     }
 
-    @IBAction func cancelWasPressed(_ sender: Any) {
+    @IBAction private func cancelWasPressed(_ sender: Any) {
         searchController.isActive = false
         dismiss(animated: true, completion: nil)
     }
 
     override func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
         guard tableView.isEditing else { return }
-        if tableView.indexPathsForSelectedRows == nil || tableView.indexPathsForSelectedRows!.count == 0 {
+        if tableView.indexPathsForSelectedRows == nil || tableView.indexPathsForSelectedRows!.isEmpty {
             addAllButton.isEnabled = false
         }
     }
@@ -155,7 +155,7 @@ class SearchOnline: UITableViewController {
                 Crashlytics.sharedInstance().recordError(googleError, withAdditionalUserInfo: ["GoogleErrorMessage": googleError.message])
             }
             emptyDatasetView.setEmptyDatasetReason(.error)
-        } else if resultPage.searchResults.value!.count == 0 {
+        } else if resultPage.searchResults.value!.isEmpty {
             feedbackGenerator.notificationOccurred(.warning)
             emptyDatasetView.setEmptyDatasetReason(.noResults)
         } else {
@@ -218,7 +218,7 @@ class SearchOnline: UITableViewController {
         navigationController!.setToolbarHidden(true, animated: true)
     }
 
-    @IBAction func changeSelectMode(_ sender: UIBarButtonItem) {
+    @IBAction private func changeSelectMode(_ sender: UIBarButtonItem) {
         tableView.setEditing(!tableView.isEditing, animated: true)
         selectModeButton.title = tableView.isEditing ? "Select Single" : "Select Many"
         if !tableView.isEditing {
@@ -226,16 +226,16 @@ class SearchOnline: UITableViewController {
         }
     }
 
-    @IBAction func addAllPressed(_ sender: UIBarButtonItem) {
-        guard tableView.isEditing, let selectedRows = tableView.indexPathsForSelectedRows, selectedRows.count > 0 else { return }
+    @IBAction private func addAllPressed(_ sender: UIBarButtonItem) {
+        guard tableView.isEditing, let selectedRows = tableView.indexPathsForSelectedRows, !selectedRows.isEmpty else { return }
 
         // If there is only 1 cell selected, we might as well proceed as we would in single selection mode
         guard selectedRows.count > 1 else { fetchAndSegue(searchResult: tableItems[selectedRows.first!.row]); return }
 
         let alert = UIAlertController(title: "Add \(selectedRows.count) books", message: "Are you sure you want to add all \(selectedRows.count) selected books? They will be added to the 'To Read' section.", preferredStyle: .actionSheet)
-        alert.addAction(UIAlertAction(title: "Add All", style: .default, handler: { [unowned self] _ in
+        alert.addAction(UIAlertAction(title: "Add All", style: .default) { [unowned self] _ in
             self.addMultiple(selectedRows: selectedRows)
-        }))
+        })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         present(alert, animated: true, completion: nil)
     }

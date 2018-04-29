@@ -23,8 +23,8 @@ class BookMapping_10_11: NSEntityMigrationPolicy { //swiftlint:disable:this type
             let author = ($0 as! NSManagedObject)
             let lastName = sortable((author.value(forKey: "lastName") as! String))
             let firstNames = sortable(author.value(forKey: "firstNames") as? String)
-            return [lastName, firstNames].compactMap {$0}.joined(separator: ".")
-            }.joined(separator: "..")
+            return [lastName, firstNames].compactMap { $0 }.joined(separator: ".")
+        }.joined(separator: "..")
     }
 
     @objc func authorDisplay(forAuthors: NSOrderedSet) -> String {
@@ -34,7 +34,7 @@ class BookMapping_10_11: NSEntityMigrationPolicy { //swiftlint:disable:this type
                 return "\(firstName) \(author.value(forKey: "lastName")!)"
             }
             return author.value(forKey: "lastName") as! String
-            }.joined(separator: ", ")
+        }.joined(separator: ", ")
     }
 
     func sortable(_ str: String?) -> String? {

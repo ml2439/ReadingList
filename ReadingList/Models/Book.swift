@@ -55,7 +55,7 @@ class Book: NSManagedObject {
 
     override func prepareForDeletion() {
         super.prepareForDeletion()
-        for orphanedSubject in subjects.filter({$0.books.count == 1}) {
+        for orphanedSubject in subjects.filter({ $0.books.count == 1 }) {
             orphanedSubject.delete()
             print("orphaned subject \(orphanedSubject.name) deleted.")
         }
@@ -76,7 +76,7 @@ extension Book {
         title = fetchResult.title
         populateAuthors(fromStrings: fetchResult.authors)
         bookDescription = fetchResult.description
-        subjects = Set(fetchResult.subjects.map {Subject.getOrCreate(inContext: self.managedObjectContext!, withName: $0)})
+        subjects = Set(fetchResult.subjects.map { Subject.getOrCreate(inContext: self.managedObjectContext!, withName: $0) })
         coverImage = fetchResult.coverImage
         pageCount = fetchResult.pageCount?.nsNumber
         publicationDate = fetchResult.publishedDate
@@ -103,8 +103,8 @@ extension Book {
             }
         }
         // FUTURE: This is a bit brute force, deleting all existing authors. Could perhaps inspect for changes first.
-        self.authors.map {$0 as! Author}.forEach {$0.delete()}
-        self.setAuthors(authorNames.map {Author(context: self.managedObjectContext!, lastName: $0.1, firstNames: $0.0)})
+        self.authors.map { $0 as! Author }.forEach { $0.delete() }
+        self.setAuthors(authorNames.map { Author(context: self.managedObjectContext!, lastName: $0.1, firstNames: $0.0) })
     }
 
     static func get(fromContext context: NSManagedObjectContext, googleBooksId: String? = nil, isbn: String? = nil) -> Book? {

@@ -7,14 +7,15 @@ class Tip: UIViewController, ThemeableViewController {
     static let largeTipId = "largetip"
     var tipProducts: Set<SKProduct>?
 
-    @IBOutlet weak var explanationLabel: UILabel!
+    @IBOutlet private weak var explanationLabel: UILabel!
 
     // Small and large tip buttons are hidden at load
-    @IBOutlet weak var smallTip: UIButton!
-    @IBOutlet weak var mediumTip: UIButton!
-    @IBOutlet weak var largeTip: UIButton!
+    @IBOutlet private weak var smallTip: UIButton!
+    @IBOutlet private weak var mediumTip: UIButton!
+    @IBOutlet private weak var largeTip: UIButton!
 
     override func viewDidLoad() {
+        super.viewDidLoad()
         SwiftyStoreKit.retrieveProductsInfo([Tip.smallTipId, Tip.mediumTipId, Tip.largeTipId]) { [weak self] results in
             guard let viewController = self else { return }
             guard results.retrievedProducts.count == 3 else {
@@ -53,7 +54,7 @@ class Tip: UIViewController, ThemeableViewController {
         }
     }
 
-    @IBAction func tipPressed(_ sender: UIButton) {
+    @IBAction private func tipPressed(_ sender: UIButton) {
         guard let tipProducts = tipProducts else { return }
 
         let productId: String
@@ -67,7 +68,7 @@ class Tip: UIViewController, ThemeableViewController {
             return
         }
 
-        guard let product = tipProducts.first(where: {$0.productIdentifier == productId}) else { return }
+        guard let product = tipProducts.first(where: { $0.productIdentifier == productId }) else { return }
 
         SwiftyStoreKit.purchaseProduct(product) { [weak self] result in
             switch result {

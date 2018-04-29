@@ -28,6 +28,6 @@ public class List: NSManagedObject {
         let fetchRequest = NSManagedObject.fetchRequest(List.self)
         fetchRequest.sortDescriptors = [NSSortDescriptor(\List.name)]
         fetchRequest.returnsObjectsAsFaults = false
-        return (try! context.fetch(fetchRequest)).map {$0.name}
+        return (try! context.fetch(fetchRequest)).map { $0.name }
     }
 }

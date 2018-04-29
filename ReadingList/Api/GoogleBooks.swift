@@ -140,7 +140,7 @@ class GoogleBooks {
 
         static func parseSearchResults(_ searchResults: JSON) -> [SearchResult] {
             return searchResults["items"].compactMap { itemJson in
-                return Parser.parseItem(itemJson.1)
+                Parser.parseItem(itemJson.1)
             }
         }
 
@@ -149,7 +149,7 @@ class GoogleBooks {
                 let title = item["volumeInfo", "title"].string,
                 let authors = item["volumeInfo", "authors"].array else { return nil }
 
-            let result = SearchResult(id: id, title: title, authors: authors.map {$0.rawString()!})
+            let result = SearchResult(id: id, title: title, authors: authors.map { $0.rawString()! })
 
             // Convert the thumbnail URL to HTTPS
             if let thumbnailUrlString = item["volumeInfo", "imageLinks", "thumbnail"].string,
@@ -158,9 +158,9 @@ class GoogleBooks {
                 urlComponents.scheme = "https"
                 result.thumbnailCoverUrl = urlComponents.url
             }
-            result.isbn13 = item["volumeInfo", "industryIdentifiers"].array?.first(where: { json in
-                return json["type"].stringValue == "ISBN_13"
-            })?["identifier"].stringValue
+            result.isbn13 = item["volumeInfo", "industryIdentifiers"].array?.first {
+                $0["type"].stringValue == "ISBN_13"
+            }?["identifier"].stringValue
 
             return result
         }
@@ -183,12 +183,12 @@ class GoogleBooks {
             var description = fetchResult["volumeInfo", "description"].string
 
             description = description?.components(separatedBy: "<br>")
-                .compactMap {$0.trimming().nilIfWhitespace()}
+                .compactMap { $0.trimming().nilIfWhitespace() }
                 .joined(separator: "\n")
 
             description = description?.components(separatedBy: "<p>")
-                .flatMap {$0.components(separatedBy: "</p>")}
-                .compactMap {$0.trimming().nilIfWhitespace()}
+                .flatMap { $0.components(separatedBy: "</p>") }
+                .compactMap { $0.trimming().nilIfWhitespace() }
                 .joined(separator: "\n\n")
 
             description = description?.replacingOccurrences(of: "<[^>]+>", with: "", options: .regularExpression, range: nil)
@@ -198,7 +198,7 @@ class GoogleBooks {
             // Try to get the categories
             if let subjects = fetchResult["volumeInfo", "categories"].array {
                 result.subjects = subjects.flatMap {
-                    $0.stringValue.components(separatedBy: "/").map {$0.trimming()}
+                    $0.stringValue.components(separatedBy: "/").map { $0.trimming() }
                 }.filter { $0 != "General" }.distinct()
             }
 

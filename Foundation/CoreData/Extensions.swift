@@ -41,8 +41,8 @@ extension NSManagedObjectContext {
     func saveAndLogIfErrored() {
         do {
             try self.save()
-        } catch let error {
-            Fabric.log((error as NSError).getCoreDataSaveErrorDescription())
+        } catch let error as NSError {
+            Fabric.log(error.getCoreDataSaveErrorDescription())
             fatalError(error.localizedDescription)
         }
     }
@@ -94,13 +94,13 @@ extension NSPersistentStoreCoordinator {
     /**
      Attempts to destory and then delete the store at the specified URL. If an error occurs, prints the error; does not rethrow.
      */
-    public func destroyAndDeleteStore(at url: URL) {
+    func destroyAndDeleteStore(at url: URL) {
         do {
             try destroyPersistentStore(at: url, ofType: NSSQLiteStoreType, options: nil)
             try FileManager.default.removeItem(at: url)
             try FileManager.default.removeItem(at: URL(fileURLWithPath: url.path.appending("-shm")))
             try FileManager.default.removeItem(at: URL(fileURLWithPath: url.path.appending("-wal")))
-        } catch let error {
+        } catch let error { //swiftlint:disable:this untyped_error_in_catch
             print("failed to destroy or delete persistent store at \(url)", error)
         }
     }
@@ -129,7 +129,7 @@ extension NSError {
     func getCoreDataSaveErrorDescription() -> String {
         if code == NSValidationMultipleErrorsError {
             guard let errors = userInfo[NSDetailedErrorsKey] as? [NSError] else { return "\"Multiple errors\" error without detail" }
-            return errors.compactMap {$0.getCoreDataSaveErrorDescription()}.joined(separator: "; ")
+            return errors.compactMap { $0.getCoreDataSaveErrorDescription() }.joined(separator: "; ")
         }
 
         guard let entityName = (userInfo["NSValidationErrorObject"] as? NSManagedObject)?.entity.name,

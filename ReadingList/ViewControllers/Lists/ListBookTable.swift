@@ -96,7 +96,7 @@ class ListBookTable: UITableViewController {
     override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         guard sourceIndexPath != destinationIndexPath else { return }
         performUIEdit {
-            var books = list.books.map {($0 as! Book)}
+            var books = list.books.map { ($0 as! Book) }
             let movedBook = books.remove(at: sourceIndexPath.row)
             books.insert(movedBook, at: destinationIndexPath.row)
             list.books = NSOrderedSet(array: books)

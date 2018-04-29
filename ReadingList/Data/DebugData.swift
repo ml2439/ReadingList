@@ -3,7 +3,7 @@ import SimulatorStatusMagic
 import Foundation
 
 extension DebugSettings {
-    public static func loadTestData(includeImages: Bool = true, completion: (() -> Void)? = nil) {
+    static func loadTestData(includeImages: Bool = true, completion: (() -> Void)? = nil) {
         PersistentStoreManager.deleteAll()
 
         print("Loading test data")

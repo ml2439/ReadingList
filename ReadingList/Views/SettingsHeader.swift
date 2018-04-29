@@ -2,9 +2,9 @@ import Foundation
 import UIKit
 
 class SettingsHeader: UIView {
-    @IBOutlet weak var versionNumber: UILabel!
-    @IBOutlet weak var author: UILabel!
-    @IBOutlet weak var appName: UILabel!
+    @IBOutlet private weak var versionNumber: UILabel!
+    @IBOutlet private weak var author: UILabel!
+    @IBOutlet private weak var appName: UILabel!
 
     override func awakeFromNib() {
         super.awakeFromNib()

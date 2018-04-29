@@ -55,7 +55,7 @@ class EditBookMetadata: FormViewController {
                 $0.placeholder = "Title"
                 $0.value = book.title
                 $0.cellUpdate(TextRow.initialise)
-                $0.onChange {book.title = $0.value ?? ""}
+                $0.onChange { book.title = $0.value ?? "" }
                 $0.placeholderColor = UserSettings.theme.value.placeholderTextColor // cell update is not updating the cell on load
             }
 
@@ -88,7 +88,7 @@ class EditBookMetadata: FormViewController {
                 $0.cellUpdate { cell, _ in
                     cell.initialise(withTheme: UserSettings.theme.value)
                 }
-                $0.onChange {book.publicationDate = $0.value}
+                $0.onChange { book.publicationDate = $0.value }
             }
             <<< ButtonRow {
                 $0.title = "Subjects"
@@ -96,7 +96,7 @@ class EditBookMetadata: FormViewController {
                 $0.cellUpdate {cell, _ in
                     cell.textLabel!.textAlignment = .left
                     cell.accessoryType = .disclosureIndicator
-                    cell.detailTextLabel?.text = book.subjects.map {$0.name}.sorted().joined(separator: ", ")
+                    cell.detailTextLabel?.text = book.subjects.map { $0.name }.sorted().joined(separator: ", ")
                     cell.initialise(withTheme: UserSettings.theme.value)
                     cell.textLabel?.textColor = UserSettings.theme.value.titleTextColor
                 }
@@ -106,24 +106,24 @@ class EditBookMetadata: FormViewController {
             }
             <<< ImageRow {
                 $0.title = "Cover Image"
-                $0.cell.height = {return 100}
+                $0.cell.height = { return 100 }
                 $0.value = UIImage(optionalData: book.coverImage)
                 $0.cellUpdate { cell, _ in
                     cell.initialise(withTheme: UserSettings.theme.value)
                 }
-                $0.onChange {book.coverImage = $0.value == nil ? nil : UIImageJPEGRepresentation($0.value!, 0.7)}
+                $0.onChange { book.coverImage = $0.value == nil ? nil : UIImageJPEGRepresentation($0.value!, 0.7) }
             }
 
             +++ Section(header: "Description", footer: "")
             <<< TextAreaRow {
                 $0.placeholder = "Description"
                 $0.value = book.bookDescription
-                $0.onChange {book.bookDescription = $0.value}
+                $0.onChange { book.bookDescription = $0.value }
                 $0.cellUpdate { cell, _ in
                     cell.initialise(withTheme: UserSettings.theme.value)
                 }
                 $0.cellSetup { [unowned self] cell, _ in
-                    cell.height = {return (self.view.frame.height / 3) - 10}
+                    cell.height = { (self.view.frame.height / 3) - 10 }
                 }
             }
 
@@ -141,7 +141,7 @@ class EditBookMetadata: FormViewController {
             }
             <<< ButtonRow(deleteRowKey) {
                 $0.title = "Delete"
-                $0.cellSetup {cell, _ in cell.tintColor = UIColor.red}
+                $0.cellSetup { cell, _ in cell.tintColor = UIColor.red }
                 $0.onCellSelection { [unowned self] _, _ in
                     self.deletePressed()
                 }
@@ -187,7 +187,7 @@ class EditBookMetadata: FormViewController {
 
     func updateFromGooglePressed(cell: ButtonCellOf<String>, row: _ButtonRowOf<String>) {
         let areYouSure = UIAlertController(title: "Confirm Update", message: "Updating from Google Books will overwrite any book metadata changes you have made manually. Are you sure you wish to proceed?", preferredStyle: .alert)
-        areYouSure.addAction(UIAlertAction(title: "Update", style: .default) {[unowned self] _ in self.updateBookFromGoogle()})
+        areYouSure.addAction(UIAlertAction(title: "Update", style: .default) { [unowned self] _ in self.updateBookFromGoogle() })
         areYouSure.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         present(areYouSure, animated: true)
     }
@@ -216,7 +216,7 @@ class EditBookMetadata: FormViewController {
     }
 
     @objc func cancelPressed() {
-        guard book.changedValues().count == 0 else {
+        guard book.changedValues().isEmpty else {
             // Confirm exit dialog
             let confirmExit = UIAlertController(title: "Unsaved changes", message: "Are you sure you want to discard your unsaved changes?", preferredStyle: .actionSheet)
             confirmExit.addAction(UIAlertAction(title: "Discard", style: .destructive) { [unowned self] _ in
@@ -254,7 +254,7 @@ class AuthorSection: MultivaluedSection {
 
     required init(book: Book, navigationController: UINavigationController) {
         super.init(multivaluedOptions: [.Insert, .Delete, .Reorder], header: "Authors", footer: "") {
-            for author in book.authors.map({$0 as! Author}) {
+            for author in book.authors.map({ $0 as! Author }) {
                 $0 <<< AuthorRow(author: author)
             }
             $0.addButtonProvider = { _ in
@@ -278,7 +278,7 @@ class AuthorSection: MultivaluedSection {
     }
 
     required init() {
-        super.init(multivaluedOptions: [], header: "", footer: "", {_ in})
+        super.init(multivaluedOptions: [], header: "", footer: "") { _ in }
     }
 
     required init(multivaluedOptions: MultivaluedOptions, header: String, footer: String, _ initializer: (MultivaluedSection) -> Void) {
@@ -294,17 +294,17 @@ class AuthorSection: MultivaluedSection {
         // and rowsHaveBeenAdded, so we can't delete books on removal, since they might need to come back.
         // Instead, we take the brute force approach of deleting all authors and rebuilding the set each time
         // something changes. We can check whether there are any meaningful differences before we embark on this though.
-        let currentAuthors = book.authors.map {$0 as! Author}
+        let currentAuthors = book.authors.map { $0 as! Author }
         let newAuthors: [(String, String?)] = self.compactMap {
             guard let authorRow = $0 as? AuthorRow else { return nil }
             guard let lastName = authorRow.lastName else { return nil }
             return (lastName, authorRow.firstNames)
         }
-        if currentAuthors.map({($0.lastName, $0.firstNames)}).elementsEqual(newAuthors, by: {return $0.0 == $1.0 && $0.1 == $1.1}) {
+        if currentAuthors.map({ ($0.lastName, $0.firstNames) }).elementsEqual(newAuthors, by: { return $0.0 == $1.0 && $0.1 == $1.1 }) {
             return
         }
-        currentAuthors.forEach {$0.delete()}
-        book.setAuthors(newAuthors.map {Author(context: book.managedObjectContext!, lastName: $0.0, firstNames: $0.1)})
+        currentAuthors.forEach { $0.delete() }
+        book.setAuthors(newAuthors.map { Author(context: book.managedObjectContext!, lastName: $0.0, firstNames: $0.1) })
     }
 
     override func rowsHaveBeenRemoved(_ rows: [BaseRow], at: IndexSet) {
@@ -338,7 +338,7 @@ final class AuthorRow: _LabelRow, RowType {
         cellUpdate { [unowned self] cell, _ in
             cell.initialise(withTheme: UserSettings.theme.value)
             cell.textLabel!.textAlignment = .left
-            cell.textLabel!.text = [self.firstNames, self.lastName].compactMap {return $0}.joined(separator: " ")
+            cell.textLabel!.text = [self.firstNames, self.lastName].compactMap { $0 }.joined(separator: " ")
         }
     }
 }
@@ -432,7 +432,7 @@ class EditBookSubjectsForm: FormViewController {
                     $0.cellUpdate(TextRow.initialise)
                 }
             }
-            for subject in book.subjects.sorted(by: {return $0.name < $1.name}) {
+            for subject in book.subjects.sorted(by: { return $0.name < $1.name }) {
                 $0 <<< TextRow {
                     $0.value = subject.name
                     $0.cell.textField.autocapitalizationType = .words
@@ -447,9 +447,9 @@ class EditBookSubjectsForm: FormViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
-        let subjectNames = form.rows.compactMap {($0 as? TextRow)?.value?.trimming().nilIfWhitespace()}
-        if book.subjects.map({$0.name}) != subjectNames {
-            book.subjects = Set(subjectNames.map {Subject.getOrCreate(inContext: book.managedObjectContext!, withName: $0)})
+        let subjectNames = form.rows.compactMap { ($0 as? TextRow)?.value?.trimming().nilIfWhitespace() }
+        if book.subjects.map({ $0.name }) != subjectNames {
+            book.subjects = Set(subjectNames.map { Subject.getOrCreate(inContext: book.managedObjectContext!, withName: $0) })
         }
         sendingRow.reload()
     }

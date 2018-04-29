@@ -1,7 +1,7 @@
 import Foundation
 import CoreData
 
-extension NSPersistentContainer {
+public extension NSPersistentContainer {
 
     /**
      Creates a NSPersistentContainer with a single store description describing the store at the provided URL,
@@ -28,7 +28,7 @@ extension NSPersistentContainer {
      Migrates (if necessary) the store to the latest version of the supplied Version type.
      When migrated, loads the persistent store; when complete calls the callback.
     */
-    public func migrateAndLoad<Version: ModelVersion>(_ version: Version.Type, completion: @escaping () -> Void) {
+    func migrateAndLoad<Version: ModelVersion>(_ version: Version.Type, completion: @escaping () -> Void) {
         self.migrateStoreIfRequired(version)
         self.loadPersistentStores { _, error in
             guard error == nil else { fatalError("Error loading store") }
@@ -39,14 +39,14 @@ extension NSPersistentContainer {
     /**
      Migrates the store to the latest version of the supplied Versions if necessary.
     */
-    public func migrateStoreIfRequired<Version: ModelVersion>(_ version: Version.Type) {
+    func migrateStoreIfRequired<Version: ModelVersion>(_ version: Version.Type) {
         guard let sourceVersion = Version(storeURL: storeURL) else {
             print("No current store.")
             return
         }
 
         let migrationSteps = sourceVersion.migrationSteps(to: Version.latest)
-        guard migrationSteps.count > 0 else { return }
+        guard !migrationSteps.isEmpty else { return }
         print("Migrating store \(storeURL.lastPathComponent): \(migrationSteps.count) migration steps detected")
 
         // For each migration step, migrate to a temporary URL and destroy the previous one (except for the sourceURL)

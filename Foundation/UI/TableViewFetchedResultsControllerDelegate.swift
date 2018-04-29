@@ -2,7 +2,9 @@ import Foundation
 import UIKit
 import CoreData
 
+// swiftlint:disable lower_acl_than_parent
 extension UITableView: NSFetchedResultsControllerDelegate {
+
     public func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         beginUpdates()
     }

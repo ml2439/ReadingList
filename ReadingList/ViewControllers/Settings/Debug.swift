@@ -55,7 +55,7 @@ class Debug: FormViewController {
                 $0.onChange {
                     DebugSettings.showSortNumber = $0.value ?? false
                 }
-        }
+            }
     }
 }
 

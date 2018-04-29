@@ -9,21 +9,22 @@ public protocol ModelVersion: Equatable {
     var modelDirectoryName: String { get }
 }
 
-extension ModelVersion {
+public extension ModelVersion {
 
-    public static var latest: Self {
+    static var latest: Self {
         return Self.orderedModelVersions.last!
     }
 
-    public var successor: Self? {
+    var successor: Self? {
         let index = Self.orderedModelVersions.index(of: self)!
         guard index != Self.orderedModelVersions.endIndex else { return nil }
         return Self.orderedModelVersions[index + 1]
     }
 
-    public init?(storeURL: URL) {
-        guard let metadata = try? NSPersistentStoreCoordinator.metadataForPersistentStore(ofType: NSSQLiteStoreType,
-                                                                                          at: storeURL, options: nil) else { return nil }
+    init?(storeURL: URL) {
+        guard let metadata = try? NSPersistentStoreCoordinator.metadataForPersistentStore(ofType: NSSQLiteStoreType, at: storeURL, options: nil) else {
+            return nil
+        }
 
         #if DEBUG
             // Validation check - if multiple model versions match the store, we are in trouble.
@@ -32,7 +33,7 @@ extension ModelVersion {
                 $0.managedObjectModel().isConfiguration(withName: nil, compatibleWithStoreMetadata: metadata)
             }
             if matchingModels.count > 1 {
-                let modelNames = matchingModels.map {$0.name}.joined(separator: ",")
+                let modelNames = matchingModels.map { $0.name }.joined(separator: ",")
                 fatalError("\(matchingModels.count) model versions matched the current store (\(modelNames)). Cannot guarantee that migrations will be performed correctly")
             }
         #endif
@@ -55,7 +56,7 @@ extension ModelVersion {
         self = result
     }
 
-    public func managedObjectModel() -> NSManagedObjectModel {
+    func managedObjectModel() -> NSManagedObjectModel {
         guard let momURL = modelBundle.url(forResource: name, withExtension: "mom", subdirectory: modelDirectoryName) else {
             fatalError("model version \(self) not found")
         }
@@ -63,7 +64,7 @@ extension ModelVersion {
         return model
     }
 
-    public func mappingModelToSuccessor() -> NSMappingModel? {
+    func mappingModelToSuccessor() -> NSMappingModel? {
         guard let nextVersion = successor else { return nil }
         guard let mapping = NSMappingModel(from: [modelBundle], forSourceModel: managedObjectModel(), destinationModel: nextVersion.managedObjectModel()) else {
             // If there is no mapping model, build an inferred one
@@ -74,7 +75,7 @@ extension ModelVersion {
         return mapping
     }
 
-    public func migrationSteps(to version: Self) -> [MigrationStep] {
+    func migrationSteps(to version: Self) -> [MigrationStep] {
         guard self != version else { return [] }
         guard let mapping = mappingModelToSuccessor(), let nextVersion = successor else { fatalError("couldn't find mapping models") }
         let step = MigrationStep(source: managedObjectModel(), destination: nextVersion.managedObjectModel(), mapping: mapping)

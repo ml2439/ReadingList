@@ -70,7 +70,7 @@ class DebugSettings {
     static var barcodeScanSimulation: BarcodeScanSimulation {
         get {
             guard let rawValue = UserDefaults.standard.value(forKey: barcodeScanSimulationKey) as? Int else { return .none }
-            return BarcodeScanSimulation.init(rawValue: rawValue)!
+            return BarcodeScanSimulation(rawValue: rawValue)!
         }
         set {
             UserDefaults.standard.setValue(newValue.rawValue, forKey: barcodeScanSimulationKey)

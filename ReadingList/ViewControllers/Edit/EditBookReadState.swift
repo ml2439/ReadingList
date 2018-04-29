@@ -119,12 +119,12 @@ class EditBookReadState: FormViewController {
                     cell.initialise(withTheme: UserSettings.theme.value)
                 }
                 $0.cellSetup { [unowned self] cell, _ in
-                    cell.height = {return (self.view.frame.height / 3) - 10}
+                    cell.height = { (self.view.frame.height / 3) - 10 }
                 }
                 $0.onChange { [unowned self] cell in
                     self.book.notes = cell.value
                 }
-        }
+            }
 
         monitorThemeSetting()
     }
@@ -143,7 +143,7 @@ class EditBookReadState: FormViewController {
 
     @objc func cancelPressed() {
         // FUTURE: Duplicates code in EditBookMetadata. Consolidate.
-        guard book.changedValues().count == 0 else {
+        guard book.changedValues().isEmpty else {
             // Confirm exit dialog
             let confirmExit = UIAlertController(title: "Unsaved changes", message: "Are you sure you want to discard your unsaved changes?", preferredStyle: .actionSheet)
             confirmExit.addAction(UIAlertAction(title: "Discard", style: .destructive) { [unowned self] _ in

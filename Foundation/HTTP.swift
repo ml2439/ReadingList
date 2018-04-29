@@ -21,7 +21,7 @@ class HTTP {
         }
 
         @discardableResult func json(callback: @escaping (Result<JSON>) -> Void) -> Request {
-            task = URLSession.shared.dataTask(with: request) { (data, _, error) in
+            task = URLSession.shared.dataTask(with: request) { data, _, error in
                 DispatchQueue.main.async {
                     guard error == nil else { callback(Result.failure(error!)); return }
                     guard let data = data, let json = try? JSON(data: data) else { callback(Result.failure(HTTPError.noJsonData)); return }
@@ -33,7 +33,7 @@ class HTTP {
         }
 
         @discardableResult func data(callback: @escaping (Result<Data>) -> Void) -> Request {
-            task = URLSession.shared.dataTask(with: request) { (data, _, error) in
+            task = URLSession.shared.dataTask(with: request) { data, _, error in
                 DispatchQueue.main.async {
                     guard error == nil else { callback(Result.failure(error!)); return }
                     guard let data = data else { callback(Result.failure(HTTPError.noData)); return }

@@ -2,7 +2,7 @@ import UIKit
 
 class Settings: UITableViewController {
 
-    @IBOutlet weak var header: XibView!
+    @IBOutlet private weak var header: XibView!
     static let appStoreAddress = "itunes.apple.com/gb/app/reading-list-book-tracker/id1217139955"
     static let feedbackEmailAddress = "feedback@readinglistapp.xyz"
 

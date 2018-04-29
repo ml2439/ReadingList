@@ -21,16 +21,16 @@ class CompoundFetchedResultsController<T: NSFetchRequestResult>: NSObject, NSFet
     // A delegate to notify of changes. Each of the controllers' delegates are set to this class,
     // so that we can map the index paths in the notifications before forwarding to this delegate.
     weak var delegate: NSFetchedResultsControllerDelegate? {
-        didSet { controllers.forEach {$0.delegate = self} }
+        didSet { controllers.forEach { $0.delegate = self } }
     }
 
     init(controllers: [NSFetchedResultsController<T>]) { self.controllers = controllers }
 
-    func performFetch() throws { controllers.forEach {try? $0.performFetch()} }
+    func performFetch() throws { controllers.forEach { try? $0.performFetch() } }
 
     var sections: [NSFetchedResultsSectionInfo]? {
         // To get the flattened sections array, we simply reduce-by-concatenation the inner controllers' sections arrays.
-        get { return controllers.compactMap {$0.sections}.reduce([], +) }
+        get { return controllers.compactMap { $0.sections }.reduce([], +) }
     }
 
     private func sectionOffset(forController controller: NSFetchedResultsController<T>) -> Int {
@@ -38,7 +38,7 @@ class CompoundFetchedResultsController<T: NSFetchRequestResult>: NSObject, NSFet
         let controllerIndex = controllers.index(of: controller)!
 
         // Count the number of sections present in all controllers up to (but not including) the supplied controller
-        return controllers.prefix(upTo: controllerIndex).map {$0.sections!.count}.reduce(0, +)
+        return controllers.prefix(upTo: controllerIndex).map { $0.sections!.count }.reduce(0, +)
     }
 
     func object(at indexPath: IndexPath) -> T {

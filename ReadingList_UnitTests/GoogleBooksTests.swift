@@ -23,7 +23,7 @@ class GoogleBooksTests: XCTestCase {
         XCTAssertEqual(book.googleBooksId, parseResult.id)
         XCTAssertEqual(book.title, parseResult.title)
         XCTAssertEqual(book.authors.count, parseResult.authors.count)
-        XCTAssertEqual(book.subjects.map {$0.name}, parseResult.subjects)
+        XCTAssertEqual(book.subjects.map { $0.name }, parseResult.subjects)
         XCTAssertEqual(book.pageCount?.intValue, parseResult.pageCount)
         XCTAssertEqual(book.isbn13, parseResult.isbn13)
         XCTAssertEqual(book.bookDescription, parseResult.description)
@@ -60,13 +60,13 @@ class GoogleBooksTests: XCTestCase {
             XCTAssertNotNil(result.title)
             XCTAssert(!result.title.isEmptyOrWhitespace)
             XCTAssertGreaterThan(result.authors.count, 0)
-            XCTAssert(!result.authors.any(where: {$0.isEmptyOrWhitespace}))
+            XCTAssert(!result.authors.any { $0.isEmptyOrWhitespace })
         }
 
-        let resultsWithIsbn = parseResult.filter {$0.isbn13 != nil}.count
+        let resultsWithIsbn = parseResult.filter { $0.isbn13 != nil }.count
         XCTAssertEqual(29, resultsWithIsbn)
 
-        let resultsWithCover = parseResult.filter {$0.thumbnailCoverUrl != nil}.count
+        let resultsWithCover = parseResult.filter { $0.thumbnailCoverUrl != nil }.count
         XCTAssertEqual(32, resultsWithCover)
     }
 }

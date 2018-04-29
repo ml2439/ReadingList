@@ -8,7 +8,7 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
     var readStates: [BookReadState]!
     var searchController: UISearchController!
 
-    @IBOutlet weak var tableFooter: UILabel!
+    @IBOutlet private weak var tableFooter: UILabel!
 
     override func viewDidLoad() {
         searchController = UISearchController(filterPlaceholderText: "Your Library")
@@ -80,13 +80,13 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
     }
 
     lazy var defaultPredicates: [BookReadState: NSPredicate] = {
-        return readStates.reduce(into: [BookReadState: NSPredicate]()) { dict, readState in
+        readStates.reduce(into: [BookReadState: NSPredicate]()) { dict, readState in
             dict[readState] = NSPredicate(format: "%K == %ld", #keyPath(Book.readState), readState.rawValue)
         }
     }()
 
     func buildResultsController() {
-        let controllers = defaultPredicates.map { (readState, predicate) -> NSFetchedResultsController<Book> in
+        let controllers = defaultPredicates.map { readState, predicate -> NSFetchedResultsController<Book> in
             let fetchRequest = NSManagedObject.fetchRequest(Book.self, batch: 25)
             fetchRequest.predicate = predicate
             fetchRequest.sortDescriptors = UserSettings.selectedBookSortDescriptors(forReadState: readState)
@@ -192,9 +192,9 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
     }
 
     @objc func editActionButtonPressed(_ sender: UIBarButtonItem) {
-        guard let selectedRows = tableView.indexPathsForSelectedRows, selectedRows.count > 0 else { return }
-        let selectedSectionIndices = selectedRows.map {$0.section}.distinct()
-        let selectedReadStates = sectionIndexByReadState.filter({selectedSectionIndices.contains($0.value)}).keys
+        guard let selectedRows = tableView.indexPathsForSelectedRows, !selectedRows.isEmpty else { return }
+        let selectedSectionIndices = selectedRows.map { $0.section }.distinct()
+        let selectedReadStates = sectionIndexByReadState.filter { selectedSectionIndices.contains($0.value) }.keys
 
         let optionsAlert = UIAlertController(title: "Edit \(selectedRows.count) book\(selectedRows.count == 1 ? "" : "s")", message: nil, preferredStyle: .actionSheet)
         optionsAlert.addAction(UIAlertAction(title: "Add to List", style: .default) { [unowned self] _ in
@@ -270,7 +270,7 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
 
             // If there is a detail view presented, update the book
             if splitViewController!.detailIsPresented {
-                (splitViewController!.displayedDetailViewController as? BookDetails)?.book =  book
+                (splitViewController!.displayedDetailViewController as? BookDetails)?.book = book
             } else {
                 // Segue to the details view, with the cell corresponding to the book as the sender.
                 performSegue(withIdentifier: "showDetail", sender: book)
@@ -299,7 +299,7 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
         }
     }
 
-    @IBAction func addWasPressed(_ sender: UIBarButtonItem) {
+    @IBAction private func addWasPressed(_ sender: UIBarButtonItem) {
 
         func storyboardAction(title: String, storyboard: UIStoryboard) -> UIAlertAction {
             return UIAlertAction(title: title, style: .default) {[unowned self] _ in
@@ -373,7 +373,7 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
             callback(true)
         }]
 
-        let readStateOfSection = sectionIndexByReadState.first {$0.value == indexPath.section}!.key
+        let readStateOfSection = sectionIndexByReadState.first { $0.value == indexPath.section }!.key
         guard readStateOfSection == .toRead || (readStateOfSection == .reading && resultsController.object(at: indexPath).startedReading! < Date()) else {
             // It is not "invalid" to have a book with a started date in the future; but it is invalid
             // to have a finish date before the start date. Therefore, hide the finish action if
@@ -405,7 +405,7 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
             callback?(false)
         })
         confirmDeleteAlert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [unowned self] _ in
-            indexPaths.map(self.resultsController.object).forEach {$0.delete()}
+            indexPaths.map(self.resultsController.object).forEach { $0.delete() }
             PersistentStoreManager.container.viewContext.saveAndLogIfErrored()
             self.setEditing(false, animated: true)
             UserEngagement.logEvent(indexPaths.count > 1 ? .bulkDeleteBook : .deleteBook)
@@ -471,7 +471,7 @@ extension BookTable: UISearchResultsUpdating {
         // Get the range of objects that the move affects
         let topRow = [sourceIndexPath.row, destinationIndexPath.row].min()!
         let bottomRow = [sourceIndexPath.row, destinationIndexPath.row].max()!
-        var booksInMovementRange = (topRow...bottomRow).map {IndexPath(row: $0, section: toReadSectionIndex)}.map(resultsController.object)
+        var booksInMovementRange = (topRow...bottomRow).map { IndexPath(row: $0, section: toReadSectionIndex) }.map(resultsController.object)
 
         // Move the objects array to reflect the desired order
         let wasDownwardsMovement = destinationIndexPath.row == bottomRow
@@ -564,7 +564,7 @@ extension BookTable: DZNEmptyDataSetSource {
     func verticalOffset(forEmptyDataSet scrollView: UIScrollView!) -> CGFloat {
         if searchController.hasActiveSearchTerms {
             // Shift the "no search results" view up a bit, so the keyboard doesn't obscure it
-            return -(tableView.frame.height - 150)/4
+            return -(tableView.frame.height - 150) / 4
         }
 
         // The large titles make the empty data set look weirdly low down. Adjust this,

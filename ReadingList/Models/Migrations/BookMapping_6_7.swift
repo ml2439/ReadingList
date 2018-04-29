@@ -12,9 +12,9 @@ class BookMapping_6_7: NSEntityMigrationPolicy { //swiftlint:disable:this type_n
 
     func extractAuthorComponents(authorListString: String?) -> [(lastName: String, firstNames: String?)] {
         var components = [(lastName: String, firstNames: String?)]()
-        guard let authors = authorListString?.components(separatedBy: ","), authors.count > 0 else { return components }
+        guard let authors = authorListString?.components(separatedBy: ","), !authors.isEmpty else { return components }
 
-        for authorString in (authors.compactMap {$0.trimming().nilIfWhitespace()}) {
+        for authorString in (authors.compactMap { $0.trimming().nilIfWhitespace() }) {
             if let range = authorString.range(of: " ", options: .backwards),
                 let lastName = authorString[range.upperBound...].trimming().nilIfWhitespace() {
                 components.append((lastName: lastName,
@@ -54,7 +54,7 @@ class BookMapping_6_7: NSEntityMigrationPolicy { //swiftlint:disable:this type_n
                    "finishedReading", "notes", "currentPage", "sort", "createdWhen")
 
         // Copy subjects
-        let sourceSubjects = (sInstance.value(forKey: "subjects") as! NSOrderedSet).map {$0 as! NSManagedObject}
+        let sourceSubjects = (sInstance.value(forKey: "subjects") as! NSOrderedSet).map { $0 as! NSManagedObject }
         let destinationSubjects = manager.destinationInstances(forEntityMappingName: "SubjectToSubject",
                                                                sourceInstances: sourceSubjects)
         newBook.setValue(NSOrderedSet(array: destinationSubjects), forKey: "subjects")

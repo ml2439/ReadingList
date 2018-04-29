@@ -10,7 +10,7 @@ class BookCSVImporter {
         self.includeImages = includeImages
     }
 
-    public func startImport(fromFileAt fileLocation: URL, _ completion: @escaping (BookCSVImportResults) -> Void) {
+    func startImport(fromFileAt fileLocation: URL, _ completion: @escaping (BookCSVImportResults) -> Void) {
         let parser = CSVParser(csvFileUrl: fileLocation)
         parser.delegate = BookCSVParserDelegate(context: backgroundContext, includeImages: includeImages, completion: completion)
         parser.begin()
@@ -42,7 +42,7 @@ private class BookCSVParserDelegate: CSVParserDelegate {
         if !headers.contains("Title") || !headers.contains("Authors") {
             return false
         }
-        listNames = headers.filter {!BookCSVExport.headers.contains($0)}
+        listNames = headers.filter { !BookCSVExport.headers.contains($0) }
         return true
     }
 
@@ -87,9 +87,9 @@ private class BookCSVParserDelegate: CSVParserDelegate {
     private func populateLists() {
         for listMapping in listMappings {
             let list = List.getOrCreate(fromContext: self.context, withName: listMapping.key)
-            let orderedBooks = listMapping.value.sorted(by: {$0.1 < $1.1})
-                .map {context.object(with: $0.bookID) as! Book}
-                .filter {!list.books.contains($0)}
+            let orderedBooks = listMapping.value.sorted { $0.1 < $1.1 }
+                .map { context.object(with: $0.bookID) as! Book }
+                .filter { !list.books.contains($0) }
             list.addBooks(NSOrderedSet(array: orderedBooks))
         }
     }

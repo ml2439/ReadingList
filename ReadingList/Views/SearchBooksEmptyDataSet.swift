@@ -3,10 +3,10 @@ import UIKit
 
 class SearchBooksEmptyDataset: UIView {
 
-    @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var descriptionLabel: UILabel!
-    @IBOutlet weak var poweredByGoogle: UIImageView!
-    @IBOutlet weak var topConstraint: NSLayoutConstraint!
+    @IBOutlet private weak var titleLabel: UILabel!
+    @IBOutlet private weak var descriptionLabel: UILabel!
+    @IBOutlet private weak var poweredByGoogle: UIImageView!
+    @IBOutlet private weak var topConstraint: NSLayoutConstraint!
 
     enum EmptySetReason {
         case noSearch

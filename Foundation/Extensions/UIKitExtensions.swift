@@ -336,8 +336,8 @@ extension UIImage {
     }
 }
 
-public extension NSAttributedString {
-    @objc public convenience init(_ string: String, withFont font: UIFont) {
+extension NSAttributedString {
+    @objc convenience init(_ string: String, withFont font: UIFont) {
         self.init(string: string, attributes: [NSAttributedStringKey.font: font])
     }
 

@@ -15,8 +15,8 @@ class ScanBarcode: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
     var previewLayer: AVCaptureVideoPreviewLayer?
     let feedbackGenerator = UINotificationFeedbackGenerator()
 
-    @IBOutlet weak var cameraPreviewView: UIView!
-    @IBOutlet weak var previewOverlay: UIView!
+    @IBOutlet private weak var cameraPreviewView: UIView!
+    @IBOutlet private weak var previewOverlay: UIView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,7 +30,7 @@ class ScanBarcode: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
         }
     }
 
-    @IBAction func cancelWasPressed(_ sender: AnyObject) {
+    @IBAction private func cancelWasPressed(_ sender: AnyObject) {
         SVProgressHUD.dismiss()
         dismiss(animated: true, completion: nil)
     }
@@ -46,6 +46,8 @@ class ScanBarcode: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
     }
 
     override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
         if session?.isRunning == true {
             session!.stopRunning()
         }
@@ -217,17 +219,17 @@ class ScanBarcode: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
         let alert = UIAlertController(title: "No Exact Match",
                                       message: "We couldn't find an exact match. Would you like to do a more general search instead?",
                                       preferredStyle: UIAlertControllerStyle.alert)
-        alert.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.cancel, handler: { [unowned self] _ in
+        alert.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.cancel) { [unowned self] _ in
             self.session?.startRunning()
-        }))
-        alert.addAction(UIAlertAction(title: "Yes", style: UIAlertActionStyle.default, handler: { [unowned self] _ in
+        })
+        alert.addAction(UIAlertAction(title: "Yes", style: UIAlertActionStyle.default) { [unowned self] _ in
             let presentingViewController = self.presentingViewController
             self.dismiss(animated: true) {
                 let searchOnlineNav = Storyboard.SearchOnline.rootAsFormSheet() as! UINavigationController
                 (searchOnlineNav.viewControllers.first as! SearchOnline).initialSearchString = isbn
                 presentingViewController!.present(searchOnlineNav, animated: true, completion: nil)
             }
-        }))
+        })
         present(alert, animated: true, completion: nil)
     }
 
@@ -244,23 +246,23 @@ class ScanBarcode: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
 
     func presentInfoAlert(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.alert)
-        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: { [unowned self] _ in
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default) { [unowned self] _ in
             self.dismiss(animated: true, completion: nil)
-        }))
+        })
         present(alert, animated: true, completion: nil)
     }
 
     func presentCameraPermissionsAlert() {
         let alert = UIAlertController(title: "Permission Required", message: "You'll need to change your settings to allow Reading List to use your device's camera.", preferredStyle: UIAlertControllerStyle.alert)
-        alert.addAction(UIAlertAction(title: "Settings", style: UIAlertActionStyle.default, handler: { [unowned self] _ in
+        alert.addAction(UIAlertAction(title: "Settings", style: UIAlertActionStyle.default) { [unowned self] _ in
             if let appSettings = URL(string: UIApplicationOpenSettingsURLString), UIApplication.shared.canOpenURL(appSettings) {
                 UIApplication.shared.open(appSettings, options: [:])
                 self.dismiss(animated: false)
             }
-        }))
-        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel, handler: { [unowned self] _ in
+        })
+        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel) { [unowned self] _ in
             self.dismiss(animated: true)
-        }))
+        })
         feedbackGenerator.notificationOccurred(.error)
         present(alert, animated: true, completion: nil)
     }

@@ -49,7 +49,7 @@ class CSVParser: NSObject, CHCSVParserDelegate {
 
     func parser(_ parser: CHCSVParser!, didEndLine recordNumber: UInt) {
         guard !isFirstRow else {
-            if delegate?.headersRead(headersByFieldIndex.map {$0.value}) == false {
+            if delegate?.headersRead(headersByFieldIndex.map { $0.value }) == false {
                 stop()
             }
             isFirstRow = false

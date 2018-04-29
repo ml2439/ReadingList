@@ -2,10 +2,10 @@ import Foundation
 import UIKit
 
 class BookTableViewCell: UITableViewCell {
-    @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var authorsLabel: UILabel!
-    @IBOutlet weak var bookCover: UIImageView!
-    @IBOutlet weak var readTimeLabel: UILabel!
+    @IBOutlet private weak var titleLabel: UILabel!
+    @IBOutlet private weak var authorsLabel: UILabel!
+    @IBOutlet private weak var bookCover: UIImageView!
+    @IBOutlet private weak var readTimeLabel: UILabel!
 
     private var coverImageRequest: HTTP.Request?
 
