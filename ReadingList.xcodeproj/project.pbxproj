@@ -871,7 +871,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${PROJECT_DIR}\"";
+			shellScript = "if [[ -z $CI ]]; then\n    \"${PODS_ROOT}/SwiftLint/swiftlint\" --path \"${PROJECT_DIR}\"\nfi";
 		};
 		4937A1491EA0323200A3B0D1 /* Run Fabric script */ = {
 			isa = PBXShellScriptBuildPhase;
