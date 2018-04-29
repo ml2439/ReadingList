@@ -16,6 +16,7 @@ target 'ReadingList' do
   pod 'Fabric'
   pod 'Crashlytics'
   pod 'Firebase/Core'
+  pod 'SwiftLint'
 
   target 'ReadingList_UITests' do
     inherit! :complete
