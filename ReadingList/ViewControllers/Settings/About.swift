@@ -18,7 +18,7 @@ class About: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard indexPath.section == 0 else { return }
         switch indexPath.row {
-        case 0: presentThemedSafariViewController(URL(string: "https://www.readinglistapp.xyz")!)
+        case 0: presentThemedSafariViewController(URL(string: "https://www.readinglist.app")!)
         case 1: share(indexPath)
         case 2: contact()
         case 3: presentThemedSafariViewController(URL(string: "https://github.com/AndrewBennet/readinglist")!)
