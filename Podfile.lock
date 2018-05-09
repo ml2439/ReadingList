@@ -5,22 +5,24 @@ PODS:
   - DZNEmptyDataSet (1.8.1)
   - Eureka (4.1.1)
   - Fabric (1.7.6)
-  - Firebase/Core (4.13.0):
-    - FirebaseAnalytics (= 4.2.0)
-    - FirebaseCore (= 4.0.20)
-  - FirebaseAnalytics (4.2.0):
-    - FirebaseCore (~> 4.0)
-    - FirebaseInstanceID (~> 2.0)
+  - Firebase/Core (5.0.0):
+    - Firebase/CoreOnly
+    - FirebaseAnalytics (= 5.0.0)
+  - Firebase/CoreOnly (5.0.0):
+    - FirebaseCore (= 5.0.0)
+  - FirebaseAnalytics (5.0.0):
+    - FirebaseCore (~> 5.0)
+    - FirebaseInstanceID (~> 3.0)
     - GoogleToolboxForMac/NSData+zlib (~> 2.1)
     - nanopb (~> 0.3)
-  - FirebaseCore (4.0.20):
+  - FirebaseCore (5.0.0):
     - GoogleToolboxForMac/NSData+zlib (~> 2.1)
-  - FirebaseInstanceID (2.0.10):
-    - FirebaseCore (~> 4.0)
-  - GoogleToolboxForMac/Defines (2.1.3)
-  - GoogleToolboxForMac/NSData+zlib (2.1.3):
-    - GoogleToolboxForMac/Defines (= 2.1.3)
-  - ImageRow (3.0.0):
+  - FirebaseInstanceID (3.0.0):
+    - FirebaseCore (~> 5.0)
+  - GoogleToolboxForMac/Defines (2.1.4)
+  - GoogleToolboxForMac/NSData+zlib (2.1.4):
+    - GoogleToolboxForMac/Defines (= 2.1.4)
+  - ImageRow (3.1.0):
     - Eureka (~> 4.0)
   - nanopb (0.3.8):
     - nanopb/decode (= 0.3.8)
@@ -31,7 +33,7 @@ PODS:
   - SVProgressHUD (2.2.5)
   - SwiftLint (0.25.1)
   - SwiftyJSON (4.1.0)
-  - SwiftyStoreKit (0.13.1)
+  - SwiftyStoreKit (0.13.2)
 
 DEPENDENCIES:
   - CHCSVParser (from `https://github.com/davedelong/CHCSVParser.git`)
@@ -62,18 +64,18 @@ SPEC CHECKSUMS:
   DZNEmptyDataSet: 9525833b9e68ac21c30253e1d3d7076cc828eaa7
   Eureka: b88fb930e42c79f8c03c373d0fcdc28c1d6c50ed
   Fabric: f8d42c893bb187326a7968b62abe55c36a987a46
-  Firebase: 5ec5e863d269d82d66b4bf56856726f8fb8f0fb3
-  FirebaseAnalytics: 7ef69e76a5142f643aeb47c780e1cdce4e23632e
-  FirebaseCore: 90cb1c53d69b556f112a1bf72b5fcfaad7650790
-  FirebaseInstanceID: 8d20d890d65c917f9f7d9950b6e10a760ad34321
-  GoogleToolboxForMac: 2501e2ad72a52eb3dfe7bd9aee7dad11b858bd20
-  ImageRow: 048123c296de9a6ac3998c415a6706c45ce480af
+  Firebase: 4bd804448ab2596794698773d41520a0af101e65
+  FirebaseAnalytics: 19812b49fa5f283dd6b23edf8a14b5d477029ab8
+  FirebaseCore: e46e4babb9de298fb2f736958edcc6da1dc60d73
+  FirebaseInstanceID: 83e0040351565df711a5db3d8ebe5ea21aca998a
+  GoogleToolboxForMac: 91c824d21e85b31c2aae9bb011c5027c9b4e738f
+  ImageRow: 1ea483078bfa3d880a7fc76fdfcddfd5f29a9e6b
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
   SimulatorStatusMagic: 481558caf2b9ccb2ceba2cc193728d4db3dcac07
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   SwiftLint: ce933681be10c3266e82576dad676fa815a602e9
   SwiftyJSON: c29297daf073d2aa016295d5809cdd68045c39b3
-  SwiftyStoreKit: c36bb7841dd51a485ce5c38abf9e96fba988741f
+  SwiftyStoreKit: b7563505440a68c9d9fa70bc43d8a97015519409
 
 PODFILE CHECKSUM: 6eec4377fdf872b78f4ae28241f95e708ec4d8e4
 
