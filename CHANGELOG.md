@@ -4,6 +4,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## 1.8.2
+### Fixed:
+- Minor performance improvements.
+
 ## 1.8.1
 ### Fixed:
 - Changing the theme could occasionally cause the app to crash.
