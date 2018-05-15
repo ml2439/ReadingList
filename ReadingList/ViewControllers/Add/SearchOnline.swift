@@ -49,7 +49,17 @@ class SearchOnline: UITableViewController {
     override func initialise(withTheme theme: Theme) {
         super.initialise(withTheme: theme)
         emptyDatasetView.initialise(fromTheme: theme)
-        navigationController!.toolbar.barStyle = theme.barStyle
+
+        // Navigation controller should not be nil, but - according to very rare crash reports - it sometimes is.
+        // This may be due to some as-yet unexplained memory leak of the SearchOnline view controller.
+        // We want to find these cases, so trigger a crash in DEBUG build.
+        if let navigationController = navigationController {
+            navigationController.toolbar.barStyle = theme.barStyle
+        } else {
+            #if DEBUG
+            fatalError("navigationController was nil")
+            #endif
+        }
     }
 
     override func viewDidAppear(_ animated: Bool) {
