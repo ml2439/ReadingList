@@ -2,25 +2,19 @@ import SwiftyStoreKit
 import StoreKit
 
 class Tip: UIViewController, ThemeableViewController {
-    static let smallTipId = "smalltip"
-    static let mediumTipId = "mediumtip"
-    static let largeTipId = "largetip"
+    let tipProductIds = ["smalltip", "mediumtip", "largetip", "verylargetip", "gianttip"]
     var tipProducts: Set<SKProduct>?
 
     @IBOutlet private weak var explanationLabel: UILabel!
-
-    // Small and large tip buttons are hidden at load
-    @IBOutlet private weak var smallTip: UIButton!
-    @IBOutlet private weak var mediumTip: UIButton!
-    @IBOutlet private weak var largeTip: UIButton!
+    @IBOutlet private var tipButtons: [UIButton]!
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        SwiftyStoreKit.retrieveProductsInfo([Tip.smallTipId, Tip.mediumTipId, Tip.largeTipId]) { [weak self] results in
+        SwiftyStoreKit.retrieveProductsInfo(Set(tipProductIds)) { [weak self] results in
             guard let viewController = self else { return }
-            guard results.retrievedProducts.count == 3 else {
-                viewController.mediumTip.isEnabled = false
-                viewController.mediumTip.setTitle("Not available", for: .normal)
+            guard results.retrievedProducts.count == viewController.tipProductIds.count else {
+                viewController.tipButtons[1].isEnabled = false
+                viewController.tipButtons[1].setTitle("Not available", for: .normal)
                 return
             }
             viewController.tipProducts = results.retrievedProducts
@@ -28,6 +22,21 @@ class Tip: UIViewController, ThemeableViewController {
         }
 
         monitorThemeSetting()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        view.setNeedsLayout()
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        let scrollView = view.subviews[0] as! UIScrollView
+        let contentView = scrollView.subviews[0]
+
+        let top = (scrollView.bounds.height - contentView.bounds.height) / 2
+        scrollView.contentInset = UIEdgeInsets(top: top, left: 0, bottom: 0, right: 0)
     }
 
     func displayTipPrices() {
@@ -38,16 +47,11 @@ class Tip: UIViewController, ThemeableViewController {
         priceFormatter.numberStyle = .currency
         priceFormatter.locale = tipProducts.first!.priceLocale
 
-        for product in tipProducts {
-            guard let priceString = priceFormatter.string(from: product.price) else { continue }
-            let button: UIButton
-            switch product.productIdentifier {
-            case Tip.smallTipId: button = smallTip
-            case Tip.mediumTipId: button = mediumTip
-            case Tip.largeTipId: button = largeTip
-            default: continue
-            }
+        for (index, productId) in tipProductIds.enumerated() {
+            guard let product = tipProducts.first(where: { $0.productIdentifier == productId }) else { fatalError("No product with ID \(productId)") }
+            guard let priceString = priceFormatter.string(from: product.price) else { fatalError("Could not format price string \(product.price)") }
 
+            let button = tipButtons[index]
             button.isHidden = false
             button.isEnabled = true
             button.setTitle(priceString, for: .normal)
@@ -57,27 +61,16 @@ class Tip: UIViewController, ThemeableViewController {
     @IBAction private func tipPressed(_ sender: UIButton) {
         guard let tipProducts = tipProducts else { return }
 
-        let productId: String
-        if sender == smallTip {
-            productId = Tip.smallTipId
-        } else if sender == mediumTip {
-            productId = Tip.mediumTipId
-        } else if sender == largeTip {
-            productId = Tip.largeTipId
-        } else {
-            return
-        }
-
-        guard let product = tipProducts.first(where: { $0.productIdentifier == productId }) else { return }
+        let senderIndex = tipButtons.index(of: sender)!
+        let productId = tipProductIds[senderIndex]
+        let product = tipProducts.first { $0.productIdentifier == productId }!
 
         SwiftyStoreKit.purchaseProduct(product) { [weak self] result in
             switch result {
             case .success:
                 guard let viewController = self else { return }
                 viewController.explanationLabel.text = "Thanks for supporting Reading List! ❤️"
-                viewController.smallTip.isHidden = true
-                viewController.mediumTip.isHidden = true
-                viewController.largeTip.isHidden = true
+                viewController.tipButtons.forEach { $0.isHidden = true }
                 UserSettings.hasEverTipped.value = true
 
             case .error(let error):
