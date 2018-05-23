@@ -167,10 +167,12 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if isEditing {
+            guard let selectedRows = tableView.indexPathsForSelectedRows else { return }
             navigationItem.rightBarButtonItem!.isEnabled = true
-            navigationItem.title = "\(tableView.indexPathsForSelectedRows!.count) Selected"
+            navigationItem.title = "\(selectedRows.count) Selected"
         } else {
-            performSegue(withIdentifier: "showDetail", sender: tableView.cellForRow(at: indexPath)!)
+            guard let selectedCell = tableView.cellForRow(at: indexPath) else { return }
+            performSegue(withIdentifier: "showDetail", sender: selectedCell)
         }
     }
 
@@ -183,11 +185,11 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
     override func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
         guard isEditing else { return }
         // If this deselection was deselecting the only selected row, disable the edit action button and reset the title
-        if tableView.indexPathsForSelectedRows?.isEmpty ?? true {
+        if let selectedRows = tableView.indexPathForSelectedRow, !selectedRows.isEmpty {
+            navigationItem.title = "\(selectedRows.count) Selected"
+        } else {
             navigationItem.rightBarButtonItem!.isEnabled = false
             navigationItem.title = readStates.last!.description
-        } else {
-            navigationItem.title = "\(tableView.indexPathsForSelectedRows!.count) Selected"
         }
     }
 
