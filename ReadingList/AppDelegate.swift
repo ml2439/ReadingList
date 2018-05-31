@@ -10,6 +10,7 @@ var appDelegate: AppDelegate {
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+    var syncCoordinator: BookSyncCoordinator!
 
     var tabBarController: TabBarController {
         return window!.rootViewController as! TabBarController
@@ -33,6 +34,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     #if DEBUG
                         DebugSettings.initialiseFromCommandLine()
                     #endif
+
+                    // Initialise the Sync Coordinator which will maintain iCloud synchronisation
+                    self.syncCoordinator = BookSyncCoordinator(container: PersistentStoreManager.container)
+
+                    // Set the root view controller
                     self.window!.rootViewController = TabBarController()
 
                     // Initialise app-level theme, and monitor the set theme

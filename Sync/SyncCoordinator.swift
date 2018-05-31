@@ -1,20 +1,21 @@
 import Foundation
 import CoreData
-import UIKit
 
-class SyncCoordinator {
+class SyncCoordinator<TRemote> where TRemote: Remote {
     let viewContext: NSManagedObjectContext
     let syncContext: NSManagedObjectContext
     private let syncGroup = DispatchGroup()
     
-    let changeProcessors = [ChangeProcessor]() // TODO: implement
-    
-    let remote: Remote? // TODO: implement
+    let changeProcessors: [ChangeProcessor]
+    let remote: TRemote
 
-    init(container: NSPersistentContainer) {
+    public init(container: NSPersistentContainer, remote: TRemote, changeProcessors: [ChangeProcessor]) {
         viewContext = container.viewContext
         syncContext = container.newBackgroundContext()
         syncContext.name = "SyncCoordinator"
+        
+        self.remote = remote
+        self.changeProcessors = changeProcessors
 
         // Setup contexts:
         // TODO: determine whether query generations are necessary
@@ -25,10 +26,6 @@ class SyncCoordinator {
         
         // Setup application state observation:
         setupApplicationStateObserving()
-        
-        if UIApplication.shared.applicationState == .active {
-            applicationDidBecomeActive()
-        }
     }
     
     /// Performs the provided block on the syncContext queue
@@ -58,7 +55,7 @@ class SyncCoordinator {
                 
                 // Take the new or modified objects, mapped to the syncContext, and process the
                 guard let coordinator = self else { return }
-                coordinator.syncContext.perform(group: coordinator.syncGroup) {
+                coordinator.perform() {
                     // We unpack the notification here, to make sure it's retained until this point.
                     let updates = note.updatedObjects?.map{ $0.inContext(coordinator.syncContext) } ?? []
                     let inserts = note.insertedObjects?.map{ $0.inContext(coordinator.syncContext) } ?? []
@@ -79,31 +76,30 @@ class SyncCoordinator {
     
     private func setupApplicationStateObserving() {
         NotificationCenter.default.addObserver(forName: .UIApplicationDidEnterBackground, object: nil, queue: nil) { [weak self] note in
-            guard let observer = self else { return }
-            observer.perform {
+            guard let coordinator = self else { return }
+            coordinator.perform {
                 // TODO: Why do we do this?
-                observer.syncContext.refreshAllObjects()
+                coordinator.syncContext.refreshAllObjects()
             }
         }
         NotificationCenter.default.addObserver(forName: .UIApplicationDidBecomeActive, object: nil, queue: nil) { [weak self] note in
-            guard let observer = self else { return }
-            observer.perform {
-                observer.applicationDidBecomeActive()
+            guard let coordinator = self else { return }
+            coordinator.perform {
+                coordinator.applicationDidBecomeActive()
             }
         }
     }
     
     func applicationDidBecomeActive() {
         fetchLocallyTrackedObjects()
-        fetchRemoteDataForApplicationDidBecomeActive()
+        //fetchRemoteDataForApplicationDidBecomeActive()
     }
     
     private func fetchLocallyTrackedObjects() {
         perform {
             // FUTURE: Could optimize this to only execute a single fetch request per entity.
             var objects: Set<NSManagedObject> = []
-            for cp in self.changeProcessors {
-                guard let fetchRequest = cp.fetchRequestForLocallyTrackedObjects() else { continue }
+            for fetchRequest in self.changeProcessors.compactMap({ $0.fetchRequestForLocallyTrackedObjects }) {
                 fetchRequest.returnsObjectsAsFaults = false
                 let result = try! self.syncContext.fetch(fetchRequest) as! [NSManagedObject]
                 objects.formUnion(result)
