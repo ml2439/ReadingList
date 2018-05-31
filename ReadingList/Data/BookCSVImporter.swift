@@ -7,6 +7,7 @@ class BookCSVImporter {
 
     init(includeImages: Bool = true) {
         self.backgroundContext = PersistentStoreManager.container.newBackgroundContext()
+        self.backgroundContext.mergePolicy = NSMergePolicy.mergeByPropertyStoreTrump
         self.includeImages = includeImages
     }
 

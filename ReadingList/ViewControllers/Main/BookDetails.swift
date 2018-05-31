@@ -142,8 +142,9 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         googleBooks.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(googleBooksButtonPressed)))
 
         // A custom title view is required for animation
-        navigationItem.titleView = UINavigationBarLabel()
-        navigationItem.titleView!.isHidden = true
+        let titleLabel = UINavigationBarLabel()
+        titleLabel.isHidden = true
+        navigationItem.titleView = titleLabel
 
         // Watch for changes in the managed object context
         NotificationCenter.default.addObserver(self, selector: #selector(saveOccurred(_:)), name: NSNotification.Name.NSManagedObjectContextDidSave, object: PersistentStoreManager.container.viewContext)
@@ -170,11 +171,13 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     }
 
     @IBAction private func updateReadingLogPressed(_ sender: Any) {
-        present(EditBookReadState(existingBookID: book!.objectID).inThemedNavController(), animated: true)
+        guard let book = book else { return }
+        present(EditBookReadState(existingBookID: book.objectID).inThemedNavController(), animated: true)
     }
 
     @IBAction private func editBookPressed(_ sender: Any) {
-        present(EditBookMetadata(bookToEditID: book!.objectID).inThemedNavController(), animated: true)
+        guard let book = book else { return }
+        present(EditBookMetadata(bookToEditID: book.objectID).inThemedNavController(), animated: true)
     }
 
     @objc func seeMoreDescription() {
@@ -202,7 +205,6 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         }
 
         // FUTURE: Consider whether it is worth inspecting the changes to see if they affect this book; perhaps we should just always reload?
-
         let updatedObjects = userInfo[NSUpdatedObjectsKey] as? NSSet ?? NSSet()
         let createdObjects = userInfo[NSInsertedObjectsKey] as? NSSet ?? NSSet()
         func setContainsRelatedList(_ set: NSSet) -> Bool {

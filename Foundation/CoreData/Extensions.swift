@@ -134,7 +134,7 @@ extension NSError {
 
         guard let entityName = (userInfo["NSValidationErrorObject"] as? NSManagedObject)?.entity.name,
             let attributeName = userInfo["NSValidationErrorKey"] as? String else {
-                return "Unknown error with code \(descriptiveCode), domain \(domain): \(localizedDescription)"
+                return "Save error with code \(descriptiveCode), domain \(domain): \(localizedDescription)"
         }
         return "Save error for entity \"\(entityName)\", attribute \"\(attributeName)\": \(descriptiveCode)"
     }
