@@ -7,14 +7,6 @@ extension NSManagedObjectContext {
             self.mergeChanges(fromContextDidSave: notification)
         }
     }
-
-    func perform(group: DispatchGroup, block: @escaping () -> Void) {
-        group.enter()
-        perform {
-            block()
-            group.leave()
-        }
-    }
 }
 
 extension Notification {

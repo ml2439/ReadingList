@@ -25,12 +25,12 @@ class BookDeleter: BookUpstreamChangeProcessor {
         }
     }
 
-    let unprocessedChangedBooksRequest: NSFetchRequest<Book> = {
+    var unprocessedChangedBooksRequest: NSFetchRequest<Book> {
         let fetchRequest = NSManagedObject.fetchRequest(Book.self)
         fetchRequest.predicate = NSPredicate.and([
             NSPredicate(format: "%K == true", #keyPath(Book.pendingRemoteDeletion)),
             NSPredicate(format: "%K != NULL", #keyPath(Book.remoteIdentifier))
         ])
         return fetchRequest
-    }()
+    }
 }

@@ -8,7 +8,7 @@ class BookUpdater: BookUpstreamChangeProcessor {
     func processLocalChanges(_ books: [Book], context: NSManagedObjectContext, remote: Remote) {
 
         remote.update(books) { remoteRecordIDs, error in
-            // TODO: This doesn't use the dispatchGroup. Hmm. Wrap it in another object? Or pass in the SyncCoordinator?
+            // TODO: Consider whether delayed saves are necessary
             context.perform {
                 guard error?.isPermanent != true else { fatalError("do something here") }
                 for book in books {
@@ -17,12 +17,11 @@ class BookUpdater: BookUpstreamChangeProcessor {
                     }
                 }
                 context.saveAndLogIfErrored()
-                //context.delayedSaveOrRollback()
             }
         }
     }
 
-    let unprocessedChangedBooksRequest: NSFetchRequest<Book> = {
+    var unprocessedChangedBooksRequest: NSFetchRequest<Book> {
         let fetchRequest = NSManagedObject.fetchRequest(Book.self)
         fetchRequest.predicate = NSPredicate.and([
             Book.notMarkedForDeletion,
@@ -30,5 +29,5 @@ class BookUpdater: BookUpstreamChangeProcessor {
             NSPredicate(format: "%K == true", #keyPath(Book.pendingRemoteUpdate))
         ])
         return fetchRequest
-    }()
+    }
 }

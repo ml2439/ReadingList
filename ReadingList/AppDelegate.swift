@@ -101,6 +101,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         openCsvImport(url: url)
         return true
     }
+    
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        syncCoordinator.applicationDidReceiveRemoteChangesNotification(applicationCallback: completionHandler)
+    }
 
     func openCsvImport(url: URL) {
         UserEngagement.logEvent(.openCsvInApp)
