@@ -176,7 +176,7 @@ class EditBookMetadata: FormViewController {
         confirmDeleteAlert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [unowned self] _ in
             // Delete the book, log the event, and dismiss this modal view
             self.editBookContext.performAndSave {
-                self.book.delete()
+                self.book.markForDeletion()
             }
             UserEngagement.logEvent(.deleteBook)
             self.dismiss(animated: true)

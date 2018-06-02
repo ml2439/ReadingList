@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14135" systemVersion="17E202" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Author" representedClassName="Author" syncable="YES">
+        <attribute name="firstNames" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="lastName" attributeType="String" syncable="YES"/>
+        <relationship name="book" maxCount="1" deletionRule="Nullify" destinationEntity="Book" inverseName="authors" inverseEntity="Book" syncable="YES"/>
+    </entity>
+    <entity name="Book" representedClassName="Book" syncable="YES">
+        <attribute name="authorDisplay" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="authorSort" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="bookDescription" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="coverImage" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
+        <attribute name="currentPage" optional="YES" attributeType="Integer 32" minValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="finishedReading" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="googleBooksId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="isbn13" optional="YES" attributeType="String" regularExpressionString="\d{13}" syncable="YES"/>
+        <attribute name="notes" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="pageCount" optional="YES" attributeType="Integer 32" minValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="pendingRemoteDeletion" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="pendingRemoteUpdate" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="publicationDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="readState" attributeType="Integer 16" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="remoteIdentifier" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="sort" optional="YES" attributeType="Integer 32" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="startedReading" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="title" attributeType="String" syncable="YES"/>
+        <relationship name="authors" toMany="YES" minCount="1" deletionRule="Cascade" ordered="YES" destinationEntity="Author" inverseName="book" inverseEntity="Author" syncable="YES"/>
+        <relationship name="lists" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="List" inverseName="books" inverseEntity="List" syncable="YES"/>
+        <relationship name="subjects" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Subject" inverseName="books" inverseEntity="Subject" syncable="YES"/>
+        <fetchIndex name="isbn">
+            <fetchIndexElement property="isbn13" type="Binary" order="ascending"/>
+        </fetchIndex>
+        <fetchIndex name="sortCustomAndDate">
+            <fetchIndexElement property="readState" type="Binary" order="ascending"/>
+            <fetchIndexElement property="sort" type="Binary" order="ascending"/>
+            <fetchIndexElement property="finishedReading" type="Binary" order="ascending"/>
+            <fetchIndexElement property="startedReading" type="Binary" order="ascending"/>
+        </fetchIndex>
+        <fetchIndex name="sortTitle">
+            <fetchIndexElement property="readState" type="Binary" order="ascending"/>
+            <fetchIndexElement property="title" type="Binary" order="ascending"/>
+        </fetchIndex>
+        <fetchIndex name="sortAuthor">
+            <fetchIndexElement property="readState" type="Binary" order="ascending"/>
+            <fetchIndexElement property="authorSort" type="Binary" order="ascending"/>
+        </fetchIndex>
+        <fetchIndex name="googleBooksId">
+            <fetchIndexElement property="googleBooksId" type="Binary" order="ascending"/>
+        </fetchIndex>
+        <fetchIndex name="search">
+            <fetchIndexElement property="readState" type="Binary" order="ascending"/>
+            <fetchIndexElement property="title" type="Binary" order="ascending"/>
+            <fetchIndexElement property="authorDisplay" type="Binary" order="ascending"/>
+        </fetchIndex>
+    </entity>
+    <entity name="List" representedClassName="List" versionHashModifier="v11" syncable="YES">
+        <attribute name="name" attributeType="String" syncable="YES"/>
+        <relationship name="books" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Book" inverseName="lists" inverseEntity="Book" syncable="YES"/>
+        <fetchIndex name="name">
+            <fetchIndexElement property="name" type="Binary" order="ascending"/>
+        </fetchIndex>
+    </entity>
+    <entity name="Subject" representedClassName="Subject" syncable="YES">
+        <attribute name="name" attributeType="String" syncable="YES"/>
+        <relationship name="books" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Book" inverseName="subjects" inverseEntity="Book" syncable="YES"/>
+        <fetchIndex name="name">
+            <fetchIndexElement property="name" type="Binary" order="ascending"/>
+        </fetchIndex>
+    </entity>
+    <elements>
+        <element name="Author" positionX="-54" positionY="108" width="128" height="90"/>
+        <element name="Book" positionX="-63" positionY="-18" width="128" height="360"/>
+        <element name="List" positionX="-54" positionY="117" width="128" height="75"/>
+        <element name="Subject" positionX="-63" positionY="90" width="128" height="75"/>
+    </elements>
+</model>

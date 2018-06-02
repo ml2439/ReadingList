@@ -7,8 +7,8 @@ extension NSManagedObjectContext {
             self.mergeChanges(fromContextDidSave: notification)
         }
     }
-    
-    func perform(group: DispatchGroup, block: @escaping () -> ()) {
+
+    func perform(group: DispatchGroup, block: @escaping () -> Void) {
         group.enter()
         perform {
             block()
@@ -21,11 +21,11 @@ extension Notification {
     var updatedObjects: Set<NSManagedObject>? {
         return userInfo?[NSUpdatedObjectsKey] as? Set<NSManagedObject>
     }
-    
+
     var insertedObjects: Set<NSManagedObject>? {
         return userInfo?[NSInsertedObjectsKey] as? Set<NSManagedObject>
     }
-    
+
     var deletedObjects: Set<NSManagedObject>? {
         return userInfo?[NSDeletedObjectsKey] as? Set<NSManagedObject>
     }

@@ -37,6 +37,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
                     // Initialise the Sync Coordinator which will maintain iCloud synchronisation
                     self.syncCoordinator = BookSyncCoordinator(container: PersistentStoreManager.container)
+                    self.syncCoordinator.applicationDidBecomeActive()
 
                     // Set the root view controller
                     self.window!.rootViewController = TabBarController()

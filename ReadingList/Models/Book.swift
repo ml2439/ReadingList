@@ -51,6 +51,10 @@ class Book: NSManagedObject {
         if readState != .toRead && sort != nil {
             self.sort = nil
         }
+
+        if !pendingRemoteUpdate && hasChanges && !changedValues().keys.contains(#keyPath(Book.pendingRemoteUpdate)) {
+            pendingRemoteUpdate = true
+        }
     }
 
     override func prepareForDeletion() {

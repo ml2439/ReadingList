@@ -81,7 +81,8 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
 
     lazy var defaultPredicates: [BookReadState: NSPredicate] = {
         readStates.reduce(into: [BookReadState: NSPredicate]()) { dict, readState in
-            dict[readState] = NSPredicate(format: "%K == %ld", #keyPath(Book.readState), readState.rawValue)
+            dict[readState] = NSPredicate.and([Book.notMarkedForDeletion,
+                                              NSPredicate(format: "%K == %ld", #keyPath(Book.readState), readState.rawValue)])
         }
     }()
 
@@ -407,7 +408,7 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
             callback?(false)
         })
         confirmDeleteAlert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [unowned self] _ in
-            indexPaths.map(self.resultsController.object).forEach { $0.delete() }
+            indexPaths.map(self.resultsController.object).forEach { $0.markForDeletion() }
             PersistentStoreManager.container.viewContext.saveAndLogIfErrored()
             self.setEditing(false, animated: true)
             UserEngagement.logEvent(indexPaths.count > 1 ? .bulkDeleteBook : .deleteBook)
