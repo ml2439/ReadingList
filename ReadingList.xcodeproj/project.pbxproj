@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1B3A0A6607176238CCDDD3DB /* Pods_ReadingList_ReadingList_UITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B81008C39ED366477C5FF2C2 /* Pods_ReadingList_ReadingList_UITests.framework */; };
-		1C032F1720C29D8F00CDBEF8 /* RemoteBook.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C032F1620C29D8F00CDBEF8 /* RemoteBook.swift */; };
+		1C032F1720C29D8F00CDBEF8 /* RemoteBookRecords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C032F1620C29D8F00CDBEF8 /* RemoteBookRecords.swift */; };
 		1C032F1A20C29EB000CDBEF8 /* BookInserter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C032F1920C29EB000CDBEF8 /* BookInserter.swift */; };
 		1C032F1C20C29ED500CDBEF8 /* BookUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C032F1B20C29ED500CDBEF8 /* BookUpdater.swift */; };
 		1C032F1E20C29F1900CDBEF8 /* BookDeleter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C032F1D20C29F1900CDBEF8 /* BookDeleter.swift */; };
@@ -19,6 +19,7 @@
 		1C0DC738204B119E0044B377 /* DebugData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0DC737204B119E0044B377 /* DebugData.swift */; };
 		1C1C887F1FE05A9D00A20402 /* Tip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C1C887E1FE05A9D00A20402 /* Tip.swift */; };
 		1C22D4A6202BBDC0004264B4 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C22D4A5202BBDC0004264B4 /* StoreKit.framework */; };
+		1C352D9020C34D97007C89F7 /* BookCloudKitRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C352D8F20C34D97007C89F7 /* BookCloudKitRemote.swift */; };
 		1C395448202F7966007ACCB1 /* CoreDataExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C395447202F7966007ACCB1 /* CoreDataExtensions.swift */; };
 		1C39544A202F948B007ACCB1 /* Subject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C395449202F948B007ACCB1 /* Subject.swift */; };
 		1C39544C202F9698007ACCB1 /* UserSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C39544B202F9698007ACCB1 /* UserSetting.swift */; };
@@ -149,7 +150,7 @@
 
 /* Begin PBXFileReference section */
 		1C032F1520C1CEC600CDBEF8 /* books_12.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = books_12.xcdatamodel; sourceTree = "<group>"; };
-		1C032F1620C29D8F00CDBEF8 /* RemoteBook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteBook.swift; sourceTree = "<group>"; };
+		1C032F1620C29D8F00CDBEF8 /* RemoteBookRecords.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteBookRecords.swift; sourceTree = "<group>"; };
 		1C032F1920C29EB000CDBEF8 /* BookInserter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookInserter.swift; sourceTree = "<group>"; };
 		1C032F1B20C29ED500CDBEF8 /* BookUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookUpdater.swift; sourceTree = "<group>"; };
 		1C032F1D20C29F1900CDBEF8 /* BookDeleter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookDeleter.swift; sourceTree = "<group>"; };
@@ -160,6 +161,7 @@
 		1C0DC737204B119E0044B377 /* DebugData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugData.swift; sourceTree = "<group>"; };
 		1C1C887E1FE05A9D00A20402 /* Tip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tip.swift; sourceTree = "<group>"; };
 		1C22D4A5202BBDC0004264B4 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		1C352D8F20C34D97007C89F7 /* BookCloudKitRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookCloudKitRemote.swift; sourceTree = "<group>"; };
 		1C395447202F7966007ACCB1 /* CoreDataExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataExtensions.swift; sourceTree = "<group>"; };
 		1C395449202F948B007ACCB1 /* Subject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subject.swift; sourceTree = "<group>"; };
 		1C39544B202F9698007ACCB1 /* UserSetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSetting.swift; sourceTree = "<group>"; };
@@ -347,13 +349,14 @@
 			path = ChangeProcessors;
 			sourceTree = "<group>";
 		};
-		1C032F2120C29FD000CDBEF8 /* Remotes */ = {
+		1C032F2120C29FD000CDBEF8 /* Remote */ = {
 			isa = PBXGroup;
 			children = (
-				1C032F1620C29D8F00CDBEF8 /* RemoteBook.swift */,
+				1C032F1620C29D8F00CDBEF8 /* RemoteBookRecords.swift */,
 				1CD7B93A20C0951B001775F5 /* BookConsoleRemote.swift */,
+				1C352D8F20C34D97007C89F7 /* BookCloudKitRemote.swift */,
 			);
-			path = Remotes;
+			path = Remote;
 			sourceTree = "<group>";
 		};
 		1C5CDF2720113B2900A757A3 /* Lists */ = {
@@ -506,7 +509,7 @@
 		1CD7B93920C09501001775F5 /* Sync */ = {
 			isa = PBXGroup;
 			children = (
-				1C032F2120C29FD000CDBEF8 /* Remotes */,
+				1C032F2120C29FD000CDBEF8 /* Remote */,
 				1C032F1820C29EA000CDBEF8 /* ChangeProcessors */,
 				1CD7B93720C094F9001775F5 /* BookSyncCoordinator.swift */,
 				1CD7B93C20C179F5001775F5 /* BookModelExtensions.swift */,
@@ -1184,10 +1187,11 @@
 				1C032F2320C29FED00CDBEF8 /* BookChangeProcessor.swift in Sources */,
 				1C39544E2030A4F0007ACCB1 /* EditBookMetadata.swift in Sources */,
 				1C64AB222041E7E40089CD57 /* BookMapping_8_9.swift in Sources */,
+				1C352D9020C34D97007C89F7 /* BookCloudKitRemote.swift in Sources */,
 				1C5180AC20544427008C6EA4 /* BookMapping_10_11.xcmappingmodel in Sources */,
 				1C5CDF2920113B3300A757A3 /* AddToList.swift in Sources */,
 				1CD111F9202DA42800BE3E1D /* BookMapping_6_7.xcmappingmodel in Sources */,
-				1C032F1720C29D8F00CDBEF8 /* RemoteBook.swift in Sources */,
+				1C032F1720C29D8F00CDBEF8 /* RemoteBookRecords.swift in Sources */,
 				1CC440C1204F5E2F00906120 /* TextBoxAlertController.swift in Sources */,
 				495C5D3F1BF1412600E00C07 /* BookTable.swift in Sources */,
 				1CD7B93D20C179F5001775F5 /* BookModelExtensions.swift in Sources */,

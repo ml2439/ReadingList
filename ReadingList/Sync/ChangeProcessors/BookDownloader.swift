@@ -4,18 +4,17 @@ import CoreData
 class BookDownloader: DownstreamChangeProcessor {
 
     let debugDescription = String(describing: BookDownloader.self)
-    
+
     func processAllRemoteRecords(from remote: Remote, context: NSManagedObjectContext) {
         print("\(debugDescription) processing all remote records")
 
         remote.fetchAllRecords { remoteRecords in
-            guard let remoteBooks = remoteRecords as? [RemoteBook] else { fatalError("Wrong type") }
 
             // Grab any books which exist with the returned remote identifiers; we don't want to re-create them
-            let remoteBookIDs = remoteBooks.map { $0.id! }
+            let remoteBookIDs = remoteRecords.map { $0.id! }
             let preExistingRemoteIDs = self.locallyPresentBooks(withRemoteIDs: remoteBookIDs, in: context).map { $0.remoteIdentifier! }
 
-            for newRemoteBook in remoteBooks.filter({ !preExistingRemoteIDs.contains($0.id!) }) {
+            for newRemoteBook in remoteRecords.filter({ !preExistingRemoteIDs.contains($0.id!) }) {
                 let book = Book(context: context)
                 book.update(from: newRemoteBook)
             }
@@ -27,13 +26,13 @@ class BookDownloader: DownstreamChangeProcessor {
     func processRemoteChanges(_ changes: [RemoteRecordChange], context: NSManagedObjectContext, completion: () -> Void) {
         print("\(debugDescription) processing \(changes.count) remote changes")
 
-        var createdBooks = [RemoteBook]()
-        var updatedBooks = [RemoteBook]()
+        var createdBooks = [RemoteRecord]()
+        var updatedBooks = [RemoteRecord]()
         var deletionBookIDs = [RemoteRecordID]()
         for change in changes {
             switch change {
-            case .insert(let book): createdBooks.append(book as! RemoteBook)
-            case .update(let book): updatedBooks.append(book as! RemoteBook)
+            case .insert(let book): createdBooks.append(book)
+            case .update(let book): updatedBooks.append(book)
             case .delete(let id): deletionBookIDs.append(id)
             }
         }
@@ -54,7 +53,7 @@ class BookDownloader: DownstreamChangeProcessor {
         booksToDelete.forEach { $0.markForDeletion() }
     }
 
-    private func updateBooks(_ remoteBooks: [RemoteBook], in context: NSManagedObjectContext) {
+    private func updateBooks(_ remoteBooks: [RemoteRecord], in context: NSManagedObjectContext) {
         guard !remoteBooks.isEmpty else { return }
         print("\(debugDescription) processing \(remoteBooks.count) remote updates")
 
@@ -64,7 +63,7 @@ class BookDownloader: DownstreamChangeProcessor {
         }
     }
 
-    private func insertBooks(_ remoteBooks: [RemoteBook], into context: NSManagedObjectContext) {
+    private func insertBooks(_ remoteBooks: [RemoteRecord], into context: NSManagedObjectContext) {
         guard !remoteBooks.isEmpty else { return }
         print("\(debugDescription) processing \(remoteBooks.count) remote insertions")
 
@@ -75,7 +74,7 @@ class BookDownloader: DownstreamChangeProcessor {
         }
     }
 
-    private func locallyPresentBooks(from remoteBooks: [RemoteBook], in context: NSManagedObjectContext) -> [Book] {
+    private func locallyPresentBooks(from remoteBooks: [RemoteRecord], in context: NSManagedObjectContext) -> [Book] {
         return locallyPresentBooks(withRemoteIDs: remoteBooks.map { $0.id! }, in: context)
     }
 

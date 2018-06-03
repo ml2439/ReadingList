@@ -2,7 +2,9 @@ import Foundation
 import CoreData
 
 /// A representation of the remote record corresponding to an object
-public protocol RemoteRecord { }
+public protocol RemoteRecord {
+    var id: RemoteRecordID? { get }
+}
 
 public typealias RemoteRecordID = String
 

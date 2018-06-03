@@ -19,8 +19,7 @@ extension Book {
         return NSPredicate(format: "%K in %@", #keyPath(Book.remoteIdentifier), ids)
     }
 
-    func update(from remote: RemoteBook) {
-        self.googleBooksId = remote.googleBooksId
+    func update(from remote: RemoteRecord) {
         self.remoteIdentifier = remote.id
     }
 }

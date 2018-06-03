@@ -2,6 +2,14 @@
 import Foundation
 import CoreData
 
+class BookConsoleRemoteRecord: RemoteRecord {
+    var id: RemoteRecordID?
+
+    init() {
+        id = UUID().uuidString
+    }
+}
+
 class BookConsoleRemote: Remote {
     private func output(_ string: String) {
         sleep(1)
@@ -49,7 +57,7 @@ class BookConsoleRemote: Remote {
         if reportErrorIfOffline(completion: completion) { return }
 
         completion(books.reduce(into: [NSManagedObject: RemoteRecord]()) {
-            $0[$1] = RemoteBook(book: $1)
+            $0[$1] = BookConsoleRemoteRecord()
         }, nil)
     }
 
