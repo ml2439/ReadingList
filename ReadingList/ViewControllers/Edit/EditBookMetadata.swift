@@ -231,6 +231,7 @@ class EditBookMetadata: FormViewController {
     }
 
     @objc func donePressed() {
+        guard book.isValidForUpdate() else { return }
         editBookContext.saveIfChanged()
         dismiss(animated: true) {
             UserEngagement.onReviewTrigger()
@@ -238,6 +239,7 @@ class EditBookMetadata: FormViewController {
     }
 
     @objc func presentEditReadingState() {
+        guard book.isValidForUpdate() else { return }
         navigationController!.pushViewController(EditBookReadState(newUnsavedBook: book, scratchpadContext: editBookContext), animated: true)
     }
 
