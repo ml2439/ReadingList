@@ -951,8 +951,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="mSE-Ok-n2v" firstAttribute="bottom" secondItem="W49-A0-GFJ" secondAttribute="bottom" id="Bx3-3I-2Cr"/>
+                            <constraint firstItem="caH-Lj-YGR" firstAttribute="width" secondItem="W49-A0-GFJ" secondAttribute="width" id="CbS-wu-8wF"/>
                             <constraint firstItem="mSE-Ok-n2v" firstAttribute="top" secondItem="W49-A0-GFJ" secondAttribute="top" id="Joa-5v-s7j"/>
-                            <constraint firstItem="caH-Lj-YGR" firstAttribute="width" secondItem="Oex-Kq-H3s" secondAttribute="width" id="ZLQ-MV-V22"/>
                             <constraint firstItem="mSE-Ok-n2v" firstAttribute="trailing" secondItem="W49-A0-GFJ" secondAttribute="trailing" id="itU-rY-eU2"/>
                             <constraint firstItem="mSE-Ok-n2v" firstAttribute="leading" secondItem="W49-A0-GFJ" secondAttribute="leading" id="v2R-an-8Gg"/>
                         </constraints>

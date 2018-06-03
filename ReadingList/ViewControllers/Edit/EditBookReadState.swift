@@ -158,6 +158,8 @@ class EditBookReadState: FormViewController {
     }
 
     @objc func donePressed() {
+        guard book.isValidForUpdate() else { return }
+
         view.endEditing(true)
         editContext.saveIfChanged()
 
