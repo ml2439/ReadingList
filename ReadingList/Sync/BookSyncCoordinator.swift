@@ -2,9 +2,9 @@ import Foundation
 import CoreData
 
 class BookSyncCoordinator: SyncCoordinator {
-    init(container: NSPersistentContainer) {
+    init(container: NSPersistentContainer, remote: BookCloudKitRemote) {
         super.init(container: container,
-                   remote: BookConsoleRemote(),
+                   remote: remote,
                    upstreamChangeProcessors: [BookInserter(), BookUpdater(), BookDeleter()],
                    downstreamChangeProcessors: [BookDownloader()])
     }

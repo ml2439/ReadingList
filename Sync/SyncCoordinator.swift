@@ -5,7 +5,6 @@ import UIKit
 class SyncCoordinator {
     let viewContext: NSManagedObjectContext
     let syncContext: NSManagedObjectContext
-    private let syncGroup = DispatchGroup()
 
     let upstreamChangeProcessors: [UpstreamChangeProcessor]
     let downstreamChangeProcessors: [DownstreamChangeProcessor]
@@ -29,8 +28,6 @@ class SyncCoordinator {
 
         // Setup application state observation:
         setupApplicationStateObserving()
-
-        remote.setupSubscription()
     }
 
     private func setupQueryGenerations() {
@@ -105,10 +102,9 @@ class SyncCoordinator {
     }
 
     func applicationDidReceiveRemoteChangesNotification(applicationCallback: @escaping (UIBackgroundFetchResult) -> Void) {
-        remote.fetchRecordChanges { records, callback in
+        remote.fetchRecordChanges { changedRecords, deletedRecordIDs in
             for changeProcessor in self.downstreamChangeProcessors {
-                changeProcessor.processRemoteChanges(records, context: self.syncContext) {
-                    callback(true)
+                changeProcessor.processRemoteChanges(changedRecords: changedRecords, deletedRecordIDs: deletedRecordIDs, context: self.syncContext) {
                     applicationCallback(.newData) // TODO: Classify the remote change type for this callback
                 }
             }
@@ -130,13 +126,12 @@ class SyncCoordinator {
 
     private func processOutstandingRemoteChanges() {
         // TODO: Determine whether iCloud sync has started before. If not, fetch all records, not just changes
-        self.remote.fetchRecordChanges { changes, callback in
-            guard !changes.isEmpty else { return }
+        self.remote.fetchRecordChanges { records, deletedRecordIDs in
+            guard !records.isEmpty || !deletedRecordIDs.isEmpty else { return }
             for changeProcessor in self.downstreamChangeProcessors {
                 self.syncContext.perform {
-                    changeProcessor.processRemoteChanges(changes, context: self.syncContext) {
+                    changeProcessor.processRemoteChanges(changedRecords: records, deletedRecordIDs: deletedRecordIDs, context: self.syncContext) {
                         self.syncContext.saveAndLogIfErrored()
-                        callback(true)
                     }
                 }
             }

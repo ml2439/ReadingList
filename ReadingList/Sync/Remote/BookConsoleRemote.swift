@@ -24,16 +24,6 @@ class BookConsoleRemote: Remote {
         output("Setting up subscription")
     }
 
-    func fetchAllRecords(completion: @escaping ([RemoteRecord]) -> Void) {
-        output("Fetching all records")
-        completion([])
-    }
-
-    func fetchRecordChanges(completion: @escaping ([RemoteRecordChange], @escaping (_ success: Bool) -> Void) -> Void) {
-        output("Fetching record changes")
-        completion([]) { _ in }
-    }
-
     private func reportErrorIfOffline(completion: ([RemoteRecordID], RemoteError?) -> Void) -> Bool {
         if DebugSettings.setConsoleRemoteOffline {
             completion([], .temporary)
@@ -42,32 +32,25 @@ class BookConsoleRemote: Remote {
         return false
     }
 
-    private func reportErrorIfOffline(completion: ([NSManagedObject: RemoteRecord], RemoteError?) -> Void) -> Bool {
+    private func reportErrorIfOffline(completion: ([RemoteRecord], RemoteError?) -> Void) -> Bool {
         if DebugSettings.setConsoleRemoteOffline {
-            completion([:], .temporary)
+            completion([], .temporary)
             return true
         }
         return false
     }
 
-    func upload(_ records: [NSManagedObject], completion: @escaping ([NSManagedObject: RemoteRecord], RemoteError?) -> Void) {
+    func fetchRecordChanges(completion: @escaping ([RemoteRecord], [RemoteRecordID]) -> Void) {
+        output("Fetching record changes")
+    }
+
+    func upload(_ records: [NSManagedObject], completion: @escaping ([RemoteRecord], RemoteError?) -> Void) {
         output("Uploading \(records.count) records")
         guard let books = records as? [Book] else { fatalError("Incorrect type") }
 
         if reportErrorIfOffline(completion: completion) { return }
 
-        completion(books.reduce(into: [NSManagedObject: RemoteRecord]()) {
-            $0[$1] = BookConsoleRemoteRecord()
-        }, nil)
-    }
-
-    func update(_ records: [NSManagedObject], completion: @escaping ([RemoteRecordID], RemoteError?) -> Void) {
-        output("Updating \(records.count) records")
-        guard let books = records as? [Book] else { fatalError("Incorrect type") }
-
-        if reportErrorIfOffline(completion: completion) { return }
-
-        completion(books.compactMap { $0.remoteIdentifier }, nil)
+        completion([BookConsoleRemoteRecord()], nil)
     }
 
     func remove(_ records: [NSManagedObject], completion: @escaping ([RemoteRecordID], RemoteError?) -> Void) {

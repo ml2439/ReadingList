@@ -26,6 +26,16 @@ class Book: NSManagedObject {
     @NSManaged var subjects: Set<Subject>
     @NSManaged private(set) var lists: Set<List>
 
+    // Raw value of a BookKey option set. Represents the keys which have been modified locally but
+    // not uploaded to a remote store.
+    @NSManaged private var keysPendingRemoteUpdate: Int32
+    var modifiedKeysPendingRemoteUpdate: BookKey {
+        get { return BookKey(rawValue: keysPendingRemoteUpdate) }
+        set { keysPendingRemoteUpdate = newValue.rawValue }
+    }
+    
+    static let pendingRemoteUpdatesPredicate = NSPredicate(format: "%K != 0", #keyPath(Book.keysPendingRemoteUpdate))
+
     convenience init(context: NSManagedObjectContext, readState: BookReadState) {
         self.init(context: context)
         self.readState = readState
@@ -52,8 +62,10 @@ class Book: NSManagedObject {
             self.sort = nil
         }
 
-        if !pendingRemoteUpdate && hasChanges && !changedValues().keys.contains(#keyPath(Book.pendingRemoteUpdate)) {
-            pendingRemoteUpdate = true
+        // Update the modified keys record
+        let currentModifiedKeys = BookKey.union(changedValues().keys.compactMap { BookKey.from(key: $0) })
+        if modifiedKeysPendingRemoteUpdate != currentModifiedKeys {
+            modifiedKeysPendingRemoteUpdate = currentModifiedKeys
         }
     }
 
@@ -63,6 +75,32 @@ class Book: NSManagedObject {
             orphanedSubject.delete()
             print("orphaned subject \(orphanedSubject.name) deleted.")
         }
+    }
+}
+
+struct BookKey: OptionSet {
+    let rawValue: Int32
+
+    static let title = BookKey(rawValue: 1 << 0)
+    static let authors = BookKey(rawValue: 1 << 1)
+    static let cover = BookKey(rawValue: 1 << 2)
+    static let googleBooksId = BookKey(rawValue: 1 << 3)
+
+    static func from(key: String) -> BookKey? {
+        switch key {
+        case #keyPath(Book.title): return .title
+        case #keyPath(Book.authors): return .authors
+        case #keyPath(Book.coverImage): return .cover
+        case #keyPath(Book.googleBooksId): return .googleBooksId
+        // TODO: Complete
+        default: return nil
+        }
+    }
+
+    static func union(_ keys: [BookKey]) -> BookKey {
+        var key = BookKey(rawValue: 0)
+        keys.forEach { key.formUnion($0) }
+        return key
     }
 }
 

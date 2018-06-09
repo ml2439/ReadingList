@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14135" systemVersion="17E202" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14135" systemVersion="17F77" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Author" representedClassName="Author" syncable="YES">
         <attribute name="firstNames" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="lastName" attributeType="String" syncable="YES"/>
@@ -9,15 +9,16 @@
         <attribute name="authorDisplay" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="authorSort" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="bookDescription" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="ckRecordEncodedSystemFields" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="coverImage" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
         <attribute name="currentPage" optional="YES" attributeType="Integer 32" minValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="finishedReading" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="googleBooksId" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="isbn13" optional="YES" attributeType="String" regularExpressionString="\d{13}" syncable="YES"/>
+        <attribute name="keysPendingRemoteUpdate" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="notes" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="pageCount" optional="YES" attributeType="Integer 32" minValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="pendingRemoteDeletion" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="pendingRemoteUpdate" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="publicationDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="readState" attributeType="Integer 16" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="remoteIdentifier" optional="YES" attributeType="String" syncable="YES"/>
@@ -69,7 +70,7 @@
     </entity>
     <elements>
         <element name="Author" positionX="-54" positionY="108" width="128" height="90"/>
-        <element name="Book" positionX="-63" positionY="-18" width="128" height="360"/>
+        <element name="Book" positionX="-63" positionY="-18" width="128" height="375"/>
         <element name="List" positionX="-54" positionY="117" width="128" height="75"/>
         <element name="Subject" positionX="-63" positionY="90" width="128" height="75"/>
     </elements>

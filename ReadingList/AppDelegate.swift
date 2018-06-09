@@ -17,6 +17,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+        // Remote notifications are required for iCloud sync
+        application.registerForRemoteNotifications()
+
         UserEngagement.initialiseUserAnalytics()
 
         setupSvProgressHud()
@@ -36,8 +39,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     #endif
 
                     // Initialise the Sync Coordinator which will maintain iCloud synchronisation
-                    self.syncCoordinator = BookSyncCoordinator(container: PersistentStoreManager.container)
-                    self.syncCoordinator.applicationDidBecomeActive()
+                    let remote = BookCloudKitRemote()
+                    self.syncCoordinator = BookSyncCoordinator(container: PersistentStoreManager.container, remote: remote)
+                    remote.initialise {
+                        self.syncCoordinator.applicationDidBecomeActive()
+                    }
 
                     // Set the root view controller
                     self.window!.rootViewController = TabBarController()
@@ -102,7 +108,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        print("did register")
+    }
+
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        print("failed to register")
+    }
+
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        print("Remote notification received")
         syncCoordinator.applicationDidReceiveRemoteChangesNotification(applicationCallback: completionHandler)
     }
 

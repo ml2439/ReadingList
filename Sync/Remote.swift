@@ -8,12 +8,6 @@ public protocol RemoteRecord {
 
 public typealias RemoteRecordID = String
 
-enum RemoteRecordChange {
-    case insert(RemoteRecord)
-    case update(RemoteRecord)
-    case delete(RemoteRecordID)
-}
-
 enum RemoteError {
     case permanent([RemoteRecordID])
     case temporary
@@ -27,15 +21,11 @@ enum RemoteError {
 }
 
 protocol Remote {
-    func setupSubscription()
-    func fetchUserID(completion: @escaping (RemoteRecordID?) -> Void)
 
     // Downstream
-    func fetchAllRecords(completion: @escaping ([RemoteRecord]) -> Void)
-    func fetchRecordChanges(completion: @escaping ([RemoteRecordChange], @escaping (_ success: Bool) -> Void) -> Void)
+    func fetchRecordChanges(completion: @escaping ([RemoteRecord], [RemoteRecordID]) -> Void)
 
     // Upstream
-    func upload(_ records: [NSManagedObject], completion: @escaping ([NSManagedObject: RemoteRecord], RemoteError?) -> Void)
-    func update(_ records: [NSManagedObject], completion: @escaping ([RemoteRecordID], RemoteError?) -> Void)
+    func upload(_ records: [NSManagedObject], completion: @escaping ([RemoteRecord], RemoteError?) -> Void)
     func remove(_ records: [NSManagedObject], completion: @escaping ([RemoteRecordID], RemoteError?) -> Void)
 }

@@ -1,5 +1,6 @@
 import Foundation
 import CoreData
+import CloudKit
 
 class BookUpdater: BookUpstreamChangeProcessor {
 
@@ -7,14 +8,17 @@ class BookUpdater: BookUpstreamChangeProcessor {
 
     func processLocalChanges(_ books: [Book], context: NSManagedObjectContext, remote: Remote) {
 
-        remote.update(books) { remoteRecordIDs, error in
+        let booksByRemoteID = books.reduce(into: [String: Book]()) { $0[$1.remoteIdentifier!] = $1 }
+
+        remote.upload(books) { remoteRecords, error in
+            guard error?.isPermanent != true else { fatalError("do something here") }
+            guard let ckRecords = remoteRecords as? [CKRecord] else { fatalError("Incorrect type") }
+
             // TODO: Consider whether delayed saves are necessary
             context.perform {
-                guard error?.isPermanent != true else { fatalError("do something here") }
-                for book in books {
-                    if remoteRecordIDs.contains(where: { book.remoteIdentifier == $0 }) {
-                        book.pendingRemoteUpdate = false
-                    }
+                for ckRecord in ckRecords {
+                    guard let book = booksByRemoteID[ckRecord.recordID.recordName] else { fatalError("Missing book") }
+                    book.update(from: ckRecord)
                 }
                 context.saveAndLogIfErrored()
             }
@@ -26,7 +30,7 @@ class BookUpdater: BookUpstreamChangeProcessor {
         fetchRequest.predicate = NSPredicate.and([
             Book.notMarkedForDeletion,
             NSPredicate(format: "%K != NULL", #keyPath(Book.remoteIdentifier)),
-            NSPredicate(format: "%K == true", #keyPath(Book.pendingRemoteUpdate))
+            Book.pendingRemoteUpdatesPredicate
         ])
         return fetchRequest
     }
