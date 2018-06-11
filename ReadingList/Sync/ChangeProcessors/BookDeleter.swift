@@ -1,25 +1,21 @@
 import Foundation
 import CoreData
+import CloudKit
 
 class BookDeleter: BookUpstreamChangeProcessor {
 
     let debugDescription = String(describing: BookDeleter.self)
 
-    func processLocalChanges(_ books: [Book], context: NSManagedObjectContext, remote: Remote) {
-        remote.remove(books) { deletedRecordIDs, error in
-            let deletions = books.filter {
+    func processLocalChanges(_ books: [Book], context: NSManagedObjectContext, remote: BookCloudKitRemote) {
+
+        let recordIDs = books.compactMap { $0.getStoredCKRecord()?.recordID }
+        remote.remove(recordIDs) { deletedRecordIDs, _ in
+            let booksToDelete = books.filter {
                 guard let remoteId = $0.remoteIdentifier else { return false }
-                return deletedRecordIDs.contains(remoteId)
+                return deletedRecordIDs.map { $0.recordName }.contains(remoteId)
             }
             context.perform {
-                deletions.forEach {
-                    $0.delete()
-                }
-                if case .permanent(let perminantErroredIDs)? = error {
-                    books.filter { perminantErroredIDs.contains($0.remoteIdentifier!) }.forEach {
-                        $0.delete()
-                    }
-                }
+                booksToDelete.forEach { $0.delete() }
                 context.saveAndLogIfErrored()
             }
         }

@@ -2,13 +2,13 @@ import Foundation
 import CoreData
 
 protocol BookUpstreamChangeProcessor: UpstreamChangeProcessor {
-    func processLocalChanges(_ books: [Book], context: NSManagedObjectContext, remote: Remote)
+    func processLocalChanges(_ books: [Book], context: NSManagedObjectContext, remote: BookCloudKitRemote)
     var unprocessedChangedBooksRequest: NSFetchRequest<Book> { get }
 }
 
 extension BookUpstreamChangeProcessor {
 
-    func processLocalChanges(_ objects: [NSManagedObject], context: NSManagedObjectContext, remote: Remote) {
+    func processLocalChanges(_ objects: [NSManagedObject], context: NSManagedObjectContext, remote: BookCloudKitRemote) {
         guard let books = objects as? [Book] else { fatalError("Incorrect object type") }
         print("\(debugDescription) processing \(books.count) objects")
         processLocalChanges(books, context: context, remote: remote)

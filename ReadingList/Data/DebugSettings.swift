@@ -99,17 +99,6 @@ class DebugSettings {
             UserDefaults.standard.setValue(newValue.rawValue, forKey: quickActionSimulationKey)
         }
     }
-
-    private static let setConsoleRemoteOfflineKey = "setConsoleRemoteOffline"
-
-    static var setConsoleRemoteOffline: Bool {
-        get {
-            return UserDefaults.standard.value(forKey: setConsoleRemoteOfflineKey) as? Bool ?? false
-        }
-        set {
-            UserDefaults.standard.set(newValue, forKey: setConsoleRemoteOfflineKey)
-        }
-    }
 }
 
 #endif

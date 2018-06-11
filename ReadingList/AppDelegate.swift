@@ -38,13 +38,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         DebugSettings.initialiseFromCommandLine()
                     #endif
 
-                    // Initialise the Sync Coordinator which will maintain iCloud synchronisation
-                    let remote = BookCloudKitRemote()
-                    self.syncCoordinator = BookSyncCoordinator(container: PersistentStoreManager.container, remote: remote)
-                    remote.initialise {
-                        self.syncCoordinator.applicationDidBecomeActive()
-                    }
-
                     // Set the root view controller
                     self.window!.rootViewController = TabBarController()
 
@@ -59,6 +52,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         self.performQuickAction(QuickAction(rawValue: quickAction.type)!)
                     } else if let csvFileUrl = csvFileUrl {
                         self.openCsvImport(url: csvFileUrl)
+                    }
+
+                    // Initialise the Sync Coordinator which will maintain iCloud synchronisation
+                    self.syncCoordinator = BookSyncCoordinator(container: PersistentStoreManager.container)
+                    if UserSettings.iCloudSyncEnabled.value {
+                        self.syncCoordinator.start()
                     }
                 }
             }
@@ -118,7 +117,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         print("Remote notification received")
-        syncCoordinator.applicationDidReceiveRemoteChangesNotification(applicationCallback: completionHandler)
+        syncCoordinator.processOutstandingRemoteChanges(applicationCallback: completionHandler)
     }
 
     func openCsvImport(url: URL) {

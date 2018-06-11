@@ -56,13 +56,6 @@ class Debug: FormViewController {
                     DebugSettings.showSortNumber = $0.value ?? false
                 }
             }
-            <<< SwitchRow {
-                $0.title = "Set console remote offline"
-                $0.value = DebugSettings.setConsoleRemoteOffline
-                $0.onChange {
-                    DebugSettings.setConsoleRemoteOffline = $0.value ?? false
-                }
-            }
     }
 }
 

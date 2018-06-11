@@ -66,6 +66,8 @@ class UserSettings {
     static var toReadSortOrder = WrappedUserSetting<TableSortOrder>(key: "toReadSortOrder", defaultValue: defaultSortOrder(forReadState: .toRead))
     static var readingSortOrder = WrappedUserSetting<TableSortOrder>(key: "readingSortOrder", defaultValue: defaultSortOrder(forReadState: .reading))
     static var finishedSortOrder = WrappedUserSetting<TableSortOrder>(key: "finishedSortOrder", defaultValue: defaultSortOrder(forReadState: .finished))
+
+    static var iCloudSyncEnabled = UserSetting<Bool>(key: "iCloudSyncEnabled", defaultValue: false)
 }
 
 extension Notification.Name {

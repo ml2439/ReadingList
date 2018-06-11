@@ -7,10 +7,12 @@ import Crashlytics
 class DataVC: UITableViewController {
 
     var importUrl: URL?
+    @IBOutlet private weak var iCloudEnabledSwitch: UISwitch!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         monitorThemeSetting()
+        iCloudEnabledSwitch.isOn = UserSettings.iCloudSyncEnabled.value
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -30,11 +32,21 @@ class DataVC: UITableViewController {
         return cell
     }
 
+    @IBAction private func iCloudSyncSwitchChanged(_ sender: UISwitch) {
+        let iCloudSyncOn = sender.isOn
+        UserSettings.iCloudSyncEnabled.value = iCloudSyncOn
+        if iCloudSyncOn {
+            appDelegate.syncCoordinator.start()
+        } else {
+            appDelegate.syncCoordinator.stop()
+        }
+    }
+
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch (indexPath.section, indexPath.row) {
-        case (0, 0): exportData(presentingIndexPath: indexPath)
-        case (1, 0): requestImport(presentingIndexPath: indexPath)
-        case (2, 0): deleteAllData()
+        case (1, 0): exportData(presentingIndexPath: indexPath)
+        case (2, 0): requestImport(presentingIndexPath: indexPath)
+        case (3, 0): deleteAllData()
         default: break
         }
         tableView.deselectRow(at: indexPath, animated: true)

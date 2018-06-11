@@ -6,17 +6,22 @@ class BookDownloader: DownstreamChangeProcessor {
 
     let debugDescription = String(describing: BookDownloader.self)
 
-    func processRemoteChanges(changedRecords: [RemoteRecord], deletedRecordIDs: [RemoteRecordID], context: NSManagedObjectContext, completion: () -> Void) {
+    func processRemoteChanges(from zone: CKRecordZoneID, changedRecords: [CKRecord], deletedRecordIDs: [CKRecordID],
+                              newChangeToken: CKServerChangeToken, context: NSManagedObjectContext, completion: (() -> Void)? = nil) {
         print("\(debugDescription) processing \(changedRecords.count) remote changes and \(deletedRecordIDs.count) remote deletions.")
 
         insertBooks(changedRecords, into: context)
         deleteBooks(with: deletedRecordIDs, in: context)
 
+        // Store the updated change token
+        let changeToken = ChangeToken.get(fromContext: context, for: zone) ?? ChangeToken(context: context, zoneID: zone)
+        changeToken.changeToken = NSKeyedArchiver.archivedData(withRootObject: newChangeToken)
+
         context.saveAndLogIfErrored()
-        completion()
+        completion?()
     }
 
-    private func deleteBooks(with ids: [RemoteRecordID], in context: NSManagedObjectContext) {
+    private func deleteBooks(with ids: [CKRecordID], in context: NSManagedObjectContext) {
         guard !ids.isEmpty else { return }
         print("\(debugDescription) processing \(ids.count) remote deletions")
 
@@ -24,26 +29,26 @@ class BookDownloader: DownstreamChangeProcessor {
         booksToDelete.forEach { $0.markForDeletion() }
     }
 
-    private func insertBooks(_ remoteBooks: [RemoteRecord], into context: NSManagedObjectContext) {
+    private func insertBooks(_ remoteBooks: [CKRecord], into context: NSManagedObjectContext) {
         guard !remoteBooks.isEmpty else { return }
         print("\(debugDescription) processing \(remoteBooks.count) remote insertions")
 
-        let preExistingBooks = locallyPresentBooks(withRemoteIDs: remoteBooks.map { $0.id! }, in: context)
+        let preExistingBooks = locallyPresentBooks(withRemoteIDs: remoteBooks.map { $0.recordID }, in: context)
 
         for remoteBook in remoteBooks {
-            if let localBook = preExistingBooks.first(where: { $0.remoteIdentifier == remoteBook.id }) {
-                localBook.update(from: remoteBook as! CKRecord)
+            if let localBook = preExistingBooks.first(where: { $0.remoteIdentifier == remoteBook.recordID.recordName }) {
+                localBook.update(from: remoteBook)
             } else {
-                let book = Book(context: context)
-                book.update(from: remoteBook as! CKRecord)
+                let book = Book(context: context, readState: .toRead)
+                book.update(from: remoteBook)
             }
         }
     }
 
-    private func locallyPresentBooks(withRemoteIDs remoteIDs: [RemoteRecordID], in context: NSManagedObjectContext) -> [Book] {
+    private func locallyPresentBooks(withRemoteIDs remoteIDs: [CKRecordID], in context: NSManagedObjectContext) -> [Book] {
         let fetchRequest = NSManagedObject.fetchRequest(Book.self)
         fetchRequest.predicate = NSPredicate.and([
-            Book.withRemoteIdentifiers(remoteIDs),
+            Book.withRemoteIdentifiers(remoteIDs.map { $0.recordName }),
             Book.notMarkedForDeletion
         ])
         return try! context.fetch(fetchRequest)

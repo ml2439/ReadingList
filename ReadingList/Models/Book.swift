@@ -33,7 +33,7 @@ class Book: NSManagedObject {
         get { return BookKey(rawValue: keysPendingRemoteUpdate) }
         set { keysPendingRemoteUpdate = newValue.rawValue }
     }
-    
+
     static let pendingRemoteUpdatesPredicate = NSPredicate(format: "%K != 0", #keyPath(Book.keysPendingRemoteUpdate))
 
     convenience init(context: NSManagedObjectContext, readState: BookReadState) {
@@ -63,7 +63,7 @@ class Book: NSManagedObject {
         }
 
         // Update the modified keys record
-        let currentModifiedKeys = BookKey.union(changedValues().keys.compactMap { BookKey.from(key: $0) })
+        let currentModifiedKeys = BookKey.union(changedValues().keys.compactMap { BookKey.from(coreDataKey: $0) })
         if modifiedKeysPendingRemoteUpdate != currentModifiedKeys {
             modifiedKeysPendingRemoteUpdate = currentModifiedKeys
         }
@@ -85,14 +85,32 @@ struct BookKey: OptionSet {
     static let authors = BookKey(rawValue: 1 << 1)
     static let cover = BookKey(rawValue: 1 << 2)
     static let googleBooksId = BookKey(rawValue: 1 << 3)
+    static let isbn13 = BookKey(rawValue: 1 << 4)
+    static let pageCount = BookKey(rawValue: 1 << 5)
+    static let publicationDate = BookKey(rawValue: 1 << 6)
+    static let bookDescription = BookKey(rawValue: 1 << 7)
+    static let coverImage = BookKey(rawValue: 1 << 8)
+    static let notes = BookKey(rawValue: 1 << 9)
+    static let currentPage = BookKey(rawValue: 1 << 10)
+    static let sort = BookKey(rawValue: 1 << 11)
+    static let startedReading = BookKey(rawValue: 1 << 12)
+    static let finishedReading = BookKey(rawValue: 1 << 13)
 
-    static func from(key: String) -> BookKey? {
-        switch key {
+    static func from(coreDataKey: String) -> BookKey? { //swiftlint:disable:this cyclomatic_complexity
+        switch coreDataKey {
         case #keyPath(Book.title): return .title
         case #keyPath(Book.authors): return .authors
         case #keyPath(Book.coverImage): return .cover
         case #keyPath(Book.googleBooksId): return .googleBooksId
-        // TODO: Complete
+        case #keyPath(Book.isbn13): return .isbn13
+        case #keyPath(Book.pageCount): return .pageCount
+        case #keyPath(Book.publicationDate): return .publicationDate
+        case #keyPath(Book.bookDescription): return .bookDescription
+        case #keyPath(Book.notes): return .notes
+        case #keyPath(Book.currentPage): return .currentPage
+        case #keyPath(Book.sort): return .sort
+        case #keyPath(Book.startedReading): return .startedReading
+        case #keyPath(Book.finishedReading): return .finishedReading
         default: return nil
         }
     }

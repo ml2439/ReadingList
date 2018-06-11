@@ -11,22 +11,6 @@ extension UserDefaults {
     func getCount(withKey: String) -> Int {
         return UserDefaults.standard.integer(forKey: withKey)
     }
-
-    func set(_ value: CKServerChangeToken?, forKey key: String) {
-        let data: Data?
-        if let value = value {
-            data = NSKeyedArchiver.archivedData(withRootObject: value)
-        } else {
-            data = nil
-        }
-        set(data, forKey: key)
-    }
-
-    func ckServerChangeToken(forKey key: String) -> CKServerChangeToken? {
-        guard let data = self.value(forKey: key) as? Data else { return nil }
-        guard let token = NSKeyedUnarchiver.unarchiveObject(with: data) as? CKServerChangeToken else { return nil }
-        return token
-    }
 }
 
 extension String {

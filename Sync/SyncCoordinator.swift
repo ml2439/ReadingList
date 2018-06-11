@@ -1,6 +1,7 @@
 import Foundation
 import CoreData
 import UIKit
+import CloudKit
 
 class SyncCoordinator {
     let viewContext: NSManagedObjectContext
@@ -8,35 +9,54 @@ class SyncCoordinator {
 
     let upstreamChangeProcessors: [UpstreamChangeProcessor]
     let downstreamChangeProcessors: [DownstreamChangeProcessor]
-    let remote: Remote
+    let remote = BookCloudKitRemote()
 
-    init(container: NSPersistentContainer, remote: Remote, upstreamChangeProcessors: [UpstreamChangeProcessor], downstreamChangeProcessors: [DownstreamChangeProcessor]) {
+    private var contextSaveNotificationObservers = [NSObjectProtocol]()
+
+    init(container: NSPersistentContainer, upstreamChangeProcessors: [UpstreamChangeProcessor], downstreamChangeProcessors: [DownstreamChangeProcessor]) {
         viewContext = container.viewContext
         viewContext.name = "ViewContext"
 
         syncContext = container.newBackgroundContext()
         syncContext.name = "SyncContext"
-        syncContext.mergePolicy = NSMergePolicy.mergeByPropertyStoreTrump
+        syncContext.mergePolicy = NSMergePolicy.mergeByPropertyStoreTrump // FUTURE: Add a custom merge policy
 
-        self.remote = remote
         self.upstreamChangeProcessors = upstreamChangeProcessors
         self.downstreamChangeProcessors = downstreamChangeProcessors
+    }
 
-        // TODO: determine whether query generations are necessary
+    /**
+     
+     */
+    func start() {
         setupQueryGenerations()
-        setupContextNotificationObserving()
+        startContextNotificationObserving()
 
-        // Setup application state observation:
-        setupApplicationStateObserving()
+        if !remote.isInitialised {
+            remote.initialise {
+                self.processPendingChanges()
+            }
+        } else {
+            processPendingChanges()
+        }
+    }
+
+    /**
+     
+    */
+    func stop() {
+        stopContextNotificationObserving()
     }
 
     private func setupQueryGenerations() {
         let token = NSQueryGenerationToken.current
         viewContext.perform {
             try! self.viewContext.setQueryGenerationFrom(token)
+            self.viewContext.refreshAllObjects()
         }
         syncContext.perform {
             try! self.syncContext.setQueryGenerationFrom(token)
+            self.syncContext.refreshAllObjects()
         }
     }
 
@@ -44,9 +64,11 @@ class SyncCoordinator {
      Registers Save observers on both the viewContext and the syncContext, handling them by merging the save from
      one context to the other, and also calling `processChangedLocalObjects(_)` on the updated or inserted objects.
     */
-    private func setupContextNotificationObserving() {
+    private func startContextNotificationObserving() {
+        guard contextSaveNotificationObservers.isEmpty else { print("Observers already registered"); return }
+
         func registerForMergeOnSave(from sourceContext: NSManagedObjectContext, to destinationContext: NSManagedObjectContext) {
-            NotificationCenter.default.addObserver(forName: .NSManagedObjectContextDidSave, object: sourceContext, queue: nil) { [weak self] note in
+            let observer = NotificationCenter.default.addObserver(forName: .NSManagedObjectContextDidSave, object: sourceContext, queue: nil) { [weak self] note in
                 print("Merging save from \(String(sourceContext.name!)) to \(String(destinationContext.name!))")
                 destinationContext.performMergeChanges(from: note)
 
@@ -59,10 +81,18 @@ class SyncCoordinator {
                     coordinator.processLocalChanges(updates + inserts)
                 }
             }
+            contextSaveNotificationObservers.append(observer)
         }
 
         registerForMergeOnSave(from: syncContext, to: viewContext)
         registerForMergeOnSave(from: viewContext, to: syncContext)
+    }
+
+    private func stopContextNotificationObserving() {
+        guard contextSaveNotificationObservers.count == 2 else { print("Unexpected count of observers: \(contextSaveNotificationObservers.count)"); return }
+
+        contextSaveNotificationObservers.forEach { NotificationCenter.default.removeObserver($0) }
+        contextSaveNotificationObservers.removeAll()
     }
 
     private func object(_ object: NSManagedObject, matches fetchRequest: NSFetchRequest<NSFetchRequestResult>) -> Bool {
@@ -80,35 +110,9 @@ class SyncCoordinator {
         }
     }
 
-    private func setupApplicationStateObserving() {
-        NotificationCenter.default.addObserver(forName: .UIApplicationDidEnterBackground, object: nil, queue: nil) { [weak self] _ in
-            guard let coordinator = self else { return }
-            coordinator.syncContext.perform {
-                // FUTURE: Determine whether is necessary and ideal
-                coordinator.syncContext.refreshAllObjects()
-            }
-        }
-        NotificationCenter.default.addObserver(forName: .UIApplicationDidBecomeActive, object: nil, queue: nil) { [weak self] _ in
-            guard let coordinator = self else { return }
-            coordinator.syncContext.perform {
-                coordinator.applicationDidBecomeActive()
-            }
-        }
-    }
-
-    func applicationDidBecomeActive() {
-        processOutstandingLocalChanges()
+    func processPendingChanges() {
         processOutstandingRemoteChanges()
-    }
-
-    func applicationDidReceiveRemoteChangesNotification(applicationCallback: @escaping (UIBackgroundFetchResult) -> Void) {
-        remote.fetchRecordChanges { changedRecords, deletedRecordIDs in
-            for changeProcessor in self.downstreamChangeProcessors {
-                changeProcessor.processRemoteChanges(changedRecords: changedRecords, deletedRecordIDs: deletedRecordIDs, context: self.syncContext) {
-                    applicationCallback(.newData) // TODO: Classify the remote change type for this callback
-                }
-            }
-        }
+        processOutstandingLocalChanges()
     }
 
     private func processOutstandingLocalChanges() {
@@ -124,15 +128,21 @@ class SyncCoordinator {
         }
     }
 
-    private func processOutstandingRemoteChanges() {
-        // TODO: Determine whether iCloud sync has started before. If not, fetch all records, not just changes
-        self.remote.fetchRecordChanges { records, deletedRecordIDs in
-            guard !records.isEmpty || !deletedRecordIDs.isEmpty else { return }
-            for changeProcessor in self.downstreamChangeProcessors {
-                self.syncContext.perform {
-                    changeProcessor.processRemoteChanges(changedRecords: records, deletedRecordIDs: deletedRecordIDs, context: self.syncContext) {
-                        self.syncContext.saveAndLogIfErrored()
-                    }
+    func processOutstandingRemoteChanges(applicationCallback: ((UIBackgroundFetchResult) -> Void)? = nil) {
+        syncContext.perform {
+            let changeToken: CKServerChangeToken?
+            if let cachedChangeToken = ChangeToken.get(fromContext: self.syncContext, for: self.remote.bookZoneID) {
+                changeToken = (NSKeyedUnarchiver.unarchiveObject(with: cachedChangeToken.changeToken) as! CKServerChangeToken)
+            } else {
+                changeToken = nil
+            }
+
+            self.remote.fetchRecordChanges(changeToken: changeToken) { changeToken, records, deletedRecordIDs in
+                guard !records.isEmpty || !deletedRecordIDs.isEmpty else { return }
+                for changeProcessor in self.downstreamChangeProcessors {
+                    changeProcessor.processRemoteChanges(from: self.remote.bookZoneID, changedRecords: records,
+                                                         deletedRecordIDs: deletedRecordIDs, newChangeToken: changeToken,
+                                                         context: self.syncContext, completion: nil)
                 }
             }
         }

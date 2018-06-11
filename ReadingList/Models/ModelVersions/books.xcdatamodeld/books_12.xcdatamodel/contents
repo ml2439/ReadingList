@@ -25,7 +25,7 @@
         <attribute name="sort" optional="YES" attributeType="Integer 32" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="startedReading" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="title" attributeType="String" syncable="YES"/>
-        <relationship name="authors" toMany="YES" minCount="1" deletionRule="Cascade" ordered="YES" destinationEntity="Author" inverseName="book" inverseEntity="Author" syncable="YES"/>
+        <relationship name="authors" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Author" inverseName="book" inverseEntity="Author" syncable="YES"/>
         <relationship name="lists" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="List" inverseName="books" inverseEntity="List" syncable="YES"/>
         <relationship name="subjects" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Subject" inverseName="books" inverseEntity="Subject" syncable="YES"/>
         <fetchIndex name="isbn">
@@ -54,6 +54,11 @@
             <fetchIndexElement property="authorDisplay" type="Binary" order="ascending"/>
         </fetchIndex>
     </entity>
+    <entity name="ChangeToken" representedClassName="ChangeToken" syncable="YES">
+        <attribute name="changeToken" attributeType="Binary" syncable="YES"/>
+        <attribute name="ownerName" attributeType="String" syncable="YES"/>
+        <attribute name="zoneName" attributeType="String" syncable="YES"/>
+    </entity>
     <entity name="List" representedClassName="List" versionHashModifier="v11" syncable="YES">
         <attribute name="name" attributeType="String" syncable="YES"/>
         <relationship name="books" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Book" inverseName="lists" inverseEntity="Book" syncable="YES"/>
@@ -73,5 +78,6 @@
         <element name="Book" positionX="-63" positionY="-18" width="128" height="375"/>
         <element name="List" positionX="-54" positionY="117" width="128" height="75"/>
         <element name="Subject" positionX="-63" positionY="90" width="128" height="75"/>
+        <element name="ChangeToken" positionX="-54" positionY="135" width="128" height="90"/>
     </elements>
 </model>

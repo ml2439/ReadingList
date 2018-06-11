@@ -2,43 +2,43 @@ import Foundation
 import CoreData
 import CloudKit
 
-class BookCloudKitRemote: Remote {
+class BookCloudKitRemote {
+    let bookZoneName = "BookZone"
 
-    private let bookDownloadSubscriptionID = "BookChanges"
-    private let bookCKRecordType = "Book"
-    private let bookZoneID = "BookZone"
+    private let userRecordNameKey = "CK_UserRecordName"
 
-    private let bookDownloadCKChangeTokenKey = "CK_BookChangesToken"
-    private let userRecordNameIDKey = "CK_UserRecordName"
-
-    var userRecordID: String?
+    private(set) var userRecordName: String!
+    private(set) var bookZoneID: CKRecordZoneID!
 
     var privateDB: CKDatabase {
         return CKContainer.default().privateCloudDatabase
     }
 
+    var isInitialised: Bool {
+        return bookZoneID != nil
+    }
+
     func initialise(completion: @escaping () -> Void) {
-        if let userRecordName = UserDefaults.standard.string(forKey: userRecordNameIDKey) {
-            userRecordID = userRecordName
-            createZoneAndSubscription(completion: completion)
+        if let userRecordName = UserDefaults.standard.string(forKey: userRecordNameKey) {
+            createZoneAndSubscription(userRecordName: userRecordName, completion: completion)
         } else {
             CKContainer.default().fetchUserRecordID { ckRecordID, error in
                 if let error = error {
                     print("Error \(error)")
                 } else {
-                    UserDefaults.standard.set(ckRecordID!.recordName, forKey: self.userRecordNameIDKey)
-                    self.userRecordID = ckRecordID!.recordName
-                    self.createZoneAndSubscription(completion: completion)
+                    UserDefaults.standard.set(ckRecordID!.recordName, forKey: self.userRecordNameKey)
+                    self.createZoneAndSubscription(userRecordName: ckRecordID!.recordName, completion: completion)
                 }
             }
         }
     }
 
-    func createZoneAndSubscription(completion: @escaping () -> Void) {
-        guard let userRecordID = userRecordID else { fatalError("Missing user record ID") }
+    private func createZoneAndSubscription(userRecordName: String, completion: @escaping () -> Void) {
+        self.userRecordName = userRecordName
+        self.bookZoneID = CKRecordZoneID(zoneName: bookZoneName, ownerName: userRecordName)
 
         // Create the book zone (TODO: Do not create if already exists?)
-        let bookZone = CKRecordZone(zoneID: CKRecordZoneID(zoneName: bookZoneID, ownerName: userRecordID))
+        let bookZone = CKRecordZone(zoneID: bookZoneID)
         let createZoneOperation = CKModifyRecordZonesOperation(recordZonesToSave: [bookZone], recordZoneIDsToDelete: nil)
         createZoneOperation.modifyRecordZonesCompletionBlock = { zone, zoneID, error in
             print("Zone created")
@@ -46,7 +46,7 @@ class BookCloudKitRemote: Remote {
         privateDB.add(createZoneOperation)
 
         // Subscribe to changes
-        let subscription = CKRecordZoneSubscription(zoneID: bookZone.zoneID, subscriptionID: bookDownloadSubscriptionID)
+        let subscription = CKRecordZoneSubscription(zoneID: bookZone.zoneID, subscriptionID: "BookChanges")
         subscription.notificationInfo = {
             let info = CKNotificationInfo()
             info.shouldSendContentAvailable = true
@@ -65,62 +65,45 @@ class BookCloudKitRemote: Remote {
         privateDB.add(modifySubscriptionOperation)
     }
 
-    func fetchRecordChanges(completion: @escaping ([RemoteRecord], [RemoteRecordID]) -> Void) {
+    func fetchRecordChanges(changeToken: CKServerChangeToken?, completion: @escaping (CKServerChangeToken, [CKRecord], [CKRecordID]) -> Void) {
         print("Fetching record changes")
-        guard let userRecordID = userRecordID else { fatalError("Attempt to fetch all records with uninitialised user record ID") }
-        let zoneID = CKRecordZoneID(zoneName: bookZoneID, ownerName: userRecordID)
 
-        var changedRecords = [RemoteRecord]()
-        var deletedRecordIDs = [RemoteRecordID]()
+        var changedRecords = [CKRecord]()
+        var deletedRecordIDs = [CKRecordID]()
 
         let options = CKFetchRecordZoneChangesOptions()
-        options.previousServerChangeToken = UserDefaults.standard.ckServerChangeToken(forKey: bookDownloadCKChangeTokenKey)
+        options.previousServerChangeToken = changeToken
 
-        let fetchChangesOperation = CKFetchRecordZoneChangesOperation(recordZoneIDs: [zoneID], optionsByRecordZoneID: [zoneID: options])
-        fetchChangesOperation.recordZoneChangeTokensUpdatedBlock = { _, changeToken, _ in
-            UserDefaults.standard.set(changeToken, forKey: self.bookDownloadCKChangeTokenKey)
-        }
+        let fetchChangesOperation = CKFetchRecordZoneChangesOperation(recordZoneIDs: [bookZoneID], optionsByRecordZoneID: [bookZoneID: options])
         fetchChangesOperation.recordChangedBlock = { changedRecords.append($0) }
         fetchChangesOperation.recordWithIDWasDeletedBlock = { recordID, _ in
-            deletedRecordIDs.append(recordID.recordName)
+            deletedRecordIDs.append(recordID)
         }
         fetchChangesOperation.recordZoneFetchCompletionBlock = { _, changeToken, _, _, error in
             guard error == nil else {
                 print("Error: \(error!)")
                 return
             }
-            UserDefaults.standard.set(changeToken, forKey: self.bookDownloadCKChangeTokenKey)
-            completion(changedRecords, deletedRecordIDs)
+            completion(changeToken!, changedRecords, deletedRecordIDs)
         }
         privateDB.add(fetchChangesOperation)
     }
 
-    func upload(_ records: [NSManagedObject], completion: @escaping ([RemoteRecord], RemoteError?) -> Void) {
-        guard let books = records as? [Book] else { fatalError("wrong type") }
-        let newBooks = books.filter({ $0.remoteIdentifier == nil })
-        
-        
-        let operation = CKModifyRecordsOperation(recordsToSave: Array(ckRecords.keys), recordIDsToDelete: nil)
+    func upload(_ records: [CKRecord], completion: @escaping ([CKRecord], Error?) -> Void) {
+        let operation = CKModifyRecordsOperation(recordsToSave: records, recordIDsToDelete: nil)
         operation.savePolicy = .ifServerRecordUnchanged
         operation.modifyRecordsCompletionBlock = { modifiedRecords, _, error in
             guard error == nil else { print("Error: \(error!)"); return }
-            var results = [NSManagedObject: RemoteRecord]()
-            for record in modifiedRecords ?? [] {
-                results[ckRecords[record]!] = record
-            }
-            completion(results, nil)
+            completion(modifiedRecords ?? [], nil)
         }
         CKContainer.default().privateCloudDatabase.add(operation)
     }
 
-    func remove(_ records: [NSManagedObject], completion: @escaping ([RemoteRecordID], RemoteError?) -> Void) {
-        guard let books = records as? [Book] else { fatalError("wrong type") }
-        let ckRecordIDs = books.compactMap { $0.remoteIdentifier }.map { CKRecordID(recordName: $0) }
-        let operation = CKModifyRecordsOperation(recordsToSave: nil, recordIDsToDelete: ckRecordIDs)
+    func remove(_ recordIDs: [CKRecordID], completion: @escaping ([CKRecordID], Error?) -> Void) {
+        let operation = CKModifyRecordsOperation(recordsToSave: nil, recordIDsToDelete: recordIDs)
         operation.modifyRecordsCompletionBlock = { _, deletedRecordIDs, error in
             guard error == nil else { print("Error: \(String(describing: error))"); return }
-            guard let deletedRecordIDs = deletedRecordIDs else { completion([], nil); return }
-            completion(deletedRecordIDs.map { $0.recordName }, nil)
+            completion(deletedRecordIDs ?? [], nil)
         }
         CKContainer.default().privateCloudDatabase.add(operation)
     }
