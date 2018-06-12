@@ -55,9 +55,15 @@
         </fetchIndex>
     </entity>
     <entity name="ChangeToken" representedClassName="ChangeToken" syncable="YES">
-        <attribute name="changeToken" attributeType="Binary" syncable="YES"/>
+        <attribute name="changeTokenData" attributeType="Binary" syncable="YES"/>
         <attribute name="ownerName" attributeType="String" syncable="YES"/>
         <attribute name="zoneName" attributeType="String" syncable="YES"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="ownerName"/>
+                <constraint value="zoneName"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
     </entity>
     <entity name="List" representedClassName="List" versionHashModifier="v11" syncable="YES">
         <attribute name="name" attributeType="String" syncable="YES"/>

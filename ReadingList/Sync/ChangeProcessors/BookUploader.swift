@@ -10,8 +10,12 @@ class BookUploader: BookUpstreamChangeProcessor {
         let ckRecords = books.map { $0.toCKRecord(bookZoneID: remote.bookZoneID) }
         let booksByRemoteID = books.reduce(into: [String: Book]()) { $0[$1.remoteIdentifier!] = $1 }
 
+        // TODO: This is getting stuck in an infinite loop. Perhaps *only* the system fields should be stored after an update?
         remote.upload(ckRecords) { remoteRecords, error in
-            guard error == nil else { print("Error: \(error!)"); return }
+            guard error == nil else {
+                print("Error: \(error!)")
+                return
+            }
 
             // TODO: Consider whether delayed saves are necessary
             context.perform {

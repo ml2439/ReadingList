@@ -13,7 +13,7 @@ class SyncCoordinator {
 
     private var contextSaveNotificationObservers = [NSObjectProtocol]()
 
-    init(container: NSPersistentContainer, upstreamChangeProcessors: [UpstreamChangeProcessor], downstreamChangeProcessors: [DownstreamChangeProcessor]) {
+    init(container: NSPersistentContainer) {
         viewContext = container.viewContext
         viewContext.name = "ViewContext"
 
@@ -21,8 +21,8 @@ class SyncCoordinator {
         syncContext.name = "SyncContext"
         syncContext.mergePolicy = NSMergePolicy.mergeByPropertyStoreTrump // FUTURE: Add a custom merge policy
 
-        self.upstreamChangeProcessors = upstreamChangeProcessors
-        self.downstreamChangeProcessors = downstreamChangeProcessors
+        self.upstreamChangeProcessors = [BookUploader(), BookDeleter()]
+        self.downstreamChangeProcessors = [BookDownloader()]
     }
 
     /**
@@ -130,19 +130,11 @@ class SyncCoordinator {
 
     func processOutstandingRemoteChanges(applicationCallback: ((UIBackgroundFetchResult) -> Void)? = nil) {
         syncContext.perform {
-            let changeToken: CKServerChangeToken?
-            if let cachedChangeToken = ChangeToken.get(fromContext: self.syncContext, for: self.remote.bookZoneID) {
-                changeToken = (NSKeyedUnarchiver.unarchiveObject(with: cachedChangeToken.changeToken) as! CKServerChangeToken)
-            } else {
-                changeToken = nil
-            }
-
-            self.remote.fetchRecordChanges(changeToken: changeToken) { changeToken, records, deletedRecordIDs in
-                guard !records.isEmpty || !deletedRecordIDs.isEmpty else { return }
+            let changeToken = ChangeToken.get(fromContext: self.syncContext, for: self.remote.bookZoneID)?.changeToken
+            self.remote.fetchRecordChanges(changeToken: changeToken) { changes in
+                guard !changes.isEmpty else { return }
                 for changeProcessor in self.downstreamChangeProcessors {
-                    changeProcessor.processRemoteChanges(from: self.remote.bookZoneID, changedRecords: records,
-                                                         deletedRecordIDs: deletedRecordIDs, newChangeToken: changeToken,
-                                                         context: self.syncContext, completion: nil)
+                    changeProcessor.processRemoteChanges(from: self.remote.bookZoneID, changes: changes, context: self.syncContext, completion: nil)
                 }
             }
         }

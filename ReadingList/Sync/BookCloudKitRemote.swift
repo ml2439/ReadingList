@@ -65,7 +65,7 @@ class BookCloudKitRemote {
         privateDB.add(modifySubscriptionOperation)
     }
 
-    func fetchRecordChanges(changeToken: CKServerChangeToken?, completion: @escaping (CKServerChangeToken, [CKRecord], [CKRecordID]) -> Void) {
+    func fetchRecordChanges(changeToken: CKServerChangeToken?, completion: @escaping (CKChangeCollection) -> Void) {
         print("Fetching record changes")
 
         var changedRecords = [CKRecord]()
@@ -84,7 +84,8 @@ class BookCloudKitRemote {
                 print("Error: \(error!)")
                 return
             }
-            completion(changeToken!, changedRecords, deletedRecordIDs)
+            let changes = CKChangeCollection(changedRecords: changedRecords, deletedRecordIDs: deletedRecordIDs, newChangeToken: changeToken!)
+            completion(changes)
         }
         privateDB.add(fetchChangesOperation)
     }
@@ -106,5 +107,21 @@ class BookCloudKitRemote {
             completion(deletedRecordIDs ?? [], nil)
         }
         CKContainer.default().privateCloudDatabase.add(operation)
+    }
+}
+
+class CKChangeCollection {
+    let changedRecords: [CKRecord]
+    let deletedRecordIDs: [CKRecordID]
+    let newChangeToken: CKServerChangeToken
+
+    init(changedRecords: [CKRecord], deletedRecordIDs: [CKRecordID], newChangeToken: CKServerChangeToken) {
+        self.changedRecords = changedRecords
+        self.deletedRecordIDs = deletedRecordIDs
+        self.newChangeToken = newChangeToken
+    }
+
+    var isEmpty: Bool {
+        return changedRecords.isEmpty && deletedRecordIDs.isEmpty
     }
 }

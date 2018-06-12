@@ -50,7 +50,6 @@
 		1C87F5BC1FAE582A00E44043 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C87F5BB1FAE582A00E44043 /* Data.swift */; };
 		1CAE41BB204597EB002AF7DF /* SearchBooksEmptyDataSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CAE41BA204597EB002AF7DF /* SearchBooksEmptyDataSet.swift */; };
 		1CAF108620ACA97E00B755C6 /* SyncCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CAF108520ACA97E00B755C6 /* SyncCoordinator.swift */; };
-		1CB6A7A120AF8CB800125F90 /* SyncExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6A7A020AF8CB800125F90 /* SyncExtensions.swift */; };
 		1CB6A7A320B0329A00125F90 /* ChangeProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB6A7A220B0329A00125F90 /* ChangeProcessor.swift */; };
 		1CC18FA51FA4AC02000FB7E5 /* SettingsHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1CC18FA41FA4AC02000FB7E5 /* SettingsHeader.xib */; };
 		1CC440C1204F5E2F00906120 /* TextBoxAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC440C0204F5E2F00906120 /* TextBoxAlertController.swift */; };
@@ -85,7 +84,6 @@
 		1CD1D2C0202BCCA000ACA5D9 /* BorderedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD1D2BF202BCCA000ACA5D9 /* BorderedButton.swift */; };
 		1CD1D2C2202BCCF400ACA5D9 /* NavigationBarLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD1D2C1202BCCF400ACA5D9 /* NavigationBarLabel.swift */; };
 		1CD1D2C4202BCD6300ACA5D9 /* HorizontalGradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD1D2C3202BCD6300ACA5D9 /* HorizontalGradientView.swift */; };
-		1CD7B93820C094F9001775F5 /* BookSyncCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD7B93720C094F9001775F5 /* BookSyncCoordinator.swift */; };
 		1CD7B93D20C179F5001775F5 /* BookModelExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD7B93C20C179F5001775F5 /* BookModelExtensions.swift */; };
 		1CD83C3E1F9BC0BA00E88E31 /* XibView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD83C3D1F9BC0BA00E88E31 /* XibView.swift */; };
 		1CDD535E1FA6609600A5ED66 /* SettingsHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD535D1FA6609600A5ED66 /* SettingsHeader.swift */; };
@@ -195,7 +193,6 @@
 		1C87F5BB1FAE582A00E44043 /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
 		1CAE41BA204597EB002AF7DF /* SearchBooksEmptyDataSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBooksEmptyDataSet.swift; sourceTree = "<group>"; };
 		1CAF108520ACA97E00B755C6 /* SyncCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncCoordinator.swift; sourceTree = "<group>"; };
-		1CB6A7A020AF8CB800125F90 /* SyncExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncExtensions.swift; sourceTree = "<group>"; };
 		1CB6A7A220B0329A00125F90 /* ChangeProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeProcessor.swift; sourceTree = "<group>"; };
 		1CC18FA41FA4AC02000FB7E5 /* SettingsHeader.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SettingsHeader.xib; sourceTree = "<group>"; };
 		1CC440C0204F5E2F00906120 /* TextBoxAlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextBoxAlertController.swift; sourceTree = "<group>"; };
@@ -237,7 +234,6 @@
 		1CD1D2BF202BCCA000ACA5D9 /* BorderedButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BorderedButton.swift; sourceTree = "<group>"; };
 		1CD1D2C1202BCCF400ACA5D9 /* NavigationBarLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBarLabel.swift; sourceTree = "<group>"; };
 		1CD1D2C3202BCD6300ACA5D9 /* HorizontalGradientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HorizontalGradientView.swift; sourceTree = "<group>"; };
-		1CD7B93720C094F9001775F5 /* BookSyncCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookSyncCoordinator.swift; sourceTree = "<group>"; };
 		1CD7B93C20C179F5001775F5 /* BookModelExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookModelExtensions.swift; sourceTree = "<group>"; };
 		1CD83C3D1F9BC0BA00E88E31 /* XibView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XibView.swift; sourceTree = "<group>"; };
 		1CDD535D1FA6609600A5ED66 /* SettingsHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsHeader.swift; sourceTree = "<group>"; };
@@ -347,14 +343,6 @@
 			path = ChangeProcessors;
 			sourceTree = "<group>";
 		};
-		1C032F2120C29FD000CDBEF8 /* Remote */ = {
-			isa = PBXGroup;
-			children = (
-				1C352D8F20C34D97007C89F7 /* BookCloudKitRemote.swift */,
-			);
-			path = Remote;
-			sourceTree = "<group>";
-		};
 		1C5CDF2720113B2900A757A3 /* Lists */ = {
 			isa = PBXGroup;
 			children = (
@@ -368,9 +356,6 @@
 		1CAF108420ACA95C00B755C6 /* Sync */ = {
 			isa = PBXGroup;
 			children = (
-				1CAF108520ACA97E00B755C6 /* SyncCoordinator.swift */,
-				1CB6A7A220B0329A00125F90 /* ChangeProcessor.swift */,
-				1CB6A7A020AF8CB800125F90 /* SyncExtensions.swift */,
 			);
 			path = Sync;
 			sourceTree = "<group>";
@@ -505,10 +490,11 @@
 		1CD7B93920C09501001775F5 /* Sync */ = {
 			isa = PBXGroup;
 			children = (
-				1C032F2120C29FD000CDBEF8 /* Remote */,
-				1C032F1820C29EA000CDBEF8 /* ChangeProcessors */,
-				1CD7B93720C094F9001775F5 /* BookSyncCoordinator.swift */,
+				1CAF108520ACA97E00B755C6 /* SyncCoordinator.swift */,
+				1CB6A7A220B0329A00125F90 /* ChangeProcessor.swift */,
+				1C352D8F20C34D97007C89F7 /* BookCloudKitRemote.swift */,
 				1CD7B93C20C179F5001775F5 /* BookModelExtensions.swift */,
+				1C032F1820C29EA000CDBEF8 /* ChangeProcessors */,
 			);
 			path = Sync;
 			sourceTree = "<group>";
@@ -1172,7 +1158,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1CD7B93820C094F9001775F5 /* BookSyncCoordinator.swift in Sources */,
 				1CD11DAF204CA460005F49D3 /* CompoundFetchedResultsController.swift in Sources */,
 				1C66927B20343D63001ED046 /* EditBookReadState.swift in Sources */,
 				1CAE41BB204597EB002AF7DF /* SearchBooksEmptyDataSet.swift in Sources */,
@@ -1230,7 +1215,6 @@
 				49B8D8E71F4A08E700D4C4EF /* BookMapping_6_7.swift in Sources */,
 				499470681DB40D22008CB06E /* TabBarController.swift in Sources */,
 				1CD1D2B0202BC4DF00ACA5D9 /* FoundationExtensions.swift in Sources */,
-				1CB6A7A120AF8CB800125F90 /* SyncExtensions.swift in Sources */,
 				1C5180A82054122A008C6EA4 /* CrashlyticsExtensions.swift in Sources */,
 				1CC440C6204FDC0B00906120 /* BookMapping_10_11.swift in Sources */,
 				1CD1D2B4202BC64900ACA5D9 /* CSVExport.swift in Sources */,

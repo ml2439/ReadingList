@@ -1,5 +1,6 @@
 import Foundation
 import CoreData
+import CloudKit
 
 @objc(Book)
 class Book: NSManagedObject {
@@ -29,12 +30,16 @@ class Book: NSManagedObject {
     // Raw value of a BookKey option set. Represents the keys which have been modified locally but
     // not uploaded to a remote store.
     @NSManaged private var keysPendingRemoteUpdate: Int32
-    var modifiedKeysPendingRemoteUpdate: BookKey {
-        get { return BookKey(rawValue: keysPendingRemoteUpdate) }
-        set { keysPendingRemoteUpdate = newValue.rawValue }
-    }
 
     static let pendingRemoteUpdatesPredicate = NSPredicate(format: "%K != 0", #keyPath(Book.keysPendingRemoteUpdate))
+
+    // Pending remote deletion flag should never get un-done. Hence, it cannot be set publicly, and can
+    // only be set to "true" via a public function.
+    @NSManaged private(set) var pendingRemoteDeletion: Bool
+    func markForDeletion() { pendingRemoteDeletion = true }
+
+    @NSManaged var remoteIdentifier: String?
+    @NSManaged private var ckRecordEncodedSystemFields: Data?
 
     convenience init(context: NSManagedObjectContext, readState: BookReadState) {
         self.init(context: context)
@@ -62,10 +67,17 @@ class Book: NSManagedObject {
             self.sort = nil
         }
 
-        // Update the modified keys record
-        let currentModifiedKeys = BookKey.union(changedValues().keys.compactMap { BookKey.from(coreDataKey: $0) })
-        if modifiedKeysPendingRemoteUpdate != currentModifiedKeys {
-            modifiedKeysPendingRemoteUpdate = currentModifiedKeys
+        // Update the modified keys record, if this change hasn't also updated the CKRecord.
+        // The justification of this is that the CKRecord is always updated by remote changes,
+        // and *those* do not need to be posted back to the remote server. Changes originating
+        // locally, however, will not change the CKRecord, and thus should be posted to the server.
+        let changedKeys = changedValues().keys
+        if !changedKeys.contains(#keyPath(Book.ckRecordEncodedSystemFields)) {
+
+            let newKeysPendingRemoteUpdate = BookKey.union(changedKeys.compactMap { BookKey.from(coreDataKey: $0) })
+            if newKeysPendingRemoteUpdate != BookKey(rawValue: keysPendingRemoteUpdate) {
+                keysPendingRemoteUpdate = newKeysPendingRemoteUpdate.rawValue
+            }
         }
     }
 
@@ -78,7 +90,7 @@ class Book: NSManagedObject {
     }
 }
 
-struct BookKey: OptionSet {
+private struct BookKey: OptionSet {
     let rawValue: Int32
 
     static let title = BookKey(rawValue: 1 << 0)
@@ -231,5 +243,123 @@ extension Book {
         guard readState == .reading else { print("Attempted to finish a book in state \(readState)"); return }
         readState = .finished
         finishedReading = Date()
+    }
+}
+
+extension Book {
+
+    func getStoredCKRecord() -> CKRecord? {
+        guard let systemFieldsData = ckRecordEncodedSystemFields else { return nil }
+        return CKRecord(systemFieldsData: systemFieldsData)!
+    }
+
+    func toCKRecord(bookZoneID: CKRecordZoneID) -> CKRecord {
+        let ckRecord: CKRecord
+        // If the CKRecord already exists, create the record from the stored system fields,
+        // and add any modified keys to the record.
+        let uploadAllKeys: Bool
+        if let systemFieldsData = ckRecordEncodedSystemFields {
+            ckRecord = CKRecord(systemFieldsData: systemFieldsData)!
+            uploadAllKeys = false
+        } else {
+            // Otherwise, create a new CKRecord and store the generated remote ID
+            ckRecord = CKRecord(recordType: "Book", zoneID: bookZoneID)
+            remoteIdentifier = ckRecord.recordID.recordName
+            uploadAllKeys = true
+        }
+
+        // We want to include only the modified keys, unless this is a new CKRecord, in which case
+        // we should include all keys.
+        let modifiedKeys = BookKey(rawValue: keysPendingRemoteUpdate)
+        func setValue(_ value: Any?, ifModified: BookKey, forKey key: String) {
+            if uploadAllKeys || modifiedKeys.contains(ifModified) {
+                ckRecord.setValue(value, forKey: key)
+            }
+        }
+
+        setValue(title, ifModified: .title, forKey: "title")
+        setValue(googleBooksId, ifModified: .googleBooksId, forKey: "googleBooksId")
+        setValue(isbn13, ifModified: .isbn13, forKey: "isbn13")
+        setValue(pageCount, ifModified: .pageCount, forKey: "pageCount")
+        setValue(publicationDate, ifModified: .publicationDate, forKey: "publicationDate")
+        setValue(bookDescription, ifModified: .bookDescription, forKey: "bookDescription")
+        setValue(notes, ifModified: .notes, forKey: "notes")
+        setValue(currentPage, ifModified: .currentPage, forKey: "currentPage")
+        setValue(sort, ifModified: .sort, forKey: "sort")
+        setValue(startedReading, ifModified: .startedReading, forKey: "startedReading")
+        setValue(finishedReading, ifModified: .finishedReading, forKey: "finishedReading")
+
+        if uploadAllKeys || modifiedKeys.contains(.coverImage) {
+            let imageFilePath = URL.temporary()
+            FileManager.default.createFile(atPath: imageFilePath.path, contents: coverImage, attributes: nil)
+            ckRecord.setValue(CKAsset(fileURL: imageFilePath), forKey: "coverImage")
+        }
+        if uploadAllKeys || modifiedKeys.contains(.authors) {
+            let allAuthorNames = authors.map { $0 as! Author }.flatMap { [$0.firstNames, $0.lastName] }
+            ckRecord.setValue(allAuthorNames, forKey: "authors")
+        }
+
+        return ckRecord
+    }
+
+    func update(from ckRecord: CKRecord) {
+        ckRecordEncodedSystemFields = ckRecord.encodedSystemFields()
+        remoteIdentifier = ckRecord.recordID.recordName
+
+        // A CKRecord will only include a delta of the record; rather than assign all values from it,
+        // we should assign those values which correspond to present keys.
+        let presentKeys = ckRecord.allKeys()
+        func ifKeyPresent(_ key: String, perform: (Any?) -> Void) {
+            guard presentKeys.contains(key) else { return }
+            perform(ckRecord.value(forKey: key))
+        }
+        ifKeyPresent("title") { title = $0 as! String }
+        ifKeyPresent("googleBooksId") { googleBooksId = $0 as? String }
+        ifKeyPresent("isbn13") { isbn13 = $0 as? String }
+        ifKeyPresent("pageCount") { pageCount = $0 as? NSNumber }
+        ifKeyPresent("publicationDate") { publicationDate = $0 as? Date }
+        ifKeyPresent("bookDescription") { bookDescription = $0 as? String }
+        ifKeyPresent("notes") { notes = $0 as? String }
+        ifKeyPresent("currentPage") { currentPage = $0 as? NSNumber }
+        ifKeyPresent("sort") { sort = $0 as? NSNumber }
+        ifKeyPresent("startedReading") { startedReading = $0 as? Date }
+        ifKeyPresent("finishedReading") { finishedReading = $0 as? Date }
+        ifKeyPresent("coverImage") {
+            if let imageAsset = $0 as? CKAsset {
+                coverImage = FileManager.default.contents(atPath: imageAsset.fileURL.path)
+            } else {
+                coverImage = nil
+            }
+        }
+        ifKeyPresent("authors") {
+            guard let allAuthorNames = $0 as? [String?] else { fatalError("A differential update tried to set authors to nil") }
+            guard allAuthorNames.count % 2 == 0 else { fatalError("Author names update must be even in length") }
+
+            authors.map { $0 as! Author }.forEach { $0.delete() }
+            var newAuthors = [Author]()
+            for authorIndex in 0..<allAuthorNames.count / 2 {
+                newAuthors.append(Author(context: self.managedObjectContext!, lastName: allAuthorNames[authorIndex + 1]!, firstNames: allAuthorNames[authorIndex]))
+            }
+            setAuthors(newAuthors)
+        }
+
+        // Set the read state according to the resulting reading dates, if the CKRecord involved changes to the dates
+        if presentKeys.contains("startedReading") || presentKeys.contains("finishedReading") {
+            if startedReading != nil && finishedReading != nil {
+                readState = .finished
+            } else if startedReading != nil && finishedReading == nil {
+                readState = .reading
+            } else if startedReading == nil && finishedReading == nil {
+                readState = .toRead
+            }
+        }
+    }
+
+    static var notMarkedForDeletion: NSPredicate {
+        return NSPredicate(format: "%K == false", #keyPath(Book.pendingRemoteDeletion))
+    }
+
+    static func withRemoteIdentifiers(_ ids: [String]) -> NSPredicate {
+        return NSPredicate(format: "%K in %@", #keyPath(Book.remoteIdentifier), ids)
     }
 }

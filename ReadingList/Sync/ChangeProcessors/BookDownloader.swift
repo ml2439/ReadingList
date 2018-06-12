@@ -6,16 +6,14 @@ class BookDownloader: DownstreamChangeProcessor {
 
     let debugDescription = String(describing: BookDownloader.self)
 
-    func processRemoteChanges(from zone: CKRecordZoneID, changedRecords: [CKRecord], deletedRecordIDs: [CKRecordID],
-                              newChangeToken: CKServerChangeToken, context: NSManagedObjectContext, completion: (() -> Void)? = nil) {
-        print("\(debugDescription) processing \(changedRecords.count) remote changes and \(deletedRecordIDs.count) remote deletions.")
-
-        insertBooks(changedRecords, into: context)
-        deleteBooks(with: deletedRecordIDs, in: context)
+    func processRemoteChanges(from zone: CKRecordZoneID, changes: CKChangeCollection,
+                              context: NSManagedObjectContext, completion: (() -> Void)?) {
+        insertBooks(changes.changedRecords, into: context)
+        deleteBooks(with: changes.deletedRecordIDs, in: context)
 
         // Store the updated change token
         let changeToken = ChangeToken.get(fromContext: context, for: zone) ?? ChangeToken(context: context, zoneID: zone)
-        changeToken.changeToken = NSKeyedArchiver.archivedData(withRootObject: newChangeToken)
+        changeToken.changeToken = changes.newChangeToken
 
         context.saveAndLogIfErrored()
         completion?()

@@ -10,7 +10,7 @@ var appDelegate: AppDelegate {
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-    var syncCoordinator: BookSyncCoordinator!
+    var syncCoordinator: SyncCoordinator!
 
     var tabBarController: TabBarController {
         return window!.rootViewController as! TabBarController
@@ -55,7 +55,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     }
 
                     // Initialise the Sync Coordinator which will maintain iCloud synchronisation
-                    self.syncCoordinator = BookSyncCoordinator(container: PersistentStoreManager.container)
+                    self.syncCoordinator = SyncCoordinator(container: PersistentStoreManager.container)
                     if UserSettings.iCloudSyncEnabled.value {
                         self.syncCoordinator.start()
                     }
