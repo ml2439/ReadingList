@@ -2,31 +2,22 @@ import Foundation
 import CoreData
 import CloudKit
 
-class BookDeleter: BookUpstreamChangeProcessor {
+class BookDeleter: UpstreamChangeProcessor {
 
     let debugDescription = String(describing: BookDeleter.self)
 
-    func processLocalChanges(_ books: [Book], context: NSManagedObjectContext, remote: BookCloudKitRemote) {
+    func processLocalChanges(_ pendingRemoteDeletes: [NSManagedObject], context: NSManagedObjectContext, remote: BookCloudKitRemote) {
+        let pendingRemoteDeletes = pendingRemoteDeletes as! [PendingRemoteDeletionItem]
 
-        let recordIDs = books.compactMap { $0.getStoredCKRecord()?.recordID }
-        remote.remove(recordIDs) { deletedRecordIDs, _ in
-            let booksToDelete = books.filter {
-                guard let remoteId = $0.remoteIdentifier else { return false }
-                return deletedRecordIDs.map { $0.recordName }.contains(remoteId)
-            }
+        remote.remove(pendingRemoteDeletes.map { $0.recordID }) { deletedRecordIDs, _ in
             context.perform {
-                booksToDelete.forEach { $0.delete() }
+                pendingRemoteDeletes.filter { deletedRecordIDs!.contains($0.recordID) }.forEach { $0.delete() }
                 context.saveAndLogIfErrored()
             }
         }
     }
 
-    var unprocessedChangedBooksRequest: NSFetchRequest<Book> {
-        let fetchRequest = NSManagedObject.fetchRequest(Book.self)
-        fetchRequest.predicate = NSPredicate.and([
-            NSPredicate(format: "%K == true", #keyPath(Book.pendingRemoteDeletion)),
-            NSPredicate(format: "%K != NULL", #keyPath(Book.remoteIdentifier))
-        ])
-        return fetchRequest
+    var unprocessedChangedObjectsRequest: NSFetchRequest<NSFetchRequestResult> {
+        return NSManagedObject.fetchRequest(PendingRemoteDeletionItem.self) as! NSFetchRequest<NSFetchRequestResult>
     }
 }

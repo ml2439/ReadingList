@@ -19,6 +19,8 @@
 		1C22D4A6202BBDC0004264B4 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C22D4A5202BBDC0004264B4 /* StoreKit.framework */; };
 		1C2E910520CD890800A611A4 /* CloudKitExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2E910420CD890800A611A4 /* CloudKitExtensions.swift */; };
 		1C2E910720CDD3E600A611A4 /* ChangeToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2E910620CDD3E600A611A4 /* ChangeToken.swift */; };
+		1C2E910B20D01F3A00A611A4 /* PendingRemoteDeletionItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2E910A20D01F3A00A611A4 /* PendingRemoteDeletionItem.swift */; };
+		1C2E910D20D059F500A611A4 /* BookMapping_11_12.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C2E910C20D059F500A611A4 /* BookMapping_11_12.swift */; };
 		1C352D9020C34D97007C89F7 /* BookCloudKitRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C352D8F20C34D97007C89F7 /* BookCloudKitRemote.swift */; };
 		1C352D9220C42D9B007C89F7 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C352D9120C42D9B007C89F7 /* CloudKit.framework */; };
 		1C395448202F7966007ACCB1 /* CoreDataExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C395447202F7966007ACCB1 /* CoreDataExtensions.swift */; };
@@ -158,6 +160,8 @@
 		1C22D4A5202BBDC0004264B4 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		1C2E910420CD890800A611A4 /* CloudKitExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudKitExtensions.swift; sourceTree = "<group>"; };
 		1C2E910620CDD3E600A611A4 /* ChangeToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeToken.swift; sourceTree = "<group>"; };
+		1C2E910A20D01F3A00A611A4 /* PendingRemoteDeletionItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingRemoteDeletionItem.swift; sourceTree = "<group>"; };
+		1C2E910C20D059F500A611A4 /* BookMapping_11_12.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookMapping_11_12.swift; sourceTree = "<group>"; };
 		1C352D8F20C34D97007C89F7 /* BookCloudKitRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookCloudKitRemote.swift; sourceTree = "<group>"; };
 		1C352D9120C42D9B007C89F7 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		1C395447202F7966007ACCB1 /* CoreDataExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataExtensions.swift; sourceTree = "<group>"; };
@@ -423,6 +427,7 @@
 		1CD11250202DED5500BE3E1D /* Migrations */ = {
 			isa = PBXGroup;
 			children = (
+				1C2E910C20D059F500A611A4 /* BookMapping_11_12.swift */,
 				1C5180AB20544427008C6EA4 /* BookMapping_10_11.xcmappingmodel */,
 				1CC440C5204FDC0B00906120 /* BookMapping_10_11.swift */,
 				1CD07235204A1F7D00DCFBDE /* BookMapping_9_10.xcmappingmodel */,
@@ -431,6 +436,7 @@
 				1C64AB212041E7E40089CD57 /* BookMapping_8_9.swift */,
 				1CD111F3202DA42800BE3E1D /* BookMapping_6_7.xcmappingmodel */,
 				49B8D8E61F4A08E700D4C4EF /* BookMapping_6_7.swift */,
+				492500771C0B1B0000C149B5 /* PersistentStoreManager.swift */,
 			);
 			path = Migrations;
 			sourceTree = "<group>";
@@ -570,13 +576,13 @@
 			children = (
 				1CD1125C202DF7CF00BE3E1D /* ModelVersions */,
 				1CD11250202DED5500BE3E1D /* Migrations */,
-				492500771C0B1B0000C149B5 /* PersistentStoreManager.swift */,
-				495C5D401BF1423900E00C07 /* Book.swift */,
 				1CD1124E202DED3600BE3E1D /* Author.swift */,
+				495C5D401BF1423900E00C07 /* Book.swift */,
 				1CD11251202DED8200BE3E1D /* List.swift */,
 				1C395449202F948B007ACCB1 /* Subject.swift */,
 				1C0DC735204B0A230044B377 /* BookReadState.swift */,
 				1C2E910620CDD3E600A611A4 /* ChangeToken.swift */,
+				1C2E910A20D01F3A00A611A4 /* PendingRemoteDeletionItem.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1173,6 +1179,7 @@
 				1C032F2320C29FED00CDBEF8 /* BookChangeProcessor.swift in Sources */,
 				1C39544E2030A4F0007ACCB1 /* EditBookMetadata.swift in Sources */,
 				1C64AB222041E7E40089CD57 /* BookMapping_8_9.swift in Sources */,
+				1C2E910D20D059F500A611A4 /* BookMapping_11_12.swift in Sources */,
 				1C352D9020C34D97007C89F7 /* BookCloudKitRemote.swift in Sources */,
 				1C5180AC20544427008C6EA4 /* BookMapping_10_11.xcmappingmodel in Sources */,
 				1C5CDF2920113B3300A757A3 /* AddToList.swift in Sources */,
@@ -1200,6 +1207,7 @@
 				1CD11254202DF23300BE3E1D /* ModelVersion.swift in Sources */,
 				1CD83C3E1F9BC0BA00E88E31 /* XibView.swift in Sources */,
 				49160F5F1E809DFE00168FD0 /* BookCSVImporter.swift in Sources */,
+				1C2E910B20D01F3A00A611A4 /* PendingRemoteDeletionItem.swift in Sources */,
 				1CD1D2B6202BC9C400ACA5D9 /* UIKitExtensions.swift in Sources */,
 				1CDD535E1FA6609600A5ED66 /* SettingsHeader.swift in Sources */,
 				492500781C0B1B0000C149B5 /* PersistentStoreManager.swift in Sources */,

@@ -1,6 +1,7 @@
 import UIKit
 import SVProgressHUD
 import SwiftyStoreKit
+import CoreData
 
 var appDelegate: AppDelegate {
     return UIApplication.shared.delegate as! AppDelegate
@@ -38,6 +39,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         DebugSettings.initialiseFromCommandLine()
                     #endif
 
+                    // Use Query Generations for the view context
+                    try! PersistentStoreManager.container.viewContext.setQueryGenerationFrom(NSQueryGenerationToken.current)
+
+                    // Initialise the Sync Coordinator which will maintain iCloud synchronisation
+                    self.syncCoordinator = SyncCoordinator(container: PersistentStoreManager.container)
+                    if UserSettings.iCloudSyncEnabled.value {
+                        self.syncCoordinator.start()
+                    }
+
                     // Set the root view controller
                     self.window!.rootViewController = TabBarController()
 
@@ -52,12 +62,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         self.performQuickAction(QuickAction(rawValue: quickAction.type)!)
                     } else if let csvFileUrl = csvFileUrl {
                         self.openCsvImport(url: csvFileUrl)
-                    }
-
-                    // Initialise the Sync Coordinator which will maintain iCloud synchronisation
-                    self.syncCoordinator = SyncCoordinator(container: PersistentStoreManager.container)
-                    if UserSettings.iCloudSyncEnabled.value {
-                        self.syncCoordinator.start()
                     }
                 }
             }

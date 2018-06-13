@@ -90,21 +90,19 @@ class BookCloudKitRemote {
         privateDB.add(fetchChangesOperation)
     }
 
-    func upload(_ records: [CKRecord], completion: @escaping ([CKRecord], Error?) -> Void) {
+    func upload(_ records: [CKRecord], completion: @escaping ([CKRecord]?, Error?) -> Void) {
         let operation = CKModifyRecordsOperation(recordsToSave: records, recordIDsToDelete: nil)
         operation.savePolicy = .ifServerRecordUnchanged
         operation.modifyRecordsCompletionBlock = { modifiedRecords, _, error in
-            guard error == nil else { print("Error: \(error!)"); return }
-            completion(modifiedRecords ?? [], nil)
+            completion(modifiedRecords, error)
         }
         CKContainer.default().privateCloudDatabase.add(operation)
     }
 
-    func remove(_ recordIDs: [CKRecordID], completion: @escaping ([CKRecordID], Error?) -> Void) {
+    func remove(_ recordIDs: [CKRecordID], completion: @escaping ([CKRecordID]?, Error?) -> Void) {
         let operation = CKModifyRecordsOperation(recordsToSave: nil, recordIDsToDelete: recordIDs)
         operation.modifyRecordsCompletionBlock = { _, deletedRecordIDs, error in
-            guard error == nil else { print("Error: \(String(describing: error))"); return }
-            completion(deletedRecordIDs ?? [], nil)
+            completion(deletedRecordIDs, nil)
         }
         CKContainer.default().privateCloudDatabase.add(operation)
     }

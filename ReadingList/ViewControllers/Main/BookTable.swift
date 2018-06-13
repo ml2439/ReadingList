@@ -81,8 +81,7 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
 
     lazy var defaultPredicates: [BookReadState: NSPredicate] = {
         readStates.reduce(into: [BookReadState: NSPredicate]()) { dict, readState in
-            dict[readState] = NSPredicate.and([Book.notMarkedForDeletion,
-                                              NSPredicate(format: "%K == %ld", #keyPath(Book.readState), readState.rawValue)])
+            dict[readState] = NSPredicate(format: "%K == %ld", #keyPath(Book.readState), readState.rawValue)
         }
     }()
 
@@ -408,7 +407,7 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
             callback?(false)
         })
         confirmDeleteAlert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [unowned self] _ in
-            indexPaths.map(self.resultsController.object).forEach { $0.markForDeletion() }
+            indexPaths.map(self.resultsController.object).forEach { $0.delete() }
             PersistentStoreManager.container.viewContext.saveAndLogIfErrored()
             self.setEditing(false, animated: true)
             UserEngagement.logEvent(indexPaths.count > 1 ? .bulkDeleteBook : .deleteBook)
@@ -421,7 +420,7 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
 extension BookTable: UISearchResultsUpdating {
     func predicate(forSearchText searchText: String?) -> NSPredicate {
         if let searchText = searchText, !searchText.isEmptyOrWhitespace && searchText.trimming().count >= 2 {
-            return NSPredicate.wordsWithinFields(searchText, fieldNames: #keyPath(Book.title), #keyPath(Book.authorDisplay), "ANY \(#keyPath(Book.subjects)).name")
+            return NSPredicate.wordsWithinFields(searchText, fieldNames: #keyPath(Book.title), #keyPath(Book.authorSort), "ANY \(#keyPath(Book.subjects)).name")
         }
         return NSPredicate(boolean: true) // If we cannot filter with the search text, we should return all results
     }

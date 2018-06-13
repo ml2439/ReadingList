@@ -176,7 +176,7 @@ class EditBookMetadata: FormViewController {
         confirmDeleteAlert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [unowned self] _ in
             // Delete the book, log the event, and dismiss this modal view
             self.editBookContext.performAndSave {
-                self.book.markForDeletion()
+                self.book.delete()
             }
             UserEngagement.logEvent(.deleteBook)
             self.dismiss(animated: true)
@@ -256,7 +256,7 @@ class AuthorSection: MultivaluedSection {
 
     required init(book: Book, navigationController: UINavigationController) {
         super.init(multivaluedOptions: [.Insert, .Delete, .Reorder], header: "Authors", footer: "") {
-            for author in book.authors.map({ $0 as! Author }) {
+            for author in book.authors {
                 $0 <<< AuthorRow(author: author)
             }
             $0.addButtonProvider = { _ in
@@ -296,17 +296,16 @@ class AuthorSection: MultivaluedSection {
         // and rowsHaveBeenAdded, so we can't delete books on removal, since they might need to come back.
         // Instead, we take the brute force approach of deleting all authors and rebuilding the set each time
         // something changes. We can check whether there are any meaningful differences before we embark on this though.
-        let currentAuthors = book.authors.map { $0 as! Author }
+
         let newAuthors: [(String, String?)] = self.compactMap {
             guard let authorRow = $0 as? AuthorRow else { return nil }
             guard let lastName = authorRow.lastName else { return nil }
             return (lastName, authorRow.firstNames)
         }
-        if currentAuthors.map({ ($0.lastName, $0.firstNames) }).elementsEqual(newAuthors, by: { return $0.0 == $1.0 && $0.1 == $1.1 }) {
+        if book.authors.map({ ($0.lastName, $0.firstNames) }).elementsEqual(newAuthors, by: { return $0.0 == $1.0 && $0.1 == $1.1 }) {
             return
         }
-        currentAuthors.forEach { $0.delete() }
-        book.setAuthors(newAuthors.map { Author(context: book.managedObjectContext!, lastName: $0.0, firstNames: $0.1) })
+        book.setAuthors(newAuthors.map { Author(lastName: $0.0, firstNames: $0.1) })
     }
 
     override func rowsHaveBeenRemoved(_ rows: [BaseRow], at: IndexSet) {

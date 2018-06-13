@@ -14,6 +14,7 @@ class BookDownloader: DownstreamChangeProcessor {
         // Store the updated change token
         let changeToken = ChangeToken.get(fromContext: context, for: zone) ?? ChangeToken(context: context, zoneID: zone)
         changeToken.changeToken = changes.newChangeToken
+        print("Updated change token")
 
         context.saveAndLogIfErrored()
         completion?()
@@ -24,7 +25,7 @@ class BookDownloader: DownstreamChangeProcessor {
         print("\(debugDescription) processing \(ids.count) remote deletions")
 
         let booksToDelete = locallyPresentBooks(withRemoteIDs: ids, in: context)
-        booksToDelete.forEach { $0.markForDeletion() }
+        booksToDelete.forEach { $0.delete() }
     }
 
     private func insertBooks(_ remoteBooks: [CKRecord], into context: NSManagedObjectContext) {
@@ -35,10 +36,14 @@ class BookDownloader: DownstreamChangeProcessor {
 
         for remoteBook in remoteBooks {
             if let localBook = preExistingBooks.first(where: { $0.remoteIdentifier == remoteBook.recordID.recordName }) {
-                localBook.update(from: remoteBook)
+                localBook.updateFrom(ckRecord: remoteBook)
+                localBook.remoteIdentifier = remoteBook.recordID.recordName
+                localBook.storeCKRecordSystemFields(remoteBook)
             } else {
                 let book = Book(context: context, readState: .toRead)
-                book.update(from: remoteBook)
+                book.updateFrom(ckRecord: remoteBook)
+                book.remoteIdentifier = remoteBook.recordID.recordName
+                book.storeCKRecordSystemFields(remoteBook)
             }
         }
     }
@@ -46,8 +51,7 @@ class BookDownloader: DownstreamChangeProcessor {
     private func locallyPresentBooks(withRemoteIDs remoteIDs: [CKRecordID], in context: NSManagedObjectContext) -> [Book] {
         let fetchRequest = NSManagedObject.fetchRequest(Book.self)
         fetchRequest.predicate = NSPredicate.and([
-            Book.withRemoteIdentifiers(remoteIDs.map { $0.recordName }),
-            Book.notMarkedForDeletion
+            Book.withRemoteIdentifiers(remoteIDs.map { $0.recordName })
         ])
         return try! context.fetch(fetchRequest)
     }

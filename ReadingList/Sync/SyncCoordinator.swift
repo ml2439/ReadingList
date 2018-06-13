@@ -13,12 +13,17 @@ class SyncCoordinator {
 
     private var contextSaveNotificationObservers = [NSObjectProtocol]()
 
+    enum ContextName: String {
+        case viewContext //swiftlint:disable:this explicit_enum_raw_value
+        case syncContext //swiftlint:disable:this explicit_enum_raw_value
+    }
+
     init(container: NSPersistentContainer) {
         viewContext = container.viewContext
-        viewContext.name = "ViewContext"
+        viewContext.name = ContextName.viewContext.rawValue
 
         syncContext = container.newBackgroundContext()
-        syncContext.name = "SyncContext"
+        syncContext.name = ContextName.syncContext.rawValue
         syncContext.mergePolicy = NSMergePolicy.mergeByPropertyStoreTrump // FUTURE: Add a custom merge policy
 
         self.upstreamChangeProcessors = [BookUploader(), BookDeleter()]
@@ -29,7 +34,7 @@ class SyncCoordinator {
      
      */
     func start() {
-        setupQueryGenerations()
+        setSyncContextQueryGeneration()
         startContextNotificationObserving()
 
         if !remote.isInitialised {
@@ -48,13 +53,9 @@ class SyncCoordinator {
         stopContextNotificationObserving()
     }
 
-    private func setupQueryGenerations() {
-        let token = NSQueryGenerationToken.current
-        viewContext.perform {
-            try! self.viewContext.setQueryGenerationFrom(token)
-            self.viewContext.refreshAllObjects()
-        }
+    private func setSyncContextQueryGeneration() {
         syncContext.perform {
+            let token = NSQueryGenerationToken.current
             try! self.syncContext.setQueryGenerationFrom(token)
             self.syncContext.refreshAllObjects()
         }
@@ -97,7 +98,7 @@ class SyncCoordinator {
 
     private func object(_ object: NSManagedObject, matches fetchRequest: NSFetchRequest<NSFetchRequestResult>) -> Bool {
         // Entity name comparison is done since the NSEntityDescription is not necessarily present until a fetch has been peformed
-        return object.entity.name == fetchRequest.entityName && fetchRequest.predicate!.evaluate(with: object)
+        return object.entity.name == fetchRequest.entityName && fetchRequest.predicate?.evaluate(with: object) != false
     }
 
     private func processLocalChanges(_ objects: [NSManagedObject]) {

@@ -46,7 +46,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
 
         cover.image = UIImage(optionalData: book.coverImage) ?? #imageLiteral(resourceName: "CoverPlaceholder")
         titleAuthorHeadings[0].text = book.title
-        titleAuthorHeadings[1].text = book.authorDisplay
+        titleAuthorHeadings[1].text = Author.authorDisplay(book.authors)
         if traitCollection.horizontalSizeClass == .regular && traitCollection.verticalSizeClass == .regular {
             titleAuthorHeadings.forEach { $0.scaleFontBy(1.3) }
         }
@@ -253,7 +253,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     @IBAction private func shareButtonPressed(_ sender: UIBarButtonItem) {
         guard let book = book else { return }
 
-        let activityViewController = UIActivityViewController(activityItems: ["\(book.title)\n\(book.authorDisplay)"], applicationActivities: nil)
+        let activityViewController = UIActivityViewController(activityItems: ["\(book.title)\n\(Author.authorDisplay(book.authors))"], applicationActivities: nil)
         activityViewController.popoverPresentationController?.barButtonItem = sender
 
         var excludedActivityTypes: [UIActivityType] = [.assignToContact, .saveToCameraRoll, .addToReadingList, .postToFlickr, .postToVimeo, .openInIBooks]
@@ -327,7 +327,7 @@ extension BookDetails: ThemeableViewController {
 
 extension Book {
     var amazonAffiliateLink: URL? {
-        let authorText = (authors.firstObject as? Author)?.displayFirstLast
+        let authorText = authors.first?.displayFirstLast
         let amazonSearch = "https://www.amazon.com/s?url=search-alias%3Dstripbooks&field-author=\(authorText ?? "")&field-title=\(title)"
 
         // Use https://bestazon.io/#WebService to localize Amazon links
