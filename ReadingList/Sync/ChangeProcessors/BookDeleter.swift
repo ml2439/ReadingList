@@ -9,9 +9,10 @@ class BookDeleter: UpstreamChangeProcessor {
     func processLocalChanges(_ pendingRemoteDeletes: [NSManagedObject], context: NSManagedObjectContext, remote: BookCloudKitRemote) {
         let pendingRemoteDeletes = pendingRemoteDeletes as! [PendingRemoteDeletionItem]
 
-        remote.remove(pendingRemoteDeletes.map { $0.recordID }) { deletedRecordIDs, _ in
+        remote.remove(pendingRemoteDeletes.map { $0.recordID }) { error in
             context.perform {
-                pendingRemoteDeletes.filter { deletedRecordIDs!.contains($0.recordID) }.forEach { $0.delete() }
+                guard error == nil else { print(error!); return }
+                pendingRemoteDeletes.forEach { $0.delete() }
                 context.saveAndLogIfErrored()
             }
         }

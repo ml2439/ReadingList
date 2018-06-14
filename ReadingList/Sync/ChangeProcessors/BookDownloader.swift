@@ -37,13 +37,9 @@ class BookDownloader: DownstreamChangeProcessor {
         for remoteBook in remoteBooks {
             if let localBook = preExistingBooks.first(where: { $0.remoteIdentifier == remoteBook.recordID.recordName }) {
                 localBook.updateFrom(ckRecord: remoteBook)
-                localBook.remoteIdentifier = remoteBook.recordID.recordName
-                localBook.storeCKRecordSystemFields(remoteBook)
             } else {
                 let book = Book(context: context, readState: .toRead)
                 book.updateFrom(ckRecord: remoteBook)
-                book.remoteIdentifier = remoteBook.recordID.recordName
-                book.storeCKRecordSystemFields(remoteBook)
             }
         }
     }

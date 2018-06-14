@@ -13,20 +13,15 @@ class SyncCoordinator {
 
     private var contextSaveNotificationObservers = [NSObjectProtocol]()
 
-    enum ContextName: String {
-        case viewContext //swiftlint:disable:this explicit_enum_raw_value
-        case syncContext //swiftlint:disable:this explicit_enum_raw_value
-    }
-
     init(container: NSPersistentContainer) {
         viewContext = container.viewContext
-        viewContext.name = ContextName.viewContext.rawValue
+        viewContext.name = "viewContext"
 
         syncContext = container.newBackgroundContext()
-        syncContext.name = ContextName.syncContext.rawValue
+        syncContext.name = "syncContext"
         syncContext.mergePolicy = NSMergePolicy.mergeByPropertyStoreTrump // FUTURE: Add a custom merge policy
 
-        self.upstreamChangeProcessors = [BookUploader(), BookDeleter()]
+        self.upstreamChangeProcessors = [BookInserter(), BookUpdater(), BookDeleter()]
         self.downstreamChangeProcessors = [BookDownloader()]
     }
 

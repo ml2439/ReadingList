@@ -84,25 +84,26 @@ class BookCloudKitRemote {
                 print("Error: \(error!)")
                 return
             }
-            let changes = CKChangeCollection(changedRecords: changedRecords, deletedRecordIDs: deletedRecordIDs, newChangeToken: changeToken!)
+            guard let changeToken = changeToken else { fatalError("Unexpectedly missing change token") }
+            let changes = CKChangeCollection(changedRecords: changedRecords, deletedRecordIDs: deletedRecordIDs, newChangeToken: changeToken)
             completion(changes)
         }
         privateDB.add(fetchChangesOperation)
     }
 
-    func upload(_ records: [CKRecord], completion: @escaping ([CKRecord]?, Error?) -> Void) {
+    func upload(_ records: [CKRecord], completion: @escaping (Error?) -> Void) {
         let operation = CKModifyRecordsOperation(recordsToSave: records, recordIDsToDelete: nil)
         operation.savePolicy = .ifServerRecordUnchanged
-        operation.modifyRecordsCompletionBlock = { modifiedRecords, _, error in
-            completion(modifiedRecords, error)
+        operation.modifyRecordsCompletionBlock = { _, _, error in
+            completion(error)
         }
         CKContainer.default().privateCloudDatabase.add(operation)
     }
 
-    func remove(_ recordIDs: [CKRecordID], completion: @escaping ([CKRecordID]?, Error?) -> Void) {
+    func remove(_ recordIDs: [CKRecordID], completion: @escaping (Error?) -> Void) {
         let operation = CKModifyRecordsOperation(recordsToSave: nil, recordIDsToDelete: recordIDs)
-        operation.modifyRecordsCompletionBlock = { _, deletedRecordIDs, error in
-            completion(deletedRecordIDs, nil)
+        operation.modifyRecordsCompletionBlock = { _, _, error in
+            completion(error)
         }
         CKContainer.default().privateCloudDatabase.add(operation)
     }

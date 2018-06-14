@@ -30,17 +30,17 @@ class Book: NSManagedObject {
     // not uploaded to a remote store.
     @NSManaged private var keysPendingRemoteUpdate: Int32
 
-    func addPendingRemoteUpdateKeys(_ keys: [BookKey]) {
-        let newKeysPendingRemoteUpdate = BookKey.Bitmask.unionAll(keys.map { $0.bitmask })
-        let newValue = BookKey.Bitmask(rawValue: keysPendingRemoteUpdate).union(newKeysPendingRemoteUpdate).rawValue
+    func addPendingRemoteUpdateKeys(_ keys: [BookCKRecordKey]) {
+        let newKeysPendingRemoteUpdate = BookCKRecordKey.Bitmask.unionAll(keys.map { $0.bitmask })
+        let newValue = BookCKRecordKey.Bitmask(rawValue: keysPendingRemoteUpdate).union(newKeysPendingRemoteUpdate).rawValue
         if keysPendingRemoteUpdate != newValue {
             keysPendingRemoteUpdate = newValue
         }
     }
 
-    func removePendingRemoteUpdateKeys(_ keys: [BookKey]) {
-        let newKeysNotPendingRemoteUpdate = BookKey.Bitmask.unionAll(keys.map { $0.bitmask })
-        var newValue = BookKey.Bitmask(rawValue: keysPendingRemoteUpdate)
+    func removePendingRemoteUpdateKeys(_ keys: [BookCKRecordKey]) {
+        let newKeysNotPendingRemoteUpdate = BookCKRecordKey.Bitmask.unionAll(keys.map { $0.bitmask })
+        var newValue = BookCKRecordKey.Bitmask(rawValue: keysPendingRemoteUpdate)
         newValue.remove(newKeysNotPendingRemoteUpdate)
         if keysPendingRemoteUpdate != newValue.rawValue {
             keysPendingRemoteUpdate = newValue.rawValue
@@ -78,12 +78,10 @@ class Book: NSManagedObject {
             self.sort = nil
         }
 
-        // Update the modified keys record, if this change hasn't also updated the CKRecord.
-        // The justification of this is that the CKRecord is always updated by remote changes,
-        // and *those* do not need to be posted back to the remote server. Changes originating
-        // locally, however, will not change the CKRecord, and thus should be posted to the server.
-        if managedObjectContext?.name == SyncCoordinator.ContextName.viewContext.rawValue {
-            let keysPendingRemoteUpdate = changedValues().keys.compactMap { BookKey.from(coreDataKey: $0) }
+        // Update the modified keys record for Books which have a remote identifier, but only
+        // on the viewContext.
+        if managedObjectContext == PersistentStoreManager.container.viewContext && remoteIdentifier != nil {
+            let keysPendingRemoteUpdate = changedValues().keys.compactMap { BookCKRecordKey.from(coreDataKey: $0) }
             addPendingRemoteUpdateKeys(keysPendingRemoteUpdate)
             print("Updated bitmask: \(keysPendingRemoteUpdate.map { $0.rawValue }.joined(separator: ", "))")
         } else {
@@ -98,7 +96,7 @@ class Book: NSManagedObject {
             print("orphaned subject \(orphanedSubject.name) deleted.")
         }
 
-        if managedObjectContext?.name == SyncCoordinator.ContextName.viewContext.rawValue,
+        if managedObjectContext == PersistentStoreManager.container.viewContext,
             let existingRemoteRecord = self.storedCKRecordSystemFields() {
             PendingRemoteDeletionItem(context: managedObjectContext!, ckRecordID: existingRemoteRecord.recordID)
             print("Created a remote deletion object")
@@ -187,6 +185,7 @@ extension Book {
         case missingTitle
         case invalidIsbn
         case invalidReadDates
+        case keysBitmaskPresentWithoutRemoteIdentifier
     }
 
     override func validateForUpdate() throws {
@@ -203,6 +202,10 @@ extension Book {
             || startedReading!.startOfDay() > finishedReading!.startOfDay()) {
             throw ValidationError.invalidReadDates
         }
+
+        if keysPendingRemoteUpdate != 0 && remoteIdentifier == nil {
+            throw ValidationError.keysBitmaskPresentWithoutRemoteIdentifier
+        }
     }
 
     func startReading() {
@@ -215,117 +218,6 @@ extension Book {
         guard readState == .reading else { print("Attempted to finish a book in state \(readState)"); return }
         readState = .finished
         finishedReading = Date()
-    }
-}
-
-/**
- Encapsulates the mapping between Book objects and CKRecord values, and additionally
- holds a Bitmask struct which is able to form Int32 bitmask values based on a collection
- of these BookKey values, for use in storing keys which are pending remote updates.
-*/
-enum BookKey: String { //swiftlint:disable redundant_string_enum_value
-    // Note: the ordering of these cases matters. The position determines the value used when forming a bitmask
-    case title = "title"
-    case authors = "authors"
-    case googleBooksId = "googleBooksId"
-    case isbn13 = "isbn13"
-    case pageCount = "pageCount"
-    case publicationDate = "publicationDate"
-    case bookDescription = "bookDescription"
-    case coverImage = "coverImage"
-    case notes = "notes"
-    case currentPage = "currentPage"
-    case sort = "sort"
-    case startedReading = "startedReading"
-    case finishedReading = "finishedReading" //swiftlint:enable redundant_string_enum_value
-
-    static let all: [BookKey] = [.title, .authors, .googleBooksId, .isbn13, .pageCount, .publicationDate, .bookDescription,
-                                 .coverImage, .notes, .currentPage, .sort, .startedReading, .finishedReading]
-
-    struct Bitmask: OptionSet {
-        let rawValue: Int32
-
-        static func unionAll(_ values: [Bitmask]) -> Bitmask {
-            var result = Bitmask(rawValue: 0)
-            for value in values {
-                result.formUnion(value)
-            }
-            return result
-        }
-    }
-
-    var bitmask: Bitmask {
-        return Bitmask(rawValue: 1 << BookKey.all.index(of: self)!)
-    }
-
-    static func from(coreDataKey: String) -> BookKey? { //swiftlint:disable:this cyclomatic_complexity
-        switch coreDataKey {
-        case #keyPath(Book.title): return .title
-        case #keyPath(Book.authors): return .authors
-        case #keyPath(Book.coverImage): return .coverImage
-        case #keyPath(Book.googleBooksId): return .googleBooksId
-        case #keyPath(Book.isbn13): return .isbn13
-        case #keyPath(Book.pageCount): return .pageCount
-        case #keyPath(Book.publicationDate): return .publicationDate
-        case #keyPath(Book.bookDescription): return .bookDescription
-        case #keyPath(Book.notes): return .notes
-        case #keyPath(Book.currentPage): return .currentPage
-        case #keyPath(Book.sort): return .sort
-        case #keyPath(Book.startedReading): return .startedReading
-        case #keyPath(Book.finishedReading): return .finishedReading
-        default: return nil
-        }
-    }
-
-    func value(from book: Book) -> CKRecordValue? { //swiftlint:disable:this cyclomatic_complexity
-        switch self {
-        case .title: return book.title as NSString
-        case .googleBooksId: return book.googleBooksId as NSString?
-        case .isbn13: return book.isbn13 as NSString?
-        case .pageCount: return book.pageCount
-        case .publicationDate: return book.publicationDate as NSDate?
-        case .bookDescription: return book.bookDescription as NSString?
-        case .notes: return book.notes as NSString?
-        case .currentPage: return book.currentPage
-        case .sort: return book.sort
-        case .startedReading: return book.startedReading as NSDate?
-        case .finishedReading: return book.finishedReading as NSDate?
-        case .authors: return NSKeyedArchiver.archivedData(withRootObject: book.authors) as NSData
-        case .coverImage:
-            guard let coverImage = book.coverImage else { return nil }
-            let imageFilePath = URL.temporary()
-            FileManager.default.createFile(atPath: imageFilePath.path, contents: coverImage, attributes: nil)
-            return CKAsset(fileURL: imageFilePath)
-        }
-    }
-
-    func setValue(_ value: CKRecordValue?, for book: Book) { //swiftlint:disable:this cyclomatic_complexity
-        switch self {
-        case .title: book.title = value as! String
-        case .googleBooksId: book.googleBooksId = value as? String
-        case .isbn13: book.isbn13 = value as? String
-        case .pageCount: book.pageCount = value as? NSNumber
-        case .publicationDate: book.publicationDate = value as? Date
-        case .bookDescription: book.bookDescription = value as? String
-        case .notes: book.notes = value as? String
-        case .currentPage: book.currentPage = value as? NSNumber
-        case .sort: book.sort = value as? NSNumber
-        case .startedReading: book.startedReading = value as? Date
-        case .finishedReading: book.finishedReading = value as? Date
-        case .authors:
-            book.setAuthors(NSKeyedUnarchiver.unarchiveObject(with: value as! Data) as! [Author])
-        case .coverImage:
-            guard let imageAsset = value as? CKAsset else { book.coverImage = nil; return }
-            //book.coverImage = FileManager.default.contents(atPath: imageAsset.fileURL.path)
-            // TODO: Disabled to allow merges to work. Conditionally disable / investigate
-        }
-    }
-}
-
-extension CKRecord {
-    subscript (_ key: BookKey) -> CKRecordValue? {
-        get { return self.object(forKey: key.rawValue) }
-        set { self.setObject(newValue, forKey: key.rawValue) }
     }
 }
 
@@ -343,7 +235,7 @@ extension Book {
     func CKRecordForInsert(zoneID: CKRecordZoneID) -> CKRecord {
         guard remoteIdentifier == nil && ckRecordEncodedSystemFields == nil else { fatalError("Unexpected attempt to insert a record which already exists.") }
         let ckRecord = CKRecord(recordType: "Book", zoneID: zoneID)
-        for key in BookKey.all {
+        for key in BookCKRecordKey.all {
             ckRecord[key] = key.value(from: self)
         }
         return ckRecord
@@ -351,16 +243,27 @@ extension Book {
 
     func CKRecordForDifferentialUpdate() -> CKRecord {
         guard let ckRecord = storedCKRecordSystemFields() else { fatalError("No stored CKRecord to use for differential update") }
-        let changedKeys = BookKey.Bitmask(rawValue: keysPendingRemoteUpdate)
-        for key in BookKey.all.filter({ changedKeys.contains($0.bitmask) }) {
+        let changedKeys = BookCKRecordKey.Bitmask(rawValue: keysPendingRemoteUpdate)
+        for key in BookCKRecordKey.all.filter({ changedKeys.contains($0.bitmask) }) {
             ckRecord[key] = key.value(from: self)
         }
         return ckRecord
     }
 
     func updateFrom(ckRecord: CKRecord) {
-        // TODO: Check whether updated-to-nil keys are included in this
-        for key in ckRecord.allKeys().compactMap({ BookKey(rawValue: $0) }) {
+        if let existingCKRecordSystemFields = storedCKRecordSystemFields(), existingCKRecordSystemFields.recordChangeTag == ckRecord.recordChangeTag {
+            print("CKRecord has same change tag; skipping update")
+            return
+        }
+
+        if remoteIdentifier != ckRecord.recordID.recordName {
+            print("Updating remoteIdentifier for book")
+            remoteIdentifier = ckRecord.recordID.recordName
+        }
+
+        storeCKRecordSystemFields(ckRecord)
+
+        for key in ckRecord.changedBookKeys() {
             key.setValue(ckRecord[key], for: self)
         }
     }

@@ -1,5 +1,6 @@
 import Foundation
 import CoreData
+import CloudKit
 
 protocol BookUpstreamChangeProcessor: UpstreamChangeProcessor {
     func processLocalChanges(_ books: [Book], context: NSManagedObjectContext, remote: BookCloudKitRemote)
