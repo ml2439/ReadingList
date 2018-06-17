@@ -20,11 +20,10 @@ enum BookCKRecordKey: String { //swiftlint:disable redundant_string_enum_value
     case notes = "notes"
     case currentPage = "currentPage"
     case sort = "sort"
-    case startedReading = "startedReading"
-    case finishedReading = "finishedReading" //swiftlint:enable redundant_string_enum_value
+    case readDates = "readDates" //swiftlint:enable redundant_string_enum_value
 
-    static let all: [BookCKRecordKey] = [.title, .authors, .googleBooksId, .isbn13, .pageCount, .publicationDate, .bookDescription,
-                                         .coverImage, .notes, .currentPage, .sort, .startedReading, .finishedReading]
+    static let all: [BookCKRecordKey] = [.title, .authors, .googleBooksId, .isbn13, .pageCount, .publicationDate,
+                                         .bookDescription, .coverImage, .notes, .currentPage, .sort, .readDates]
 
     struct Bitmask: OptionSet {
         let rawValue: Int32
@@ -59,8 +58,8 @@ enum BookCKRecordKey: String { //swiftlint:disable redundant_string_enum_value
         case #keyPath(Book.notes): return .notes
         case #keyPath(Book.currentPage): return .currentPage
         case #keyPath(Book.sort): return .sort
-        case #keyPath(Book.startedReading): return .startedReading
-        case #keyPath(Book.finishedReading): return .finishedReading
+        case #keyPath(Book.startedReading): return .readDates
+        case #keyPath(Book.finishedReading): return .readDates
         default: return nil
         }
     }
@@ -76,8 +75,12 @@ enum BookCKRecordKey: String { //swiftlint:disable redundant_string_enum_value
         case .notes: return book.notes as NSString?
         case .currentPage: return book.currentPage
         case .sort: return book.sort
-        case .startedReading: return book.startedReading as NSDate?
-        case .finishedReading: return book.finishedReading as NSDate?
+        case .readDates:
+            switch book.readState {
+            case .toRead: return nil
+            case .reading: return [book.startedReading! as NSDate] as NSArray
+            case .finished: return [book.startedReading! as NSDate, book.finishedReading! as NSDate] as NSArray
+            }
         case .authors: return NSKeyedArchiver.archivedData(withRootObject: book.authors) as NSData
         case .coverImage:
             guard let coverImage = book.coverImage else { return nil }
@@ -98,8 +101,11 @@ enum BookCKRecordKey: String { //swiftlint:disable redundant_string_enum_value
         case .notes: book.notes = value as? String
         case .currentPage: book.currentPage = value as? NSNumber
         case .sort: book.sort = value as? NSNumber
-        case .startedReading: book.startedReading = value as? Date
-        case .finishedReading: book.finishedReading = value as? Date
+        case .readDates:
+            let datesArray = value as? [Date]
+            book.startedReading = datesArray?[0]
+            book.finishedReading = datesArray?[1]
+            book.updateReadState()
         case .authors:
             book.setAuthors(NSKeyedUnarchiver.unarchiveObject(with: value as! Data) as! [Author])
         case .coverImage:
@@ -117,6 +123,6 @@ extension CKRecord {
     }
 
     func changedBookKeys() -> [BookCKRecordKey] {
-        return changedKeys().compactMap({ BookCKRecordKey(rawValue: $0) })
+        return changedKeys().compactMap { BookCKRecordKey(rawValue: $0) }
     }
 }

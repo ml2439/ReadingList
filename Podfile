@@ -17,6 +17,7 @@ target 'ReadingList' do
   pod 'Crashlytics'
   pod 'Firebase/Core'
   pod 'SwiftLint'
+  pod 'ReachabilitySwift'
 
   target 'ReadingList_UITests' do
     inherit! :complete

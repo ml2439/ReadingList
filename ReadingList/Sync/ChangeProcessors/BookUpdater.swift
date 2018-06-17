@@ -20,8 +20,8 @@ class BookUpdater: BookUpstreamChangeProcessor {
             context.perform {
                 var failures: [AnyHashable: Error]? = nil
                 if let ckError = error as? CKError {
+                    //if ckError.code == CKError.Code.networkFailure
                     failures = ckError.partialErrorsByItemID
-                    if ckError.isFatal { fatalError("\(ckError)") }
                 }
 
                 for (localBook, ckRecord, delta) in booksAndRecords {

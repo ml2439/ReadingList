@@ -47,6 +47,23 @@ extension CKRecord {
 }
 
 extension CKError {
+    /*
+    enum ErrorHandleType {
+        case retryAfter(TimeInterval)
+        case applicationError
+        case serverError
+        case userIssue
+    }
+    
+    var handleType: ErrorHandleType {
+        switch self.code {
+            case CKError.Code.alreadyShared
+            case CKError.Code.constraintViolation
+            case CKError.Code.invalidArguments
+            case CKError.Code.missingEntitlement
+        }
+    }*/
+
     // TODO: Complete
     var isFatal: Bool {
         switch code {

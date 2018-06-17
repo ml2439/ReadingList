@@ -8,16 +8,18 @@ class BookDownloader: DownstreamChangeProcessor {
 
     func processRemoteChanges(from zone: CKRecordZoneID, changes: CKChangeCollection,
                               context: NSManagedObjectContext, completion: (() -> Void)?) {
-        insertBooks(changes.changedRecords, into: context)
-        deleteBooks(with: changes.deletedRecordIDs, in: context)
+        context.perform {
+            self.insertBooks(changes.changedRecords, into: context)
+            self.deleteBooks(with: changes.deletedRecordIDs, in: context)
 
-        // Store the updated change token
-        let changeToken = ChangeToken.get(fromContext: context, for: zone) ?? ChangeToken(context: context, zoneID: zone)
-        changeToken.changeToken = changes.newChangeToken
-        print("Updated change token")
+            // Store the updated change token
+            let changeToken = ChangeToken.get(fromContext: context, for: zone) ?? ChangeToken(context: context, zoneID: zone)
+            changeToken.changeToken = changes.newChangeToken
+            print("Updated change token")
 
-        context.saveAndLogIfErrored()
-        completion?()
+            context.saveAndLogIfErrored()
+            completion?()
+        }
     }
 
     private func deleteBooks(with ids: [CKRecordID], in context: NSManagedObjectContext) {
@@ -36,10 +38,10 @@ class BookDownloader: DownstreamChangeProcessor {
 
         for remoteBook in remoteBooks {
             if let localBook = preExistingBooks.first(where: { $0.remoteIdentifier == remoteBook.recordID.recordName }) {
-                localBook.updateFrom(ckRecord: remoteBook)
+                localBook.updateFrom(serverRecord: remoteBook)
             } else {
                 let book = Book(context: context, readState: .toRead)
-                book.updateFrom(ckRecord: remoteBook)
+                book.updateFrom(serverRecord: remoteBook)
             }
         }
     }

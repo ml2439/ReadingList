@@ -2,6 +2,7 @@ import UIKit
 import SVProgressHUD
 import SwiftyStoreKit
 import CoreData
+import Reachability
 
 var appDelegate: AppDelegate {
     return UIApplication.shared.delegate as! AppDelegate
@@ -12,6 +13,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     var syncCoordinator: SyncCoordinator!
+    let reachability = Reachability()!
 
     var tabBarController: TabBarController {
         return window!.rootViewController as! TabBarController
@@ -25,6 +27,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         setupSvProgressHud()
         completeStoreTransactions()
+        monitorNetworkReachability()
 
         // Grab any options which we take action on after the persistent store is initialised
         let quickAction = launchOptions?[UIApplicationLaunchOptionsKey.shortcutItem] as? UIApplicationShortcutItem
@@ -164,6 +167,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     @objc func initialiseTheme() {
         UIApplication.shared.statusBarStyle = UserSettings.theme.value.statusBarStyle
+    }
+
+    func monitorNetworkReachability() {
+        do {
+            try reachability.startNotifier()
+            NotificationCenter.default.addObserver(self, selector: #selector(networkConnectivityDidChange(note:)), name: .reachabilityChanged, object: reachability)
+        } catch {
+            print("Error starting reachability notifier")
+        }
+    }
+
+    @objc func networkConnectivityDidChange(note: Notification) {
+        let reachability = note.object as! Reachability
+        if reachability.connection != .none {
+            syncCoordinator.processPendingChanges()
+        }
     }
 }
 

@@ -68,7 +68,7 @@ class SyncCoordinator {
                 print("Merging save from \(String(sourceContext.name!)) to \(String(destinationContext.name!))")
                 destinationContext.performMergeChanges(from: note)
 
-                // Take the new or modified objects, mapped to the syncContext, and process the
+                // Take the new or modified objects, mapped to the syncContext, and process
                 guard let coordinator = self else { return }
                 coordinator.syncContext.perform {
                     // We unpack the notification here, to make sure it's retained until this point.
@@ -85,8 +85,6 @@ class SyncCoordinator {
     }
 
     private func stopContextNotificationObserving() {
-        guard contextSaveNotificationObservers.count == 2 else { print("Unexpected count of observers: \(contextSaveNotificationObservers.count)"); return }
-
         contextSaveNotificationObservers.forEach { NotificationCenter.default.removeObserver($0) }
         contextSaveNotificationObservers.removeAll()
     }

@@ -81,7 +81,7 @@ class Book: NSManagedObject {
         // Update the modified keys record for Books which have a remote identifier, but only
         // on the viewContext.
         if managedObjectContext == PersistentStoreManager.container.viewContext && remoteIdentifier != nil {
-            let keysPendingRemoteUpdate = changedValues().keys.compactMap { BookCKRecordKey.from(coreDataKey: $0) }
+            let keysPendingRemoteUpdate = changedValues().keys.compactMap { BookCKRecordKey.from(coreDataKey: $0) }.distinct()
             addPendingRemoteUpdateKeys(keysPendingRemoteUpdate)
             print("Updated bitmask: \(keysPendingRemoteUpdate.map { $0.rawValue }.joined(separator: ", "))")
         } else {
@@ -185,7 +185,7 @@ extension Book {
         case missingTitle
         case invalidIsbn
         case invalidReadDates
-        case keysBitmaskPresentWithoutRemoteIdentifier
+        case bitmaskPresentWithoutRemoteIdentifier
     }
 
     override func validateForUpdate() throws {
@@ -204,7 +204,7 @@ extension Book {
         }
 
         if keysPendingRemoteUpdate != 0 && remoteIdentifier == nil {
-            throw ValidationError.keysBitmaskPresentWithoutRemoteIdentifier
+            throw ValidationError.bitmaskPresentWithoutRemoteIdentifier
         }
     }
 
@@ -218,6 +218,16 @@ extension Book {
         guard readState == .reading else { print("Attempted to finish a book in state \(readState)"); return }
         readState = .finished
         finishedReading = Date()
+    }
+
+    func updateReadState() {
+        if startedReading == nil {
+            readState = .toRead
+        } else if finishedReading == nil {
+            readState = .reading
+        } else {
+            readState = .finished
+        }
     }
 }
 
@@ -250,21 +260,30 @@ extension Book {
         return ckRecord
     }
 
-    func updateFrom(ckRecord: CKRecord) {
-        if let existingCKRecordSystemFields = storedCKRecordSystemFields(), existingCKRecordSystemFields.recordChangeTag == ckRecord.recordChangeTag {
+    func updateFrom(serverRecord: CKRecord) {
+        if let existingCKRecordSystemFields = storedCKRecordSystemFields(), existingCKRecordSystemFields.recordChangeTag == serverRecord.recordChangeTag {
             print("CKRecord has same change tag; skipping update")
             return
         }
 
-        if remoteIdentifier != ckRecord.recordID.recordName {
+        if remoteIdentifier != serverRecord.recordID.recordName {
             print("Updating remoteIdentifier for book")
-            remoteIdentifier = ckRecord.recordID.recordName
+            remoteIdentifier = serverRecord.recordID.recordName
         }
 
-        storeCKRecordSystemFields(ckRecord)
+        storeCKRecordSystemFields(serverRecord)
 
-        for key in ckRecord.changedBookKeys() {
-            key.setValue(ckRecord[key], for: self)
+        // When using the server record, we need to use allKeys() (changedKeys() contains nothing)
+        for key in serverRecord.allKeys().compactMap({ BookCKRecordKey.from(ckRecordKey: $0) }) {
+            key.setValue(serverRecord[key], for: self)
+        }
+        // TODO: remove when read dates are stored in 1 field then this can be done in the relevant setValue method
+        if startedReading == nil && finishedReading == nil && readState != .toRead {
+            readState = .toRead
+        } else if startedReading != nil && finishedReading == nil && readState != .reading {
+            readState = .reading
+        } else if startedReading != nil && finishedReading != nil && readState != .finished {
+            readState = .finished
         }
     }
 

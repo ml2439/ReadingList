@@ -15,7 +15,7 @@ class BookInserter: BookUpstreamChangeProcessor {
             }
         case .serverRecordChanged:
             let server = ckError.serverRecord
-            books[ckError.clientRecord!.recordID]?.updateFrom(ckRecord: server!)
+            books[ckError.clientRecord!.recordID]?.updateFrom(serverRecord: server!)
         default: print("Error: \(ckError)")
         }
     }
@@ -24,6 +24,7 @@ class BookInserter: BookUpstreamChangeProcessor {
 
     func processLocalChanges(_ books: [Book], context: NSManagedObjectContext, remote: BookCloudKitRemote) {
 
+        // We MUST not attempt the insertion of a book which is already underway.
         let booksAndCKRecords = books.filter { !booksBeingProcessed.contains($0) }
             .map { book -> (book: Book, ckRecord: CKRecord) in
                 (book, book.CKRecordForInsert(zoneID: remote.bookZoneID))
@@ -57,8 +58,9 @@ class BookInserter: BookUpstreamChangeProcessor {
                     let differingKeys = ckRecord.changedBookKeys()
                         .filter { !CKRecord.valuesAreEqual(left: ckRecord[$0], right: $0.value(from: localBook)) }
                     localBook.addPendingRemoteUpdateKeys(differingKeys)
+
+                    self.booksBeingProcessed.remove(localBook)
                 }
-                self.booksBeingProcessed.subtract(books)
                 context.saveAndLogIfErrored()
             }
         }

@@ -74,12 +74,16 @@ class BookCloudKitRemote {
         let options = CKFetchRecordZoneChangesOptions()
         options.previousServerChangeToken = changeToken
 
-        let fetchChangesOperation = CKFetchRecordZoneChangesOperation(recordZoneIDs: [bookZoneID], optionsByRecordZoneID: [bookZoneID: options])
-        fetchChangesOperation.recordChangedBlock = { changedRecords.append($0) }
-        fetchChangesOperation.recordWithIDWasDeletedBlock = { recordID, _ in
+        let operation = CKFetchRecordZoneChangesOperation(recordZoneIDs: [bookZoneID], optionsByRecordZoneID: [bookZoneID: options])
+        operation.qualityOfService = .userInitiated
+        operation.recordChangedBlock = { changedRecords.append($0) }
+        operation.recordWithIDWasDeletedBlock = { recordID, _ in
             deletedRecordIDs.append(recordID)
         }
-        fetchChangesOperation.recordZoneFetchCompletionBlock = { _, changeToken, _, _, error in
+        operation.recordZoneChangeTokensUpdatedBlock = { _, changeToken, _ in
+            print("change token block ran \(changeToken)")
+        }
+        operation.recordZoneFetchCompletionBlock = { _, changeToken, _, _, error in
             guard error == nil else {
                 print("Error: \(error!)")
                 return
@@ -88,12 +92,13 @@ class BookCloudKitRemote {
             let changes = CKChangeCollection(changedRecords: changedRecords, deletedRecordIDs: deletedRecordIDs, newChangeToken: changeToken)
             completion(changes)
         }
-        privateDB.add(fetchChangesOperation)
+        privateDB.add(operation)
     }
 
     func upload(_ records: [CKRecord], completion: @escaping (Error?) -> Void) {
         let operation = CKModifyRecordsOperation(recordsToSave: records, recordIDsToDelete: nil)
         operation.savePolicy = .ifServerRecordUnchanged
+        operation.qualityOfService = .userInitiated
         operation.modifyRecordsCompletionBlock = { _, _, error in
             completion(error)
         }
@@ -102,6 +107,7 @@ class BookCloudKitRemote {
 
     func remove(_ recordIDs: [CKRecordID], completion: @escaping (Error?) -> Void) {
         let operation = CKModifyRecordsOperation(recordsToSave: nil, recordIDsToDelete: recordIDs)
+        operation.qualityOfService = .userInitiated
         operation.modifyRecordsCompletionBlock = { _, _, error in
             completion(error)
         }
