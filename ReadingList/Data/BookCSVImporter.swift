@@ -2,18 +2,19 @@ import Foundation
 import CoreData
 
 class BookCSVImporter {
-    let backgroundContext: NSManagedObjectContext
-    let includeImages: Bool
+    private let parserDelegate: BookCSVParserDelegate //swiftlint:disable:this weak_delegate
 
     init(includeImages: Bool = true) {
-        self.backgroundContext = PersistentStoreManager.container.newBackgroundContext()
-        self.backgroundContext.mergePolicy = NSMergePolicy.mergeByPropertyStoreTrump
-        self.includeImages = includeImages
+        let backgroundContext = PersistentStoreManager.container.newBackgroundContext()
+        backgroundContext.mergePolicy = NSMergePolicy.mergeByPropertyStoreTrump
+        parserDelegate = BookCSVParserDelegate(context: backgroundContext, includeImages: includeImages)
     }
 
     func startImport(fromFileAt fileLocation: URL, _ completion: @escaping (BookCSVImportResults) -> Void) {
+        parserDelegate.onCompletion = completion
+
         let parser = CSVParser(csvFileUrl: fileLocation)
-        parser.delegate = BookCSVParserDelegate(context: backgroundContext, includeImages: includeImages, completion: completion)
+        parser.delegate = parserDelegate
         parser.begin()
     }
 }
@@ -26,17 +27,17 @@ struct BookCSVImportResults {
 
 private class BookCSVParserDelegate: CSVParserDelegate {
     private let context: NSManagedObjectContext
-    private let onCompletion: (BookCSVImportResults) -> Void
     private let includeImages: Bool
     private var currentSort: Int32?
     private let dispatchGroup = DispatchGroup()
     private var listMappings = [String: [(bookID: NSManagedObjectID, index: Int)]]()
     private var listNames = [String]()
 
-    init(context: NSManagedObjectContext, includeImages: Bool = true, completion: @escaping (BookCSVImportResults) -> Void) {
+    var onCompletion: ((BookCSVImportResults) -> Void)?
+
+    init(context: NSManagedObjectContext, includeImages: Bool = true) {
         self.context = context
         self.includeImages = includeImages
-        self.onCompletion = completion
     }
 
     func headersRead(_ headers: [String]) -> Bool {
@@ -170,7 +171,8 @@ private class BookCSVParserDelegate: CSVParserDelegate {
                 self.populateLists()
                 self.context.saveAndLogIfErrored()
             }
-            self.onCompletion(BookCSVImportResults(success: self.successCount, error: self.invalidCount, duplicate: self.duplicateCount))
+            let results = BookCSVImportResults(success: self.successCount, error: self.invalidCount, duplicate: self.duplicateCount)
+            self.onCompletion?(results)
         }
     }
 }
