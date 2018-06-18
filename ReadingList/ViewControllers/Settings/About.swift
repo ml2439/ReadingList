@@ -20,41 +20,43 @@ class About: UITableViewController {
         switch indexPath.row {
         case 0: presentThemedSafariViewController(URL(string: "https://www.readinglist.app")!)
         case 1: share(indexPath)
-        case 2: contact()
-        case 3: joinBeta()
+        case 2: contact(indexPath)
+        case 3: joinBeta(indexPath)
         case 4: presentThemedSafariViewController(URL(string: "https://github.com/AndrewBennet/readinglist")!)
         default: return
         }
         tableView.deselectRow(at: indexPath, animated: true)
     }
 
-    func share(_ indexPath: IndexPath) {
+    private func share(_ indexPath: IndexPath) {
         let appStoreUrl = URL(string: "https://\(Settings.appStoreAddress)")!
         let activityViewController = UIActivityViewController(activityItems: [appStoreUrl], applicationActivities: nil)
         activityViewController.popoverPresentationController?.setSourceCell(atIndexPath: indexPath, inTable: tableView)
         present(activityViewController, animated: true)
     }
 
-    func contact() {
+    private func contact(_ indexPath: IndexPath) {
         let canSendEmail = MFMailComposeViewController.canSendMail()
 
-        let alert = UIAlertController(title: "Send Feedback?", message: """
+        let controller = UIAlertController(title: "Send Feedback?", message: """
             If you have any questions or suggestions, please email me\
             \(canSendEmail ? "." : " at \(Settings.feedbackEmailAddress).") \
             I'll do my best to respond.
-            """, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default) { [unowned self] _ in
+            """, preferredStyle: .actionSheet)
+        controller.addAction(UIAlertAction(title: "OK", style: .default) { [unowned self] _ in
             if canSendEmail {
                 self.presentContactMailComposeWindow()
             }
         })
         if canSendEmail {
-            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+            controller.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         }
-        present(alert, animated: true)
+        controller.popoverPresentationController?.setSourceCell(atIndexPath: indexPath, inTable: tableView, arrowDirections: [.up, .down])
+
+        present(controller, animated: true)
     }
 
-    func joinBeta() {
+    private func joinBeta(_ indexPath: IndexPath) {
         guard BuildInfo.appConfiguration != .testFlight else {
             let controller = UIAlertController(title: "Already a Beta Tester", message: "You're already running a beta version of the app.", preferredStyle: .alert)
             controller.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
@@ -80,10 +82,11 @@ class About: UITableViewController {
         } else {
             controller.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         }
+        controller.popoverPresentationController?.setSourceCell(atIndexPath: indexPath, inTable: tableView, arrowDirections: [.up, .down])
         present(controller, animated: true)
     }
 
-    func presentBetaMailComposeWindow() {
+    private func presentBetaMailComposeWindow() {
         let mailComposer = MFMailComposeViewController()
         mailComposer.mailComposeDelegate = self
         mailComposer.setToRecipients(["Reading List Developer <\(Settings.feedbackEmailAddress)>"])
@@ -100,7 +103,7 @@ class About: UITableViewController {
         present(mailComposer, animated: true)
     }
 
-    func presentContactMailComposeWindow() {
+    private func presentContactMailComposeWindow() {
         let mailComposer = MFMailComposeViewController()
         mailComposer.mailComposeDelegate = self
         mailComposer.setToRecipients(["Reading List Developer <\(Settings.feedbackEmailAddress)>"])
