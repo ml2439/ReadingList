@@ -12,6 +12,7 @@
 		1C032F1E20C29F1900CDBEF8 /* BookDeleter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C032F1D20C29F1900CDBEF8 /* BookDeleter.swift */; };
 		1C032F2020C29F4D00CDBEF8 /* BookDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C032F1F20C29F4D00CDBEF8 /* BookDownloader.swift */; };
 		1C032F2320C29FED00CDBEF8 /* BookChangeProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C032F2220C29FED00CDBEF8 /* BookChangeProcessor.swift */; };
+		1C0A50E620D84F37002BFEBE /* BookMapping_11_12.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 1C0A50E520D84F37002BFEBE /* BookMapping_11_12.xcmappingmodel */; };
 		1C0DC734204B09610044B377 /* BookCSVExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0DC733204B09610044B377 /* BookCSVExport.swift */; };
 		1C0DC736204B0A230044B377 /* BookReadState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0DC735204B0A230044B377 /* BookReadState.swift */; };
 		1C0DC738204B119E0044B377 /* DebugData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0DC737204B119E0044B377 /* DebugData.swift */; };
@@ -155,6 +156,7 @@
 		1C032F1D20C29F1900CDBEF8 /* BookDeleter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookDeleter.swift; sourceTree = "<group>"; };
 		1C032F1F20C29F4D00CDBEF8 /* BookDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookDownloader.swift; sourceTree = "<group>"; };
 		1C032F2220C29FED00CDBEF8 /* BookChangeProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookChangeProcessor.swift; sourceTree = "<group>"; };
+		1C0A50E520D84F37002BFEBE /* BookMapping_11_12.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = BookMapping_11_12.xcmappingmodel; sourceTree = "<group>"; };
 		1C0DC733204B09610044B377 /* BookCSVExport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookCSVExport.swift; sourceTree = "<group>"; };
 		1C0DC735204B0A230044B377 /* BookReadState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookReadState.swift; sourceTree = "<group>"; };
 		1C0DC737204B119E0044B377 /* DebugData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugData.swift; sourceTree = "<group>"; };
@@ -432,6 +434,7 @@
 		1CD11250202DED5500BE3E1D /* Migrations */ = {
 			isa = PBXGroup;
 			children = (
+				1C0A50E520D84F37002BFEBE /* BookMapping_11_12.xcmappingmodel */,
 				1C2E910C20D059F500A611A4 /* BookMapping_11_12.swift */,
 				1C5180AB20544427008C6EA4 /* BookMapping_10_11.xcmappingmodel */,
 				1CC440C5204FDC0B00906120 /* BookMapping_10_11.swift */,
@@ -1210,6 +1213,7 @@
 				1CD1124F202DED3600BE3E1D /* Author.swift in Sources */,
 				491F14621C02228C0052B355 /* ScanBarcode.swift in Sources */,
 				1C395448202F7966007ACCB1 /* CoreDataExtensions.swift in Sources */,
+				1C0A50E620D84F37002BFEBE /* BookMapping_11_12.xcmappingmodel in Sources */,
 				49CEB80A1E9D8C06003FD859 /* Debug.swift in Sources */,
 				1C1C887F1FE05A9D00A20402 /* Tip.swift in Sources */,
 				1C42F65B20605BD00024CC84 /* BuildInfo.swift in Sources */,
