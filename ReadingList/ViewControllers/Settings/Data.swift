@@ -8,6 +8,7 @@ class DataVC: UITableViewController {
 
     var importUrl: URL?
     @IBOutlet private weak var iCloudEnabledSwitch: UISwitch!
+    var csvImporter: BookCSVImporter?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -65,11 +66,12 @@ class DataVC: UITableViewController {
             have an ISBN or Google Books ID which corresponds to a book already in the app; \
             other rows will be added as new books.
             """, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Import", style: .default) { _ in
+        alert.addAction(UIAlertAction(title: "Import", style: .default) { [unowned self] _ in
             SVProgressHUD.show(withStatus: "Importing")
             UserEngagement.logEvent(.csvImport)
 
-            BookCSVImporter().startImport(fromFileAt: url) { results in
+            self.csvImporter = BookCSVImporter()
+            self.csvImporter!.startImport(fromFileAt: url) { results in
                 var statusMessage = "\(results.success) books imported."
 
                 if results.duplicate != 0 { statusMessage += " \(results.duplicate) rows ignored due pre-existing data." }
