@@ -82,6 +82,7 @@ class UserEngagement {
         case enableCrashReports = "Enable_Crash_Reports"
         case changeTheme = "Change_Theme"
         case changeSortOrder = "Change_Sort"
+        case changeLargeTitles = "Change_Large_Titles"
 
         // Other
         case viewOnAmazon = "View_On_Amazon"
