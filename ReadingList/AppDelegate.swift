@@ -181,7 +181,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     @objc func networkConnectivityDidChange(note: Notification) {
         let reachability = note.object as! Reachability
         if reachability.connection != .none {
-            syncCoordinator.processPendingChanges()
+            syncCoordinator?.processPendingChanges()
         }
     }
 }

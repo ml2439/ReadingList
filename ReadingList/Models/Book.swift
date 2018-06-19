@@ -273,17 +273,8 @@ extension Book {
 
         storeCKRecordSystemFields(serverRecord)
 
-        // When using the server record, we need to use allKeys() (changedKeys() contains nothing)
-        for key in serverRecord.allKeys().compactMap({ BookCKRecordKey.from(ckRecordKey: $0) }) {
+        for key in BookCKRecordKey.all {
             key.setValue(serverRecord[key], for: self)
-        }
-        // TODO: remove when read dates are stored in 1 field then this can be done in the relevant setValue method
-        if startedReading == nil && finishedReading == nil && readState != .toRead {
-            readState = .toRead
-        } else if startedReading != nil && finishedReading == nil && readState != .reading {
-            readState = .reading
-        } else if startedReading != nil && finishedReading != nil && readState != .finished {
-            readState = .finished
         }
     }
 

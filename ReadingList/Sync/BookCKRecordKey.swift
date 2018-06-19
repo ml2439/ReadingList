@@ -103,8 +103,8 @@ enum BookCKRecordKey: String { //swiftlint:disable redundant_string_enum_value
         case .sort: book.sort = value as? NSNumber
         case .readDates:
             let datesArray = value as? [Date]
-            book.startedReading = datesArray?[0]
-            book.finishedReading = datesArray?[1]
+            book.startedReading = datesArray?[safe: 0]
+            book.finishedReading = datesArray?[safe: 1]
             book.updateReadState()
         case .authors:
             book.setAuthors(NSKeyedUnarchiver.unarchiveObject(with: value as! Data) as! [Author])
