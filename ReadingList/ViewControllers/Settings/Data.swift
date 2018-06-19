@@ -33,9 +33,9 @@ class DataVC: UITableViewController {
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch (indexPath.section, indexPath.row) {
-        case (0, 0): exportData(presentingIndexPath: indexPath)
-        case (1, 0): requestImport(presentingIndexPath: indexPath)
-        case (2, 0): deleteAllData()
+        case (1, 0): exportData(presentingIndexPath: indexPath)
+        case (2, 0): requestImport(presentingIndexPath: indexPath)
+        case (3, 0): deleteAllData()
         default: break
         }
         tableView.deselectRow(at: indexPath, animated: true)
