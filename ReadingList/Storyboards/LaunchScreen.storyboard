@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="wx6-4z-trQ">
-    <device id="retina4_7" orientation="portrait">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="wx6-4z-trQ">
+    <device id="ipad9_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
@@ -20,13 +20,14 @@
                         <viewControllerLayoutGuide type="bottom" id="Sly-0k-4eQ"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="Bgo-Cu-cYT">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="AppIconRounded" translatesAutoresizingMaskIntoConstraints="NO" id="tIb-Gu-5Wk">
-                                <rect key="frame" x="113" y="258.5" width="150" height="150"/>
+                                <rect key="frame" x="284" y="412" width="200" height="200"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="tIb-Gu-5Wk" secondAttribute="height" multiplier="1:1" id="XUi-8F-wDU"/>
+                                    <constraint firstAttribute="width" relation="lessThanOrEqual" constant="200" id="ozH-Hu-j04"/>
                                 </constraints>
                             </imageView>
                         </subviews>
@@ -34,7 +35,7 @@
                         <constraints>
                             <constraint firstItem="tIb-Gu-5Wk" firstAttribute="centerX" secondItem="Bgo-Cu-cYT" secondAttribute="centerX" id="3Ym-Bc-0LS"/>
                             <constraint firstItem="tIb-Gu-5Wk" firstAttribute="centerY" secondItem="Bgo-Cu-cYT" secondAttribute="centerY" id="YNC-fs-LG2"/>
-                            <constraint firstItem="tIb-Gu-5Wk" firstAttribute="width" secondItem="Bgo-Cu-cYT" secondAttribute="width" multiplier="0.4" id="dBi-Hg-bTI"/>
+                            <constraint firstItem="tIb-Gu-5Wk" firstAttribute="width" secondItem="Bgo-Cu-cYT" secondAttribute="width" multiplier="0.4" priority="999" id="dBi-Hg-bTI"/>
                         </constraints>
                     </view>
                 </viewController>
