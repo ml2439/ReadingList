@@ -6,7 +6,7 @@ class PersistentStoreManager {
     private(set) static var container: NSPersistentContainer!
 
     private static let storeName = "books"
-    private static var storeFileName: String { return "\(storeName).sqlite" }
+    static var storeFileName: String { return "\(storeName).sqlite" }
 
     /**
      Creates the NSPersistentContainer, migrating if necessary.

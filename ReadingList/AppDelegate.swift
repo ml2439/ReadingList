@@ -1,6 +1,7 @@
 import UIKit
 import SVProgressHUD
 import SwiftyStoreKit
+import CoreData
 
 var appDelegate: AppDelegate {
     return UIApplication.shared.delegate as! AppDelegate
@@ -53,11 +54,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     }
                 }
             } catch MigrationError.incompatibleStore {
-                guard let mostRecentWorkingVersion = UserSettings.mostRecentWorkingVersion.value else { fatalError("No recorded previously working version") }
-                guard mostRecentWorkingVersion != BuildInfo.appVersion else { fatalError("Migration error thrown for store of same version.") }
                 DispatchQueue.main.async {
                     self.storeMigrationFailed = true
-                    self.presentIncompatibleDataAlert(dataVersion: mostRecentWorkingVersion)
+                    self.presentIncompatibleDataAlert()
                 }
             } catch {
                 fatalError(error.localizedDescription)
@@ -68,13 +67,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return quickAction == nil && csvFileUrl == nil
     }
 
-    func presentIncompatibleDataAlert(dataVersion: String) {
-        let alert = UIAlertController(title: "Incompatible Data", message: """
-            The data on this device is not compatible with this version (\(BuildInfo.appVersion)) of Reading List.
+    func presentIncompatibleDataAlert() {
+        guard let mostRecentWorkingVersion = UserSettings.mostRecentWorkingVersion.value else { fatalError("No recorded previously working version") }
 
-            You previously had version \(dataVersion), and have downgraded to version \(BuildInfo.appVersion). \
-            You will need to install version \(dataVersion) or later to be able to access your data.
+        #if RELEASE
+        // This is a common error during development, but shouldn't occur in production
+        guard mostRecentWorkingVersion != BuildInfo.appVersion else { fatalError("Migration error thrown for store of same version.") }
+        #endif
+
+        guard window!.rootViewController!.presentedViewController == nil else { return }
+        let alert = UIAlertController(title: "Incompatible Data", message: """
+            The data on this device is not compatible with this version of Reading List.
+
+            You previously had version \(mostRecentWorkingVersion), but now have version \(BuildInfo.appVersion). \
+            You will need to install \(mostRecentWorkingVersion) again to be able to access your data.
             """, preferredStyle: .alert)
+
+        #if DEBUG
+        alert.addAction(UIAlertAction(title: "Delete Store", style: .destructive) { _ in
+            NSPersistentStoreCoordinator().destroyAndDeleteStore(at: URL.applicationSupport.appendingPathComponent(PersistentStoreManager.storeFileName))
+            fatalError("Store destroyed; app restart required.")
+        })
+        #endif
+
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         window!.rootViewController!.present(alert, animated: true)
     }
@@ -109,8 +124,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UserEngagement.onAppOpen()
 
         if storeMigrationFailed {
-            guard let mostRecentWorkingVersion = UserSettings.mostRecentWorkingVersion.value else { fatalError("mostRecentWorkingVersion was unexpectedly missing.") }
-            presentIncompatibleDataAlert(dataVersion: mostRecentWorkingVersion)
+            presentIncompatibleDataAlert()
         }
     }
 
