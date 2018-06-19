@@ -58,8 +58,11 @@ class UserSettings {
     static var sendCrashReports = UserSetting<Bool>(key: "sendCrashReports", defaultValue: true)
     static var useLargeTitles = UserSetting<Bool>(key: "useLargeTitles", defaultValue: true)
 
-    // This is not always true, tip functionality predates this setting...
+    /// This is not always true; tip functionality predates this setting...
     static var hasEverTipped = UserSetting<Bool>(key: "hasEverTipped", defaultValue: false)
+
+    /// The most recent version for which the persistent store has been successfully initialised.
+    static var mostRecentWorkingVersion = UserSetting<String?>(key: "mostRecentWorkingVersion", defaultValue: nil)
 
     static var theme = WrappedUserSetting<Theme>(key: "theme", defaultValue: Theme.normal)
 

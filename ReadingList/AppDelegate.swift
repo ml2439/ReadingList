@@ -12,6 +12,8 @@ var appDelegate: AppDelegate {
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+    var storeMigrationFailed = false
+
     var syncCoordinator: SyncCoordinator!
     let reachability = Reachability()!
 
@@ -36,42 +38,64 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Initialise the persistent store on a background thread. The main thread will return and the LaunchScreen
         // storyboard will remain in place until this is completed, at which point the Main storyboard will be instantiated.
         DispatchQueue.global(qos: .userInteractive).async { [unowned self] in
-            PersistentStoreManager.initalisePersistentStore {
-                DispatchQueue.main.async {
-                    #if DEBUG
-                        DebugSettings.initialiseFromCommandLine()
-                    #endif
+            do {
+                try PersistentStoreManager.initalisePersistentStore {
+                    DispatchQueue.main.async {
+                        #if DEBUG
+                            DebugSettings.initialiseFromCommandLine()
+                        #endif
 
-                    // Use Query Generations for the view context
-                    try! PersistentStoreManager.container.viewContext.setQueryGenerationFrom(NSQueryGenerationToken.current)
+                        // Use Query Generations for the view context
+                        try! PersistentStoreManager.container.viewContext.setQueryGenerationFrom(NSQueryGenerationToken.current)
 
-                    // Initialise the Sync Coordinator which will maintain iCloud synchronisation
-                    self.syncCoordinator = SyncCoordinator(container: PersistentStoreManager.container)
-                    if UserSettings.iCloudSyncEnabled.value {
-                        self.syncCoordinator.start()
-                    }
+                        // Initialise the Sync Coordinator which will maintain iCloud synchronisation
+                        self.syncCoordinator = SyncCoordinator(container: PersistentStoreManager.container)
+                        if UserSettings.iCloudSyncEnabled.value {
+                            self.syncCoordinator.start()
+                        }
 
-                    // Set the root view controller
-                    self.window!.rootViewController = TabBarController()
+                        self.window!.rootViewController = TabBarController()
 
-                    // Initialise app-level theme, and monitor the set theme
-                    self.initialiseTheme()
-                    self.monitorThemeSetting()
+                        // Initialise app-level theme, and monitor the set theme
+                        self.initialiseTheme()
+                        self.monitorThemeSetting()
+                        UserSettings.mostRecentWorkingVersion.value = BuildInfo.appVersion
 
-                    // Once the store is loaded and the main storyboard instantiated, perform the quick action
-                    // or open the CSV file, is specified. This is done here rather than in application:open, for example,
-                    // in the case where the app is not yet launched.
-                    if let quickAction = quickAction {
-                        self.performQuickAction(QuickAction(rawValue: quickAction.type)!)
-                    } else if let csvFileUrl = csvFileUrl {
-                        self.openCsvImport(url: csvFileUrl)
+                        // Once the store is loaded and the main storyboard instantiated, perform the quick action
+                        // or open the CSV file, is specified. This is done here rather than in application:open, for example,
+                        // in the case where the app is not yet launched.
+                        if let quickAction = quickAction {
+                            self.performQuickAction(QuickAction(rawValue: quickAction.type)!)
+                        } else if let csvFileUrl = csvFileUrl {
+                            self.openCsvImport(url: csvFileUrl)
+                        }
                     }
                 }
+            } catch MigrationError.incompatibleStore {
+                guard let mostRecentWorkingVersion = UserSettings.mostRecentWorkingVersion.value else { fatalError("No recorded previously working version") }
+                guard mostRecentWorkingVersion != BuildInfo.appVersion else { fatalError("Migration error thrown for store of same version.") }
+                DispatchQueue.main.async {
+                    self.storeMigrationFailed = true
+                    self.presentIncompatibleDataAlert(dataVersion: mostRecentWorkingVersion)
+                }
+            } catch {
+                fatalError(error.localizedDescription)
             }
         }
 
         // If there was a QuickAction or URL-open, it is handled here, so prevent another handler from being called
         return quickAction == nil && csvFileUrl == nil
+    }
+
+    func presentIncompatibleDataAlert(dataVersion: String) {
+        let alert = UIAlertController(title: "Incompatible Data", message: """
+            The data on this device is not compatible with this version (\(BuildInfo.appVersion)) of Reading List.
+
+            You previously had version \(dataVersion), and have downgraded to version \(BuildInfo.appVersion). \
+            You will need to install version \(dataVersion) or later to be able to access your data.
+            """, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        window!.rootViewController!.present(alert, animated: true)
     }
 
     func setupSvProgressHud() {
@@ -102,6 +126,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         #endif
         UserEngagement.onAppOpen()
+
+        if storeMigrationFailed {
+            guard let mostRecentWorkingVersion = UserSettings.mostRecentWorkingVersion.value else { fatalError("mostRecentWorkingVersion was unexpectedly missing.") }
+            presentIncompatibleDataAlert(dataVersion: mostRecentWorkingVersion)
+        }
     }
 
     func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {

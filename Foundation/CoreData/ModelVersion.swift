@@ -21,7 +21,7 @@ public extension ModelVersion {
         return Self.orderedModelVersions[index + 1]
     }
 
-    init?(storeURL: URL) {
+    init?(storeURL: URL) throws {
         guard let metadata = try? NSPersistentStoreCoordinator.metadataForPersistentStore(ofType: NSSQLiteStoreType, at: storeURL, options: nil) else {
             return nil
         }
@@ -44,14 +44,7 @@ public extension ModelVersion {
             $0.managedObjectModel().isConfiguration(withName: nil, compatibleWithStoreMetadata: metadata)
         }
         guard let result = version else {
-            #if DEBUG
-                print("##### INCOMPATIBLE STORE DETECTED #####")
-                print("Deleting incompatible store; will initialise new store. This will cause a fatal error on a release build.")
-                NSPersistentStoreCoordinator().destroyAndDeleteStore(at: storeURL)
-                return nil
-            #else
-                fatalError("Current store did not match any model version")
-            #endif
+            throw MigrationError.incompatibleStore
         }
         self = result
     }
@@ -93,4 +86,8 @@ public final class MigrationStep {
         self.destination = destination
         self.mapping = mapping
     }
+}
+
+enum MigrationError: Error {
+    case incompatibleStore
 }

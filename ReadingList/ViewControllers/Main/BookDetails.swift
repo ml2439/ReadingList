@@ -39,7 +39,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         didSet { setupViewFromBook() }
     }
 
-    func setupViewFromBook() { //swiftlint:disable:this cyclomatic_complexity
+    func setupViewFromBook() {
         // Hide the whole view and nav bar buttons if there's no book
         guard let book = book else { setViewEnabled(false); return }
         setViewEnabled(true)
@@ -47,9 +47,6 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         cover.image = UIImage(optionalData: book.coverImage) ?? #imageLiteral(resourceName: "CoverPlaceholder")
         titleAuthorHeadings[0].text = book.title
         titleAuthorHeadings[1].text = Author.authorDisplay(book.authors)
-        if traitCollection.horizontalSizeClass == .regular && traitCollection.verticalSizeClass == .regular {
-            titleAuthorHeadings.forEach { $0.scaleFontBy(1.3) }
-        }
         (navigationItem.titleView as! UINavigationBarLabel).setTitle(book.title)
 
         switch book.readState {
@@ -145,6 +142,11 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         let titleLabel = UINavigationBarLabel()
         titleLabel.isHidden = true
         navigationItem.titleView = titleLabel
+
+        // On large devices, scale up the title and author labels
+        if traitCollection.horizontalSizeClass == .regular && traitCollection.verticalSizeClass == .regular {
+            titleAuthorHeadings.forEach { $0.scaleFontBy(1.3) }
+        }
 
         // Watch for changes in the managed object context
         NotificationCenter.default.addObserver(self, selector: #selector(saveOccurred(_:)), name: NSNotification.Name.NSManagedObjectContextDidSave, object: PersistentStoreManager.container.viewContext)
