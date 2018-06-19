@@ -9,7 +9,7 @@ public extension NSPersistentContainer {
     */
     convenience init(name: String, manuallyMigratedStoreAt storeURL: URL) {
         self.init(name: name)
-        self.persistentStoreDescriptions = [ {
+        persistentStoreDescriptions = [ {
             let description = NSPersistentStoreDescription(url: storeURL)
             description.shouldInferMappingModelAutomatically = false
             description.shouldMigrateStoreAutomatically = false
@@ -28,9 +28,9 @@ public extension NSPersistentContainer {
      Migrates (if necessary) the store to the latest version of the supplied Version type.
      When migrated, loads the persistent store; when complete calls the callback.
     */
-    func migrateAndLoad<Version: ModelVersion>(_ version: Version.Type, completion: @escaping () -> Void) {
-        self.migrateStoreIfRequired(version)
-        self.loadPersistentStores { _, error in
+    func migrateAndLoad<Version: ModelVersion>(_ version: Version.Type, completion: @escaping () -> Void) throws {
+        try migrateStoreIfRequired(version)
+        loadPersistentStores { _, error in
             guard error == nil else { fatalError("Error loading store") }
             completion()
         }
@@ -39,8 +39,8 @@ public extension NSPersistentContainer {
     /**
      Migrates the store to the latest version of the supplied Versions if necessary.
     */
-    func migrateStoreIfRequired<Version: ModelVersion>(_ version: Version.Type) {
-        guard let sourceVersion = Version(storeURL: storeURL) else {
+    func migrateStoreIfRequired<Version: ModelVersion>(_ version: Version.Type) throws {
+        guard let sourceVersion = try Version(storeURL: storeURL) else {
             print("No current store.")
             return
         }

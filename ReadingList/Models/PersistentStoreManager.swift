@@ -11,7 +11,7 @@ class PersistentStoreManager {
     /**
      Creates the NSPersistentContainer, migrating if necessary.
     */
-    static func initalisePersistentStore(completion: @escaping () -> Void) {
+    static func initalisePersistentStore(completion: @escaping () -> Void) throws {
         guard container == nil else { fatalError("Attempting to reinitialise the PersistentStoreManager") }
         let storeLocation = URL.applicationSupport.appendingPathComponent(storeFileName)
 
@@ -21,7 +21,7 @@ class PersistentStoreManager {
 
         // Migrate the store to the latest version if necessary and then initialise
         container = NSPersistentContainer(name: storeName, manuallyMigratedStoreAt: storeLocation)
-        container.migrateAndLoad(BooksModelVersion.self) {
+        try container.migrateAndLoad(BooksModelVersion.self) {
             self.container.viewContext.automaticallyMergesChangesFromParent = true
             self.container.viewContext.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
             completion()
