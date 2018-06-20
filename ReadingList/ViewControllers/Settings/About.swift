@@ -43,7 +43,7 @@ class About: UITableViewController {
             \(canSendEmail ? "." : " at \(Settings.feedbackEmailAddress).") \
             I'll do my best to respond.
             """, preferredStyle: .actionSheet)
-        controller.addAction(UIAlertAction(title: "OK", style: .default) { [unowned self] _ in
+        controller.addAction(UIAlertAction(title: "OK", style: canSendEmail ? .default : .cancel) { [unowned self] _ in
             if canSendEmail {
                 self.presentContactMailComposeWindow()
             }
@@ -82,7 +82,7 @@ class About: UITableViewController {
             })
             controller.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         } else {
-            controller.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            controller.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
         }
         controller.popoverPresentationController?.setSourceCell(atIndexPath: indexPath, inTable: tableView, arrowDirections: [.up, .down])
         present(controller, animated: true)
