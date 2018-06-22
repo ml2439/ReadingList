@@ -4,16 +4,21 @@ import CloudKit
 
 class BookDeleter: UpstreamChangeProcessor {
 
-    let debugDescription = String(describing: BookDeleter.self)
+    init(_ context: NSManagedObjectContext) {
+        self.context = context
+    }
 
-    func processLocalChanges(_ pendingRemoteDeletes: [NSManagedObject], context: NSManagedObjectContext, remote: BookCloudKitRemote) {
+    let debugDescription = String(describing: BookDeleter.self)
+    let context: NSManagedObjectContext
+
+    func processLocalChanges(_ pendingRemoteDeletes: [NSManagedObject], remote: BookCloudKitRemote) {
         let pendingRemoteDeletes = pendingRemoteDeletes as! [PendingRemoteDeletionItem]
 
         remote.remove(pendingRemoteDeletes.map { $0.recordID }) { error in
-            context.perform {
+            self.context.perform {
                 guard error == nil else { print(error!); return }
                 pendingRemoteDeletes.forEach { $0.delete() }
-                context.saveAndLogIfErrored()
+                self.context.saveAndLogIfErrored()
             }
         }
     }

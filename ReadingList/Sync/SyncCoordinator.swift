@@ -21,8 +21,8 @@ class SyncCoordinator {
         syncContext.name = "syncContext"
         syncContext.mergePolicy = NSMergePolicy.mergeByPropertyStoreTrump // FUTURE: Add a custom merge policy
 
-        self.upstreamChangeProcessors = [BookInserter(), BookUpdater(), BookDeleter()]
-        self.downstreamChangeProcessors = [BookDownloader()]
+        self.upstreamChangeProcessors = [BookInserter(syncContext), BookUpdater(syncContext), BookDeleter(syncContext)]
+        self.downstreamChangeProcessors = [BookDownloader(syncContext)]
     }
 
     /**
@@ -100,7 +100,7 @@ class SyncCoordinator {
                 object($0, matches: changeProcessor.unprocessedChangedObjectsRequest)
             }
             guard !matching.isEmpty else { continue }
-            changeProcessor.processLocalChanges(matching, context: syncContext, remote: remote)
+            changeProcessor.processLocalChanges(matching, remote: remote)
         }
     }
 
@@ -116,7 +116,7 @@ class SyncCoordinator {
                 fetchRequest.returnsObjectsAsFaults = false
                 let results = try! self.syncContext.fetch(fetchRequest) as! [NSManagedObject]
                 if !results.isEmpty {
-                    changeProcessor.processLocalChanges(results, context: self.syncContext, remote: self.remote)
+                    changeProcessor.processLocalChanges(results, remote: self.remote)
                 }
             }
         }
@@ -128,7 +128,7 @@ class SyncCoordinator {
             self.remote.fetchRecordChanges(changeToken: changeToken) { changes in
                 guard !changes.isEmpty else { return }
                 for changeProcessor in self.downstreamChangeProcessors {
-                    changeProcessor.processRemoteChanges(from: self.remote.bookZoneID, changes: changes, context: self.syncContext, completion: nil)
+                    changeProcessor.processRemoteChanges(from: self.remote.bookZoneID, changes: changes, completion: nil)
                 }
             }
         }

@@ -4,7 +4,12 @@ import CloudKit
 
 class BookInserter: BookUpstreamChangeProcessor {
 
+    init(_ context: NSManagedObjectContext) {
+        self.context = context
+    }
+
     let debugDescription = String(describing: BookInserter.self)
+    let context: NSManagedObjectContext
 
     func handleError(_ books: [CKRecordID: Book], _ ckError: CKError) {
         switch ckError.code {
@@ -22,7 +27,7 @@ class BookInserter: BookUpstreamChangeProcessor {
 
     var booksBeingProcessed = Set<Book>()
 
-    func processLocalChanges(_ books: [Book], context: NSManagedObjectContext, remote: BookCloudKitRemote) {
+    func processLocalChanges(_ books: [Book], remote: BookCloudKitRemote) {
 
         // We MUST not attempt the insertion of a book which is already underway.
         let booksAndCKRecords = books.filter { !booksBeingProcessed.contains($0) }
@@ -36,7 +41,7 @@ class BookInserter: BookUpstreamChangeProcessor {
 
         // Start the upload
         remote.upload(booksAndCKRecords.map { $0.ckRecord }) { [unowned self] error in
-            context.perform {
+            self.context.perform {
                 if let error = error, case let ckError = error as? CKError {
                     self.handleError(booksByRemoteID, ckError!)
                 }
@@ -45,7 +50,7 @@ class BookInserter: BookUpstreamChangeProcessor {
 
                     // If the book was locally deleted in the meantime, we enqueue a remote deletion
                     guard !localBook.isDeleted else {
-                        PendingRemoteDeletionItem(context: context, ckRecordID: ckRecord.recordID)
+                        PendingRemoteDeletionItem(context: self.context, ckRecordID: ckRecord.recordID)
                         continue
                     }
 
@@ -61,7 +66,7 @@ class BookInserter: BookUpstreamChangeProcessor {
 
                     self.booksBeingProcessed.remove(localBook)
                 }
-                context.saveAndLogIfErrored()
+                self.context.saveAndLogIfErrored()
             }
         }
     }

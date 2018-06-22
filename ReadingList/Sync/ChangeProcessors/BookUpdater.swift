@@ -4,20 +4,25 @@ import CloudKit
 
 class BookUpdater: BookUpstreamChangeProcessor {
 
+    init(_ context: NSManagedObjectContext) {
+        self.context = context
+    }
+
     let debugDescription = String(describing: BookUpdater.self)
+    let context: NSManagedObjectContext
 
     func handleItemError(_ ckError: CKError) {
         print("error: \(ckError)")
     }
 
-    func processLocalChanges(_ books: [Book], context: NSManagedObjectContext, remote: BookCloudKitRemote) {
+    func processLocalChanges(_ books: [Book], remote: BookCloudKitRemote) {
         let booksAndRecords = books.map { book -> (book: Book, ckRecord: CKRecord, delta: [BookCKRecordKey]) in
             let ckRecord = book.CKRecordForDifferentialUpdate()
             return (book, ckRecord, ckRecord.changedBookKeys())
         }
 
         remote.upload(booksAndRecords.map { $0.ckRecord }) { [unowned self] error in
-            context.perform {
+            self.context.perform {
                 var failures: [AnyHashable: Error]? = nil
                 if let ckError = error as? CKError {
                     //if ckError.code == CKError.Code.networkFailure
@@ -42,7 +47,7 @@ class BookUpdater: BookUpstreamChangeProcessor {
                     let equalKeys = delta.filter { CKRecord.valuesAreEqual(left: ckRecord[$0], right: $0.value(from: localBook)) }
                     localBook.removePendingRemoteUpdateKeys(equalKeys)
                 }
-                context.saveAndLogIfErrored()
+                self.context.saveAndLogIfErrored()
             }
         }
     }

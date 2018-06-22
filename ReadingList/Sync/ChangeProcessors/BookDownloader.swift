@@ -4,37 +4,41 @@ import CloudKit
 
 class BookDownloader: DownstreamChangeProcessor {
 
-    let debugDescription = String(describing: BookDownloader.self)
+    init(_ context: NSManagedObjectContext) {
+        self.context = context
+    }
 
-    func processRemoteChanges(from zone: CKRecordZoneID, changes: CKChangeCollection,
-                              context: NSManagedObjectContext, completion: (() -> Void)?) {
+    let debugDescription = String(describing: BookDownloader.self)
+    let context: NSManagedObjectContext
+
+    func processRemoteChanges(from zone: CKRecordZoneID, changes: CKChangeCollection, completion: (() -> Void)?) {
         context.perform {
-            self.insertBooks(changes.changedRecords, into: context)
-            self.deleteBooks(with: changes.deletedRecordIDs, in: context)
+            self.insertBooks(changes.changedRecords)
+            self.deleteBooks(with: changes.deletedRecordIDs)
 
             // Store the updated change token
-            let changeToken = ChangeToken.get(fromContext: context, for: zone) ?? ChangeToken(context: context, zoneID: zone)
+            let changeToken = ChangeToken.get(fromContext: self.context, for: zone) ?? ChangeToken(context: self.context, zoneID: zone)
             changeToken.changeToken = changes.newChangeToken
             print("Updated change token")
 
-            context.saveAndLogIfErrored()
+            self.context.saveAndLogIfErrored()
             completion?()
         }
     }
 
-    private func deleteBooks(with ids: [CKRecordID], in context: NSManagedObjectContext) {
+    private func deleteBooks(with ids: [CKRecordID]) {
         guard !ids.isEmpty else { return }
         print("\(debugDescription) processing \(ids.count) remote deletions")
 
-        let booksToDelete = locallyPresentBooks(withRemoteIDs: ids, in: context)
+        let booksToDelete = locallyPresentBooks(withRemoteIDs: ids)
         booksToDelete.forEach { $0.delete() }
     }
 
-    private func insertBooks(_ remoteBooks: [CKRecord], into context: NSManagedObjectContext) {
+    private func insertBooks(_ remoteBooks: [CKRecord]) {
         guard !remoteBooks.isEmpty else { return }
         print("\(debugDescription) processing \(remoteBooks.count) remote insertions")
 
-        let preExistingBooks = locallyPresentBooks(withRemoteIDs: remoteBooks.map { $0.recordID }, in: context)
+        let preExistingBooks = locallyPresentBooks(withRemoteIDs: remoteBooks.map { $0.recordID })
 
         for remoteBook in remoteBooks {
             if let localBook = preExistingBooks.first(where: { $0.remoteIdentifier == remoteBook.recordID.recordName }) {
@@ -46,7 +50,7 @@ class BookDownloader: DownstreamChangeProcessor {
         }
     }
 
-    private func locallyPresentBooks(withRemoteIDs remoteIDs: [CKRecordID], in context: NSManagedObjectContext) -> [Book] {
+    private func locallyPresentBooks(withRemoteIDs remoteIDs: [CKRecordID]) -> [Book] {
         let fetchRequest = NSManagedObject.fetchRequest(Book.self)
         fetchRequest.predicate = NSPredicate.and([
             Book.withRemoteIdentifiers(remoteIDs.map { $0.recordName })
