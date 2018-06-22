@@ -278,6 +278,10 @@ extension Book {
         }
     }
 
+    static func withRemoteIdentifier(_ id: String) -> NSPredicate {
+        return NSPredicate(format: "%K == %@", #keyPath(Book.remoteIdentifier), id)
+    }
+
     static func withRemoteIdentifiers(_ ids: [String]) -> NSPredicate {
         return NSPredicate(format: "%K in %@", #keyPath(Book.remoteIdentifier), ids)
     }
