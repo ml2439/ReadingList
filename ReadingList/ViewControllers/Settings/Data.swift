@@ -7,13 +7,11 @@ import Crashlytics
 class DataVC: UITableViewController {
 
     var importUrl: URL?
-    @IBOutlet private weak var iCloudEnabledSwitch: UISwitch!
     var csvImporter: BookCSVImporter?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         monitorThemeSetting()
-        iCloudEnabledSwitch.isOn = UserSettings.iCloudSyncEnabled.value
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -31,16 +29,6 @@ class DataVC: UITableViewController {
         cell.backgroundColor = theme.cellBackgroundColor
         cell.selectedBackgroundColor = theme.cellSeparatorColor
         return cell
-    }
-
-    @IBAction private func iCloudSyncSwitchChanged(_ sender: UISwitch) {
-        let iCloudSyncOn = sender.isOn
-        UserSettings.iCloudSyncEnabled.value = iCloudSyncOn
-        if iCloudSyncOn {
-            appDelegate.syncCoordinator.start()
-        } else {
-            appDelegate.syncCoordinator.stop()
-        }
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

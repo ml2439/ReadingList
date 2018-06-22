@@ -53,41 +53,6 @@ class Settings: UITableViewController {
         switch (indexPath.section, indexPath.row) {
         case (0, 1):
             UIApplication.shared.open(URL(string: "itms-apps://\(Settings.appStoreAddress)?action=write-review")!, options: [:])
-        case (1, 3):
-            let canSendMail = MFMailComposeViewController.canSendMail()
-            var message = """
-                iCloud Sync is currently being developed. When available, this will synchronise books between different devices. \
-                Until this is available, you can move your book data between devices manually by exporting and importing.
-
-                If you want to help the development of iCloud Sync, you can join the beta program.
-                """
-            if !canSendMail {
-                message += " To become a beta tester, please email \(Settings.feedbackEmailAddress) with the subject \"\(Settings.joinBetaEmailSubject)\"."
-            }
-            let alert = UIAlertController(title: "iCloud Sync coming soon", message: message, preferredStyle: .actionSheet)
-            alert.addAction(UIAlertAction(title: "Manual Export", style: .default) { [unowned self] _ in
-                self.performSegue(withIdentifier: "settingsData", sender: self)
-                if self.splitViewController!.isSplit {
-                    self.tableView.selectRow(at: self.dataIndexPath, animated: false, scrollPosition: .none)
-                }
-            })
-            if canSendMail {
-                alert.addAction(UIAlertAction(title: "Join Beta", style: .default) { [unowned self] _ in
-                    guard BuildInfo.appConfiguration != .testFlight else {
-                        let controller = UIAlertController(title: "Already a Beta Tester", message: "You're already running a beta version of the app.", preferredStyle: .alert)
-                        controller.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                        self.present(controller, animated: true)
-                        return
-                    }
-
-                    let betaWindow = About.betaMailComposeWindow()
-                    betaWindow.mailComposeDelegate = self
-                    self.present(betaWindow, animated: true)
-                })
-            }
-            alert.addAction(UIAlertAction(title: "Dismiss", style: .cancel, handler: nil))
-            alert.popoverPresentationController?.setSourceCell(atIndexPath: indexPath, inTable: tableView)
-            present(alert, animated: true)
         default:
             return
         }

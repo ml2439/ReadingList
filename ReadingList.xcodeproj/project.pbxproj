@@ -13,6 +13,7 @@
 		1C032F2020C29F4D00CDBEF8 /* BookDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C032F1F20C29F4D00CDBEF8 /* BookDownloader.swift */; };
 		1C032F2320C29FED00CDBEF8 /* BookChangeProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C032F2220C29FED00CDBEF8 /* BookChangeProcessor.swift */; };
 		1C0A50E620D84F37002BFEBE /* BookMapping_11_12.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 1C0A50E520D84F37002BFEBE /* BookMapping_11_12.xcmappingmodel */; };
+		1C0A50E820DD9A88002BFEBE /* iCloudSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0A50E720DD9A88002BFEBE /* iCloudSync.swift */; };
 		1C0DC734204B09610044B377 /* BookCSVExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0DC733204B09610044B377 /* BookCSVExport.swift */; };
 		1C0DC736204B0A230044B377 /* BookReadState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0DC735204B0A230044B377 /* BookReadState.swift */; };
 		1C0DC738204B119E0044B377 /* DebugData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0DC737204B119E0044B377 /* DebugData.swift */; };
@@ -157,6 +158,7 @@
 		1C032F1F20C29F4D00CDBEF8 /* BookDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookDownloader.swift; sourceTree = "<group>"; };
 		1C032F2220C29FED00CDBEF8 /* BookChangeProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookChangeProcessor.swift; sourceTree = "<group>"; };
 		1C0A50E520D84F37002BFEBE /* BookMapping_11_12.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = BookMapping_11_12.xcmappingmodel; sourceTree = "<group>"; };
+		1C0A50E720DD9A88002BFEBE /* iCloudSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iCloudSync.swift; sourceTree = "<group>"; };
 		1C0DC733204B09610044B377 /* BookCSVExport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookCSVExport.swift; sourceTree = "<group>"; };
 		1C0DC735204B0A230044B377 /* BookReadState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookReadState.swift; sourceTree = "<group>"; };
 		1C0DC737204B119E0044B377 /* DebugData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugData.swift; sourceTree = "<group>"; };
@@ -576,6 +578,7 @@
 				1C87F5BB1FAE582A00E44043 /* Data.swift */,
 				49B2CEF71F39A4D300C6B45D /* SortOrder.swift */,
 				49CEB8091E9D8C06003FD859 /* Debug.swift */,
+				1C0A50E720DD9A88002BFEBE /* iCloudSync.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -1159,6 +1162,7 @@
 				1CD1D2BE202BCC7500ACA5D9 /* HairlineConstraint.swift in Sources */,
 				49B2CEF81F39A4D300C6B45D /* SortOrder.swift in Sources */,
 				1C75AEFE2042F3A800FB9456 /* BookMapping_8_9.xcmappingmodel in Sources */,
+				1C0A50E820DD9A88002BFEBE /* iCloudSync.swift in Sources */,
 				1CD1125E202DF7F000BE3E1D /* BooksModelVersions.swift in Sources */,
 				1C42F65D20645C510024CC84 /* Themeable.swift in Sources */,
 				1C3954502030D3CB007ACCB1 /* EurekaExtensions.swift in Sources */,

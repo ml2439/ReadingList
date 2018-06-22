@@ -174,9 +174,6 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Data" largeTitleDisplayMode="never" id="0ao-jX-TXZ"/>
-                    <connections>
-                        <outlet property="iCloudEnabledSwitch" destination="FLE-Sc-NYu" id="Dpc-9i-CvA"/>
-                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="RmO-MQ-lf1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -345,15 +342,15 @@
                                             <segue destination="R7D-Jc-uwA" kind="showDetail" identifier="settingsData" id="aeE-7W-9Cm"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" textLabel="elX-Yh-5QX" imageView="0hW-ap-1Hk" style="IBUITableViewCellStyleDefault" id="m01-SV-sOh">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="elX-Yh-5QX" imageView="0hW-ap-1Hk" style="IBUITableViewCellStyleDefault" id="m01-SV-sOh">
                                         <rect key="frame" x="0.0" y="442" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="m01-SV-sOh" id="AuR-rs-Q8X">
-                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="286" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="iCloud Sync" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="elX-Yh-5QX">
-                                                    <rect key="frame" x="60" y="0.0" width="244" height="43.5"/>
+                                                    <rect key="frame" x="60" y="0.0" width="225" height="43.5"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                     <nil key="textColor"/>
@@ -365,6 +362,9 @@
                                                 </imageView>
                                             </subviews>
                                         </tableViewCellContentView>
+                                        <connections>
+                                            <segue destination="VhE-L4-bQD" kind="showDetail" id="TeI-Zm-QpX"/>
+                                        </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="CX3-Ly-Rej" imageView="qhK-nz-jWt" style="IBUITableViewCellStyleDefault" id="CuL-UA-pXM">
                                         <rect key="frame" x="0.0" y="486" width="320" height="44"/>
@@ -1052,6 +1052,79 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7sO-UY-kRd" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2294" y="2662"/>
+        </scene>
+        <!--iCloud Sync-->
+        <scene sceneID="YCD-UF-frf">
+            <objects>
+                <tableViewController extendedLayoutIncludesOpaqueBars="YES" id="A4m-5M-jom" customClass="CloudSync" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" sectionFooterHeight="-1" id="aI5-fW-KHB">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <sections>
+                            <tableViewSection footerTitle="Enable iCloud sync to keep your books stored in iCloud, and so that changes made on one device appear in all your devices." id="NYs-J7-Fcc">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="44" id="ihP-qj-56d">
+                                        <rect key="frame" x="0.0" y="35" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="ihP-qj-56d" id="mdC-li-Ns2">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enabled" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HBy-C5-EeZ">
+                                                    <rect key="frame" x="16" y="11" width="239" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="n2t-6g-006">
+                                                    <rect key="frame" x="255" y="6" width="51" height="31"/>
+                                                    <connections>
+                                                        <action selector="iCloudSyncSwitchChanged:" destination="A4m-5M-jom" eventType="valueChanged" id="MPX-TP-Rw2"/>
+                                                    </connections>
+                                                </switch>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="HBy-C5-EeZ" firstAttribute="leading" secondItem="mdC-li-Ns2" secondAttribute="leadingMargin" id="Fcn-ry-F8X"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="n2t-6g-006" secondAttribute="trailing" id="ftg-aK-IzB"/>
+                                                <constraint firstItem="n2t-6g-006" firstAttribute="centerY" secondItem="mdC-li-Ns2" secondAttribute="centerY" id="lvC-fw-YjX"/>
+                                                <constraint firstItem="HBy-C5-EeZ" firstAttribute="centerY" secondItem="mdC-li-Ns2" secondAttribute="centerY" id="pck-5U-Ozj"/>
+                                                <constraint firstItem="n2t-6g-006" firstAttribute="leading" secondItem="HBy-C5-EeZ" secondAttribute="trailing" id="xhy-4a-nXH"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                        </sections>
+                        <connections>
+                            <outlet property="dataSource" destination="A4m-5M-jom" id="y0k-hN-K36"/>
+                            <outlet property="delegate" destination="A4m-5M-jom" id="kYb-BY-ECl"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="iCloud Sync" largeTitleDisplayMode="never" id="Dyo-jc-C32"/>
+                    <connections>
+                        <outlet property="enabledSwitch" destination="n2t-6g-006" id="PnR-R7-vkm"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="WtQ-iA-N5y" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="116" y="2055"/>
+        </scene>
+        <!--Themed Navigation Controller-->
+        <scene sceneID="e7Q-eP-qnY">
+            <objects>
+                <navigationController id="VhE-L4-bQD" customClass="ThemedNavigationController" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="K5g-5j-rY5">
+                        <rect key="frame" x="0.0" y="20" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="A4m-5M-jom" kind="relationship" relationship="rootViewController" id="U2t-oW-6zL"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="crk-Th-WCB" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-799" y="2054"/>
         </scene>
     </scenes>
     <resources>
