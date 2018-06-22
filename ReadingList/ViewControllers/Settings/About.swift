@@ -43,7 +43,7 @@ class About: UITableViewController {
             \(canSendEmail ? "." : " at \(Settings.feedbackEmailAddress).") \
             I'll do my best to respond.
             """, preferredStyle: .actionSheet)
-        controller.addAction(UIAlertAction(title: "OK", style: .default) { [unowned self] _ in
+        controller.addAction(UIAlertAction(title: "OK", style: canSendEmail ? .default : .cancel) { [unowned self] _ in
             if canSendEmail {
                 self.presentContactMailComposeWindow()
             }
@@ -57,13 +57,6 @@ class About: UITableViewController {
     }
 
     private func joinBeta(_ indexPath: IndexPath) {
-        guard BuildInfo.appConfiguration != .testFlight else {
-            let controller = UIAlertController(title: "Already a Beta Tester", message: "You're already running a beta version of the app.", preferredStyle: .alert)
-            controller.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-            present(controller, animated: true)
-            return
-        }
-
         let canSendMail = MFMailComposeViewController.canSendMail()
 
         var betaTestPopupText = """
@@ -71,26 +64,34 @@ class About: UITableViewController {
             This will give you early access to app updates in order to test new features.
             """
         if !canSendMail {
-            betaTestPopupText += "\n\nTo become a beta tester, please email \(Settings.feedbackEmailAddress) with the subject \"Join Reading List Beta\"."
+            betaTestPopupText += "\n\nTo become a beta tester, please email \(Settings.feedbackEmailAddress) with the subject \"\(Settings.joinBetaEmailSubject)\"."
         }
         let controller = UIAlertController(title: "Become a Beta Tester?", message: betaTestPopupText, preferredStyle: .actionSheet)
         if canSendMail {
             controller.addAction(UIAlertAction(title: "Join", style: .default) { [unowned self] _ in
-                self.presentBetaMailComposeWindow()
+                guard BuildInfo.appConfiguration != .testFlight else {
+                    let controller = UIAlertController(title: "Already a Beta Tester", message: "You're already running a beta version of the app.", preferredStyle: .alert)
+                    controller.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                    self.present(controller, animated: true)
+                    return
+                }
+
+                let betaWindow = About.betaMailComposeWindow()
+                betaWindow.mailComposeDelegate = self
+                self.present(betaWindow, animated: true)
             })
             controller.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         } else {
-            controller.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            controller.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
         }
         controller.popoverPresentationController?.setSourceCell(atIndexPath: indexPath, inTable: tableView, arrowDirections: [.up, .down])
         present(controller, animated: true)
     }
 
-    private func presentBetaMailComposeWindow() {
+    static func betaMailComposeWindow() -> MFMailComposeViewController {
         let mailComposer = MFMailComposeViewController()
-        mailComposer.mailComposeDelegate = self
         mailComposer.setToRecipients(["Reading List Developer <\(Settings.feedbackEmailAddress)>"])
-        mailComposer.setSubject("Join Reading List Beta")
+        mailComposer.setSubject(Settings.joinBetaEmailSubject)
         let messageBody = """
         To enroll in the Reading List beta, please send this from the email address associated with your Apple ID, or type that email address here:
 
@@ -100,7 +101,7 @@ class About: UITableViewController {
         Device: \(UIDevice.current.modelName)
         """
         mailComposer.setMessageBody(messageBody, isHTML: false)
-        present(mailComposer, animated: true)
+        return mailComposer
     }
 
     private func presentContactMailComposeWindow() {

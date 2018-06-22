@@ -99,44 +99,14 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <sections>
-                            <tableViewSection footerTitle="Enable iCloud Sync to access your books on all your devices." id="ay2-no-muD">
-                                <cells>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" id="5xf-XG-Z6O">
-                                        <rect key="frame" x="0.0" y="35" width="320" height="44"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="5xf-XG-Z6O" id="hXK-Mi-9hk">
-                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FLE-Sc-NYu">
-                                                    <rect key="frame" x="255" y="6" width="51" height="31"/>
-                                                    <connections>
-                                                        <action selector="iCloudSyncSwitchChanged:" destination="cE8-jq-0ch" eventType="valueChanged" id="kdU-yB-6vn"/>
-                                                    </connections>
-                                                </switch>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="iCloud Sync" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YxZ-Gh-B4G">
-                                                    <rect key="frame" x="16" y="11" width="239" height="22"/>
-                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                            </subviews>
-                                            <constraints>
-                                                <constraint firstItem="YxZ-Gh-B4G" firstAttribute="leading" secondItem="hXK-Mi-9hk" secondAttribute="leadingMargin" id="15v-Kq-w1T"/>
-                                                <constraint firstAttribute="bottomMargin" secondItem="YxZ-Gh-B4G" secondAttribute="bottom" id="8GP-F9-J91"/>
-                                                <constraint firstItem="FLE-Sc-NYu" firstAttribute="leading" secondItem="YxZ-Gh-B4G" secondAttribute="trailing" id="8da-RD-AE0"/>
-                                                <constraint firstAttribute="trailingMargin" secondItem="FLE-Sc-NYu" secondAttribute="trailing" id="Glp-BB-8rh"/>
-                                                <constraint firstItem="YxZ-Gh-B4G" firstAttribute="top" secondItem="hXK-Mi-9hk" secondAttribute="topMargin" id="HJC-26-XMR"/>
-                                                <constraint firstItem="FLE-Sc-NYu" firstAttribute="centerY" secondItem="hXK-Mi-9hk" secondAttribute="centerY" id="ZQs-cl-5O8"/>
-                                            </constraints>
-                                        </tableViewCellContentView>
-                                    </tableViewCell>
-                                </cells>
+                            <tableViewSection id="UI9-V5-Ma9">
+                                <string key="footerTitle">Export and Import can be used to move books between devices. Create an export of your books below, and send or share the file with your other device. On the other device, Import from the file to copy the books.</string>
+                                <cells/>
                             </tableViewSection>
                             <tableViewSection footerTitle="Export to a CSV file. CSV files can be opened by most spreadsheet software." id="UcO-P8-j3q">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" textLabel="Qju-Ni-VDK" style="IBUITableViewCellStyleDefault" id="JVj-bo-1K2">
-                                        <rect key="frame" x="0.0" y="142.5" width="320" height="44"/>
+                                        <rect key="frame" x="0.0" y="146.5" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="JVj-bo-1K2" id="nTf-sn-HE4">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
@@ -158,7 +128,7 @@
                                 <string key="footerTitle">Import from a CSV file. Generate an export file first to see the data format. Book covers will be downloaded for rows with a Google Books ID. Duplicates and invalid entries will be skipped.  Note: Title and Author cells are mandatory. Authors should be separated by semicolons and be entered in the form: "Lastname, Firstnames". Subjects should be separated by semicolons.</string>
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" textLabel="OTY-52-vzH" style="IBUITableViewCellStyleDefault" id="3l5-ie-WrC">
-                                        <rect key="frame" x="0.0" y="250" width="320" height="44"/>
+                                        <rect key="frame" x="0.0" y="254" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="3l5-ie-WrC" id="0Uf-eX-pTr">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
@@ -179,7 +149,7 @@
                             <tableViewSection footerTitle="This will delete all books and lists from this device. This is not reversible!" id="Q3j-ra-yin">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" textLabel="3qq-0f-zF3" style="IBUITableViewCellStyleDefault" id="ffS-bL-b9r">
-                                        <rect key="frame" x="0.0" y="485.5" width="320" height="44"/>
+                                        <rect key="frame" x="0.0" y="489.5" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="ffS-bL-b9r" id="RXT-Vi-A5P">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
@@ -375,28 +345,49 @@
                                             <segue destination="R7D-Jc-uwA" kind="showDetail" identifier="settingsData" id="aeE-7W-9Cm"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="elX-Yh-5QX" imageView="0hW-ap-1Hk" style="IBUITableViewCellStyleDefault" id="m01-SV-sOh">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" textLabel="elX-Yh-5QX" imageView="0hW-ap-1Hk" style="IBUITableViewCellStyleDefault" id="m01-SV-sOh">
                                         <rect key="frame" x="0.0" y="442" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="m01-SV-sOh" id="AuR-rs-Q8X">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="iCloud Sync" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="elX-Yh-5QX">
+                                                    <rect key="frame" x="60" y="0.0" width="244" height="43.5"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" image="Cloud" id="0hW-ap-1Hk">
+                                                    <rect key="frame" x="16" y="7" width="29" height="29"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                </imageView>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="CX3-Ly-Rej" imageView="qhK-nz-jWt" style="IBUITableViewCellStyleDefault" id="CuL-UA-pXM">
+                                        <rect key="frame" x="0.0" y="486" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="CuL-UA-pXM" id="oVm-FW-cNI">
                                             <rect key="frame" x="0.0" y="0.0" width="286" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Debug" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="elX-Yh-5QX">
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Debug" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="CX3-Ly-Rej">
                                                     <rect key="frame" x="60" y="0.0" width="225" height="43.5"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" image="Debug" id="0hW-ap-1Hk">
+                                                <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" image="Debug" id="qhK-nz-jWt">
                                                     <rect key="frame" x="16" y="7" width="29" height="29"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </imageView>
                                             </subviews>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <segue destination="DtC-Ho-Zzw" kind="showDetail" id="EtB-BB-XOS"/>
+                                            <segue destination="DtC-Ho-Zzw" kind="showDetail" id="fNQ-LN-vfT"/>
                                         </connections>
                                     </tableViewCell>
                                 </cells>
@@ -1067,6 +1058,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         <image name="About" width="29" height="29"/>
         <image name="Attributions" width="29" height="29"/>
         <image name="Beta" width="29" height="29"/>
+        <image name="Cloud" width="29" height="29"/>
         <image name="Contact" width="29" height="29"/>
         <image name="Data" width="29" height="29"/>
         <image name="Debug" width="29" height="29"/>

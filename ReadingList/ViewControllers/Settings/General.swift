@@ -16,6 +16,7 @@ class General: FormViewController {
                     }
                     $0.onChange { row in
                         UserSettings.useLargeTitles.value = row.value!
+                        UserEngagement.logEvent(.changeLargeTitles)
                         NotificationCenter.default.post(name: NSNotification.Name.LargeTitleSettingChanged, object: nil)
                     }
                 }
