@@ -156,17 +156,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
-    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        print("did register")
-    }
-
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
-        print("failed to register")
+        print("Failed to register for remote notifications")
     }
 
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         print("Remote notification received")
-        guard syncCoordinator.remote.isInitialised else { return }
+        guard UserSettings.iCloudSyncEnabled.value && syncCoordinator.remote.isInitialised else { return }
         syncCoordinator.processPendingRemoteChanges(applicationCallback: completionHandler)
     }
 
@@ -215,14 +211,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func monitorNetworkReachability() {
         do {
             try reachability.startNotifier()
-            NotificationCenter.default.addObserver(self, selector: #selector(networkConnectivityDidChange(note:)), name: .reachabilityChanged, object: reachability)
+            NotificationCenter.default.addObserver(self, selector: #selector(networkConnectivityDidChange), name: .reachabilityChanged, object: nil)
         } catch {
             print("Error starting reachability notifier")
         }
     }
 
-    @objc func networkConnectivityDidChange(note: Notification) {
-        let reachability = note.object as! Reachability
+    @objc func networkConnectivityDidChange() {
         if reachability.connection != .none {
             syncCoordinator?.processPendingChanges()
         }
