@@ -45,21 +45,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                             DebugSettings.initialiseFromCommandLine()
                         #endif
 
-                        // Use Query Generations for the view context
-                        try! PersistentStoreManager.container.viewContext.setQueryGenerationFrom(NSQueryGenerationToken.current)
-
-                        // Initialise the Sync Coordinator which will maintain iCloud synchronisation
-                        self.syncCoordinator = SyncCoordinator(container: PersistentStoreManager.container)
-                        if UserSettings.iCloudSyncEnabled.value {
-                            self.syncCoordinator.start()
-                        }
-
                         self.window!.rootViewController = TabBarController()
 
                         // Initialise app-level theme, and monitor the set theme
                         self.initialiseTheme()
                         self.monitorThemeSetting()
                         UserSettings.mostRecentWorkingVersion.value = BuildInfo.appVersion
+
+                        // Initialise the Sync Coordinator which will maintain iCloud synchronisation
+                        self.syncCoordinator = SyncCoordinator(container: PersistentStoreManager.container)
+                        if UserSettings.iCloudSyncEnabled.value {
+                            self.syncCoordinator.remote.initialise { error in
+                                guard error == nil else { return }
+                                self.syncCoordinator.start()
+                            }
+                        }
 
                         // Once the store is loaded and the main storyboard instantiated, perform the quick action
                         // or open the CSV file, is specified. This is done here rather than in application:open, for example,

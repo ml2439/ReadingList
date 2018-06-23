@@ -1,5 +1,7 @@
 import Foundation
 import UIKit
+import CloudKit
+import SVProgressHUD
 
 class CloudSync: UITableViewController {
 
@@ -24,11 +26,35 @@ class CloudSync: UITableViewController {
 
     @IBAction private func iCloudSyncSwitchChanged(_ sender: UISwitch) {
         let iCloudSyncOn = sender.isOn
-        UserSettings.iCloudSyncEnabled.value = iCloudSyncOn
         if iCloudSyncOn {
-            appDelegate.syncCoordinator.start()
+            SVProgressHUD.show()
+            appDelegate.syncCoordinator.remote.initialise { error in
+                SVProgressHUD.dismiss()
+                if let error = error {
+                    self.handleRemoteInitialiseError(error: error)
+                    sender.setOn(false, animated: true)
+                } else {
+                    UserSettings.iCloudSyncEnabled.value = iCloudSyncOn
+                    appDelegate.syncCoordinator.start()
+                }
+            }
         } else {
             appDelegate.syncCoordinator.stop()
+        }
+    }
+
+    private func handleRemoteInitialiseError(error: Error) {
+        guard let ckError = error as? CKError else { fatalError("Unexpected error type") }
+        
+        switch ckError.code {
+        case .notAuthenticated:
+            let alert = UIAlertController(title: "Not Signed In", message: "iCloud sync could not be enabled because you are not signed in to iCloud.", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            present(alert, animated: true)
+        default:
+            let alert = UIAlertController(title: "Could not enable iCloud sync", message: "An error occurred enabling iCloud sync.", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            present(alert, animated: true)
         }
     }
 }

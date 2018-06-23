@@ -18,13 +18,13 @@ class BookCloudKitRemote {
         return bookZoneID != nil
     }
 
-    func initialise(completion: @escaping () -> Void) {
+    func initialise(completion: @escaping (Error?) -> Void) {
         if let userRecordName = UserDefaults.standard.string(forKey: userRecordNameKey) {
             createZoneAndSubscription(userRecordName: userRecordName, completion: completion)
         } else {
             CKContainer.default().fetchUserRecordID { ckRecordID, error in
                 if let error = error {
-                    print("Error \(error)")
+                    completion(error)
                 } else {
                     UserDefaults.standard.set(ckRecordID!.recordName, forKey: self.userRecordNameKey)
                     self.createZoneAndSubscription(userRecordName: ckRecordID!.recordName, completion: completion)
@@ -33,7 +33,7 @@ class BookCloudKitRemote {
         }
     }
 
-    private func createZoneAndSubscription(userRecordName: String, completion: @escaping () -> Void) {
+    private func createZoneAndSubscription(userRecordName: String, completion: @escaping (Error?) -> Void) {
         self.userRecordName = userRecordName
         self.bookZoneID = CKRecordZoneID(zoneName: bookZoneName, ownerName: userRecordName)
 
@@ -41,7 +41,7 @@ class BookCloudKitRemote {
         let bookZone = CKRecordZone(zoneID: bookZoneID)
         let createZoneOperation = CKModifyRecordZonesOperation(recordZonesToSave: [bookZone], recordZoneIDsToDelete: nil)
         createZoneOperation.modifyRecordZonesCompletionBlock = { zone, zoneID, error in
-            print("Zone created")
+            if let error = error { completion(error) }
         }
         privateDB.add(createZoneOperation)
 
@@ -55,12 +55,12 @@ class BookCloudKitRemote {
         let modifySubscriptionOperation = CKModifySubscriptionsOperation(subscriptionsToSave: [subscription], subscriptionIDsToDelete: nil)
         modifySubscriptionOperation.addDependency(createZoneOperation)
         modifySubscriptionOperation.modifySubscriptionsCompletionBlock = { _, _, error in
-            guard error == nil else {
-                print("Error: \(error!)")
-                return
+            if let error = error {
+                completion(error)
+            } else {
+                print("Subscription modified")
+                completion(nil)
             }
-            print("Subscription modified")
-            completion()
         }
         privateDB.add(modifySubscriptionOperation)
     }

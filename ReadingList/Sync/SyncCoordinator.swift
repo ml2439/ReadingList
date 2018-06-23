@@ -29,16 +29,9 @@ class SyncCoordinator {
      
      */
     func start() {
-        setSyncContextQueryGeneration()
+        //setSyncContextQueryGeneration()
         startContextNotificationObserving()
-
-        if !remote.isInitialised {
-            remote.initialise {
-                self.processPendingChanges()
-            }
-        } else {
-            processPendingChanges()
-        }
+        processPendingChanges()
     }
 
     /**
