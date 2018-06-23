@@ -74,7 +74,7 @@ class SyncCoordinator {
                     // We unpack the notification here, to make sure it's retained until this point.
                     let updates = note.updatedObjects?.map { $0.inContext(coordinator.syncContext) } ?? []
                     let inserts = note.insertedObjects?.map { $0.inContext(coordinator.syncContext) } ?? []
-                    coordinator.processLocalChanges(updates + inserts)
+                    coordinator.processPendingLocalChanges(objects: updates + inserts)
                 }
             }
             contextSaveNotificationObservers.append(observer)
@@ -89,40 +89,35 @@ class SyncCoordinator {
         contextSaveNotificationObservers.removeAll()
     }
 
-    private func object(_ object: NSManagedObject, matches fetchRequest: NSFetchRequest<NSFetchRequestResult>) -> Bool {
-        // Entity name comparison is done since the NSEntityDescription is not necessarily present until a fetch has been peformed
-        return object.entity.name == fetchRequest.entityName && fetchRequest.predicate?.evaluate(with: object) != false
-    }
+    func processPendingChanges() {
+        processPendingRemoteChanges()
 
-    private func processLocalChanges(_ objects: [NSManagedObject]) {
-        for changeProcessor in upstreamChangeProcessors {
-            let matching = objects.filter {
-                object($0, matches: changeProcessor.unprocessedChangedObjectsRequest)
-            }
-            guard !matching.isEmpty else { continue }
-            changeProcessor.processLocalChanges(matching, remote: remote)
+        syncContext.perform {
+            self.processPendingLocalChanges()
         }
     }
 
-    func processPendingChanges() {
-        processOutstandingRemoteChanges()
-        processOutstandingLocalChanges()
-    }
+    private var objectsBeingProcessed = Set<NSManagedObject>()
 
-    private func processOutstandingLocalChanges() {
-        syncContext.perform {
-            for changeProcessor in self.upstreamChangeProcessors {
-                let fetchRequest = changeProcessor.unprocessedChangedObjectsRequest
-                fetchRequest.returnsObjectsAsFaults = false
-                let results = try! self.syncContext.fetch(fetchRequest) as! [NSManagedObject]
-                if !results.isEmpty {
-                    changeProcessor.processLocalChanges(results, remote: self.remote)
+    private func processPendingLocalChanges(objects: [NSManagedObject]? = nil) {
+        for changeProcessor in self.upstreamChangeProcessors {
+            let pendingObjects: [NSManagedObject]
+            if let objects = objects {
+                pendingObjects = objects.filter { object($0, isPendingFor: changeProcessor) && !objectsBeingProcessed.contains($0) }
+            } else {
+                pendingObjects = self.pendingObjects(for: changeProcessor).filter { !objectsBeingProcessed.contains($0) }
+            }
+
+            if !pendingObjects.isEmpty {
+                objectsBeingProcessed.formUnion(pendingObjects)
+                changeProcessor.processLocalChanges(pendingObjects, remote: self.remote) { [weak self] in
+                    self?.objectsBeingProcessed.subtract(pendingObjects)
                 }
             }
         }
     }
 
-    func processOutstandingRemoteChanges(applicationCallback: ((UIBackgroundFetchResult) -> Void)? = nil) {
+    func processPendingRemoteChanges(applicationCallback: ((UIBackgroundFetchResult) -> Void)? = nil) {
         syncContext.perform {
             let changeToken = ChangeToken.get(fromContext: self.syncContext, for: self.remote.bookZoneID)?.changeToken
             self.remote.fetchRecordChanges(changeToken: changeToken) { changes in
@@ -132,5 +127,17 @@ class SyncCoordinator {
                 }
             }
         }
+    }
+
+    private func pendingObjects(for changeProcessor: UpstreamChangeProcessor) -> [NSManagedObject] {
+        let fetchRequest = changeProcessor.unprocessedChangedObjectsRequest
+        fetchRequest.returnsObjectsAsFaults = false
+        return try! syncContext.fetch(fetchRequest) as! [NSManagedObject]
+    }
+
+    private func object(_ object: NSManagedObject, isPendingFor changeProcessor: UpstreamChangeProcessor) -> Bool {
+        let fetchRequest = changeProcessor.unprocessedChangedObjectsRequest
+        // Entity name comparison is done since the NSEntityDescription is not necessarily present until a fetch has been peformed
+        return object.entity.name == fetchRequest.entityName && fetchRequest.predicate?.evaluate(with: object) != false
     }
 }

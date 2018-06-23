@@ -25,16 +25,11 @@ class BookInserter: BookUpstreamChangeProcessor {
         }
     }
 
-    var booksBeingProcessed = Set<Book>()
+    func processLocalChanges(_ books: [Book], remote: BookCloudKitRemote, completion: @escaping () -> Void) {
 
-    func processLocalChanges(_ books: [Book], remote: BookCloudKitRemote) {
-
-        // We MUST not attempt the insertion of a book which is already underway.
-        let booksAndCKRecords = books.filter { !booksBeingProcessed.contains($0) }
-            .map { book -> (book: Book, ckRecord: CKRecord) in
-                (book, book.CKRecordForInsert(zoneID: remote.bookZoneID))
-            }
-        booksBeingProcessed.formUnion(books)
+        let booksAndCKRecords = books.map { book -> (book: Book, ckRecord: CKRecord) in
+            (book, book.CKRecordForInsert(zoneID: remote.bookZoneID))
+        }
 
         // Store the remote ID to book pairing which has now been generated
         let booksByRemoteID = booksAndCKRecords.reduce(into: [CKRecordID: Book]()) { $0[$1.ckRecord.recordID] = $1.book }
@@ -63,10 +58,10 @@ class BookInserter: BookUpstreamChangeProcessor {
                     let differingKeys = ckRecord.changedBookKeys()
                         .filter { !CKRecord.valuesAreEqual(left: ckRecord[$0], right: $0.value(from: localBook)) }
                     localBook.addPendingRemoteUpdateKeys(differingKeys)
-
-                    self.booksBeingProcessed.remove(localBook)
                 }
+
                 self.context.saveAndLogIfErrored()
+                completion()
             }
         }
     }

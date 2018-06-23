@@ -166,7 +166,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         print("Remote notification received")
-        syncCoordinator.processOutstandingRemoteChanges(applicationCallback: completionHandler)
+        guard syncCoordinator.remote.isInitialised else { return }
+        syncCoordinator.processPendingRemoteChanges(applicationCallback: completionHandler)
     }
 
     func openCsvImport(url: URL) {

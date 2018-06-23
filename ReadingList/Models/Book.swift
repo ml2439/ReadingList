@@ -84,8 +84,6 @@ class Book: NSManagedObject {
             let keysPendingRemoteUpdate = changedValues().keys.compactMap { BookCKRecordKey.from(coreDataKey: $0) }.distinct()
             addPendingRemoteUpdateKeys(keysPendingRemoteUpdate)
             print("Updated bitmask: \(keysPendingRemoteUpdate.map { $0.rawValue }.joined(separator: ", "))")
-        } else {
-            print("Skipped updating bitmask")
         }
     }
 
@@ -93,15 +91,11 @@ class Book: NSManagedObject {
         super.prepareForDeletion()
         for orphanedSubject in subjects.filter({ $0.books.count == 1 }) {
             orphanedSubject.delete()
-            print("orphaned subject \(orphanedSubject.name) deleted.")
         }
 
         if managedObjectContext == PersistentStoreManager.container.viewContext,
             let existingRemoteRecord = self.storedCKRecordSystemFields() {
             PendingRemoteDeletionItem(context: managedObjectContext!, ckRecordID: existingRemoteRecord.recordID)
-            print("Created a remote deletion object")
-        } else {
-            print("Skipping creation of remote deletion object")
         }
     }
 }

@@ -47,7 +47,7 @@ class BookDownloader: DownstreamChangeProcessor {
             }
         }
     }
-    
+
     private func lookupLocalBook(for remoteBook: CKRecord) -> Book? {
         let remoteIdLookup = NSManagedObject.fetchRequest(Book.self)
         remoteIdLookup.predicate = Book.withRemoteIdentifier(remoteBook.recordID.recordName)
