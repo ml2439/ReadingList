@@ -3,12 +3,17 @@ import CoreData
 import UIKit
 import CloudKit
 
+/**
+ Coordinates synchronisation of a local CoreData store with a CloudKit remote store.
+*/
 class SyncCoordinator {
-    let viewContext: NSManagedObjectContext
-    let syncContext: NSManagedObjectContext
 
-    let upstreamChangeProcessors: [UpstreamChangeProcessor]
-    let downstreamChangeProcessors: [DownstreamChangeProcessor]
+    private let viewContext: NSManagedObjectContext
+    private let syncContext: NSManagedObjectContext
+
+    private let upstreamChangeProcessors: [UpstreamChangeProcessor]
+    private let downstreamChangeProcessors: [DownstreamChangeProcessor]
+
     let remote = BookCloudKitRemote()
 
     private var contextSaveNotificationObservers = [NSObjectProtocol]()
@@ -21,50 +26,55 @@ class SyncCoordinator {
         syncContext.name = "syncContext"
         syncContext.mergePolicy = NSMergePolicy.mergeByPropertyStoreTrump // FUTURE: Add a custom merge policy
 
-        self.upstreamChangeProcessors = [BookInserter(syncContext), BookUpdater(syncContext), BookDeleter(syncContext)]
         self.downstreamChangeProcessors = [BookDownloader(syncContext)]
+        self.upstreamChangeProcessors = [BookInserter(syncContext, remote),
+                                         BookUpdater(syncContext, remote),
+                                         BookDeleter(syncContext, remote)]
     }
 
     /**
-     
+     Starts monitoring for changes in CoreData, and immediately process any outstanding pending changes.
      */
     func start() {
-        //setSyncContextQueryGeneration()
-        startContextNotificationObserving()
-        processPendingChanges()
+        syncContext.perform {
+            self.syncContext.refreshAllObjects()
+            self.startContextNotificationObserving()
+            self.processPendingChanges()
+        }
+    }
+
+    var isStarted: Bool {
+        return !contextSaveNotificationObservers.isEmpty
     }
 
     /**
-     
+     Stops the monitoring of CoreData changes.
     */
     func stop() {
-        stopContextNotificationObserving()
-    }
-
-    private func setSyncContextQueryGeneration() {
-        syncContext.perform {
-            let token = NSQueryGenerationToken.current
-            try! self.syncContext.setQueryGenerationFrom(token)
-            self.syncContext.refreshAllObjects()
-        }
+        contextSaveNotificationObservers.forEach { NotificationCenter.default.removeObserver($0) }
+        contextSaveNotificationObservers.removeAll()
     }
 
     /**
      Registers Save observers on both the viewContext and the syncContext, handling them by merging the save from
-     one context to the other, and also calling `processChangedLocalObjects(_)` on the updated or inserted objects.
+     one context to the other, and also calling `processPendingLocalChanges(objects:)` on the updated or inserted objects.
     */
     private func startContextNotificationObserving() {
         guard contextSaveNotificationObservers.isEmpty else { print("Observers already registered"); return }
 
         func registerForMergeOnSave(from sourceContext: NSManagedObjectContext, to destinationContext: NSManagedObjectContext) {
             let observer = NotificationCenter.default.addObserver(forName: .NSManagedObjectContextDidSave, object: sourceContext, queue: nil) { [weak self] note in
+
+                // Merge the changes into the destination context, on the appropriate thread
                 print("Merging save from \(String(sourceContext.name!)) to \(String(destinationContext.name!))")
                 destinationContext.performMergeChanges(from: note)
 
-                // Take the new or modified objects, mapped to the syncContext, and process
+                // Take the new or modified objects, mapped to the syncContext, and process them as local changes.
+                // There may be nothing to perform with these local objects; the eligibility of the objects will
+                // be checked within processPendingLocalChanges(objects:).
                 guard let coordinator = self else { return }
                 coordinator.syncContext.perform {
-                    // We unpack the notification here, to make sure it's retained until this point.
+                    // We unpack the notification here, to make sure it is retained until this point.
                     let updates = note.updatedObjects?.map { $0.inContext(coordinator.syncContext) } ?? []
                     let inserts = note.insertedObjects?.map { $0.inContext(coordinator.syncContext) } ?? []
                     coordinator.processPendingLocalChanges(objects: updates + inserts)
@@ -77,23 +87,32 @@ class SyncCoordinator {
         registerForMergeOnSave(from: viewContext, to: syncContext)
     }
 
-    private func stopContextNotificationObserving() {
-        contextSaveNotificationObservers.forEach { NotificationCenter.default.removeObserver($0) }
-        contextSaveNotificationObservers.removeAll()
-    }
-
+    /**
+     Processes all pending changes: remote changes are retrieved and then local changes are uploaded.
+    */
     func processPendingChanges() {
-        processPendingRemoteChanges()
-
         syncContext.perform {
+            self.processPendingRemoteChanges()
             self.processPendingLocalChanges()
         }
     }
 
+    /**
+     Requests any remote changes, merging them into the local store.
+    */
+    func remoteNotificationReceived(applicationCallback: ((UIBackgroundFetchResult) -> Void)? = nil) {
+        syncContext.perform {
+            self.processPendingRemoteChanges(applicationCallback: applicationCallback)
+        }
+    }
+
+    // We prevent the processing objects that are already being processed. This is an easy way to prevent some
+    // errors on the CloudKit end, like uploading a new book twice, due to its creation and a successive edit
+    // (before the creation's callback runs).
     private var objectsBeingProcessed = Set<NSManagedObject>()
 
     private func processPendingLocalChanges(objects: [NSManagedObject]? = nil) {
-        for changeProcessor in self.upstreamChangeProcessors {
+        for changeProcessor in upstreamChangeProcessors {
             let pendingObjects: [NSManagedObject]
             if let objects = objects {
                 pendingObjects = objects.filter { object($0, isPendingFor: changeProcessor) && !objectsBeingProcessed.contains($0) }
@@ -101,22 +120,30 @@ class SyncCoordinator {
                 pendingObjects = self.pendingObjects(for: changeProcessor).filter { !objectsBeingProcessed.contains($0) }
             }
 
-            if !pendingObjects.isEmpty {
-                objectsBeingProcessed.formUnion(pendingObjects)
-                changeProcessor.processLocalChanges(pendingObjects, remote: self.remote) { [weak self] in
-                    self?.objectsBeingProcessed.subtract(pendingObjects)
-                }
+            // Quick exit if there are no pending objects
+            guard !pendingObjects.isEmpty else { continue }
+
+            // Track which objects are passed to the change processor. They will not be passed to any other
+            // change processor until this one has run its completion block.
+            objectsBeingProcessed.formUnion(pendingObjects)
+            changeProcessor.processLocalChanges(pendingObjects) { [weak self] in
+                self?.objectsBeingProcessed.subtract(pendingObjects)
             }
         }
     }
 
-    func processPendingRemoteChanges(applicationCallback: ((UIBackgroundFetchResult) -> Void)? = nil) {
-        syncContext.perform {
-            let changeToken = ChangeToken.get(fromContext: self.syncContext, for: self.remote.bookZoneID)?.changeToken
-            self.remote.fetchRecordChanges(changeToken: changeToken) { changes in
-                guard !changes.isEmpty else { return }
-                for changeProcessor in self.downstreamChangeProcessors {
-                    changeProcessor.processRemoteChanges(from: self.remote.bookZoneID, changes: changes, completion: nil)
+    private func processPendingRemoteChanges(applicationCallback: ((UIBackgroundFetchResult) -> Void)? = nil) {
+        let changeToken = ChangeToken.get(fromContext: self.syncContext, for: self.remote.bookZoneID)?.changeToken
+
+        remote.fetchRecordChanges(changeToken: changeToken) { changes in
+            guard !changes.isEmpty else {
+                applicationCallback?(UIBackgroundFetchResult.noData)
+                return
+            }
+
+            for changeProcessor in self.downstreamChangeProcessors {
+                changeProcessor.processRemoteChanges(from: self.remote.bookZoneID, changes: changes) {
+                    applicationCallback?(UIBackgroundFetchResult.newData)
                 }
             }
         }

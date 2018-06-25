@@ -4,18 +4,20 @@ import CloudKit
 
 class BookUpdater: BookUpstreamChangeProcessor {
 
-    init(_ context: NSManagedObjectContext) {
+    init(_ context: NSManagedObjectContext, _ remote: BookCloudKitRemote) {
         self.context = context
+        self.remote = remote
     }
 
     let debugDescription = String(describing: BookUpdater.self)
     let context: NSManagedObjectContext
+    let remote: BookCloudKitRemote
 
     func handleItemError(_ ckError: CKError) {
         print("error: \(ckError)")
     }
 
-    func processLocalChanges(_ books: [Book], remote: BookCloudKitRemote, completion: @escaping () -> Void) {
+    func processLocalChanges(_ books: [Book], completion: @escaping () -> Void) {
         let booksAndCKRecords = books.map { book -> (book: Book, ckRecord: CKRecord, delta: [BookCKRecordKey]) in
             let ckRecord = book.CKRecordForDifferentialUpdate()
             return (book, ckRecord, ckRecord.changedBookKeys())

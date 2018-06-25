@@ -14,7 +14,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     var storeMigrationFailed = false
 
-    var syncCoordinator: SyncCoordinator!
+    var syncCoordinator: SyncCoordinator?
     let reachability = Reachability()!
 
     var tabBarController: TabBarController {
@@ -22,7 +22,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // Remote notifications are required for iCloud sync
+        // Remote notifications are required for iCloud sync.
         application.registerForRemoteNotifications()
 
         UserEngagement.initialiseUserAnalytics()
@@ -55,9 +55,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         // Initialise the Sync Coordinator which will maintain iCloud synchronisation
                         self.syncCoordinator = SyncCoordinator(container: PersistentStoreManager.container)
                         if UserSettings.iCloudSyncEnabled.value {
-                            self.syncCoordinator.remote.initialise { error in
+                            self.syncCoordinator!.remote.initialise { error in
                                 guard error == nil else { return }
-                                self.syncCoordinator.start()
+                                self.syncCoordinator!.start()
                             }
                         }
 
@@ -160,10 +160,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         print("Failed to register for remote notifications")
     }
 
-    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        print("Remote notification received")
-        guard UserSettings.iCloudSyncEnabled.value && syncCoordinator.remote.isInitialised else { return }
-        syncCoordinator.processPendingRemoteChanges(applicationCallback: completionHandler)
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any],
+                     fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        if UserSettings.iCloudSyncEnabled.value, let syncCoordinator = syncCoordinator, syncCoordinator.remote.isInitialised {
+            syncCoordinator.remoteNotificationReceived(applicationCallback: completionHandler)
+        }
+    }
+
+    func monitorNetworkReachability() {
+        do {
+            try reachability.startNotifier()
+            NotificationCenter.default.addObserver(self, selector: #selector(networkConnectivityDidChange), name: .reachabilityChanged, object: nil)
+        } catch {
+            print("Error starting reachability notifier")
+        }
+    }
+
+    @objc func networkConnectivityDidChange() {
+        if reachability.connection != .none, let syncCoordinator = syncCoordinator, syncCoordinator.isStarted {
+            syncCoordinator.processPendingChanges()
+        }
     }
 
     func openCsvImport(url: URL) {
@@ -206,21 +222,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     @objc func initialiseTheme() {
         UIApplication.shared.statusBarStyle = UserSettings.theme.value.statusBarStyle
-    }
-
-    func monitorNetworkReachability() {
-        do {
-            try reachability.startNotifier()
-            NotificationCenter.default.addObserver(self, selector: #selector(networkConnectivityDidChange), name: .reachabilityChanged, object: nil)
-        } catch {
-            print("Error starting reachability notifier")
-        }
-    }
-
-    @objc func networkConnectivityDidChange() {
-        if reachability.connection != .none {
-            syncCoordinator?.processPendingChanges()
-        }
     }
 }
 

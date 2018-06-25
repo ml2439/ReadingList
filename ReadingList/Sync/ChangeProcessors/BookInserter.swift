@@ -4,12 +4,14 @@ import CloudKit
 
 class BookInserter: BookUpstreamChangeProcessor {
 
-    init(_ context: NSManagedObjectContext) {
+    init(_ context: NSManagedObjectContext, _ remote: BookCloudKitRemote) {
         self.context = context
+        self.remote = remote
     }
 
     let debugDescription = String(describing: BookInserter.self)
     let context: NSManagedObjectContext
+    let remote: BookCloudKitRemote
 
     func handleError(_ books: [CKRecordID: Book], _ ckError: CKError) {
         switch ckError.code {
@@ -25,7 +27,7 @@ class BookInserter: BookUpstreamChangeProcessor {
         }
     }
 
-    func processLocalChanges(_ books: [Book], remote: BookCloudKitRemote, completion: @escaping () -> Void) {
+    func processLocalChanges(_ books: [Book], completion: @escaping () -> Void) {
 
         let booksAndCKRecords = books.map { book -> (book: Book, ckRecord: CKRecord) in
             (book, book.CKRecordForInsert(zoneID: remote.bookZoneID))

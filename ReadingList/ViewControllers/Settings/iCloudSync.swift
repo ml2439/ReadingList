@@ -43,8 +43,10 @@ class CloudSync: UITableViewController {
     }
 
     private func turnOnSync() {
+        guard let syncCoordinator = appDelegate.syncCoordinator else { fatalError("Unexpected nil sync coordinator") }
+
         SVProgressHUD.show()
-        appDelegate.syncCoordinator.remote.initialise { error in
+        syncCoordinator.remote.initialise { error in
             DispatchQueue.main.async {
                 SVProgressHUD.dismiss()
                 if let error = error {
@@ -52,13 +54,15 @@ class CloudSync: UITableViewController {
                     self.enabledSwitch.setOn(false, animated: true)
                 } else {
                     UserSettings.iCloudSyncEnabled.value = true
-                    appDelegate.syncCoordinator.start()
+                    syncCoordinator.start()
                 }
             }
         }
     }
 
     private func turnOffSync() {
+        guard let syncCoordinator = appDelegate.syncCoordinator else { fatalError("Unexpected nil sync coordinator") }
+
         let alert = UIAlertController(title: "Disable Sync?", message: """
             If you disable iCloud sync, changes you make will no longer be \
             synchronised across your devices, or backed up in your iCloud account.
@@ -67,7 +71,7 @@ class CloudSync: UITableViewController {
             """, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Yes", style: .destructive) { _ in
             // TODO: Consider whether change tokens should be discarded, remote identifiers should be deleted, etc
-            appDelegate.syncCoordinator.stop()
+            syncCoordinator.stop()
         })
         alert.addAction(UIAlertAction(title: "No", style: .default) { [unowned self] _ in
             self.enabledSwitch.isOn = true

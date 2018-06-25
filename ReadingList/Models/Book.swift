@@ -10,6 +10,7 @@ class Book: NSManagedObject {
 
     @NSManaged var isbn13: String?
     @NSManaged var googleBooksId: String?
+    @NSManaged var manualBookId: String?
 
     @NSManaged var title: String
     @NSManaged private(set) var authors: [Author]
@@ -180,6 +181,8 @@ extension Book {
         case invalidIsbn
         case invalidReadDates
         case bitmaskPresentWithoutRemoteIdentifier
+        case missingIdentifier
+        case conflictingIdentifiers
     }
 
     override func validateForUpdate() throws {
@@ -195,6 +198,13 @@ extension Book {
         if readState == .finished && (startedReading == nil || finishedReading == nil
             || startedReading!.startOfDay() > finishedReading!.startOfDay()) {
             throw ValidationError.invalidReadDates
+        }
+
+        if googleBooksId == nil && manualBookId == nil {
+            throw ValidationError.missingIdentifier
+        }
+        if googleBooksId != nil && manualBookId != nil {
+            throw ValidationError.conflictingIdentifiers
         }
 
         if keysPendingRemoteUpdate != 0 && remoteIdentifier == nil {
@@ -238,7 +248,8 @@ extension Book {
 
     func CKRecordForInsert(zoneID: CKRecordZoneID) -> CKRecord {
         guard remoteIdentifier == nil && ckRecordEncodedSystemFields == nil else { fatalError("Unexpected attempt to insert a record which already exists.") }
-        let ckRecord = CKRecord(recordType: "Book", zoneID: zoneID)
+        let recordName = googleBooksId ?? manualBookId!
+        let ckRecord = CKRecord(recordType: "Book", recordID: CKRecordID(recordName: recordName, zoneID: zoneID))
         for key in BookCKRecordKey.all {
             ckRecord[key] = key.value(from: self)
         }

@@ -7,6 +7,6 @@ protocol DownstreamChangeProcessor: CustomDebugStringConvertible {
 }
 
 protocol UpstreamChangeProcessor: CustomDebugStringConvertible {
-    func processLocalChanges(_ objects: [NSManagedObject], remote: BookCloudKitRemote, completion: @escaping () -> Void)
+    func processLocalChanges(_ objects: [NSManagedObject], completion: @escaping () -> Void)
     var unprocessedChangedObjectsRequest: NSFetchRequest<NSFetchRequestResult> { get }
 }

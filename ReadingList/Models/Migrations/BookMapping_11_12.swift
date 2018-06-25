@@ -11,4 +11,13 @@ class BookMapping_11_12: NSEntityMigrationPolicy { //swiftlint:disable:this type
             return Author(lastName: lastName, firstNames: firstNames)
         }
     }
+
+    @objc func manualBookId(forGoogleId googleId: String?) -> String? {
+        // Generate a new UUID string for each manual book
+        if googleId == nil {
+            return UUID().uuidString
+        } else {
+            return nil
+        }
+    }
 }
