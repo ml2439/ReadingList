@@ -302,7 +302,7 @@ class AuthorSection: MultivaluedSection {
             guard let lastName = authorRow.lastName else { return nil }
             return (lastName, authorRow.firstNames)
         }
-        if currentAuthors.map({ ($0.lastName, $0.firstNames) }).elementsEqual(newAuthors, by: { return $0.0 == $1.0 && $0.1 == $1.1 }) {
+        if currentAuthors.map({ ($0.lastName, $0.firstNames) }).elementsEqual(newAuthors, by: { $0.0 == $1.0 && $0.1 == $1.1 }) {
             return
         }
         currentAuthors.forEach { $0.delete() }
@@ -434,7 +434,7 @@ class EditBookSubjectsForm: FormViewController {
                     $0.cellUpdate(TextRow.initialise)
                 }
             }
-            for subject in book.subjects.sorted(by: { return $0.name < $1.name }) {
+            for subject in book.subjects.sorted(by: { $0.name < $1.name }) {
                 $0 <<< TextRow {
                     $0.value = subject.name
                     $0.cell.textField.autocapitalizationType = .words

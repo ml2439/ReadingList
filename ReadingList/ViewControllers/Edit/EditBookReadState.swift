@@ -68,8 +68,8 @@ class EditBookReadState: FormViewController {
             }
 
             +++ Section(header: "Reading Log", footer: "") {
-                $0.hidden = Condition.function([readStateKey]) {[unowned self] _ in
-                    return self.book.readState == .toRead
+                $0.hidden = Condition.function([readStateKey]) { [unowned self] _ in
+                    self.book.readState == .toRead
                 }
             }
             <<< DateRow(startedReadingKey) {
@@ -79,15 +79,15 @@ class EditBookReadState: FormViewController {
                 $0.cellUpdate { cell, _ in
                     cell.initialise(withTheme: UserSettings.theme.value)
                 }
-                $0.onChange {[unowned self] cell in
+                $0.onChange { [unowned self] cell in
                     self.book.startedReading = cell.value
                 }
             }
             <<< DateRow(finishedReadingKey) {
                 $0.title = "Finished"
                 //$0.maximumDate = Date.startOfToday()
-                $0.hidden = Condition.function([readStateKey]) {[unowned self] _ in
-                    return self.book.readState != .finished
+                $0.hidden = Condition.function([readStateKey]) { [unowned self] _ in
+                    self.book.readState != .finished
                 }
                 $0.cellUpdate { cell, _ in
                     cell.initialise(withTheme: UserSettings.theme.value)
@@ -104,7 +104,7 @@ class EditBookReadState: FormViewController {
                     cell.initialise(withTheme: UserSettings.theme.value)
                 }
                 $0.hidden = Condition.function([readStateKey]) { [unowned self] _ in
-                    return self.book.readState != .reading
+                    self.book.readState != .reading
                 }
                 $0.onChange { [unowned self] cell in
                     self.book.currentPage = cell.value?.nsNumber
