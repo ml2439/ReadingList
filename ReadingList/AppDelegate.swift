@@ -13,9 +13,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     var storeMigrationFailed = false
-
-    var syncCoordinator: SyncCoordinator?
     let reachability = Reachability()!
+
+    /**
+     Will be nil until after the persistent store is initialised.
+    */
+    var syncCoordinator: SyncCoordinator?
 
     var tabBarController: TabBarController {
         return window!.rootViewController as! TabBarController

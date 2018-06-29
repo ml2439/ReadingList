@@ -74,7 +74,7 @@ EwcIExQZGiInLC0wMTU6Oz5CRkhVJG51bGzVCQoLDA0ODxAREllOU09wZXJhbmReTlNTZWxlY3Rvck5h
     </object>
     <object type="XDDEVATTRIBUTEMAPPING" id="z108">
         <attribute name="valueexpressiondata" type="binary">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
-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
+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
 </attribute>
         <attribute name="name" type="string">manualBookId</attribute>
         <relationship name="entitymapping" type="1/1" destination="XDDEVENTITYMAPPING" idrefs="z135"></relationship>
@@ -210,14 +210,15 @@ cBIAAYagrxEDmwAHAAgAFwAzADQANQBFAEYARwBIAEkASgBlAGYAZwBtAG4AegCQAJEAkgCTAJQAlQCW
         <relationship name="entitymapping" type="1/1" destination="XDDEVENTITYMAPPING" idrefs="z135"></relationship>
     </object>
     <object type="XDDEVENTITYMAPPING" id="z135">
+        <attribute name="migrationpolicyclassname" type="string">Reading_List.BookMapping_11_12</attribute>
         <attribute name="sourcename" type="string">Book</attribute>
         <attribute name="mappingtypename" type="string">Undefined</attribute>
         <attribute name="mappingnumber" type="int16">4</attribute>
         <attribute name="destinationname" type="string">Book</attribute>
         <attribute name="autogenerateexpression" type="bool">1</attribute>
         <relationship name="mappingmodel" type="1/1" destination="XDDEVMAPPINGMODEL" idrefs="z112"></relationship>
-        <relationship name="attributemappings" type="0/0" destination="XDDEVATTRIBUTEMAPPING" idrefs="z120 z107 z103 z131 z109 z104 z125 z119 z110 z132 z108 z126 z128 z122 z105 z127 z136 z124 z138"></relationship>
-        <relationship name="relationshipmappings" type="0/0" destination="XDDEVRELATIONSHIPMAPPING" idrefs="z134 z114"></relationship>
+        <relationship name="attributemappings" type="0/0" destination="XDDEVATTRIBUTEMAPPING" idrefs="z119 z124 z127 z105 z138 z110 z108 z122 z125 z109 z126 z104 z107 z131 z103 z120 z132 z128 z136"></relationship>
+        <relationship name="relationshipmappings" type="0/0" destination="XDDEVRELATIONSHIPMAPPING" idrefs="z114 z134"></relationship>
     </object>
     <object type="XDDEVATTRIBUTEMAPPING" id="z136">
         <attribute name="name" type="string">keysPendingRemoteUpdate</attribute>

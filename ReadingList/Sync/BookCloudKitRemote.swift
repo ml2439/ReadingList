@@ -43,6 +43,7 @@ class BookCloudKitRemote {
         createZoneOperation.modifyRecordZonesCompletionBlock = { zone, zoneID, error in
             if let error = error { completion(error) }
         }
+        createZoneOperation.qualityOfService = .userInitiated
         privateDB.add(createZoneOperation)
 
         // Subscribe to changes
@@ -54,6 +55,7 @@ class BookCloudKitRemote {
         }()
         let modifySubscriptionOperation = CKModifySubscriptionsOperation(subscriptionsToSave: [subscription], subscriptionIDsToDelete: nil)
         modifySubscriptionOperation.addDependency(createZoneOperation)
+        modifySubscriptionOperation.qualityOfService = .userInitiated
         modifySubscriptionOperation.modifySubscriptionsCompletionBlock = { _, _, error in
             if let error = error {
                 completion(error)
