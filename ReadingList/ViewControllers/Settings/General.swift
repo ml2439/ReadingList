@@ -80,22 +80,22 @@ class General: FormViewController {
 
     func crashReportsSwitchChanged(_ sender: _SwitchRow) {
         guard let switchValue = sender.value else { return }
-        UserSettings.sendCrashReports.value = switchValue
         if switchValue {
+            UserSettings.sendCrashReports.value = true
             UserEngagement.logEvent(.enableCrashReports)
         } else {
             // If this is being turned off, let's try to persuade them to turn it back on
-            persuadeToKeepOn(title: "Turn off crash reports?", message: """
+            persuadeToKeepOn(title: "Turn Off Crash Reports?", message: """
                 Anonymous crash reports alert me if this app crashes, to help me fix bugs. \
-                The information never includes any information about your books. Are you \
+                This never includes any information about your books. Are you \
                 sure you want to turn this off?
                 """) { result in
                 if result {
-                    UserSettings.sendCrashReports.value = true
                     sender.value = true
                     sender.reload()
                 } else {
                     UserEngagement.logEvent(.disableCrashReports)
+                    UserSettings.sendCrashReports.value = false
                 }
             }
         }
@@ -103,21 +103,21 @@ class General: FormViewController {
 
     func analyticsSwitchChanged(_ sender: _SwitchRow) {
         guard let switchValue = sender.value else { return }
-        UserSettings.sendAnalytics.value = switchValue
         if switchValue {
+            UserSettings.sendAnalytics.value = true
             UserEngagement.logEvent(.enableAnalytics)
         } else {
             // If this is being turned off, let's try to persuade them to turn it back on
-            persuadeToKeepOn(title: "Turn off analytics?", message: """
-                Anonymous usage statistics help prioritise development. These never include \
+            persuadeToKeepOn(title: "Turn Off Analytics?", message: """
+                Anonymous usage statistics help prioritise development. This never includes \
                 any information about your books. Are you sure you want to turn this off?
                 """) { result in
                 if result {
-                    UserSettings.sendAnalytics.value = true
                     sender.value = true
                     sender.reload()
                 } else {
                     UserEngagement.logEvent(.disableAnalytics)
+                    UserSettings.sendAnalytics.value = false
                 }
             }
         }
