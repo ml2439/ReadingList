@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="wWH-Ym-HSc">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="wWH-Ym-HSc">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -85,6 +85,7 @@
                             <outlet property="delegate" destination="ggN-hf-l8Q" id="Yfx-2B-Ea9"/>
                         </connections>
                     </tableView>
+                    <navigationItem key="navigationItem" title="My List" largeTitleDisplayMode="never" id="jSI-Qd-fr4"/>
                     <connections>
                         <segue destination="7z6-rj-KqQ" kind="showDetail" identifier="showDetail" id="C7a-WA-Ju3"/>
                     </connections>
@@ -102,7 +103,7 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
-                        <segue destination="RiX-qo-4E3" kind="relationship" relationship="rootViewController" id="SAK-oO-Sho"/>
+                        <segue destination="RiX-qo-4E3" kind="relationship" relationship="rootViewController" id="Zpp-z8-Wyc"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Gva-I9-Dci" userLabel="First Responder" sceneMemberID="firstResponder"/>
