@@ -73,7 +73,7 @@ class WithData: XCTestCase {
         let app = ReadingListApplication()
 
         app.clickTab(.settings)
-        app.tables.staticTexts["Data"].tap()
+        app.tables.staticTexts["Import / Export"].tap()
         app.tables.staticTexts["Export"].tap()
 
         if #available(iOS 11, *) {} else {

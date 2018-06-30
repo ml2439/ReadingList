@@ -19,10 +19,6 @@ class ListBookTable: UITableViewController {
         tableView.emptyDataSetDelegate = self
 
         registerForSaveNotifications()
-
-        if #available(iOS 11.0, *) {
-            monitorLargeTitleSetting()
-        }
         monitorThemeSetting()
     }
 
