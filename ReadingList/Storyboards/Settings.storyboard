@@ -100,7 +100,7 @@
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <sections>
                             <tableViewSection id="UI9-V5-Ma9">
-                                <string key="footerTitle">Import and Export can be used to move books between devices. Create an export of your books below, and send or share the file with your other device. On the other device, Import from the file to copy the books.</string>
+                                <string key="footerTitle">Export and Import can be used to move books between devices. Create an export of your books below, and send or share the file with your other device. On the other device, Import from the file to copy the books.</string>
                                 <cells/>
                             </tableViewSection>
                             <tableViewSection footerTitle="Export to a CSV file. CSV files can be opened by most spreadsheet software." id="UcO-P8-j3q">
@@ -146,13 +146,34 @@
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
+                            <tableViewSection footerTitle="This will delete all books and lists from this device. This is not reversible!" id="Q3j-ra-yin">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" textLabel="3qq-0f-zF3" style="IBUITableViewCellStyleDefault" id="ffS-bL-b9r">
+                                        <rect key="frame" x="0.0" y="489.5" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="ffS-bL-b9r" id="RXT-Vi-A5P">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Delete All" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="3qq-0f-zF3">
+                                                    <rect key="frame" x="16" y="0.0" width="288" height="43.5"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                                    <color key="textColor" red="1" green="0.14913141730000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
                         </sections>
                         <connections>
                             <outlet property="dataSource" destination="cE8-jq-0ch" id="Wai-Hv-4wB"/>
                             <outlet property="delegate" destination="cE8-jq-0ch" id="8l6-dM-rr5"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Import / Export" largeTitleDisplayMode="never" id="0ao-jX-TXZ"/>
+                    <navigationItem key="navigationItem" title="Data" largeTitleDisplayMode="never" id="0ao-jX-TXZ"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="RmO-MQ-lf1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -304,7 +325,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="286" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Import / Export" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="exG-mV-Lb6">
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Data" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="exG-mV-Lb6">
                                                     <rect key="frame" x="60" y="0.0" width="225" height="43.5"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>

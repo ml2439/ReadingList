@@ -35,6 +35,7 @@ class DataVC: UITableViewController {
         switch (indexPath.section, indexPath.row) {
         case (1, 0): exportData(presentingIndexPath: indexPath)
         case (2, 0): requestImport(presentingIndexPath: indexPath)
+        case (3, 0): deleteAllData()
         default: break
         }
         tableView.deselectRow(at: indexPath, animated: true)
@@ -107,6 +108,26 @@ class DataVC: UITableViewController {
 
         SVProgressHUD.dismiss()
         self.present(activityViewController, animated: true, completion: nil)
+    }
+
+    func deleteAllData() {
+
+        // The CONFIRM DELETE action:
+        let confirmDelete = UIAlertController(title: "Final Warning", message: "This action is irreversible. Are you sure you want to continue?", preferredStyle: .alert)
+        confirmDelete.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
+            PersistentStoreManager.deleteAll()
+            UserEngagement.logEvent(.deleteAllData)
+        })
+        confirmDelete.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+
+        // The initial WARNING action
+        let areYouSure = UIAlertController(title: "Warning", message: "This will delete all books saved in the application. Are you sure you want to continue?", preferredStyle: .alert)
+        areYouSure.addAction(UIAlertAction(title: "Delete", style: .destructive) { [unowned self] _ in
+            self.present(confirmDelete, animated: true)
+        })
+        areYouSure.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+
+        present(areYouSure, animated: true)
     }
 }
 
