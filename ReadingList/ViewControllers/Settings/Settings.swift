@@ -98,9 +98,9 @@ class Settings: UITableViewController {
         #if DEBUG
             return super.tableView(tableView, numberOfRowsInSection: section)
         #else
-            // Hide the Debug cell
+            // Hide the Debug cell and the iCloud Sync cell
             let realCount = super.tableView(tableView, numberOfRowsInSection: section)
-            return section == 1 ? realCount - 1 : realCount
+            return section == 1 ? realCount - 2 : realCount
         #endif
     }
 
