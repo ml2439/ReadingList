@@ -66,7 +66,7 @@ class CsvExporter<TData> {
 
     private static func convertToCsvLine(_ cellValues: [String]) -> String {
         return cellValues.map { cellValue in
-            let charactersWhichRequireWrapping = CharacterSet(charactersIn: "\n,")
+            let charactersWhichRequireWrapping = CharacterSet(charactersIn: "\n,\"")
             let wrapInQuotes = cellValue.rangeOfCharacter(from: charactersWhichRequireWrapping) != nil
 
             // Replace " with ""

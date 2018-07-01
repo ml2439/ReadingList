@@ -3,7 +3,8 @@ import CoreData
 
 class BookCSVImporter {
     private let parserDelegate: BookCSVParserDelegate //swiftlint:disable:this weak_delegate
-
+    var parser: CSVParser?
+    
     init(includeImages: Bool = true) {
         let backgroundContext = PersistentStoreManager.container.newBackgroundContext()
         backgroundContext.mergePolicy = NSMergePolicy.mergeByPropertyStoreTrump
@@ -13,9 +14,9 @@ class BookCSVImporter {
     func startImport(fromFileAt fileLocation: URL, _ completion: @escaping (BookCSVImportResults) -> Void) {
         parserDelegate.onCompletion = completion
 
-        let parser = CSVParser(csvFileUrl: fileLocation)
-        parser.delegate = parserDelegate
-        parser.begin()
+        parser = CSVParser(csvFileUrl: fileLocation)
+        parser!.delegate = parserDelegate
+        parser!.begin()
     }
 }
 
