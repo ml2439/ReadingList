@@ -34,7 +34,7 @@ class UserEngagement {
 
     static func onReviewTrigger() {
         UserDefaults.standard.incrementCounter(withKey: userEngagementCountKey)
-        if shouldTryRequestReview() {
+        if #available(iOS 10.3, *), shouldTryRequestReview() {
             SKStoreReviewController.requestReview()
         }
     }
