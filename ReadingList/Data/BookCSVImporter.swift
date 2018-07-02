@@ -11,13 +11,23 @@ class BookCSVImporter {
         parserDelegate = BookCSVParserDelegate(context: backgroundContext, includeImages: includeImages)
     }
 
-    func startImport(fromFileAt fileLocation: URL, _ completion: @escaping (BookCSVImportResults) -> Void) {
+    /**
+     - Parameter completion: takes the following parameters:
+        - error: if the CSV import failed irreversibly, this parameter will be non-nil
+        - results: otherwise, this summary of the results of the import will be non-nil
+    */
+    func startImport(fromFileAt fileLocation: URL, _ completion: @escaping (CSVImportError?, BookCSVImportResults?) -> Void) {
         parserDelegate.onCompletion = completion
 
         parser = CSVParser(csvFileUrl: fileLocation)
         parser!.delegate = parserDelegate
         parser!.begin()
     }
+}
+
+enum CSVImportError {
+    case invalidCsv
+    case missingHeaders
 }
 
 struct BookCSVImportResults {
@@ -34,7 +44,7 @@ private class BookCSVParserDelegate: CSVParserDelegate {
     private var listMappings = [String: [(bookID: NSManagedObjectID, index: Int)]]()
     private var listNames = [String]()
 
-    var onCompletion: ((BookCSVImportResults) -> Void)?
+    var onCompletion: ((CSVImportError?, BookCSVImportResults?) -> Void)?
 
     init(context: NSManagedObjectContext, includeImages: Bool = true) {
         self.context = context
@@ -166,6 +176,10 @@ private class BookCSVParserDelegate: CSVParserDelegate {
         invalidCount += 1
     }
 
+    func onFailure(_ error: CSVImportError) {
+        onCompletion?(error, nil)
+    }
+
     func completion() {
         dispatchGroup.notify(queue: .main) {
             self.context.performAndWait {
@@ -173,7 +187,7 @@ private class BookCSVParserDelegate: CSVParserDelegate {
                 self.context.saveAndLogIfErrored()
             }
             let results = BookCSVImportResults(success: self.successCount, error: self.invalidCount, duplicate: self.duplicateCount)
-            self.onCompletion?(results)
+            self.onCompletion?(nil, results)
         }
     }
 }

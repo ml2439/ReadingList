@@ -5,6 +5,7 @@ protocol CSVParserDelegate: class {
     func headersRead(_ headers: [String]) -> Bool
     func lineParseSuccess(_ values: [String: String])
     func lineParseError()
+    func onFailure(_ error: CSVImportError)
     func completion()
 }
 
@@ -47,16 +48,23 @@ class CSVParser: NSObject, CHCSVParserDelegate {
         }
     }
 
+    func parser(_ parser: CHCSVParser!, didFailWithError error: Error!) {
+        delegate?.onFailure(.invalidCsv)
+    }
+
     func parser(_ parser: CHCSVParser!, didEndLine recordNumber: UInt) {
-        guard !isFirstRow else {
+        if isFirstRow {
             if delegate?.headersRead(headersByFieldIndex.map { $0.value }) == false {
                 stop()
+                delegate?.onFailure(.missingHeaders)
+                delegate = nil // Remove the delegate to stop any further callbacks
+            } else {
+                isFirstRow = false
             }
-            isFirstRow = false
             return
         }
-        guard !currentRowIsErrored else { delegate?.lineParseError(); return }
 
+        guard !currentRowIsErrored else { delegate?.lineParseError(); return }
         delegate?.lineParseSuccess(currentRow)
     }
 
