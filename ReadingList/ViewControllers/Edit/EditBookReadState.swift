@@ -111,6 +111,11 @@ class EditBookReadState: FormViewController {
                 }
             }
 
+            +++ Section(header: "Rating", footer: "")
+            <<< StarRatingRow(initialRating: book.rating?.intValue) { [unowned self] in
+                self.book.rating = $0 == nil ? nil : NSNumber(value: $0!)
+            }
+
             +++ Section(header: "Notes", footer: "")
             <<< TextAreaRow {
                 $0.placeholder = "Add your personal notes here..."

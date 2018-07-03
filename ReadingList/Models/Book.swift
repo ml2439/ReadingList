@@ -20,6 +20,7 @@ class Book: NSManagedObject {
     @NSManaged var bookDescription: String?
     @NSManaged var coverImage: Data?
     @NSManaged var notes: String?
+    @NSManaged var rating: NSNumber? // Valid values are 1-5.
     @NSManaged var currentPage: NSNumber?
     @NSManaged var sort: NSNumber?
 
