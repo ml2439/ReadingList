@@ -2,21 +2,9 @@ import Foundation
 import UIKit
 import Eureka
 
-public class StarRatingCell: Cell<Int?>, CellType {
+public class StarRatingCell: Cell<Int>, CellType {
 
     @IBOutlet private weak var stackView: UIStackView!
-
-    var starRating: Int? {
-        didSet {
-            update()
-        }
-    }
-
-    /**
-     Callback used for notifying forms of a change to the selected star rating.
-     The new rating is the argument.
-    */
-    var starRatingChanged: ((Int?) -> Void)?
 
     public override func setup() {
         super.setup()
@@ -36,7 +24,7 @@ public class StarRatingCell: Cell<Int?>, CellType {
     func updateRatingDisplay() {
         for button in stackView.arrangedSubviews.map({ $0 as! UIButton }) {
             let image: UIImage
-            if let starRating = starRating, starRating >= button.tag {
+            if let starRating = row.value, starRating >= button.tag {
                 image = #imageLiteral(resourceName: "rating-star-filled")
             } else {
                 image = #imageLiteral(resourceName: "rating-star")
@@ -49,13 +37,12 @@ public class StarRatingCell: Cell<Int?>, CellType {
         let tappedRating = sender.tag
 
         // Star ratings are togglable. Tapping on the already selected rating will clear the rating.
-        if starRating == tappedRating {
-            starRating = nil
+        if row.value == tappedRating {
+            row.value = nil
         } else {
-            starRating = tappedRating
+            row.value = tappedRating
         }
-
-        starRatingChanged?(starRating)
+        update()
     }
 }
 
@@ -63,11 +50,5 @@ public final class StarRatingRow: Row<StarRatingCell>, RowType {
     required public init(tag: String?) {
         super.init(tag: tag)
         cellProvider = CellProvider<StarRatingCell>(nibName: "StarRatingCell")
-    }
-
-    convenience init(initialRating: Int?, onRatingChange: ((Int?) -> Void)?) {
-        self.init(tag: nil)
-        self.cell.starRating = initialRating
-        self.cell.starRatingChanged = onRatingChange
     }
 }

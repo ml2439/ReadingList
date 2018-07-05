@@ -11,6 +11,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     @IBOutlet private var titleAuthorHeadings: [UILabel]!
     @IBOutlet private weak var bookDescription: UILabel!
 
+    @IBOutlet private weak var ratingStarsStackView: UIStackView!
     @IBOutlet private var tableVaules: [UILabel]!
     @IBOutlet private var tableSubHeadings: [UILabel]!
 
@@ -39,7 +40,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         didSet { setupViewFromBook() }
     }
 
-    func setupViewFromBook() {
+    func setupViewFromBook() { //swiftlint:disable:this cyclomatic_complexity
         // Hide the whole view and nav bar buttons if there's no book
         guard let book = book else { setViewEnabled(false); return }
         setViewEnabled(true)
@@ -101,6 +102,14 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         } else { pageNumberText = nil }
 
         setTextOrHideLine(tableVaules[4], pageNumberText)
+
+        ratingStarsStackView.superview!.isHidden = book.rating == nil
+        if let rating = book.rating {
+            for (index, star) in ratingStarsStackView.arrangedSubviews[...4].enumerated() {
+                star.isHidden = index + 1 > rating.intValue
+            }
+        }
+
         setTextOrHideLine(tableVaules[5], book.notes)
         setTextOrHideLine(tableVaules[6], book.isbn13)
         setTextOrHideLine(tableVaules[7], book.pageCount?.intValue.string)

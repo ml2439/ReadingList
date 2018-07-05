@@ -110,10 +110,11 @@ class EditBookReadState: FormViewController {
                     self.book.currentPage = cell.value?.nsNumber
                 }
             }
-
-            +++ Section(header: "Rating", footer: "")
-            <<< StarRatingRow(initialRating: book.rating?.intValue) { [unowned self] in
-                self.book.rating = $0 == nil ? nil : NSNumber(value: $0!)
+            <<< StarRatingRow { [unowned self] row in
+                row.value = self.book.rating?.intValue
+                row.onChange { [unowned self] in
+                    self.book.rating = $0.value == nil ? nil : NSNumber(value: $0.value!)
+                }
             }
 
             +++ Section(header: "Notes", footer: "")
