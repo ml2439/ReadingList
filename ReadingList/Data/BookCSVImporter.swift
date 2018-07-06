@@ -75,6 +75,8 @@ private class BookCSVParserDelegate: CSVParserDelegate {
         book.startedReading = Date(iso: values["Started Reading"])
         book.finishedReading = Date(iso: values["Finished Reading"])
         book.subjects = Set(createSubjects(values["Subjects"]))
+        book.rating = Int(values["Rating"])?.nsNumber
+        book.languageCode = values["Language Code"]
         return book
     }
 
