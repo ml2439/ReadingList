@@ -82,6 +82,16 @@ class EditBookMetadata: FormViewController {
                     book.pageCount = pageCount.nsNumber
                 }
             }
+            <<< PickerInlineRow<Language> {
+                $0.title = "Language"
+                if let code = book.languageCode {
+                    $0.value = Language.byIsoCode[code]
+                }
+                $0.options = Language.all
+                $0.onChange {
+                    book.languageCode = $0.value?.isoCode
+                }
+            }
             <<< DateRow {
                 $0.title = "Publication Date"
                 $0.value = book.publicationDate

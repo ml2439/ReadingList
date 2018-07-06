@@ -115,6 +115,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         setTextOrHideLine(tableVaules[7], book.pageCount?.intValue.string)
         setTextOrHideLine(tableVaules[8], book.publicationDate?.toPrettyString(short: false))
         setTextOrHideLine(tableVaules[9], book.subjects.map { $0.name }.sorted().joined(separator: ", ").nilIfWhitespace())
+        setTextOrHideLine(tableVaules[10], book.languageCode == nil ? nil : Language.byIsoCode[book.languageCode!]?.displayName)
 
         // Show or hide the links, depending on whether we have valid URLs. If both links are hidden, the enclosing stack should be too.
         googleBooks.isHidden = book.googleBooksId == nil

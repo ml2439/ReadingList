@@ -21,6 +21,7 @@ class Book: NSManagedObject {
     @NSManaged var coverImage: Data?
     @NSManaged var notes: String?
     @NSManaged var rating: NSNumber? // Valid values are 1-5.
+    @NSManaged var languageCode: String? // ISO 639.1: two-digit language code
     @NSManaged var currentPage: NSNumber?
     @NSManaged var sort: NSNumber?
 
@@ -82,6 +83,7 @@ extension Book {
         pageCount = fetchResult.pageCount?.nsNumber
         publicationDate = fetchResult.publishedDate
         isbn13 = fetchResult.isbn13
+        languageCode = fetchResult.languageCode
     }
 
     func populate(fromSearchResult searchResult: GoogleBooks.SearchResult, withCoverImage coverImage: Data? = nil) {
@@ -144,6 +146,7 @@ extension Book {
         case missingTitle
         case invalidIsbn
         case invalidReadDates
+        case invalidLanguageCode
     }
 
     override func validateForUpdate() throws {
@@ -159,6 +162,10 @@ extension Book {
         if readState == .finished && (startedReading == nil || finishedReading == nil
             || startedReading!.startOfDay() > finishedReading!.startOfDay()) {
             throw ValidationError.invalidReadDates
+        }
+
+        if let isoCode = languageCode, Language.byIsoCode[isoCode] == nil {
+            throw ValidationError.invalidLanguageCode
         }
     }
 

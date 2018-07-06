@@ -77,6 +77,7 @@
 		1CD83C3E1F9BC0BA00E88E31 /* XibView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD83C3D1F9BC0BA00E88E31 /* XibView.swift */; };
 		1CDA41FD20EC1AAA00273D4D /* StarRatingCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1CDA41FC20EC1AAA00273D4D /* StarRatingCell.xib */; };
 		1CDA41FF20EC1C0200273D4D /* StarRatingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDA41FE20EC1C0200273D4D /* StarRatingCell.swift */; };
+		1CDA420120EF8C4F00273D4D /* Language.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDA420020EF8C4F00273D4D /* Language.swift */; };
 		1CDD535E1FA6609600A5ED66 /* SettingsHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD535D1FA6609600A5ED66 /* SettingsHeader.swift */; };
 		1CDD53601FA7B38000A5ED66 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1CDD535F1FA7B38000A5ED66 /* Assets.xcassets */; };
 		1CF4B5FE2055701900F8527C /* BookTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1CF4B5FD2055701900F8527C /* BookTableViewCell.xib */; };
@@ -218,6 +219,7 @@
 		1CDA41F920EBF7DD00273D4D /* books_12.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = books_12.xcdatamodel; sourceTree = "<group>"; };
 		1CDA41FC20EC1AAA00273D4D /* StarRatingCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = StarRatingCell.xib; sourceTree = "<group>"; };
 		1CDA41FE20EC1C0200273D4D /* StarRatingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarRatingCell.swift; sourceTree = "<group>"; };
+		1CDA420020EF8C4F00273D4D /* Language.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Language.swift; sourceTree = "<group>"; };
 		1CDD535D1FA6609600A5ED66 /* SettingsHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsHeader.swift; sourceTree = "<group>"; };
 		1CDD535F1FA7B38000A5ED66 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1CF4B5FD2055701900F8527C /* BookTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BookTableViewCell.xib; sourceTree = "<group>"; };
@@ -527,6 +529,7 @@
 				1CD11251202DED8200BE3E1D /* List.swift */,
 				1C395449202F948B007ACCB1 /* Subject.swift */,
 				1C0DC735204B0A230044B377 /* BookReadState.swift */,
+				1CDA420020EF8C4F00273D4D /* Language.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1093,6 +1096,7 @@
 				1CD83C3E1F9BC0BA00E88E31 /* XibView.swift in Sources */,
 				49160F5F1E809DFE00168FD0 /* BookCSVImporter.swift in Sources */,
 				1CD1D2B6202BC9C400ACA5D9 /* UIKitExtensions.swift in Sources */,
+				1CDA420120EF8C4F00273D4D /* Language.swift in Sources */,
 				1CDD535E1FA6609600A5ED66 /* SettingsHeader.swift in Sources */,
 				492500781C0B1B0000C149B5 /* PersistentStoreManager.swift in Sources */,
 				1CFCD01A2013BD6A00D27301 /* Organise.swift in Sources */,
