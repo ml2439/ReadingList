@@ -4,7 +4,7 @@ import CoreData
 class BookCSVImporter {
     private let parserDelegate: BookCSVParserDelegate //swiftlint:disable:this weak_delegate
     var parser: CSVParser?
-
+    
     init(includeImages: Bool = true) {
         let backgroundContext = PersistentStoreManager.container.newBackgroundContext()
         backgroundContext.mergePolicy = NSMergePolicy.mergeByPropertyStoreTrump
