@@ -301,98 +301,56 @@ extension UITabBar {
     }
 }
 
-extension SwitchCell {
-    func initialise(withTheme theme: Theme) {
-        backgroundColor = theme.cellBackgroundColor
-        textLabel?.textColor = theme.titleTextColor
-    }
-}
+extension Theme {
+    func configureForms() {
 
-extension DateCell {
-    func initialise(withTheme theme: Theme) {
-        backgroundColor = theme.cellBackgroundColor
-        selectedBackgroundColor = theme.selectedCellBackgroundColor
-        textLabel?.textColor = theme.titleTextColor
-    }
-}
-
-extension ButtonCellOf {
-    func initialise(withTheme theme: Theme) {
-        backgroundColor = theme.cellBackgroundColor
-        selectedBackgroundColor = theme.selectedCellBackgroundColor
-    }
-}
-
-extension IntCell {
-    func initialise(withTheme theme: Theme) {
-        backgroundColor = theme.cellBackgroundColor
-        selectedBackgroundColor = theme.selectedCellBackgroundColor
-        textLabel?.textColor = theme.titleTextColor
-        textField.textColor = theme.titleTextColor
-        textField.keyboardAppearance = theme.keyboardAppearance
-    }
-}
-
-extension TextAreaCell {
-    func initialise(withTheme theme: Theme) {
-        backgroundColor = theme.cellBackgroundColor
-        textView.backgroundColor = theme.cellBackgroundColor
-        textView.textColor = theme.titleTextColor
-        placeholderLabel?.textColor = theme.placeholderTextColor
-        textView.keyboardAppearance = theme.keyboardAppearance
-    }
-}
-
-extension TextRow {
-    static func initialise(_ textCell: TextCell, _ textRow: TextRow) {
-        let theme = UserSettings.theme.value
-        textCell.backgroundColor = theme.cellBackgroundColor
-        textCell.textField.textColor = theme.titleTextColor
-        textCell.textField.keyboardAppearance = theme.keyboardAppearance
-        textCell.textLabel?.textColor = theme.titleTextColor
-        textRow.placeholderColor = theme.placeholderTextColor
-    }
-}
-
-extension PickerInlineCell {
-    func initialise(withTheme theme: Theme) {
-        backgroundColor = theme.cellBackgroundColor
-        textLabel?.textColor = theme.titleTextColor
-        selectedBackgroundColor = theme.selectedCellBackgroundColor
-        detailTextLabel?.textColor = theme.titleTextColor
-        contentView.backgroundColor = theme.cellBackgroundColor
-        PickerInlineRow<Language>.InlineRow.defaultCellSetup = { cell, _ in
-            cell.backgroundColor = theme.cellBackgroundColor
-            //TRICKY
+        func initialiseCell(_ cell: UITableViewCell, _: Any? = nil) {
+            cell.defaultInitialise(withTheme: self)
         }
-    }
-}
 
-extension SegmentedCell {
-    func initialise(withTheme theme: Theme) {
-        backgroundColor = theme.cellBackgroundColor
-    }
-}
-
-extension LabelCellOf {
-    func initialise(withTheme theme: Theme) {
-        backgroundColor = theme.cellBackgroundColor
-        textLabel?.textColor = theme.titleTextColor
-    }
-}
-
-extension ImageCell {
-    func initialise(withTheme theme: Theme) {
-        backgroundColor = theme.cellBackgroundColor
-        selectedBackgroundColor = theme.selectedCellBackgroundColor
-        textLabel?.textColor = theme.titleTextColor
-    }
-}
-
-extension ListCheckCell {
-    func initialise(withTheme theme: Theme) {
-        backgroundColor = theme.cellBackgroundColor
-        textLabel?.textColor = theme.titleTextColor
-        selectedBackgroundColor = theme.selectedCellBackgroundColor
+        SwitchRow.defaultCellUpdate = initialiseCell(_:_:)
+        DateRow.defaultCellUpdate = initialiseCell(_:_:)
+        ListCheckRow<Theme>.defaultCellUpdate = initialiseCell(_:_:)
+        ListCheckRow<TableSortOrder>.defaultCellUpdate = initialiseCell(_:_:)
+        ImageRow.defaultCellUpdate = initialiseCell(_:_:)
+        SegmentedRow<BookReadState>.defaultCellUpdate = initialiseCell(_:_:)
+        LabelRow.defaultCellUpdate = initialiseCell(_:_:)
+        AuthorRow.defaultCellUpdate = initialiseCell(_:_:)
+        ABPickerInlineRow<Language>.defaultCellUpdate = { cell, _ in
+            initialiseCell(cell)
+            cell.tintColor = self.titleTextColor
+        }
+        ButtonRow.defaultCellUpdate = { cell, _ in
+            cell.backgroundColor = self.cellBackgroundColor
+            cell.selectedBackgroundColor = self.selectedCellBackgroundColor
+        }
+        StarRatingRow.defaultCellUpdate = { cell, _ in
+            initialiseCell(cell)
+            cell.leftLabel.textColor = self.titleTextColor
+        }
+        ABPickerInlineRow<Language>.InlineRow.defaultCellUpdate = { cell, _ in
+            initialiseCell(cell)
+            cell.pickerTextColor = self.titleTextColor
+        }
+        IntRow.defaultCellUpdate = { cell, _ in
+            initialiseCell(cell)
+            cell.textField.textColor = self.titleTextColor
+            cell.textField.keyboardAppearance = self.keyboardAppearance
+        }
+        TextAreaRow.defaultCellUpdate = { cell, row in
+            initialiseCell(cell)
+            cell.placeholderLabel?.textColor = self.placeholderTextColor
+            cell.textView.backgroundColor = self.cellBackgroundColor
+            cell.textView.textColor = self.titleTextColor
+            cell.textView.keyboardAppearance = self.keyboardAppearance
+        }
+        TextRow.defaultCellSetup = { cell, row in
+            row.placeholderColor = self.placeholderTextColor
+        }
+        TextRow.defaultCellUpdate = { cell, row in
+            initialiseCell(cell)
+            cell.textField.keyboardAppearance = self.keyboardAppearance
+            cell.textField.textColor = self.titleTextColor
+        }
     }
 }

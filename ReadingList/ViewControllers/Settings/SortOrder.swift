@@ -10,9 +10,6 @@ class SortOrder: FormViewController {
             return ListCheckRow<TableSortOrder> {
                 $0.title = tableSort.displayName
                 $0.selectableValue = tableSort
-                $0.cellUpdate { cell, _ in
-                    cell.initialise(withTheme: UserSettings.theme.value)
-                }
                 $0.onChange {
                     guard let selectedValue = $0.value else { return }
                     switch readState {

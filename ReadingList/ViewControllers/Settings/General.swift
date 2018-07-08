@@ -11,9 +11,6 @@ class General: FormViewController {
                 <<< SwitchRow {
                     $0.title = "Use Large Titles"
                     $0.value = UserSettings.useLargeTitles.value
-                    $0.cellUpdate { cell, _ in
-                        cell.initialise(withTheme: UserSettings.theme.value)
-                    }
                     $0.onChange { row in
                         UserSettings.useLargeTitles.value = row.value!
                         UserEngagement.logEvent(.changeLargeTitles)
@@ -43,9 +40,6 @@ class General: FormViewController {
                 """)
                 <<< SwitchRow {
                     $0.title = "Send Crash Reports"
-                    $0.cellUpdate { cell, _ in
-                        cell.initialise(withTheme: UserSettings.theme.value)
-                    }
                     $0.disabled = Condition(booleanLiteral: BuildInfo.appConfiguration == .testFlight)
                     $0.onChange { [unowned self] in
                         self.crashReportsSwitchChanged($0)
@@ -54,9 +48,6 @@ class General: FormViewController {
                 }
                 <<< SwitchRow {
                     $0.title = "Send Analytics"
-                    $0.cellUpdate { cell, _ in
-                        cell.initialise(withTheme: UserSettings.theme.value)
-                    }
                     $0.disabled = Condition(booleanLiteral: BuildInfo.appConfiguration == .testFlight)
                     $0.onChange { [unowned self] in
                         self.analyticsSwitchChanged($0)
@@ -72,9 +63,6 @@ class General: FormViewController {
             $0.title = name
             $0.selectableValue = theme
             $0.value = UserSettings.theme.value == theme ? theme : nil
-            $0.cellUpdate {cell, _ in
-                cell.initialise(withTheme: UserSettings.theme.value)
-            }
         }
     }
 

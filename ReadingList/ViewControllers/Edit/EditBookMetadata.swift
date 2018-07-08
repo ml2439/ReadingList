@@ -54,9 +54,7 @@ class EditBookMetadata: FormViewController {
                 $0.cell.textField.autocapitalizationType = .words
                 $0.placeholder = "Title"
                 $0.value = book.title
-                $0.cellUpdate(TextRow.initialise)
                 $0.onChange { book.title = $0.value ?? "" }
-                $0.placeholderColor = UserSettings.theme.value.placeholderTextColor // cell update is not updating the cell on load
             }
 
             +++ AuthorSection(book: book, navigationController: navigationController!)
@@ -67,28 +65,20 @@ class EditBookMetadata: FormViewController {
                 $0.value = book.isbn13
                 $0.disabled = Condition(booleanLiteral: true)
                 $0.hidden = Condition(booleanLiteral: isAddingNewBook || book.isbn13 == nil)
-                $0.cellUpdate(TextRow.initialise)
-                $0.placeholderColor = UserSettings.theme.value.placeholderTextColor // cell update is not updating the cell on load
             }
             <<< IntRow {
                 $0.title = "Page Count"
                 $0.value = book.pageCount?.intValue
-                $0.cellUpdate { cell, _ in
-                    cell.initialise(withTheme: UserSettings.theme.value)
-                }
                 $0.onChange {
                     guard let pageCount = $0.value else { book.pageCount = nil; return }
                     guard pageCount >= 0 && pageCount <= Int32.max else { book.pageCount = nil; return }
                     book.pageCount = pageCount.nsNumber
                 }
             }
-            <<< PickerInlineRow<Language> {
+            <<< ABPickerInlineRow<Language> {
                 $0.title = "Language"
                 if let code = book.languageCode {
                     $0.value = Language.byIsoCode[code]
-                }
-                $0.cellUpdate { cell, _ in
-                    cell.initialise(withTheme: UserSettings.theme.value)
                 }
                 $0.options = Language.all
                 $0.onChange {
@@ -98,20 +88,16 @@ class EditBookMetadata: FormViewController {
             <<< DateRow {
                 $0.title = "Publication Date"
                 $0.value = book.publicationDate
-                $0.cellUpdate { cell, _ in
-                    cell.initialise(withTheme: UserSettings.theme.value)
-                }
                 $0.onChange { book.publicationDate = $0.value }
             }
             <<< ButtonRow {
                 $0.title = "Subjects"
                 $0.cellStyle = .value1
-                $0.cellUpdate {cell, _ in
+                $0.cellUpdate { cell, _ in
                     cell.textLabel!.textAlignment = .left
+                    cell.textLabel!.textColor = UserSettings.theme.value.titleTextColor
                     cell.accessoryType = .disclosureIndicator
                     cell.detailTextLabel?.text = book.subjects.map { $0.name }.sorted().joined(separator: ", ")
-                    cell.initialise(withTheme: UserSettings.theme.value)
-                    cell.textLabel?.textColor = UserSettings.theme.value.titleTextColor
                 }
                 $0.onCellSelection { [unowned self] _, row in
                     self.navigationController!.pushViewController(EditBookSubjectsForm(book: book, sender: row), animated: true)
@@ -121,9 +107,6 @@ class EditBookMetadata: FormViewController {
                 $0.title = "Cover Image"
                 $0.cell.height = { return 100 }
                 $0.value = UIImage(optionalData: book.coverImage)
-                $0.cellUpdate { cell, _ in
-                    cell.initialise(withTheme: UserSettings.theme.value)
-                }
                 $0.onChange { book.coverImage = $0.value == nil ? nil : UIImageJPEGRepresentation($0.value!, 0.7) }
             }
 
@@ -132,9 +115,6 @@ class EditBookMetadata: FormViewController {
                 $0.placeholder = "Description"
                 $0.value = book.bookDescription
                 $0.onChange { book.bookDescription = $0.value }
-                $0.cellUpdate { cell, _ in
-                    cell.initialise(withTheme: UserSettings.theme.value)
-                }
                 $0.cellSetup { [unowned self] cell, _ in
                     cell.height = { (self.view.frame.height / 3) - 10 }
                 }
@@ -145,9 +125,6 @@ class EditBookMetadata: FormViewController {
             <<< ButtonRow(updateFromGoogleRowKey) {
                 $0.title = "Update from Google Books"
                 $0.hidden = Condition(booleanLiteral: isAddingNewBook || book.googleBooksId == nil)
-                $0.cellUpdate { cell, _ in
-                    cell.initialise(withTheme: UserSettings.theme.value)
-                }
                 $0.onCellSelection { [unowned self] _, _ in
                     self.updateBookFromGoogle()
                 }
@@ -157,9 +134,6 @@ class EditBookMetadata: FormViewController {
                 $0.cellSetup { cell, _ in cell.tintColor = UIColor.red }
                 $0.onCellSelection { [unowned self] _, _ in
                     self.deletePressed()
-                }
-                $0.cellUpdate { cell, _ in
-                    cell.initialise(withTheme: UserSettings.theme.value)
                 }
                 $0.hidden = Condition(booleanLiteral: isAddingNewBook)
             }
@@ -255,7 +229,6 @@ class EditBookMetadata: FormViewController {
         guard book.isValidForUpdate() else { return }
         navigationController!.pushViewController(EditBookReadState(newUnsavedBook: book, scratchpadContext: editBookContext), animated: true)
     }
-
 }
 
 class AuthorSection: MultivaluedSection {
@@ -275,9 +248,8 @@ class AuthorSection: MultivaluedSection {
             $0.addButtonProvider = { _ in
                 return ButtonRow {
                     $0.title = "Add Author"
-                    $0.cellUpdate {cell, _ in
+                    $0.cellUpdate { cell, _ in
                         cell.textLabel!.textAlignment = .left
-                        cell.initialise(withTheme: UserSettings.theme.value)
                     }
                 }
             }
@@ -351,7 +323,6 @@ final class AuthorRow: _LabelRow, RowType {
         cellStyle = .value1
 
         cellUpdate { [unowned self] cell, _ in
-            cell.initialise(withTheme: UserSettings.theme.value)
             cell.textLabel!.textAlignment = .left
             cell.textLabel!.text = [self.firstNames, self.lastName].compactMap { $0 }.joined(separator: " ")
         }
@@ -376,14 +347,10 @@ class AddAuthorForm: FormViewController {
         form +++ Section(header: "Author Name", footer: "")
             <<< TextRow(firstNamesRow) {
                 $0.placeholder = "First Name(s)"
-                $0.cellUpdate(TextRow.initialise)
-                $0.placeholderColor = UserSettings.theme.value.placeholderTextColor // cell update is not updating the cell on load
                 $0.cell.textField.autocapitalizationType = .words
             }
             <<< TextRow(lastNameRow) {
                 $0.placeholder = "Last Name"
-                $0.cellUpdate(TextRow.initialise)
-                $0.placeholderColor = UserSettings.theme.value.placeholderTextColor // cell update is not updating the cell on load
                 $0.cell.textField.autocapitalizationType = .words
             }
 
@@ -434,8 +401,7 @@ class EditBookSubjectsForm: FormViewController {
             $0.addButtonProvider = { _ in
                 return ButtonRow {
                     $0.title = "Add New Subject"
-                    $0.cellUpdate {cell, _ in
-                        cell.defaultInitialise(withTheme: UserSettings.theme.value)
+                    $0.cellUpdate { cell, _ in
                         cell.textLabel?.textAlignment = .left
                     }
                 }
@@ -444,14 +410,12 @@ class EditBookSubjectsForm: FormViewController {
                 return TextRow {
                     $0.placeholder = "Subject"
                     $0.cell.textField.autocapitalizationType = .words
-                    $0.cellUpdate(TextRow.initialise)
                 }
             }
             for subject in book.subjects.sorted(by: { $0.name < $1.name }) {
                 $0 <<< TextRow {
                     $0.value = subject.name
                     $0.cell.textField.autocapitalizationType = .words
-                    $0.cellUpdate(TextRow.initialise)
                 }
             }
         }
