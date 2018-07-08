@@ -966,6 +966,8 @@
                         <outletCollection property="tableSubHeadings" destination="BdG-SU-Xfn" collectionClass="NSMutableArray" id="Kfg-sE-ULy"/>
                         <outletCollection property="tableSubHeadings" destination="DsS-u3-Ynr" collectionClass="NSMutableArray" id="Gys-ES-DyJ"/>
                         <outletCollection property="tableVaules" destination="oLc-lz-RbE" collectionClass="NSMutableArray" id="m72-77-5Dt"/>
+                        <outletCollection property="tableSubHeadings" destination="R6w-p1-Dhq" collectionClass="NSMutableArray" id="VfB-j1-3Tb"/>
+                        <outletCollection property="tableSubHeadings" destination="arj-ZO-irS" collectionClass="NSMutableArray" id="6dg-Mc-ePP"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5dX-S1-jhF" userLabel="First Responder" sceneMemberID="firstResponder"/>

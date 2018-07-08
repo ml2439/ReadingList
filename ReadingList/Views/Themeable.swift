@@ -354,6 +354,20 @@ extension TextRow {
     }
 }
 
+extension PickerInlineCell {
+    func initialise(withTheme theme: Theme) {
+        backgroundColor = theme.cellBackgroundColor
+        textLabel?.textColor = theme.titleTextColor
+        selectedBackgroundColor = theme.selectedCellBackgroundColor
+        detailTextLabel?.textColor = theme.titleTextColor
+        contentView.backgroundColor = theme.cellBackgroundColor
+        PickerInlineRow<Language>.InlineRow.defaultCellSetup = { cell, _ in
+            cell.backgroundColor = theme.cellBackgroundColor
+            //TRICKY
+        }
+    }
+}
+
 extension SegmentedCell {
     func initialise(withTheme theme: Theme) {
         backgroundColor = theme.cellBackgroundColor

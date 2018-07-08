@@ -5,6 +5,7 @@ import Eureka
 public class StarRatingCell: Cell<Int>, CellType {
 
     @IBOutlet private weak var stackView: UIStackView!
+    @IBOutlet private weak var leftLabel: UILabel!
 
     public override func setup() {
         super.setup()
@@ -43,6 +44,11 @@ public class StarRatingCell: Cell<Int>, CellType {
             row.value = tappedRating
         }
         update()
+    }
+
+    func initialise(withTheme theme: Theme) {
+        backgroundColor = theme.cellBackgroundColor
+        leftLabel.textColor = theme.titleTextColor
     }
 }
 

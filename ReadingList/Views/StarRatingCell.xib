@@ -75,6 +75,7 @@
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <connections>
+                <outlet property="leftLabel" destination="ptZ-iH-AEu" id="b7E-kX-T2e"/>
                 <outlet property="stackView" destination="NcL-mu-DFs" id="I4L-sr-Gu8"/>
             </connections>
             <point key="canvasLocation" x="-840" y="-825"/>

@@ -87,6 +87,9 @@ class EditBookMetadata: FormViewController {
                 if let code = book.languageCode {
                     $0.value = Language.byIsoCode[code]
                 }
+                $0.cellUpdate { cell, _ in
+                    cell.initialise(withTheme: UserSettings.theme.value)
+                }
                 $0.options = Language.all
                 $0.onChange {
                     book.languageCode = $0.value?.isoCode

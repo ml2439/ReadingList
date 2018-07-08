@@ -334,6 +334,7 @@ extension BookDetails: ThemeableViewController {
         tableVaules.forEach { $0.textColor = theme.titleTextColor }
         separatorLines.forEach { $0.backgroundColor = theme.cellSeparatorColor }
         listsStack.arrangedSubviews.forEach { ($0 as! UILabel).textColor = theme.titleTextColor }
+        ratingStarsStackView.arrangedSubviews.compactMap { $0 as? UIImageView }.forEach { $0.tintColor = theme.titleTextColor }
     }
 }
 
