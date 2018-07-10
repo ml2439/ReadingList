@@ -56,6 +56,8 @@ class Debug: FormViewController {
                     DebugSettings.showSortNumber = $0.value ?? false
                 }
             }
+
+        monitorThemeSetting()
     }
 }
 
