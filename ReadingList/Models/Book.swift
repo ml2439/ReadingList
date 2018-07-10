@@ -140,51 +140,112 @@ extension Book {
         return (try! context.fetch(fetchRequest)).first?.sort?.int32
     }
 
-    enum ValidationError: Error {
-        case missingTitle
-        case invalidIsbn
-        case invalidReadDates
-        case invalidLanguageCode
-        case missingIdentifier
-        case conflictingIdentifiers
+    @objc func validateAuthors(_ value: AutoreleasingUnsafeMutablePointer<AnyObject?>) throws {
+        // nil authors property will be validated by the validation set on the model
+        guard let authors = value.pointee as? [Author] else { return }
+        if authors.isEmpty {
+            throw BookValidationError.noAuthors.NSError()
+        }
+    }
+
+    @objc func validateTitle(_ value: AutoreleasingUnsafeMutablePointer<AnyObject?>) throws {
+        // nil title property will be validated by the validation set on the model
+        guard let title = value.pointee as? String else { return }
+        if title.isEmptyOrWhitespace {
+            throw BookValidationError.missingTitle.NSError()
+        }
+    }
+
+    @objc func validateIsbn13(_ value: AutoreleasingUnsafeMutablePointer<AnyObject?>) throws {
+        guard let isbn13 = value.pointee as? String else { return }
+        if ISBN13(isbn13) == nil {
+            throw BookValidationError.invalidIsbn.NSError()
+        }
+    }
+
+    @objc func validateLanguageCode(_ value: AutoreleasingUnsafeMutablePointer<AnyObject?>) throws {
+        guard let languageCode = value.pointee as? String else { return }
+        if Language.byIsoCode[languageCode] == nil {
+            throw BookValidationError.invalidLanguageCode.NSError()
+        }
     }
 
     override func validateForUpdate() throws {
         try super.validateForUpdate()
 
-        // FUTURE: these should be property validators, not in validateForUpdate
-        if title.isEmptyOrWhitespace { throw ValidationError.missingTitle }
-        if let isbn = isbn13, ISBN13(isbn) == nil { throw ValidationError.invalidIsbn }
-
         // FUTURE: Check read state with current page
-        if readState == .toRead && (startedReading != nil || finishedReading != nil) { throw ValidationError.invalidReadDates }
-        if readState == .reading && (startedReading == nil || finishedReading != nil) { throw ValidationError.invalidReadDates }
-        if readState == .finished && (startedReading == nil || finishedReading == nil
-            || startedReading!.startOfDay() > finishedReading!.startOfDay()) {
-            throw ValidationError.invalidReadDates
+        switch readState {
+        case .toRead:
+            if startedReading != nil || finishedReading != nil {
+                throw BookValidationError.invalidReadDates.NSError()
+            }
+        case .reading:
+            if startedReading == nil || finishedReading != nil {
+                throw BookValidationError.invalidReadDates.NSError()
+            }
+        case .finished:
+            if startedReading == nil || finishedReading == nil {
+                throw BookValidationError.invalidReadDates.NSError()
+            }
         }
 
         if googleBooksId == nil && manualBookId == nil {
-            throw ValidationError.missingIdentifier
+            throw BookValidationError.missingIdentifier.NSError()
         }
         if googleBooksId != nil && manualBookId != nil {
-            throw ValidationError.conflictingIdentifiers
-        }
-
-        if let isoCode = languageCode, Language.byIsoCode[isoCode] == nil {
-            throw ValidationError.invalidLanguageCode
+            throw BookValidationError.conflictingIdentifiers.NSError()
         }
     }
 
     func startReading() {
-        guard readState == .toRead else { print("Attempted to start a book in state \(readState)"); return }
+        guard readState == .toRead else {
+            #if DEBUG
+            fatalError("Attempted to start a book in state \(readState)")
+            #else
+            return
+            #endif
+        }
         readState = .reading
         startedReading = Date()
     }
 
     func finishReading() {
-        guard readState == .reading else { print("Attempted to finish a book in state \(readState)"); return }
+        guard readState == .reading else {
+            #if DEBUG
+            fatalError("Attempted to start a book in state \(readState)")
+            #else
+            return
+            #endif
+        }
         readState = .finished
         finishedReading = Date()
+    }
+}
+
+enum BookValidationError: Int {
+    case missingTitle = 1
+    case invalidIsbn = 2
+    case invalidReadDates = 3
+    case invalidLanguageCode = 4
+    case missingIdentifier = 5
+    case conflictingIdentifiers = 6
+    case noAuthors = 7
+}
+
+extension BookValidationError {
+    var description: String {
+        switch self {
+        case .missingTitle: return "Title must be non-empty or whitespace"
+        case .invalidIsbn: return "Isbn13 must be a valid ISBN"
+        case .invalidReadDates: return "StartedReading and FinishedReading must align with ReadState"
+        case .invalidLanguageCode: return "LanguageCode must be an ISO-639.1 value"
+        case .conflictingIdentifiers: return "GoogleBooksId and ManualBooksId cannot both be non nil"
+        case .missingIdentifier: return "GoogleBooksId and ManualBooksId cannot both be nil"
+        case .noAuthors: return "Authors array must be non-empty"
+        }
+    }
+
+    func NSError() -> NSError {
+        return Foundation.NSError(domain: "BookErrorDomain", code: self.rawValue, userInfo: [NSLocalizedDescriptionKey: self.description])
     }
 }
