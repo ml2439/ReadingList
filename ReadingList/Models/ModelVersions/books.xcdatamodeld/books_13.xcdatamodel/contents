@@ -4,11 +4,13 @@
         <attribute name="authors" attributeType="Transformable" syncable="YES"/>
         <attribute name="authorSort" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="bookDescription" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="ckRecordEncodedSystemFields" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="coverImage" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
         <attribute name="currentPage" optional="YES" attributeType="Integer 32" minValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="finishedReading" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="googleBooksId" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="isbn13" optional="YES" attributeType="String" regularExpressionString="\d{13}" syncable="YES"/>
+        <attribute name="keysPendingRemoteUpdate" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="languageCode" optional="YES" attributeType="String" minValueString="2" maxValueString="2" syncable="YES"/>
         <attribute name="manualBookId" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="notes" optional="YES" attributeType="String" syncable="YES"/>
@@ -16,6 +18,7 @@
         <attribute name="publicationDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="rating" optional="YES" attributeType="Integer 16" minValueString="1" maxValueString="5" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="readState" attributeType="Integer 16" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="remoteIdentifier" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="sort" optional="YES" attributeType="Integer 32" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="startedReading" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="title" attributeType="String" syncable="YES"/>
@@ -47,12 +50,22 @@
             <fetchIndexElement property="authorSort" type="Binary" order="ascending"/>
         </fetchIndex>
     </entity>
+    <entity name="ChangeToken" representedClassName="ChangeToken" syncable="YES">
+        <attribute name="changeTokenData" attributeType="Binary" syncable="YES"/>
+        <attribute name="ownerName" attributeType="String" syncable="YES"/>
+        <attribute name="zoneName" attributeType="String" syncable="YES"/>
+    </entity>
     <entity name="List" representedClassName="List" versionHashModifier="v11" syncable="YES">
         <attribute name="name" attributeType="String" syncable="YES"/>
         <relationship name="books" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Book" inverseName="lists" inverseEntity="Book" syncable="YES"/>
         <fetchIndex name="name">
             <fetchIndexElement property="name" type="Binary" order="ascending"/>
         </fetchIndex>
+    </entity>
+    <entity name="PendingRemoteDeletionItem" representedClassName="PendingRemoteDeletionItem" syncable="YES">
+        <attribute name="ownerName" attributeType="String" syncable="YES"/>
+        <attribute name="recordName" attributeType="String" syncable="YES"/>
+        <attribute name="zoneName" attributeType="String" syncable="YES"/>
     </entity>
     <entity name="Subject" representedClassName="Subject" syncable="YES">
         <attribute name="name" attributeType="String" syncable="YES"/>
@@ -62,8 +75,10 @@
         </fetchIndex>
     </entity>
     <elements>
-        <element name="Book" positionX="-63" positionY="-18" width="128" height="345"/>
+        <element name="Book" positionX="-63" positionY="-18" width="128" height="390"/>
         <element name="List" positionX="-54" positionY="117" width="128" height="75"/>
         <element name="Subject" positionX="-63" positionY="90" width="128" height="75"/>
+        <element name="ChangeToken" positionX="-54" positionY="135" width="128" height="90"/>
+        <element name="PendingRemoteDeletionItem" positionX="-45" positionY="144" width="128" height="90"/>
     </elements>
 </model>

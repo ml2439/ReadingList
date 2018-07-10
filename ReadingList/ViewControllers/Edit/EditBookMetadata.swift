@@ -282,7 +282,6 @@ class AuthorSection: MultivaluedSection {
         // and rowsHaveBeenAdded, so we can't delete books on removal, since they might need to come back.
         // Instead, we take the brute force approach of deleting all authors and rebuilding the set each time
         // something changes. We can check whether there are any meaningful differences before we embark on this though.
-
         let newAuthors: [(String, String?)] = self.compactMap {
             guard let authorRow = $0 as? AuthorRow else { return nil }
             guard let lastName = authorRow.lastName else { return nil }

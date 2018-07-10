@@ -184,9 +184,9 @@ extension Book {
         case invalidIsbn
         case invalidReadDates
         case bitmaskPresentWithoutRemoteIdentifier
+        case invalidLanguageCode
         case missingIdentifier
         case conflictingIdentifiers
-        case invalidLanguageCode
     }
 
     override func validateForUpdate() throws {
@@ -214,6 +214,7 @@ extension Book {
         if keysPendingRemoteUpdate != 0 && remoteIdentifier == nil {
             throw ValidationError.bitmaskPresentWithoutRemoteIdentifier
 	}
+
         if let isoCode = languageCode, Language.byIsoCode[isoCode] == nil {
             throw ValidationError.invalidLanguageCode
         }
