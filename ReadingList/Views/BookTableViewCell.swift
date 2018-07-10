@@ -42,7 +42,7 @@ class BookTableViewCell: UITableViewCell {
 
     func configureFrom(_ book: Book, includeReadDates: Bool = true) {
         titleLabel.text = book.title
-        authorsLabel.text = book.authorDisplay
+        authorsLabel.text = Author.authorDisplay(book.authorDisplay)
         bookCover.image = UIImage(optionalData: book.coverImage) ?? #imageLiteral(resourceName: "CoverPlaceholder")
         if includeReadDates {
             switch book.readState {

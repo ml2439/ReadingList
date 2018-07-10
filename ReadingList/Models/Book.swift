@@ -11,8 +11,7 @@ class Book: NSManagedObject {
     @NSManaged var googleBooksId: String?
 
     @NSManaged var title: String
-    @NSManaged private(set) var authors: NSOrderedSet
-    @NSManaged private(set) var authorDisplay: String // Denormalised attribute to reduce required fetches
+    @NSManaged private(set) var authors: [Author]
     @NSManaged private(set) var authorSort: String // Calculated sort helper
 
     @NSManaged var pageCount: NSNumber?
@@ -67,9 +66,8 @@ class Book: NSManagedObject {
 extension Book {
 
     func setAuthors(_ authors: [Author]) {
-        self.authors = NSOrderedSet(array: authors)
+        self.authors = authors
         self.authorSort = Author.authorSort(authors)
-        self.authorDisplay = Author.authorDisplay(authors)
     }
 
     // FUTURE: make a convenience init which takes a fetch result?
@@ -99,15 +97,14 @@ extension Book {
             if let range = $0.range(of: " ", options: .backwards) {
                 let firstNames = $0[..<range.upperBound].trimming()
                 let lastName = $0[range.lowerBound...].trimming()
-
+                
                 return (firstNames: firstNames, lastName: lastName)
             } else {
                 return (firstNames: nil, lastName: $0)
             }
         }
-        // FUTURE: This is a bit brute force, deleting all existing authors. Could perhaps inspect for changes first.
-        self.authors.map { $0 as! Author }.forEach { $0.delete() }
-        self.setAuthors(authorNames.map { Author(context: self.managedObjectContext!, lastName: $0.1, firstNames: $0.0) })
+        
+        self.setAuthors(authorNames.map { Author(lastName: $0.1, firstNames: $0.0) })
     }
 
     static func get(fromContext context: NSManagedObjectContext, googleBooksId: String? = nil, isbn: String? = nil) -> Book? {

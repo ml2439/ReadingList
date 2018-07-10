@@ -290,8 +290,7 @@ class AuthorSection: MultivaluedSection {
         if currentAuthors.map({ ($0.lastName, $0.firstNames) }).elementsEqual(newAuthors, by: { $0.0 == $1.0 && $0.1 == $1.1 }) {
             return
         }
-        currentAuthors.forEach { $0.delete() }
-        book.setAuthors(newAuthors.map { Author(context: book.managedObjectContext!, lastName: $0.0, firstNames: $0.1) })
+        book.setAuthors(newAuthors.map { Author(lastName: $0.0, firstNames: $0.1) })
     }
 
     override func rowsHaveBeenRemoved(_ rows: [BaseRow], at: IndexSet) {

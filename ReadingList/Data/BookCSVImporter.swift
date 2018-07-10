@@ -84,9 +84,9 @@ private class BookCSVParserDelegate: CSVParserDelegate {
         return authorString.components(separatedBy: ";").compactMap {
             guard let authorString = $0.trimming().nilIfWhitespace() else { return nil }
             if let firstCommaPos = authorString.range(of: ","), let lastName = authorString[..<firstCommaPos.lowerBound].trimming().nilIfWhitespace() {
-                return Author(context: context, lastName: lastName, firstNames: authorString[firstCommaPos.upperBound...].trimming().nilIfWhitespace())
+                return Author(lastName: lastName, firstNames: authorString[firstCommaPos.upperBound...].trimming().nilIfWhitespace())
             } else {
-                return Author(context: context, lastName: authorString, firstNames: nil)
+                return Author(lastName: authorString, firstNames: nil)
             }
         }
     }
