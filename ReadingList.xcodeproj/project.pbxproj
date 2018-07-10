@@ -92,6 +92,11 @@
 		1CD1D2C4202BCD6300ACA5D9 /* HorizontalGradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD1D2C3202BCD6300ACA5D9 /* HorizontalGradientView.swift */; };
 		1CD7B93D20C179F5001775F5 /* BookCKRecordKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD7B93C20C179F5001775F5 /* BookCKRecordKey.swift */; };
 		1CD83C3E1F9BC0BA00E88E31 /* XibView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD83C3D1F9BC0BA00E88E31 /* XibView.swift */; };
+		1CDA41FD20EC1AAA00273D4D /* StarRatingCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1CDA41FC20EC1AAA00273D4D /* StarRatingCell.xib */; };
+		1CDA41FF20EC1C0200273D4D /* StarRatingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDA41FE20EC1C0200273D4D /* StarRatingCell.swift */; };
+		1CDA420120EF8C4F00273D4D /* Language.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDA420020EF8C4F00273D4D /* Language.swift */; };
+		1CDA421420F2913200273D4D /* PickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDA421320F2913200273D4D /* PickerCell.swift */; };
+		1CDA421620F2917600273D4D /* PickerInlineCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDA421520F2917600273D4D /* PickerInlineCell.swift */; };
 		1CDD535E1FA6609600A5ED66 /* SettingsHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD535D1FA6609600A5ED66 /* SettingsHeader.swift */; };
 		1CDD53601FA7B38000A5ED66 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1CDD535F1FA7B38000A5ED66 /* Assets.xcassets */; };
 		1CF4B5FE2055701900F8527C /* BookTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1CF4B5FD2055701900F8527C /* BookTableViewCell.xib */; };
@@ -248,6 +253,12 @@
 		1CD1D2C3202BCD6300ACA5D9 /* HorizontalGradientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HorizontalGradientView.swift; sourceTree = "<group>"; };
 		1CD7B93C20C179F5001775F5 /* BookCKRecordKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookCKRecordKey.swift; sourceTree = "<group>"; };
 		1CD83C3D1F9BC0BA00E88E31 /* XibView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XibView.swift; sourceTree = "<group>"; };
+		1CDA41F920EBF7DD00273D4D /* books_12.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = books_12.xcdatamodel; sourceTree = "<group>"; };
+		1CDA41FC20EC1AAA00273D4D /* StarRatingCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = StarRatingCell.xib; sourceTree = "<group>"; };
+		1CDA41FE20EC1C0200273D4D /* StarRatingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarRatingCell.swift; sourceTree = "<group>"; };
+		1CDA420020EF8C4F00273D4D /* Language.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Language.swift; sourceTree = "<group>"; };
+		1CDA421320F2913200273D4D /* PickerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerCell.swift; sourceTree = "<group>"; };
+		1CDA421520F2917600273D4D /* PickerInlineCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerInlineCell.swift; sourceTree = "<group>"; };
 		1CDD535D1FA6609600A5ED66 /* SettingsHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsHeader.swift; sourceTree = "<group>"; };
 		1CDD535F1FA7B38000A5ED66 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1CF4B5FD2055701900F8527C /* BookTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BookTableViewCell.xib; sourceTree = "<group>"; };
@@ -384,6 +395,8 @@
 				1C66927C203849EA001ED046 /* BookTableViewCell.swift */,
 				1CC4C048205732300034A218 /* StartFinishButton.swift */,
 				1C42F65C20645C510024CC84 /* Themeable.swift */,
+				1CDA41FC20EC1AAA00273D4D /* StarRatingCell.xib */,
+				1CDA41FE20EC1C0200273D4D /* StarRatingCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -478,6 +491,7 @@
 		1CD1D2B7202BCA1D00ACA5D9 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				1CDA420420F2877500273D4D /* EurekaPickerRow */,
 				1CD1D2AF202BC4DF00ACA5D9 /* FoundationExtensions.swift */,
 				1CD1D2B5202BC9C400ACA5D9 /* UIKitExtensions.swift */,
 				1C39544F2030D3CB007ACCB1 /* EurekaExtensions.swift */,
@@ -515,6 +529,16 @@
 			);
 			path = Sync;
 			sourceTree = "<group>";
+		};
+		1CDA420420F2877500273D4D /* EurekaPickerRow */ = {
+			isa = PBXGroup;
+			children = (
+				1CDA421320F2913200273D4D /* PickerCell.swift */,
+				1CDA421520F2917600273D4D /* PickerInlineCell.swift */,
+			);
+			name = EurekaPickerRow;
+			path = Foundation/EurekaPickerRow;
+			sourceTree = SOURCE_ROOT;
 		};
 		241740D919B869177546F852 /* Frameworks */ = {
 			isa = PBXGroup;
@@ -595,6 +619,7 @@
 				1C0DC735204B0A230044B377 /* BookReadState.swift */,
 				1C2E910620CDD3E600A611A4 /* ChangeToken.swift */,
 				1C2E910A20D01F3A00A611A4 /* PendingRemoteDeletionItem.swift */,
+				1CDA420020EF8C4F00273D4D /* Language.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -892,6 +917,7 @@
 				1CFCD0182013BC4C00D27301 /* Organise.storyboard in Resources */,
 				49043DB71EBF1E0B00E74370 /* SearchBooksEmptyDataset.xib in Resources */,
 				1CC18FA51FA4AC02000FB7E5 /* SettingsHeader.xib in Resources */,
+				1CDA41FD20EC1AAA00273D4D /* StarRatingCell.xib in Resources */,
 				4968A2B21CB3E0BF00CBF3F0 /* LaunchScreen.storyboard in Resources */,
 				1CF4B5FE2055701900F8527C /* BookTableViewCell.xib in Resources */,
 			);
@@ -1141,6 +1167,7 @@
 				4973C79F1E901A6A001CFABC /* CommonUIElements.swift in Sources */,
 				1C0DC738204B119E0044B377 /* DebugData.swift in Sources */,
 				1CC4C049205732300034A218 /* StartFinishButton.swift in Sources */,
+				1CDA421420F2913200273D4D /* PickerCell.swift in Sources */,
 				1C0DC734204B09610044B377 /* BookCSVExport.swift in Sources */,
 				1C39544A202F948B007ACCB1 /* Subject.swift in Sources */,
 				1CD1D2C2202BCCF400ACA5D9 /* NavigationBarLabel.swift in Sources */,
@@ -1158,6 +1185,8 @@
 				1CC440C1204F5E2F00906120 /* TextBoxAlertController.swift in Sources */,
 				495C5D3F1BF1412600E00C07 /* BookTable.swift in Sources */,
 				1CD7B93D20C179F5001775F5 /* BookCKRecordKey.swift in Sources */,
+				1CDA41FF20EC1C0200273D4D /* StarRatingCell.swift in Sources */,
+				1CDA421620F2917600273D4D /* PickerInlineCell.swift in Sources */,
 				4943DB791DBD5104004CAF30 /* Settings.swift in Sources */,
 				1CD1D2BE202BCC7500ACA5D9 /* HairlineConstraint.swift in Sources */,
 				49B2CEF81F39A4D300C6B45D /* SortOrder.swift in Sources */,
@@ -1182,6 +1211,7 @@
 				1C2E910B20D01F3A00A611A4 /* PendingRemoteDeletionItem.swift in Sources */,
 				1C2E910F20D1999A00A611A4 /* BookInserter.swift in Sources */,
 				1CD1D2B6202BC9C400ACA5D9 /* UIKitExtensions.swift in Sources */,
+				1CDA420120EF8C4F00273D4D /* Language.swift in Sources */,
 				1CDD535E1FA6609600A5ED66 /* SettingsHeader.swift in Sources */,
 				492500781C0B1B0000C149B5 /* PersistentStoreManager.swift in Sources */,
 				1CFCD01A2013BD6A00D27301 /* Organise.swift in Sources */,
@@ -1526,7 +1556,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = YPDEV2E775;
 				INFOPLIST_FILE = ReadingList/Info.plist;
@@ -1556,7 +1586,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer: Andrew Bennet (NSVAF8RDK6)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = YPDEV2E775;
 				INFOPLIST_FILE = ReadingList/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
@@ -1628,7 +1658,7 @@
 		1C75AEF62042F38600FB9456 /* books.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				1C032F1520C1CEC600CDBEF8 /* books_12.xcdatamodel */,
+				1CDA41F920EBF7DD00273D4D /* books_12.xcdatamodel */,
 				1CC440C2204FDBA200906120 /* books_11.xcdatamodel */,
 				1CD072342048BA7E00DCFBDE /* books_10.xcdatamodel */,
 				1C75AEF72042F38600FB9456 /* books_5.xcdatamodel */,
@@ -1637,7 +1667,7 @@
 				1C75AEFA2042F38600FB9456 /* books_8.xcdatamodel */,
 				1C75AEFB2042F38600FB9456 /* books_7.xcdatamodel */,
 			);
-			currentVersion = 1C032F1520C1CEC600CDBEF8 /* books_12.xcdatamodel */;
+			currentVersion = 1CDA41F920EBF7DD00273D4D /* books_12.xcdatamodel */;
 			path = books.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

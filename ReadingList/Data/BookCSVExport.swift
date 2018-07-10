@@ -11,9 +11,11 @@ class BookCSVExport {
             CsvColumn<Book>(header: "Publication Date") { $0.publicationDate?.string(withDateFormat: "yyyy-MM-dd") },
             CsvColumn<Book>(header: "Description") { $0.bookDescription },
             CsvColumn<Book>(header: "Subjects") { $0.subjects.map { $0.name }.joined(separator: "; ") },
+            CsvColumn<Book>(header: "Language Code") { $0.languageCode },
             CsvColumn<Book>(header: "Started Reading") { $0.startedReading?.string(withDateFormat: "yyyy-MM-dd") },
             CsvColumn<Book>(header: "Finished Reading") { $0.finishedReading?.string(withDateFormat: "yyyy-MM-dd") },
             CsvColumn<Book>(header: "Current Page") { $0.currentPage == nil ? nil : String(describing: $0.currentPage!) },
+            CsvColumn<Book>(header: "Rating") { $0.rating == nil ? nil : String(describing: $0.rating!) },
             CsvColumn<Book>(header: "Notes") { $0.notes }
         ]
 

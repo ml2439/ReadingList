@@ -224,7 +224,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     @objc func initialiseTheme() {
-        UIApplication.shared.statusBarStyle = UserSettings.theme.value.statusBarStyle
+        let theme = UserSettings.theme.value
+        UIApplication.shared.statusBarStyle = theme.statusBarStyle
+        theme.configureForms()
     }
 }
 

@@ -172,6 +172,9 @@ class GoogleBooks {
 
             let result = FetchResult(fromSearchResult: searchResult)
             result.pageCount = fetchResult["volumeInfo", "pageCount"].int
+            if let code = fetchResult["volumeInfo"]["language"].string, Language.byIsoCode[code] != nil {
+                result.languageCode = code
+            }
             // "Published Date" refers to *this* edition; there doesn't seem to be a way to get the first publication date :(
             //result.publishedDate = fetchResult["volumeInfo","publishedDate"].string?.toDateViaFormat("yyyy-MM-dd")
 
@@ -241,6 +244,7 @@ class GoogleBooks {
         var isbn13: String?
         var description: String?
         var subjects = [String]()
+        var languageCode: String?
         var publishedDate: Date?
         var pageCount: Int?
         var hasThumbnailImage: Bool = false

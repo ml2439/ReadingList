@@ -6,10 +6,9 @@ extension DebugSettings {
     static func loadTestData(includeImages: Bool = true, completion: (() -> Void)? = nil) {
         PersistentStoreManager.deleteAll()
 
-        print("Loading test data")
         let csvPath = Bundle.main.url(forResource: "examplebooks", withExtension: "csv")!
-        BookCSVImporter(includeImages: includeImages).startImport(fromFileAt: csvPath) { _ in
-            print("Test data loaded")
+        BookCSVImporter(includeImages: includeImages).startImport(fromFileAt: csvPath) { error, _ in
+            guard error == nil else { fatalError("Error in CSV file") }
             DispatchQueue.main.async {
                 completion?()
             }
