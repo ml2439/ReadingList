@@ -19,11 +19,14 @@ enum BookCKRecordKey: String { //swiftlint:disable redundant_string_enum_value
     case coverImage = "coverImage"
     case notes = "notes"
     case currentPage = "currentPage"
+    case languageCode = "languageCode"
+    case rating = "rating"
     case sort = "sort"
     case readDates = "readDates" //swiftlint:enable redundant_string_enum_value
 
     static let all: [BookCKRecordKey] = [.title, .authors, .googleBooksId, .isbn13, .pageCount, .publicationDate,
-                                         .bookDescription, .coverImage, .notes, .currentPage, .sort, .readDates]
+                                         .bookDescription, .coverImage, .notes, .currentPage, .languageCode, .rating,
+                                         .sort, .readDates]
 
     struct Bitmask: OptionSet {
         let rawValue: Int32
@@ -57,6 +60,8 @@ enum BookCKRecordKey: String { //swiftlint:disable redundant_string_enum_value
         case #keyPath(Book.bookDescription): return .bookDescription
         case #keyPath(Book.notes): return .notes
         case #keyPath(Book.currentPage): return .currentPage
+        case #keyPath(Book.languageCode): return .languageCode
+        case #keyPath(Book.rating): return .rating
         case #keyPath(Book.sort): return .sort
         case #keyPath(Book.startedReading): return .readDates
         case #keyPath(Book.finishedReading): return .readDates
@@ -74,6 +79,8 @@ enum BookCKRecordKey: String { //swiftlint:disable redundant_string_enum_value
         case .bookDescription: return book.bookDescription as NSString?
         case .notes: return book.notes as NSString?
         case .currentPage: return book.currentPage
+        case .languageCode: return book.languageCode as NSString?
+        case .rating: return book.rating
         case .sort: return book.sort
         case .readDates:
             switch book.readState {
@@ -100,6 +107,8 @@ enum BookCKRecordKey: String { //swiftlint:disable redundant_string_enum_value
         case .bookDescription: book.bookDescription = value as? String
         case .notes: book.notes = value as? String
         case .currentPage: book.currentPage = value as? NSNumber
+        case .languageCode: book.languageCode = value as? String
+        case .rating: book.rating = value as? NSNumber
         case .sort: book.sort = value as? NSNumber
         case .readDates:
             let datesArray = value as? [Date]
