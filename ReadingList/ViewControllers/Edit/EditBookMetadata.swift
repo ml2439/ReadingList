@@ -21,6 +21,7 @@ class EditBookMetadata: FormViewController {
         self.init()
         self.isAddingNewBook = true
         self.book = Book(context: editBookContext, readState: bookToCreateReadState)
+        self.book.manualBookId = UUID().uuidString
     }
 
     let isbnRowKey = "isbn"

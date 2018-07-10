@@ -9,6 +9,7 @@ class Book: NSManagedObject {
 
     @NSManaged var isbn13: String?
     @NSManaged var googleBooksId: String?
+    @NSManaged var manualBookId: String?
 
     @NSManaged var title: String
     @NSManaged private(set) var authors: [Author]
@@ -97,13 +98,13 @@ extension Book {
             if let range = $0.range(of: " ", options: .backwards) {
                 let firstNames = $0[..<range.upperBound].trimming()
                 let lastName = $0[range.lowerBound...].trimming()
-                
+
                 return (firstNames: firstNames, lastName: lastName)
             } else {
                 return (firstNames: nil, lastName: $0)
             }
         }
-        
+
         self.setAuthors(authorNames.map { Author(lastName: $0.1, firstNames: $0.0) })
     }
 
@@ -144,6 +145,8 @@ extension Book {
         case invalidIsbn
         case invalidReadDates
         case invalidLanguageCode
+        case missingIdentifier
+        case conflictingIdentifiers
     }
 
     override func validateForUpdate() throws {
@@ -159,6 +162,13 @@ extension Book {
         if readState == .finished && (startedReading == nil || finishedReading == nil
             || startedReading!.startOfDay() > finishedReading!.startOfDay()) {
             throw ValidationError.invalidReadDates
+        }
+
+        if googleBooksId == nil && manualBookId == nil {
+            throw ValidationError.missingIdentifier
+        }
+        if googleBooksId != nil && manualBookId != nil {
+            throw ValidationError.conflictingIdentifiers
         }
 
         if let isoCode = languageCode, Language.byIsoCode[isoCode] == nil {

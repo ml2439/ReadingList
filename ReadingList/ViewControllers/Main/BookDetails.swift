@@ -47,7 +47,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
 
         cover.image = UIImage(optionalData: book.coverImage) ?? #imageLiteral(resourceName: "CoverPlaceholder")
         titleAuthorHeadings[0].text = book.title
-        titleAuthorHeadings[1].text = Author.authorDisplay(book.authorDisplay)
+        titleAuthorHeadings[1].text = Author.authorDisplay(book.authors)
         (navigationItem.titleView as! UINavigationBarLabel).setTitle(book.title)
 
         switch book.readState {
@@ -265,7 +265,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     @IBAction private func shareButtonPressed(_ sender: UIBarButtonItem) {
         guard let book = book else { return }
 
-        let activityViewController = UIActivityViewController(activityItems: ["\(book.title)\n\(Author.authorDisplay(book.authorDisplay))"], applicationActivities: nil)
+        let activityViewController = UIActivityViewController(activityItems: ["\(book.title)\n\(Author.authorDisplay(book.authors))"], applicationActivities: nil)
         activityViewController.popoverPresentationController?.barButtonItem = sender
 
         var excludedActivityTypes: [UIActivityType] = [.assignToContact, .saveToCameraRoll, .addToReadingList, .postToFlickr, .postToVimeo, .openInIBooks]
