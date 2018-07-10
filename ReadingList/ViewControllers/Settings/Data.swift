@@ -28,7 +28,7 @@ class DataVC: UITableViewController {
         // Cannot use the default initialise since it turns the button text a plain colour
         let theme = UserSettings.theme.value
         cell.backgroundColor = theme.cellBackgroundColor
-        cell.selectedBackgroundColor = theme.cellSeparatorColor
+        cell.setSelectedBackgroundColor(theme.selectedCellBackgroundColor)
         return cell
     }
 
