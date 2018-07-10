@@ -100,7 +100,9 @@ extension UITableViewCell {
         backgroundColor = theme.cellBackgroundColor
         textLabel?.textColor = theme.titleTextColor
         detailTextLabel?.textColor = theme.titleTextColor
-        selectedBackgroundColor = theme.selectedCellBackgroundColor
+        if selectionStyle != .none {
+            setSelectedBackgroundColor(theme.selectedCellBackgroundColor)
+        }
     }
 }
 
@@ -321,8 +323,8 @@ extension Theme {
             cell.tintColor = self.titleTextColor
         }
         ButtonRow.defaultCellUpdate = { cell, _ in
+            // Cannot use the default initialise since it turns the button text a plain colour
             cell.backgroundColor = self.cellBackgroundColor
-            cell.selectedBackgroundColor = self.selectedCellBackgroundColor
         }
         StarRatingRow.defaultCellUpdate = { cell, _ in
             initialiseCell(cell)
