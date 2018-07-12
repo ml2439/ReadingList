@@ -220,7 +220,7 @@ extension Book {
     func finishReading() {
         guard readState == .reading else {
             #if DEBUG
-            fatalError("Attempted to start a book in state \(readState)")
+            fatalError("Attempted to finish a book in state \(readState)")
             #else
             return
             #endif

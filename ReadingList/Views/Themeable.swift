@@ -256,9 +256,9 @@ extension TableHeaderSearchBar {
 extension UINavigationBar {
     func initialise(withTheme theme: Theme) {
         barStyle = theme.barStyle
-        titleTextAttributes = [NSAttributedStringKey.foregroundColor: theme.titleTextColor]
+        titleTextAttributes = [.foregroundColor: theme.titleTextColor]
         if #available(iOS 11.0, *) {
-            largeTitleTextAttributes = [NSAttributedStringKey.foregroundColor: theme.titleTextColor]
+            largeTitleTextAttributes = [.foregroundColor: theme.titleTextColor]
         }
     }
 
@@ -325,6 +325,7 @@ extension Theme {
         ButtonRow.defaultCellUpdate = { cell, _ in
             // Cannot use the default initialise since it turns the button text a plain colour
             cell.backgroundColor = self.cellBackgroundColor
+            cell.setSelectedBackgroundColor(self.selectedCellBackgroundColor)
         }
         StarRatingRow.defaultCellUpdate = { cell, _ in
             initialiseCell(cell)
