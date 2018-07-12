@@ -70,4 +70,30 @@ class ModelTests: XCTestCase {
         XCTAssertEqual("birkhauser.wahloo..sjowall.maj", book.authorSort)
         XCTAssertEqual("Wahlöö Birkhäuser, Maj Sjöwall", Author.authorDisplay(book.authors))
     }
+
+    func testLanguageValidation() {
+        let book = Book(context: testContainer.viewContext, readState: .toRead)
+        book.title = "Test"
+        book.setAuthors([Author(lastName: "Test", firstNames: "Author")])
+        book.manualBookId = UUID().uuidString
+
+        book.languageCode = "zz"
+        XCTAssertFalse(book.isValidForUpdate())
+
+        book.languageCode = "en"
+        XCTAssertTrue(book.isValidForUpdate())
+    }
+
+    func testIsbnValidation() {
+        let book = Book(context: testContainer.viewContext, readState: .toRead)
+        book.title = "Test"
+        book.setAuthors([Author(lastName: "Test", firstNames: "Author")])
+        book.manualBookId = UUID().uuidString
+
+        book.isbn13 = "1234567891234"
+        XCTAssertFalse(book.isValidForUpdate())
+
+        book.isbn13 = "9781786070166"
+        XCTAssertTrue(book.isValidForUpdate())
+    }
 }
