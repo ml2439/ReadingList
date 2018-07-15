@@ -29,6 +29,9 @@ PODS:
     - nanopb/encode (= 0.3.8)
   - nanopb/decode (0.3.8)
   - nanopb/encode (0.3.8)
+  - PromisesObjC (1.2.2)
+  - PromisesSwift (1.2.2):
+    - PromisesObjC (= 1.2.2)
   - SimulatorStatusMagic (2.2)
   - SVProgressHUD (2.2.5)
   - SwiftLint (0.26.0)
@@ -43,6 +46,7 @@ DEPENDENCIES:
   - Fabric
   - Firebase/Core
   - ImageRow (~> 3.0)
+  - PromisesSwift (~> 1.2)
   - SimulatorStatusMagic
   - SVProgressHUD (~> 2.2)
   - SwiftLint
@@ -62,6 +66,8 @@ SPEC REPOS:
     - GoogleToolboxForMac
     - ImageRow
     - nanopb
+    - PromisesObjC
+    - PromisesSwift
     - SimulatorStatusMagic
     - SVProgressHUD
     - SwiftLint
@@ -90,12 +96,14 @@ SPEC CHECKSUMS:
   GoogleToolboxForMac: 91c824d21e85b31c2aae9bb011c5027c9b4e738f
   ImageRow: 1ea483078bfa3d880a7fc76fdfcddfd5f29a9e6b
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
+  PromisesObjC: 3db4112f796a05782b4442364748f9126fea0b88
+  PromisesSwift: a87c9b5fba61711bce16ac11d8d8bf96fc93fde0
   SimulatorStatusMagic: 0389a805fa8bd001e2977c4046730bdbd6642861
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   SwiftLint: f6b83e8d95ee1e91e11932d843af4fdcbf3fc764
   SwiftyJSON: c29297daf073d2aa016295d5809cdd68045c39b3
   SwiftyStoreKit: b7563505440a68c9d9fa70bc43d8a97015519409
 
-PODFILE CHECKSUM: 6eec4377fdf872b78f4ae28241f95e708ec4d8e4
+PODFILE CHECKSUM: bfec34fbb11fe98a8e483946945d3a9b0e5a5061
 
 COCOAPODS: 1.5.2

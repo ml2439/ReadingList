@@ -834,19 +834,50 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" id="WkA-Jj-7zc">
+                                        <rect key="frame" x="0.0" y="475.5" width="320" height="60"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="WkA-Jj-7zc" id="DIg-WZ-mM1">
+                                            <rect key="frame" x="0.0" y="0.0" width="286" height="59.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="Promises" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HRT-1P-jvq">
+                                                    <rect key="frame" x="16" y="11" width="262" height="21"/>
+                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="749" text="Copyright © 2018 Google Inc Provided under the Apache 2.0 Licence" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yvJ-bi-UgJ">
+                                                    <rect key="frame" x="16" y="32" width="262" height="17"/>
+                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="trailingMargin" secondItem="yvJ-bi-UgJ" secondAttribute="trailing" id="2Pq-Ir-Ka3"/>
+                                                <constraint firstItem="yvJ-bi-UgJ" firstAttribute="leading" secondItem="DIg-WZ-mM1" secondAttribute="leadingMargin" id="4N2-jH-r7d"/>
+                                                <constraint firstItem="HRT-1P-jvq" firstAttribute="top" secondItem="DIg-WZ-mM1" secondAttribute="topMargin" id="FGf-Of-1wW"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="yvJ-bi-UgJ" secondAttribute="bottom" id="G2c-Mi-2fl"/>
+                                                <constraint firstItem="yvJ-bi-UgJ" firstAttribute="top" secondItem="HRT-1P-jvq" secondAttribute="bottom" id="WC1-gS-C6Z"/>
+                                                <constraint firstItem="HRT-1P-jvq" firstAttribute="leading" secondItem="DIg-WZ-mM1" secondAttribute="leadingMargin" id="arz-pg-hE1"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="HRT-1P-jvq" secondAttribute="trailing" id="hbw-eC-GzC"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
                                 </cells>
                             </tableViewSection>
                             <tableViewSection headerTitle="MIT Licence" id="K8g-3z-MVF">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" textLabel="K4k-Jr-pAB" style="IBUITableViewCellStyleDefault" id="0jG-5l-IAJ">
-                                        <rect key="frame" x="0.0" y="531.5" width="320" height="60"/>
+                                        <rect key="frame" x="0.0" y="591.5" width="320" height="60"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="0jG-5l-IAJ" id="Oro-j0-4hR">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="59.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="K4k-Jr-pAB">
-                                                    <rect key="frame" x="15" y="0.0" width="290" height="59.5"/>
+                                                    <rect key="frame" x="16" y="0.0" width="288" height="59.5"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <string key="text">Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
