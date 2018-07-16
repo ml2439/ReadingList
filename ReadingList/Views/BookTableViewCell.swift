@@ -7,7 +7,7 @@ class BookTableViewCell: UITableViewCell {
     @IBOutlet private weak var bookCover: UIImageView!
     @IBOutlet private weak var readTimeLabel: UILabel!
 
-    private var coverImageRequest: HTTP.Request?
+    private var coverImageRequest: URLSessionDataTask?
 
     func resetUI() {
         titleLabel.text = nil
@@ -58,16 +58,17 @@ class BookTableViewCell: UITableViewCell {
         #endif
     }
 
-    func configureFrom(_ searchResult: GoogleBooks.SearchResult) {
+    func configureFrom(_ searchResult: SearchResult) {
         titleLabel.text = searchResult.title
         authorsLabel.text = searchResult.authors.joined(separator: ", ")
 
         guard let coverURL = searchResult.thumbnailCoverUrl else { bookCover.image = #imageLiteral(resourceName: "CoverPlaceholder"); return }
-        coverImageRequest = HTTP.Request.get(url: coverURL).data { [weak self] result in
-            // Cancellations appear to be reported as errors. Ideally we would detect non-cancellation
-            // errors (e.g. 404), and show the placeholder in those cases. For now, just make the image blank.
-            guard result.isSuccess, let data = result.value else { self?.bookCover.image = nil; return }
-            self?.bookCover.image = UIImage(data: data)
+        coverImageRequest = URLSession.shared.startedDataTask(with: coverURL) { [weak self] data, _, _ in
+            DispatchQueue.main.async {
+                // Cancellations appear to be reported as errors. Ideally we would detect non-cancellation
+                // errors (e.g. 404), and show the placeholder in those cases. For now, just make the image blank.
+                self?.bookCover.image = UIImage(optionalData: data)
+            }
         }
     }
 }

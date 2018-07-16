@@ -72,7 +72,7 @@ extension Book {
     }
 
     // FUTURE: make a convenience init which takes a fetch result?
-    func populate(fromFetchResult fetchResult: GoogleBooks.FetchResult) {
+    func populate(fromFetchResult fetchResult: FetchResult) {
         googleBooksId = fetchResult.id
         title = fetchResult.title
         populateAuthors(fromStrings: fetchResult.authors)
@@ -85,7 +85,7 @@ extension Book {
         languageCode = fetchResult.languageCode
     }
 
-    func populate(fromSearchResult searchResult: GoogleBooks.SearchResult, withCoverImage coverImage: Data? = nil) {
+    func populate(fromSearchResult searchResult: SearchResult, withCoverImage coverImage: Data? = nil) {
         googleBooksId = searchResult.id
         title = searchResult.title
         populateAuthors(fromStrings: searchResult.authors)

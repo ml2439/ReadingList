@@ -126,9 +126,7 @@ class EditBookMetadata: FormViewController {
             <<< ButtonRow(updateFromGoogleRowKey) {
                 $0.title = "Update from Google Books"
                 $0.hidden = Condition(booleanLiteral: isAddingNewBook || book.googleBooksId == nil)
-                $0.onCellSelection { [unowned self] _, _ in
-                    self.updateBookFromGoogle()
-                }
+                $0.onCellSelection(updateFromGooglePressed(cell:row:))
             }
             <<< ButtonRow(deleteRowKey) {
                 $0.title = "Delete"
@@ -175,27 +173,31 @@ class EditBookMetadata: FormViewController {
 
     func updateFromGooglePressed(cell: ButtonCellOf<String>, row: _ButtonRowOf<String>) {
         let areYouSure = UIAlertController(title: "Confirm Update", message: "Updating from Google Books will overwrite any book metadata changes you have made manually. Are you sure you wish to proceed?", preferredStyle: .alert)
-        areYouSure.addAction(UIAlertAction(title: "Update", style: .default) { [unowned self] _ in self.updateBookFromGoogle() })
+        areYouSure.addAction(UIAlertAction(title: "Update", style: .default, handler: updateBookFromGoogleHandler))
         areYouSure.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         present(areYouSure, animated: true)
     }
 
-    func updateBookFromGoogle() {
+    func updateBookFromGoogleHandler(_: UIAlertAction) {
         guard let googleBooksId = book.googleBooksId else { return }
         SVProgressHUD.show(withStatus: "Downloading...")
 
-        GoogleBooks.fetch(googleBooksId: googleBooksId) { [unowned self] fetchResultPage in
-            SVProgressHUD.dismiss()
-            guard fetchResultPage.result.isSuccess else {
+        GoogleBooks.fetch(googleBooksId: googleBooksId)
+            .always(on: .main) {
+                SVProgressHUD.dismiss()
+            }
+            .catch(on: .main) { _ in
                 SVProgressHUD.showError(withStatus: "Could not update book details")
-                return
             }
-            self.book.populate(fromFetchResult: fetchResultPage.result.value!)
-            self.editBookContext.saveIfChanged()
-            self.dismiss(animated: true) {
-                // FUTURE: Would be nice to display whether any changes were made
-                SVProgressHUD.showInfo(withStatus: "Book updated")
-            }
+            .then(on: .main, updateBookFromGoogle)
+    }
+
+    func updateBookFromGoogle(fetchResult: FetchResult) {
+        book.populate(fromFetchResult: fetchResult)
+        editBookContext.saveIfChanged()
+        dismiss(animated: true) {
+            // FUTURE: Would be nice to display whether any changes were made
+            SVProgressHUD.showInfo(withStatus: "Book updated")
         }
     }
 

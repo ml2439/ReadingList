@@ -251,7 +251,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
 
     @objc func googleBooksButtonPressed() {
         guard let googleBooksId = book?.googleBooksId else { return }
-        presentThemedSafariViewController(GoogleBooks.Request.webpage(googleBooksId).url)
+        presentThemedSafariViewController(GoogleBooksRequest.webpage(googleBooksId).url)
     }
 
     @IBAction private func addToList(_ sender: Any) {

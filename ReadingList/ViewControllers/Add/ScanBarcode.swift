@@ -174,45 +174,35 @@ class ScanBarcode: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
         // We're going to be doing a search online, so bring up a spinner
         SVProgressHUD.show(withStatus: "Searching...")
 
-        // self is weak since the barcode callback is on another thread, and it is possible (with careful timing)
-        // to get the view controller to dismiss after the barcode has been detected but before the callback runs.
-        GoogleBooks.fetch(isbn: isbn) { [weak self] resultPage in
-            SVProgressHUD.dismiss()
-            guard let viewController = self else { return }
-
-            viewController.feedbackGenerator.prepare()
-            guard resultPage.result.isSuccess else {
-                let error = resultPage.result.error!
-                if (error as? GoogleBooks.GoogleErrorType) == .noResult {
-                    viewController.feedbackGenerator.notificationOccurred(.error)
-                    viewController.presentNoExactMatchAlert(forIsbn: isbn)
-                } else {
-                    viewController.feedbackGenerator.notificationOccurred(.error)
-                    viewController.onSearchError(error)
+        GoogleBooks.fetch(isbn: isbn)
+            .catch(on: .main) { [weak self] error in
+                self?.feedbackGenerator.notificationOccurred(.error)
+                switch error {
+                case GoogleError.noResult: self?.presentNoExactMatchAlert(forIsbn: isbn)
+                default: self?.onSearchError(error)
                 }
-                return
             }
+            .then(on: .main) { [weak self] fetchResult in
+                // self is weak since the barcode callback is on another thread, and it is possible (with careful timing)
+                // to get the view controller to dismiss after the barcode has been detected but before the callback runs.
+                if let existingBook = Book.get(fromContext: PersistentStoreManager.container.viewContext, googleBooksId: fetchResult.id) {
+                    self?.feedbackGenerator.notificationOccurred(.warning)
+                    self?.presentDuplicateAlert(existingBook)
+                } else {
+                    self?.feedbackGenerator.notificationOccurred(.success)
 
-            let fetchResult = resultPage.result.value!
-            // We may now have a book which matches the Google Books ID (but didn't match the ISBN), so check again
-            if let existingBook = Book.get(fromContext: PersistentStoreManager.container.viewContext, googleBooksId: fetchResult.id) {
-                viewController.feedbackGenerator.notificationOccurred(.warning)
-                viewController.presentDuplicateAlert(existingBook)
-            } else {
-                viewController.feedbackGenerator.notificationOccurred(.success)
+                    // Event logging
+                    UserEngagement.logEvent(.scanBarcode)
 
-                // Event logging
-                UserEngagement.logEvent(.scanBarcode)
-
-                // If there is no duplicate, we can safely go to the next page
-                let context = PersistentStoreManager.container.viewContext.childContext()
-                let book = Book(context: context, readState: .toRead)
-                book.populate(fromFetchResult: fetchResult)
-                viewController.navigationController!.pushViewController(
-                    EditBookReadState(newUnsavedBook: book, scratchpadContext: context),
-                    animated: true)
+                    // If there is no duplicate, we can safely go to the next page
+                    let context = PersistentStoreManager.container.viewContext.childContext()
+                    let book = Book(context: context, readState: .toRead)
+                    book.populate(fromFetchResult: fetchResult)
+                    self?.navigationController!.pushViewController(
+                        EditBookReadState(newUnsavedBook: book, scratchpadContext: context),
+                        animated: true)
+                }
             }
-        }
     }
 
     func presentNoExactMatchAlert(forIsbn isbn: String) {

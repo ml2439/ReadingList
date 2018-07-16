@@ -1,5 +1,6 @@
 import Foundation
 import CoreData
+import Promises
 
 class BookCSVImporter {
     private let parserDelegate: BookCSVParserDelegate //swiftlint:disable:this weak_delegate
@@ -40,7 +41,7 @@ private class BookCSVParserDelegate: CSVParserDelegate {
     private let context: NSManagedObjectContext
     private let includeImages: Bool
     private var currentSort: Int32?
-    private let dispatchGroup = DispatchGroup()
+    private var coverDownloadPromises = [Promise<Void>]()
     private var listMappings = [String: [(bookID: NSManagedObjectID, index: Int)]]()
     private var listNames = [String]()
 
@@ -110,15 +111,14 @@ private class BookCSVParserDelegate: CSVParserDelegate {
     }
 
     private func populateCover(forBook book: Book, withGoogleID googleID: String) {
-        dispatchGroup.enter()
-        GoogleBooks.getCover(googleBooksId: googleID) { [unowned self] result in
-            self.context.perform {
-                if let data = result.value {
+        coverDownloadPromises.append(GoogleBooks.getCover(googleBooksId: googleID)
+            .then { data -> Void in
+                self.context.perform {
                     book.coverImage = data
                 }
-                self.dispatchGroup.leave()
+                return
             }
-        }
+        )
     }
 
     func lineParseSuccess(_ values: [String: String]) {
@@ -183,13 +183,14 @@ private class BookCSVParserDelegate: CSVParserDelegate {
     }
 
     func completion() {
-        dispatchGroup.notify(queue: .main) {
-            self.context.performAndWait {
-                self.populateLists()
-                self.context.saveAndLogIfErrored()
+        all(coverDownloadPromises)
+            .always(on: .main) { [unowned self] in
+                self.context.performAndWait {
+                    self.populateLists()
+                    self.context.saveAndLogIfErrored()
+                }
+                let results = BookCSVImportResults(success: self.successCount, error: self.invalidCount, duplicate: self.duplicateCount)
+                self.onCompletion?(nil, results)
             }
-            let results = BookCSVImportResults(success: self.successCount, error: self.invalidCount, duplicate: self.duplicateCount)
-            self.onCompletion?(nil, results)
-        }
     }
 }
