@@ -78,7 +78,7 @@ class ListBookTable: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-        return [UITableViewRowAction(style: .destructive, title: "Remove") { [unowned self] _, indexPath in
+        return [UITableViewRowAction(style: .destructive, title: "Remove") { _, indexPath in
             self.performUIEdit {
                 self.removeBook(at: indexPath)
                 self.tableView.deleteRows(at: [indexPath], with: .automatic)

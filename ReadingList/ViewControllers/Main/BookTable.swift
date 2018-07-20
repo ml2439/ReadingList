@@ -199,10 +199,10 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
         let selectedReadStates = sectionIndexByReadState.filter { selectedSectionIndices.contains($0.value) }.keys
 
         let optionsAlert = UIAlertController(title: "Edit \(selectedRows.count) book\(selectedRows.count == 1 ? "" : "s")", message: nil, preferredStyle: .actionSheet)
-        optionsAlert.addAction(UIAlertAction(title: "Add to List", style: .default) { [unowned self] _ in
+        optionsAlert.addAction(UIAlertAction(title: "Add to List", style: .default) { _ in
             let books = selectedRows.map(self.resultsController.object)
 
-            self.present(AddToList.getAppropriateVcForAddingBooksToList(books) { [unowned self] in
+            self.present(AddToList.getAppropriateVcForAddingBooksToList(books) {
                 self.setEditing(false, animated: true)
                 UserEngagement.logEvent(.bulkAddBookToList)
                 UserEngagement.onReviewTrigger()
@@ -211,7 +211,7 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
 
         if let readState = selectedReadStates.first, readState != .finished, selectedReadStates.count == 1 {
             let title = (readState == .toRead ? "Start" : "Finish") + (selectedRows.count > 1 ? " All" : "")
-            optionsAlert.addAction(UIAlertAction(title: title, style: .default) { [unowned self] _ in
+            optionsAlert.addAction(UIAlertAction(title: title, style: .default) { _ in
                 for book in selectedRows.map(self.resultsController.object) {
                     if readState == .toRead {
                         book.startReading()
@@ -228,7 +228,7 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
             })
         }
 
-        optionsAlert.addAction(UIAlertAction(title: "Delete\(selectedRows.count > 1 ? " All" : "")", style: .destructive) { [unowned self] _ in
+        optionsAlert.addAction(UIAlertAction(title: "Delete\(selectedRows.count > 1 ? " All" : "")", style: .destructive) { _ in
             let confirm = self.confirmDeleteAlert(indexPaths: selectedRows)
             confirm.popoverPresentationController?.barButtonItem = sender
             self.present(confirm, animated: true)
@@ -304,7 +304,7 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
     @IBAction private func addWasPressed(_ sender: UIBarButtonItem) {
 
         func storyboardAction(title: String, storyboard: UIStoryboard) -> UIAlertAction {
-            return UIAlertAction(title: title, style: .default) {[unowned self] _ in
+            return UIAlertAction(title: title, style: .default) { _ in
                 self.present(storyboard.rootAsFormSheet(), animated: true, completion: nil)
             }
         }
@@ -312,7 +312,7 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
         let optionsAlert = UIAlertController(title: "Add New Book", message: nil, preferredStyle: .actionSheet)
         optionsAlert.addAction(storyboardAction(title: "Scan Barcode", storyboard: Storyboard.ScanBarcode))
         optionsAlert.addAction(storyboardAction(title: "Search Online", storyboard: Storyboard.SearchOnline))
-        optionsAlert.addAction(UIAlertAction(title: "Add Manually", style: .default) { [unowned self] _ in
+        optionsAlert.addAction(UIAlertAction(title: "Add Manually", style: .default) { _ in
             self.present(EditBookMetadata(bookToCreateReadState: .toRead).inThemedNavController(), animated: true, completion: nil)
         })
         optionsAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
@@ -324,7 +324,7 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
     override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
 
         // Start with the delete action
-        var rowActions = [UITableViewRowAction(style: .destructive, title: "Delete") { [unowned self] _, indexPath in
+        var rowActions = [UITableViewRowAction(style: .destructive, title: "Delete") { _, indexPath in
             let confirm = self.confirmDeleteAlert(indexPaths: [indexPath])
             confirm.popoverPresentationController?.setSourceCell(atIndexPath: indexPath, inTable: tableView)
             self.present(confirm, animated: true)
@@ -332,7 +332,7 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
 
         // Add the other state change actions where appropriate
         if indexPath.section == sectionIndexByReadState[.toRead] {
-            let startAction = UITableViewRowAction(style: .normal, title: "Start", color: UIColor.buttonBlue) { [unowned self] _, indexPath in
+            let startAction = UITableViewRowAction(style: .normal, title: "Start", color: UIColor.buttonBlue) { _, indexPath in
                 self.resultsController.object(at: indexPath).startReading()
                 PersistentStoreManager.container.viewContext.saveAndLogIfErrored()
             }
@@ -353,13 +353,13 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
 
     @available(iOS 11.0, *)
     override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { [unowned self] _, _, callback in
+        let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { _, _, callback in
             let confirm = self.confirmDeleteAlert(indexPaths: [indexPath], callback: callback)
             confirm.popoverPresentationController?.setSourceCell(atIndexPath: indexPath, inTable: tableView)
             self.present(confirm, animated: true, completion: nil)
         }
         deleteAction.image = #imageLiteral(resourceName: "Trash")
-        let editAction = UIContextualAction(style: .normal, title: "Edit") { [unowned self] _, _, callback in
+        let editAction = UIContextualAction(style: .normal, title: "Edit") { _, _, callback in
             self.present(EditBookMetadata(bookToEditID: self.resultsController.object(at: indexPath).objectID).inThemedNavController(), animated: true)
             callback(true)
         }
@@ -370,7 +370,7 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
     @available(iOS 11.0, *)
     override func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
 
-        var actions = [UIContextualAction(style: .normal, title: "Log", image: #imageLiteral(resourceName: "Timetable")) { [unowned self] _, _, callback in
+        var actions = [UIContextualAction(style: .normal, title: "Log", image: #imageLiteral(resourceName: "Timetable")) { _, _, callback in
             self.present(EditBookReadState(existingBookID: self.resultsController.object(at: indexPath).objectID).inThemedNavController(), animated: true)
             callback(true)
         }]
@@ -383,7 +383,7 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
             return UISwipeActionsConfiguration(performFirstActionWithFullSwipe: false, actions: actions)
         }
 
-        let leadingSwipeAction = UIContextualAction(style: .normal, title: readStateOfSection == .toRead ? "Start" : "Finish") { [unowned self] _, _, callback in
+        let leadingSwipeAction = UIContextualAction(style: .normal, title: readStateOfSection == .toRead ? "Start" : "Finish") { _, _, callback in
             let book = self.resultsController.object(at: indexPath)
             if readStateOfSection == .toRead {
                 book.startReading()
@@ -406,7 +406,7 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
         confirmDeleteAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { _ in
             callback?(false)
         })
-        confirmDeleteAlert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [unowned self] _ in
+        confirmDeleteAlert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
             indexPaths.map(self.resultsController.object).forEach { $0.delete() }
             PersistentStoreManager.container.viewContext.saveAndLogIfErrored()
             self.setEditing(false, animated: true)

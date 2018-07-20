@@ -184,7 +184,7 @@ private class BookCSVParserDelegate: CSVParserDelegate {
 
     func completion() {
         all(coverDownloadPromises)
-            .always(on: .main) { [unowned self] in
+            .always(on: .main) {
                 self.context.performAndWait {
                     self.populateLists()
                     self.context.saveAndLogIfErrored()

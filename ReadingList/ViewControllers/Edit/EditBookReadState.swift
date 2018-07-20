@@ -41,7 +41,7 @@ class EditBookReadState: FormViewController {
             <<< SegmentedRow<BookReadState>(readStateKey) {
                 $0.options = [.toRead, .reading, .finished]
                 $0.value = book.readState
-                $0.onChange {[unowned self] row in
+                $0.onChange { [unowned self] row in
                     self.book.readState = row.value!
 
                     // Make sure we update the read dates
@@ -137,7 +137,7 @@ class EditBookReadState: FormViewController {
         guard book.changedValues().isEmpty else {
             // Confirm exit dialog
             let confirmExit = UIAlertController(title: "Unsaved changes", message: "Are you sure you want to discard your unsaved changes?", preferredStyle: .actionSheet)
-            confirmExit.addAction(UIAlertAction(title: "Discard", style: .destructive) { [unowned self] _ in
+            confirmExit.addAction(UIAlertAction(title: "Discard", style: .destructive) { _ in
                 self.dismiss(animated: true)
             })
             confirmExit.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
@@ -162,7 +162,7 @@ class EditBookReadState: FormViewController {
             searchOnline.searchController.isActive = false
         }
 
-        presentingViewController!.dismiss(animated: true) { [unowned self] in
+        presentingViewController!.dismiss(animated: true) {
             if self.newBook {
                 appDelegate.tabBarController.simulateBookSelection(self.book, allowTableObscuring: false)
             }

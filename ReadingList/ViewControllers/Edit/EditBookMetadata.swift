@@ -159,7 +159,7 @@ class EditBookMetadata: FormViewController {
 
         let confirmDeleteAlert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         confirmDeleteAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        confirmDeleteAlert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [unowned self] _ in
+        confirmDeleteAlert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
             // Delete the book, log the event, and dismiss this modal view
             self.editBookContext.performAndSave {
                 self.book.delete()
@@ -209,7 +209,7 @@ class EditBookMetadata: FormViewController {
         guard book.changedValues().isEmpty else {
             // Confirm exit dialog
             let confirmExit = UIAlertController(title: "Unsaved changes", message: "Are you sure you want to discard your unsaved changes?", preferredStyle: .actionSheet)
-            confirmExit.addAction(UIAlertAction(title: "Discard", style: .destructive) { [unowned self] _ in
+            confirmExit.addAction(UIAlertAction(title: "Discard", style: .destructive) { _ in
                 self.dismiss(animated: true)
             })
             confirmExit.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))

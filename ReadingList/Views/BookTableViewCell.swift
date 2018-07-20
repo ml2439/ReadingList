@@ -64,10 +64,11 @@ class BookTableViewCell: UITableViewCell {
 
         guard let coverURL = searchResult.thumbnailCoverUrl else { bookCover.image = #imageLiteral(resourceName: "CoverPlaceholder"); return }
         coverImageRequest = URLSession.shared.startedDataTask(with: coverURL) { [weak self] data, _, _ in
+            guard let cell = self else { return }
             DispatchQueue.main.async {
                 // Cancellations appear to be reported as errors. Ideally we would detect non-cancellation
                 // errors (e.g. 404), and show the placeholder in those cases. For now, just make the image blank.
-                self?.bookCover.image = UIImage(optionalData: data)
+                cell.bookCover.image = UIImage(optionalData: data)
             }
         }
     }

@@ -148,9 +148,9 @@ class SearchOnline: UITableViewController {
         feedbackGenerator.prepare()
         GoogleBooks.search(searchText)
             .always(on: .main, SVProgressHUD.dismiss)
-            .catch(on: .main) { [weak self] _ in
-                self?.feedbackGenerator.notificationOccurred(.error)
-                self?.emptyDatasetView.setEmptyDatasetReason(.error)
+            .catch(on: .main) { _ in
+                self.feedbackGenerator.notificationOccurred(.error)
+                self.emptyDatasetView.setEmptyDatasetReason(.error)
             }
             .then(on: .main, displaySearchResults)
     }
@@ -175,11 +175,11 @@ class SearchOnline: UITableViewController {
     }
 
     func presentDuplicateBookAlert(book: Book, fromSelectedIndex indexPath: IndexPath) {
-        let alert = duplicateBookAlertController(goToExistingBook: { [unowned self] in
+        let alert = duplicateBookAlertController(goToExistingBook: {
             self.presentingViewController!.dismiss(animated: true) {
                 appDelegate.tabBarController.simulateBookSelection(book, allowTableObscuring: true)
             }
-        }, cancel: { [unowned self] in
+        }, cancel: {
             self.tableView.deselectRow(at: indexPath, animated: true)
         })
         searchController.present(alert, animated: true)
@@ -210,9 +210,9 @@ class SearchOnline: UITableViewController {
             .catch(on: .main) { _ in
                 SVProgressHUD.showError(withStatus: "An error occurred. Please try again.")
             }
-            .then(on: .main) { [weak self] book in
+            .then(on: .main) { book in
                 let editPage = EditBookReadState(newUnsavedBook: book, scratchpadContext: editContext)
-                self?.navigationController!.pushViewController(editPage, animated: true)
+                self.navigationController!.pushViewController(editPage, animated: true)
             }
     }
 
@@ -236,7 +236,7 @@ class SearchOnline: UITableViewController {
         guard selectedRows.count > 1 else { fetchAndSegue(searchResult: tableItems[selectedRows.first!.row]); return }
 
         let alert = UIAlertController(title: "Add \(selectedRows.count) books", message: "Are you sure you want to add all \(selectedRows.count) selected books? They will be added to the 'To Read' section.", preferredStyle: .actionSheet)
-        alert.addAction(UIAlertAction(title: "Add All", style: .default) { [unowned self] _ in
+        alert.addAction(UIAlertAction(title: "Add All", style: .default) { _ in
             self.addMultiple(selectedRows: selectedRows)
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
@@ -256,10 +256,10 @@ class SearchOnline: UITableViewController {
             .catch(on: .main) { _ in
                 SVProgressHUD.showError(withStatus: "An error occurred. Please try again.")
             }
-            .then(on: .main) { [weak self] _ in
+            .then(on: .main) { _ in
                 editContext.saveAndLogIfErrored()
-                self?.searchController.isActive = false
-                self?.presentingViewController!.dismiss(animated: true) {
+                self.searchController.isActive = false
+                self.presentingViewController!.dismiss(animated: true) {
                     SVProgressHUD.showInfo(withStatus: "\(selectedRows.count) \("book".pluralising(selectedRows.count)) added")
                 }
             }
