@@ -19,7 +19,7 @@ class GoogleBooksTests: XCTestCase {
         return try! Data(contentsOf: URL(fileURLWithPath: path))
     }
 
-    private func assertBookEqualToParseResult(_ book: Book, _ parseResult: GoogleBooks.FetchResult) {
+    private func assertBookEqualToParseResult(_ book: Book, _ parseResult: FetchResult) {
         XCTAssertEqual(book.googleBooksId, parseResult.id)
         XCTAssertEqual(book.title, parseResult.title)
         XCTAssertEqual(book.authors.count, parseResult.authors.count)
@@ -32,7 +32,7 @@ class GoogleBooksTests: XCTestCase {
     func testGoogleBooksFetchParsing() {
         let json = JSON(dataFromFile(withName: "GoogleBooksFetchResult", ofType: "json"))
 
-        let parseResult = GoogleBooks.Parser.parseFetchResults(json)!
+        let parseResult = GoogleBooksParser.parseFetchResults(json)!
         XCTAssertEqual("The Sellout", parseResult.title)
         XCTAssertEqual(1, parseResult.authors.count)
         XCTAssertEqual("Paul Beatty", parseResult.authors.first!)
@@ -51,7 +51,7 @@ class GoogleBooksTests: XCTestCase {
     func testGoogleBooksSearchParsing() {
         let json = JSON(dataFromFile(withName: "GoogleBooksSearchResult", ofType: "json"))
 
-        let parseResult = GoogleBooks.Parser.parseSearchResults(json)
+        let parseResult = GoogleBooksParser.parseSearchResults(json)
         // There are 3 results with no author, which we expect to not show up in the list. Hence: 37.
         XCTAssertEqual(37, parseResult.count)
         for result in parseResult {

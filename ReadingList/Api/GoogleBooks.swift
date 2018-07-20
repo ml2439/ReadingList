@@ -9,8 +9,8 @@ class GoogleBooks {
      */
     static func search(_ text: String) -> Promise<[SearchResult]> {
         return URLSession.shared.json(url: GoogleBooksRequest.searchText(text).url)
-            .then(Parser.assertNoError)
-            .then(Parser.parseSearchResults)
+            .then(GoogleBooksParser.assertNoError)
+            .then(GoogleBooksParser.parseSearchResults)
     }
 
     /**
@@ -18,7 +18,7 @@ class GoogleBooks {
      */
     static func fetch(isbn: String) -> Promise<FetchResult> {
         return URLSession.shared.json(url: GoogleBooksRequest.searchIsbn(isbn).url)
-            .then(Parser.parseSearchResults)
+            .then(GoogleBooksParser.parseSearchResults)
             .then { searchResults -> String in
                 guard let id = searchResults.first?.id else { throw GoogleError.noResult }
                 return id
@@ -32,7 +32,7 @@ class GoogleBooks {
      */
     static func fetch(googleBooksId: String) -> Promise<FetchResult> {
         let fetchPromise = URLSession.shared.json(url: GoogleBooksRequest.fetch(googleBooksId).url)
-            .then(Parser.parseFetchResults)
+            .then(GoogleBooksParser.parseFetchResults)
             .then { fetchResult -> FetchResult in
                 if let fetchResult = fetchResult {
                     return fetchResult
@@ -102,7 +102,7 @@ enum GoogleBooksRequest {
     }
 }
 
-class Parser {
+class GoogleBooksParser {
 
     static func parseError(json: JSON) -> GoogleError? {
         if let code = json["error", "code"].int, let message = json["error", "message"].string {
@@ -112,7 +112,7 @@ class Parser {
     }
 
     static func assertNoError(json: JSON) throws -> JSON {
-        if let error = Parser.parseError(json: json) {
+        if let error = GoogleBooksParser.parseError(json: json) {
             throw error
         } else {
             return json
@@ -121,7 +121,7 @@ class Parser {
 
     static func parseSearchResults(_ searchResults: JSON) -> [SearchResult] {
         return searchResults["items"].compactMap { itemJson in
-            Parser.parseItem(itemJson.1)
+            GoogleBooksParser.parseItem(itemJson.1)
         }
     }
 
@@ -149,7 +149,7 @@ class Parser {
     static func parseFetchResults(_ fetchResult: JSON) -> FetchResult? {
 
         // Defer to the common search parsing initially
-        guard let searchResult = Parser.parseItem(fetchResult) else { return nil }
+        guard let searchResult = GoogleBooksParser.parseItem(fetchResult) else { return nil }
 
         let result = FetchResult(fromSearchResult: searchResult)
         result.pageCount = fetchResult["volumeInfo", "pageCount"].int
