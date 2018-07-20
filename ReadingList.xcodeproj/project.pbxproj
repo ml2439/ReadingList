@@ -81,8 +81,6 @@
 		1CDA41FD20EC1AAA00273D4D /* StarRatingCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1CDA41FC20EC1AAA00273D4D /* StarRatingCell.xib */; };
 		1CDA41FF20EC1C0200273D4D /* StarRatingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDA41FE20EC1C0200273D4D /* StarRatingCell.swift */; };
 		1CDA420120EF8C4F00273D4D /* Language.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDA420020EF8C4F00273D4D /* Language.swift */; };
-		1CDA421420F2913200273D4D /* PickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDA421320F2913200273D4D /* PickerCell.swift */; };
-		1CDA421620F2917600273D4D /* PickerInlineCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDA421520F2917600273D4D /* PickerInlineCell.swift */; };
 		1CDD535E1FA6609600A5ED66 /* SettingsHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD535D1FA6609600A5ED66 /* SettingsHeader.swift */; };
 		1CDD53601FA7B38000A5ED66 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1CDD535F1FA7B38000A5ED66 /* Assets.xcassets */; };
 		1CF4B5FE2055701900F8527C /* BookTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1CF4B5FD2055701900F8527C /* BookTableViewCell.xib */; };
@@ -227,8 +225,6 @@
 		1CDA41FC20EC1AAA00273D4D /* StarRatingCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = StarRatingCell.xib; sourceTree = "<group>"; };
 		1CDA41FE20EC1C0200273D4D /* StarRatingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarRatingCell.swift; sourceTree = "<group>"; };
 		1CDA420020EF8C4F00273D4D /* Language.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Language.swift; sourceTree = "<group>"; };
-		1CDA421320F2913200273D4D /* PickerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerCell.swift; sourceTree = "<group>"; };
-		1CDA421520F2917600273D4D /* PickerInlineCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerInlineCell.swift; sourceTree = "<group>"; };
 		1CDD535D1FA6609600A5ED66 /* SettingsHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsHeader.swift; sourceTree = "<group>"; };
 		1CDD535F1FA7B38000A5ED66 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1CF4B5FD2055701900F8527C /* BookTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BookTableViewCell.xib; sourceTree = "<group>"; };
@@ -438,7 +434,6 @@
 		1CD1D2B7202BCA1D00ACA5D9 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				1CDA420420F2877500273D4D /* EurekaPickerRow */,
 				1CD1D2AF202BC4DF00ACA5D9 /* FoundationExtensions.swift */,
 				1CD1D2B5202BC9C400ACA5D9 /* UIKitExtensions.swift */,
 				1C39544F2030D3CB007ACCB1 /* EurekaExtensions.swift */,
@@ -463,16 +458,6 @@
 			);
 			path = UI;
 			sourceTree = "<group>";
-		};
-		1CDA420420F2877500273D4D /* EurekaPickerRow */ = {
-			isa = PBXGroup;
-			children = (
-				1CDA421320F2913200273D4D /* PickerCell.swift */,
-				1CDA421520F2917600273D4D /* PickerInlineCell.swift */,
-			);
-			name = EurekaPickerRow;
-			path = Foundation/EurekaPickerRow;
-			sourceTree = SOURCE_ROOT;
 		};
 		241740D919B869177546F852 /* Frameworks */ = {
 			isa = PBXGroup;
@@ -1098,7 +1083,6 @@
 				4973C79F1E901A6A001CFABC /* CommonUIElements.swift in Sources */,
 				1C0DC738204B119E0044B377 /* DebugData.swift in Sources */,
 				1CC4C049205732300034A218 /* StartFinishButton.swift in Sources */,
-				1CDA421420F2913200273D4D /* PickerCell.swift in Sources */,
 				1C0DC734204B09610044B377 /* BookCSVExport.swift in Sources */,
 				1C59932C20FB87CE00260D12 /* URLSessionExtensions.swift in Sources */,
 				1C39544A202F948B007ACCB1 /* Subject.swift in Sources */,
@@ -1112,7 +1096,6 @@
 				1CC440C1204F5E2F00906120 /* TextBoxAlertController.swift in Sources */,
 				495C5D3F1BF1412600E00C07 /* BookTable.swift in Sources */,
 				1CDA41FF20EC1C0200273D4D /* StarRatingCell.swift in Sources */,
-				1CDA421620F2917600273D4D /* PickerInlineCell.swift in Sources */,
 				4943DB791DBD5104004CAF30 /* Settings.swift in Sources */,
 				1CD1D2BE202BCC7500ACA5D9 /* HairlineConstraint.swift in Sources */,
 				49B2CEF81F39A4D300C6B45D /* SortOrder.swift in Sources */,

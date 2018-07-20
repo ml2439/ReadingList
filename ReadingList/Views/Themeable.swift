@@ -318,7 +318,7 @@ extension Theme {
         SegmentedRow<BookReadState>.defaultCellUpdate = initialiseCell(_:_:)
         LabelRow.defaultCellUpdate = initialiseCell(_:_:)
         AuthorRow.defaultCellUpdate = initialiseCell(_:_:)
-        ABPickerInlineRow<Language>.defaultCellUpdate = { cell, _ in
+        PickerInlineRow<Language>.defaultCellUpdate = { cell, _ in
             initialiseCell(cell)
             cell.tintColor = self.titleTextColor
         }
@@ -331,9 +331,9 @@ extension Theme {
             initialiseCell(cell)
             cell.leftLabel.textColor = self.titleTextColor
         }
-        ABPickerInlineRow<Language>.InlineRow.defaultCellUpdate = { cell, _ in
+        PickerInlineRow<Language>.InlineRow.defaultCellUpdate = { cell, _ in
             initialiseCell(cell)
-            cell.pickerTextColor = self.titleTextColor
+            cell.pickerTextAttributes = [.foregroundColor: self.titleTextColor]
         }
         IntRow.defaultCellUpdate = { cell, _ in
             initialiseCell(cell)

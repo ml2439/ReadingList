@@ -76,7 +76,7 @@ class EditBookMetadata: FormViewController {
                     book.pageCount = pageCount.nsNumber
                 }
             }
-            <<< ABPickerInlineRow<Language> {
+            <<< PickerInlineRow<Language> {
                 $0.title = "Language"
                 if let code = book.languageCode {
                     $0.value = Language.byIsoCode[code]

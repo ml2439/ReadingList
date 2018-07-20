@@ -42,7 +42,7 @@ DEPENDENCIES:
   - CHCSVParser (from `https://github.com/davedelong/CHCSVParser.git`)
   - Crashlytics
   - DZNEmptyDataSet (~> 1.8)
-  - Eureka (~> 4.1)
+  - Eureka (from `https://github.com/xmartlabs/Eureka.git`, commit `ec14ae696e`)
   - Fabric
   - Firebase/Core
   - ImageRow (~> 3.0)
@@ -57,7 +57,6 @@ SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - Crashlytics
     - DZNEmptyDataSet
-    - Eureka
     - Fabric
     - Firebase
     - FirebaseAnalytics
@@ -77,11 +76,17 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   CHCSVParser:
     :git: https://github.com/davedelong/CHCSVParser.git
+  Eureka:
+    :commit: ec14ae696e
+    :git: https://github.com/xmartlabs/Eureka.git
 
 CHECKOUT OPTIONS:
   CHCSVParser:
     :commit: a6c23dab9ca633a8ba791463c9e9d3e1ff991a98
     :git: https://github.com/davedelong/CHCSVParser.git
+  Eureka:
+    :commit: ec14ae696e
+    :git: https://github.com/xmartlabs/Eureka.git
 
 SPEC CHECKSUMS:
   CHCSVParser: 64da26e2b4ddbf7527f7f03120bf91d83d28f354
@@ -104,6 +109,6 @@ SPEC CHECKSUMS:
   SwiftyJSON: c29297daf073d2aa016295d5809cdd68045c39b3
   SwiftyStoreKit: b7563505440a68c9d9fa70bc43d8a97015519409
 
-PODFILE CHECKSUM: bfec34fbb11fe98a8e483946945d3a9b0e5a5061
+PODFILE CHECKSUM: d6ca6dbf0bdceecda9d4d5b8047bfe5012f67d08
 
 COCOAPODS: 1.5.2
