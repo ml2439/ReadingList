@@ -23,6 +23,14 @@ extension String {
         return isEmptyOrWhitespace ? nil : self
     }
 
+    /// Returns the input string with an "s" appended if the supplied number was 0 or greater than 1.
+    func pluralising(_ number: Int) -> String {
+        if number == 1 {
+            return self
+        }
+        return "\(self)s"
+    }
+
     /// Removes all whitespace characters from the beginning and the end of the string.
     func trimming() -> String {
         return self.trimmingCharacters(in: CharacterSet.whitespaces)

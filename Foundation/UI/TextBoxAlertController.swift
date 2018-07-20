@@ -23,7 +23,7 @@ class TextBoxAlertController: UIAlertController {
         }
 
         addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        let okAction = UIAlertAction(title: "OK", style: .default) { [unowned self] _ in
+        let okAction = UIAlertAction(title: "OK", style: .default) { _ in
             onOK(self.textFields![0].text)
         }
 

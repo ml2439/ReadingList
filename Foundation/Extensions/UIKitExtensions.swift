@@ -368,14 +368,9 @@ extension UITableViewCell {
         }
     }
 
-    var selectedBackgroundColor: UIColor? {
-        get {
-            return selectedBackgroundView?.backgroundColor
-        }
-        set {
-            guard let newValue = newValue else { return }
-            selectedBackgroundView = UIView(backgroundColor: newValue)
-        }
+    func setSelectedBackgroundColor(_ color: UIColor) {
+        guard selectionStyle != .none else { return }
+        selectedBackgroundView = UIView(backgroundColor: color)
     }
 }
 

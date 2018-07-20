@@ -7,11 +7,12 @@ target 'ReadingList' do
   # Pods for books
   pod 'DZNEmptyDataSet', '~> 1.8'
   pod 'SwiftyJSON', '~> 4.0'
-  pod 'Eureka', '~> 4.1'
+  pod 'Eureka', :git => 'https://github.com/xmartlabs/Eureka.git', :commit => 'ec14ae696e' # to use customised UIPickerViews
   pod 'ImageRow', '~> 3.0'
   pod 'SVProgressHUD', '~> 2.2'
   pod 'SwiftyStoreKit', '~> 0.13'
   pod 'CHCSVParser', :git => 'https://github.com/davedelong/CHCSVParser.git'
+  pod 'PromisesSwift', '~> 1.2'
   pod 'SimulatorStatusMagic', :configurations => ['Debug']
   pod 'Fabric'
   pod 'Crashlytics'

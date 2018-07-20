@@ -55,10 +55,10 @@ class Organise: UITableViewController {
 
     override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         return [
-            UITableViewRowAction(style: .destructive, title: "Delete") { [unowned self] _, indexPath in
+            UITableViewRowAction(style: .destructive, title: "Delete") { _, indexPath in
                 self.deleteList(forRowAt: indexPath)
             },
-            UITableViewRowAction(style: .normal, title: "Rename") { [unowned self] _, indexPath in
+            UITableViewRowAction(style: .normal, title: "Rename") { _, indexPath in
                 self.setEditing(false, animated: true)
                 let list = self.resultsController.object(at: indexPath)
 
@@ -82,7 +82,7 @@ class Organise: UITableViewController {
     func deleteList(forRowAt indexPath: IndexPath) {
         let confirmDelete = UIAlertController(title: "Confirm delete", message: nil, preferredStyle: .actionSheet)
 
-        confirmDelete.addAction(UIAlertAction(title: "Delete", style: .destructive) { [unowned self] _ in
+        confirmDelete.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
             self.resultsController.object(at: indexPath).deleteAndSave()
             UserEngagement.logEvent(.deleteList)
 

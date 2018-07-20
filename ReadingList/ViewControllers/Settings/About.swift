@@ -43,7 +43,7 @@ class About: UITableViewController {
             \(canSendEmail ? "." : " at \(Settings.feedbackEmailAddress).") \
             I'll do my best to respond.
             """, preferredStyle: .actionSheet)
-        controller.addAction(UIAlertAction(title: "OK", style: canSendEmail ? .default : .cancel) { [unowned self] _ in
+        controller.addAction(UIAlertAction(title: "OK", style: canSendEmail ? .default : .cancel) { _ in
             if canSendEmail {
                 self.presentContactMailComposeWindow()
             }
@@ -68,7 +68,7 @@ class About: UITableViewController {
         }
         let controller = UIAlertController(title: "Become a Beta Tester?", message: betaTestPopupText, preferredStyle: .actionSheet)
         if canSendMail {
-            controller.addAction(UIAlertAction(title: "Join", style: .default) { [unowned self] _ in
+            controller.addAction(UIAlertAction(title: "Join", style: .default) { _ in
                 guard BuildInfo.appConfiguration != .testFlight else {
                     let controller = UIAlertController(title: "Already a Beta Tester", message: "You're already running a beta version of the app.", preferredStyle: .alert)
                     controller.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
@@ -160,6 +160,7 @@ class Attributions: UITableViewController {
         case 4: presentThemedSafariViewController(URL(string: "https://github.com/SVProgressHUD/SVProgressHUD")!)
         case 5: presentThemedSafariViewController(URL(string: "https://github.com/davedelong/CHCSVParser")!)
         case 6: presentThemedSafariViewController(URL(string: "https://github.com/bizz84/SwiftyStoreKit")!)
+        case 7: presentThemedSafariViewController(URL(string: "https://github.com/google/promises")!)
         default: return
         }
         tableView.deselectRow(at: indexPath, animated: true)

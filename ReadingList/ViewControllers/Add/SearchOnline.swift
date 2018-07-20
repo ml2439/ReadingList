@@ -3,11 +3,12 @@ import UIKit
 import SVProgressHUD
 import Crashlytics
 import CoreData
+import Promises
 
 class SearchOnline: UITableViewController {
 
     var initialSearchString: String?
-    var tableItems = [GoogleBooks.SearchResult]()
+    var tableItems = [SearchResult]()
 
     @IBOutlet private weak var addAllButton: UIBarButtonItem!
     @IBOutlet private weak var selectModeButton: UIBarButtonItem!
@@ -141,38 +142,28 @@ class SearchOnline: UITableViewController {
 
     func performSearch(searchText: String) {
         // Don't bother searching for empty text
-        guard !searchText.isEmptyOrWhitespace else { displaySearchResults(GoogleBooks.SearchResultsPage.empty()); return }
+        guard !searchText.isEmptyOrWhitespace else { emptyDatasetView.setEmptyDatasetReason(.noSearch); return }
 
         SVProgressHUD.show(withStatus: "Searching...")
         feedbackGenerator.prepare()
-        GoogleBooks.search(searchController.searchBar.text!) { [weak self] results in
-            SVProgressHUD.dismiss()
-            guard let viewController = self else { return }
-            if !results.searchResults.isSuccess {
-                viewController.emptyDatasetView.setEmptyDatasetReason(.error)
-            } else {
-                viewController.displaySearchResults(results)
+        GoogleBooks.search(searchText)
+            .always(on: .main, SVProgressHUD.dismiss)
+            .catch(on: .main) { _ in
+                self.feedbackGenerator.notificationOccurred(.error)
+                self.emptyDatasetView.setEmptyDatasetReason(.error)
             }
-        }
+            .then(on: .main, displaySearchResults)
     }
 
-    func displaySearchResults(_ resultPage: GoogleBooks.SearchResultsPage) {
-        if resultPage.searchText?.isEmptyOrWhitespace != false {
-            emptyDatasetView.setEmptyDatasetReason(.noSearch)
-        } else if !resultPage.searchResults.isSuccess {
-            feedbackGenerator.notificationOccurred(.error)
-            if let googleError = resultPage.searchResults.error as? GoogleBooks.GoogleError {
-                Crashlytics.sharedInstance().recordError(googleError, withAdditionalUserInfo: ["GoogleErrorMessage": googleError.message])
-            }
-            emptyDatasetView.setEmptyDatasetReason(.error)
-        } else if resultPage.searchResults.value!.isEmpty {
+    func displaySearchResults(_ results: [SearchResult]) {
+        if results.isEmpty {
             feedbackGenerator.notificationOccurred(.warning)
             emptyDatasetView.setEmptyDatasetReason(.noResults)
         } else {
             feedbackGenerator.notificationOccurred(.success)
         }
 
-        tableItems = resultPage.searchResults.value ?? []
+        tableItems = results
         tableView.backgroundView = tableItems.isEmpty ? emptyDatasetView : nil
         tableView.reloadData()
 
@@ -184,43 +175,45 @@ class SearchOnline: UITableViewController {
     }
 
     func presentDuplicateBookAlert(book: Book, fromSelectedIndex indexPath: IndexPath) {
-        let alert = duplicateBookAlertController(goToExistingBook: { [unowned self] in
+        let alert = duplicateBookAlertController(goToExistingBook: {
             self.presentingViewController!.dismiss(animated: true) {
                 appDelegate.tabBarController.simulateBookSelection(book, allowTableObscuring: true)
             }
-        }, cancel: { [unowned self] in
+        }, cancel: {
             self.tableView.deselectRow(at: indexPath, animated: true)
         })
         searchController.present(alert, animated: true)
     }
 
-    func createBook(inContext context: NSManagedObjectContext, fromSearchResult searchResult: GoogleBooks.SearchResult, completion: @escaping (Book) -> Void) {
-        GoogleBooks.fetch(googleBooksId: searchResult.id) { resultPage in
-            let book = Book(context: context, readState: .toRead)
-            if let fetchResult = resultPage.result.value {
-                book.populate(fromFetchResult: fetchResult)
-                completion(book)
-            } else if let coverURL = searchResult.thumbnailCoverUrl {
-                HTTP.Request.get(url: coverURL).data {
-                    book.populate(fromSearchResult: searchResult, withCoverImage: $0.isSuccess ? $0.value! : nil)
-                    completion(book)
+    func createBook(inContext context: NSManagedObjectContext, from searchResult: SearchResult) -> Promise<Book> {
+        let book = Book(context: context, readState: .toRead)
+        return GoogleBooks.fetch(googleBooksId: searchResult.id)
+            .recover { error -> FetchResult in
+                switch error {
+                case GoogleError.noResult: return FetchResult(fromSearchResult: searchResult)
+                default: throw error
                 }
-            } else {
-                book.populate(fromSearchResult: searchResult)
-                completion(book)
             }
-
-        }
+            .then(on: .main) { fetchResult -> Book in
+                book.populate(fromFetchResult: fetchResult)
+                return book
+            }
     }
 
-    func fetchAndSegue(searchResult: GoogleBooks.SearchResult) {
+    func fetchAndSegue(searchResult: SearchResult) {
         UserEngagement.logEvent(.searchOnline)
         SVProgressHUD.show(withStatus: "Loading...")
         let editContext = PersistentStoreManager.container.viewContext.childContext()
-        createBook(inContext: editContext, fromSearchResult: searchResult) { [weak self] book in
-            SVProgressHUD.dismiss()
-            self?.navigationController!.pushViewController(EditBookReadState(newUnsavedBook: book, scratchpadContext: editContext), animated: true)
-        }
+
+        createBook(inContext: editContext, from: searchResult)
+            .always(on: .main, SVProgressHUD.dismiss)
+            .catch(on: .main) { _ in
+                SVProgressHUD.showError(withStatus: "An error occurred. Please try again.")
+            }
+            .then(on: .main) { book in
+                let editPage = EditBookReadState(newUnsavedBook: book, scratchpadContext: editContext)
+                self.navigationController!.pushViewController(editPage, animated: true)
+            }
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -243,7 +236,7 @@ class SearchOnline: UITableViewController {
         guard selectedRows.count > 1 else { fetchAndSegue(searchResult: tableItems[selectedRows.first!.row]); return }
 
         let alert = UIAlertController(title: "Add \(selectedRows.count) books", message: "Are you sure you want to add all \(selectedRows.count) selected books? They will be added to the 'To Read' section.", preferredStyle: .actionSheet)
-        alert.addAction(UIAlertAction(title: "Add All", style: .default) { [unowned self] _ in
+        alert.addAction(UIAlertAction(title: "Add All", style: .default) { _ in
             self.addMultiple(selectedRows: selectedRows)
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
@@ -253,27 +246,23 @@ class SearchOnline: UITableViewController {
     func addMultiple(selectedRows: [IndexPath]) {
         UserEngagement.logEvent(.searchOnlineMultiple)
         SVProgressHUD.show(withStatus: "Adding...")
-        let fetches = DispatchGroup()
 
         // Queue up the fetches
-        let context = PersistentStoreManager.container.viewContext.childContext()
-        for selectedIndex in selectedRows {
-            fetches.enter()
-            createBook(inContext: context, fromSearchResult: tableItems[selectedIndex.row]) { _ in
-                fetches.leave()
-            }
-        }
+        let editContext = PersistentStoreManager.container.viewContext.childContext()
+        let bookCreations = selectedRows.map { createBook(inContext: editContext, from: tableItems[$0.row]) }
 
-        // On completion, dismiss this view (or show an error if they all failed)
-        fetches.notify(queue: .main) { [weak self] in
-            context.saveAndLogIfErrored()
-            SVProgressHUD.dismiss()
-
-            self?.searchController.isActive = false
-            self?.presentingViewController!.dismiss(animated: true) {
-                SVProgressHUD.showInfo(withStatus: "\(selectedRows.count) book\(selectedRows.count == 1 ? "" : "s") added")
+        any(bookCreations)
+            .always(on: .main, SVProgressHUD.dismiss)
+            .catch(on: .main) { _ in
+                SVProgressHUD.showError(withStatus: "An error occurred. Please try again.")
             }
-        }
+            .then(on: .main) { _ in
+                editContext.saveAndLogIfErrored()
+                self.searchController.isActive = false
+                self.presentingViewController!.dismiss(animated: true) {
+                    SVProgressHUD.showInfo(withStatus: "\(selectedRows.count) \("book".pluralising(selectedRows.count)) added")
+                }
+            }
     }
 }
 
@@ -285,7 +274,7 @@ extension SearchOnline: UISearchBarDelegate {
 
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if searchText.isEmpty {
-            displaySearchResults(GoogleBooks.SearchResultsPage.empty())
+            displaySearchResults([SearchResult]())
         }
     }
 }

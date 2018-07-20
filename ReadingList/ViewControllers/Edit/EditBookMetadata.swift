@@ -76,7 +76,7 @@ class EditBookMetadata: FormViewController {
                     book.pageCount = pageCount.nsNumber
                 }
             }
-            <<< ABPickerInlineRow<Language> {
+            <<< PickerInlineRow<Language> {
                 $0.title = "Language"
                 if let code = book.languageCode {
                     $0.value = Language.byIsoCode[code]
@@ -126,9 +126,7 @@ class EditBookMetadata: FormViewController {
             <<< ButtonRow(updateFromGoogleRowKey) {
                 $0.title = "Update from Google Books"
                 $0.hidden = Condition(booleanLiteral: isAddingNewBook || book.googleBooksId == nil)
-                $0.onCellSelection { [unowned self] _, _ in
-                    self.updateBookFromGoogle()
-                }
+                $0.onCellSelection(updateFromGooglePressed(cell:row:))
             }
             <<< ButtonRow(deleteRowKey) {
                 $0.title = "Delete"
@@ -161,7 +159,7 @@ class EditBookMetadata: FormViewController {
 
         let confirmDeleteAlert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         confirmDeleteAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        confirmDeleteAlert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [unowned self] _ in
+        confirmDeleteAlert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
             // Delete the book, log the event, and dismiss this modal view
             self.editBookContext.performAndSave {
                 self.book.delete()
@@ -175,27 +173,31 @@ class EditBookMetadata: FormViewController {
 
     func updateFromGooglePressed(cell: ButtonCellOf<String>, row: _ButtonRowOf<String>) {
         let areYouSure = UIAlertController(title: "Confirm Update", message: "Updating from Google Books will overwrite any book metadata changes you have made manually. Are you sure you wish to proceed?", preferredStyle: .alert)
-        areYouSure.addAction(UIAlertAction(title: "Update", style: .default) { [unowned self] _ in self.updateBookFromGoogle() })
+        areYouSure.addAction(UIAlertAction(title: "Update", style: .default, handler: updateBookFromGoogleHandler))
         areYouSure.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         present(areYouSure, animated: true)
     }
 
-    func updateBookFromGoogle() {
+    func updateBookFromGoogleHandler(_: UIAlertAction) {
         guard let googleBooksId = book.googleBooksId else { return }
         SVProgressHUD.show(withStatus: "Downloading...")
 
-        GoogleBooks.fetch(googleBooksId: googleBooksId) { [unowned self] fetchResultPage in
-            SVProgressHUD.dismiss()
-            guard fetchResultPage.result.isSuccess else {
+        GoogleBooks.fetch(googleBooksId: googleBooksId)
+            .always(on: .main) {
+                SVProgressHUD.dismiss()
+            }
+            .catch(on: .main) { _ in
                 SVProgressHUD.showError(withStatus: "Could not update book details")
-                return
             }
-            self.book.populate(fromFetchResult: fetchResultPage.result.value!)
-            self.editBookContext.saveIfChanged()
-            self.dismiss(animated: true) {
-                // FUTURE: Would be nice to display whether any changes were made
-                SVProgressHUD.showInfo(withStatus: "Book updated")
-            }
+            .then(on: .main, updateBookFromGoogle)
+    }
+
+    func updateBookFromGoogle(fetchResult: FetchResult) {
+        book.populate(fromFetchResult: fetchResult)
+        editBookContext.saveIfChanged()
+        dismiss(animated: true) {
+            // FUTURE: Would be nice to display whether any changes were made
+            SVProgressHUD.showInfo(withStatus: "Book updated")
         }
     }
 
@@ -207,7 +209,7 @@ class EditBookMetadata: FormViewController {
         guard book.changedValues().isEmpty else {
             // Confirm exit dialog
             let confirmExit = UIAlertController(title: "Unsaved changes", message: "Are you sure you want to discard your unsaved changes?", preferredStyle: .actionSheet)
-            confirmExit.addAction(UIAlertAction(title: "Discard", style: .destructive) { [unowned self] _ in
+            confirmExit.addAction(UIAlertAction(title: "Discard", style: .destructive) { _ in
                 self.dismiss(animated: true)
             })
             confirmExit.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))

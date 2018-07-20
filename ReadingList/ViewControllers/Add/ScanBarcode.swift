@@ -158,11 +158,11 @@ class ScanBarcode: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
     }
 
     func presentDuplicateAlert(_ book: Book) {
-        let alert = duplicateBookAlertController(goToExistingBook: { [unowned self] in
+        let alert = duplicateBookAlertController(goToExistingBook: {
             self.dismiss(animated: true) {
                 appDelegate.tabBarController.simulateBookSelection(book, allowTableObscuring: true)
             }
-        }, cancel: { [unowned self] in
+        }, cancel: {
             self.session?.startRunning()
         })
 
@@ -174,55 +174,45 @@ class ScanBarcode: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
         // We're going to be doing a search online, so bring up a spinner
         SVProgressHUD.show(withStatus: "Searching...")
 
-        // self is weak since the barcode callback is on another thread, and it is possible (with careful timing)
-        // to get the view controller to dismiss after the barcode has been detected but before the callback runs.
-        GoogleBooks.fetch(isbn: isbn) { [weak self] resultPage in
-            SVProgressHUD.dismiss()
-            guard let viewController = self else { return }
-
-            viewController.feedbackGenerator.prepare()
-            guard resultPage.result.isSuccess else {
-                let error = resultPage.result.error!
-                if (error as? GoogleBooks.GoogleErrorType) == .noResult {
-                    viewController.feedbackGenerator.notificationOccurred(.error)
-                    viewController.presentNoExactMatchAlert(forIsbn: isbn)
-                } else {
-                    viewController.feedbackGenerator.notificationOccurred(.error)
-                    viewController.onSearchError(error)
+        GoogleBooks.fetch(isbn: isbn)
+            .catch(on: .main) { error in
+                self.feedbackGenerator.notificationOccurred(.error)
+                switch error {
+                case GoogleError.noResult: self.presentNoExactMatchAlert(forIsbn: isbn)
+                default: self.onSearchError(error)
                 }
-                return
             }
+            .then(on: .main) { fetchResult in
+                // self is weak since the barcode callback is on another thread, and it is possible (with careful timing)
+                // to get the view controller to dismiss after the barcode has been detected but before the callback runs.
+                if let existingBook = Book.get(fromContext: PersistentStoreManager.container.viewContext, googleBooksId: fetchResult.id) {
+                    self.feedbackGenerator.notificationOccurred(.warning)
+                    self.presentDuplicateAlert(existingBook)
+                } else {
+                    self.feedbackGenerator.notificationOccurred(.success)
 
-            let fetchResult = resultPage.result.value!
-            // We may now have a book which matches the Google Books ID (but didn't match the ISBN), so check again
-            if let existingBook = Book.get(fromContext: PersistentStoreManager.container.viewContext, googleBooksId: fetchResult.id) {
-                viewController.feedbackGenerator.notificationOccurred(.warning)
-                viewController.presentDuplicateAlert(existingBook)
-            } else {
-                viewController.feedbackGenerator.notificationOccurred(.success)
+                    // Event logging
+                    UserEngagement.logEvent(.scanBarcode)
 
-                // Event logging
-                UserEngagement.logEvent(.scanBarcode)
-
-                // If there is no duplicate, we can safely go to the next page
-                let context = PersistentStoreManager.container.viewContext.childContext()
-                let book = Book(context: context, readState: .toRead)
-                book.populate(fromFetchResult: fetchResult)
-                viewController.navigationController!.pushViewController(
-                    EditBookReadState(newUnsavedBook: book, scratchpadContext: context),
-                    animated: true)
+                    // If there is no duplicate, we can safely go to the next page
+                    let context = PersistentStoreManager.container.viewContext.childContext()
+                    let book = Book(context: context, readState: .toRead)
+                    book.populate(fromFetchResult: fetchResult)
+                    self.navigationController!.pushViewController(
+                        EditBookReadState(newUnsavedBook: book, scratchpadContext: context),
+                        animated: true)
+                }
             }
-        }
     }
 
     func presentNoExactMatchAlert(forIsbn isbn: String) {
         let alert = UIAlertController(title: "No Exact Match",
                                       message: "We couldn't find an exact match. Would you like to do a more general search instead?",
                                       preferredStyle: UIAlertControllerStyle.alert)
-        alert.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.cancel) { [unowned self] _ in
+        alert.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.cancel) { _ in
             self.session?.startRunning()
         })
-        alert.addAction(UIAlertAction(title: "Yes", style: UIAlertActionStyle.default) { [unowned self] _ in
+        alert.addAction(UIAlertAction(title: "Yes", style: UIAlertActionStyle.default) { _ in
             let presentingViewController = self.presentingViewController
             self.dismiss(animated: true) {
                 let searchOnlineNav = Storyboard.SearchOnline.rootAsFormSheet() as! UINavigationController
@@ -246,7 +236,7 @@ class ScanBarcode: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
 
     func presentInfoAlert(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.alert)
-        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default) { [unowned self] _ in
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default) { _ in
             self.dismiss(animated: true, completion: nil)
         })
         present(alert, animated: true, completion: nil)
@@ -254,13 +244,13 @@ class ScanBarcode: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
 
     func presentCameraPermissionsAlert() {
         let alert = UIAlertController(title: "Permission Required", message: "You'll need to change your settings to allow Reading List to use your device's camera.", preferredStyle: UIAlertControllerStyle.alert)
-        alert.addAction(UIAlertAction(title: "Settings", style: UIAlertActionStyle.default) { [unowned self] _ in
+        alert.addAction(UIAlertAction(title: "Settings", style: UIAlertActionStyle.default) { _ in
             if let appSettings = URL(string: UIApplicationOpenSettingsURLString), UIApplication.shared.canOpenURL(appSettings) {
                 UIApplication.shared.open(appSettings, options: [:])
                 self.dismiss(animated: false)
             }
         })
-        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel) { [unowned self] _ in
+        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel) { _ in
             self.dismiss(animated: true)
         })
         feedbackGenerator.notificationOccurred(.error)

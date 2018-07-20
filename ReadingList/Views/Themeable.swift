@@ -100,7 +100,9 @@ extension UITableViewCell {
         backgroundColor = theme.cellBackgroundColor
         textLabel?.textColor = theme.titleTextColor
         detailTextLabel?.textColor = theme.titleTextColor
-        selectedBackgroundColor = theme.selectedCellBackgroundColor
+        if selectionStyle != .none {
+            setSelectedBackgroundColor(theme.selectedCellBackgroundColor)
+        }
     }
 }
 
@@ -254,9 +256,9 @@ extension TableHeaderSearchBar {
 extension UINavigationBar {
     func initialise(withTheme theme: Theme) {
         barStyle = theme.barStyle
-        titleTextAttributes = [NSAttributedStringKey.foregroundColor: theme.titleTextColor]
+        titleTextAttributes = [.foregroundColor: theme.titleTextColor]
         if #available(iOS 11.0, *) {
-            largeTitleTextAttributes = [NSAttributedStringKey.foregroundColor: theme.titleTextColor]
+            largeTitleTextAttributes = [.foregroundColor: theme.titleTextColor]
         }
     }
 
@@ -316,21 +318,22 @@ extension Theme {
         SegmentedRow<BookReadState>.defaultCellUpdate = initialiseCell(_:_:)
         LabelRow.defaultCellUpdate = initialiseCell(_:_:)
         AuthorRow.defaultCellUpdate = initialiseCell(_:_:)
-        ABPickerInlineRow<Language>.defaultCellUpdate = { cell, _ in
+        PickerInlineRow<Language>.defaultCellUpdate = { cell, _ in
             initialiseCell(cell)
             cell.tintColor = self.titleTextColor
         }
         ButtonRow.defaultCellUpdate = { cell, _ in
+            // Cannot use the default initialise since it turns the button text a plain colour
             cell.backgroundColor = self.cellBackgroundColor
-            cell.selectedBackgroundColor = self.selectedCellBackgroundColor
+            cell.setSelectedBackgroundColor(self.selectedCellBackgroundColor)
         }
         StarRatingRow.defaultCellUpdate = { cell, _ in
             initialiseCell(cell)
             cell.leftLabel.textColor = self.titleTextColor
         }
-        ABPickerInlineRow<Language>.InlineRow.defaultCellUpdate = { cell, _ in
+        PickerInlineRow<Language>.InlineRow.defaultCellUpdate = { cell, _ in
             initialiseCell(cell)
-            cell.pickerTextColor = self.titleTextColor
+            cell.pickerTextAttributes = [.foregroundColor: self.titleTextColor]
         }
         IntRow.defaultCellUpdate = { cell, _ in
             initialiseCell(cell)

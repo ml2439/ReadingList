@@ -127,7 +127,7 @@ class AddToList: UITableViewController {
 
             navigationController!.dismiss(animated: true, completion: onCompletion)
         } else {
-            present(AddToList.newListAlertController(books) { [unowned self] in
+            present(AddToList.newListAlertController(books) {
                 self.navigationController!.dismiss(animated: true, completion: self.onCompletion)
             }, animated: true)
         }

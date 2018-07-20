@@ -25,9 +25,10 @@ class DataVC: UITableViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
+        // Cannot use the default initialise since it turns the button text a plain colour
         let theme = UserSettings.theme.value
         cell.backgroundColor = theme.cellBackgroundColor
-        cell.selectedBackgroundColor = theme.cellSeparatorColor
+        cell.setSelectedBackgroundColor(theme.selectedCellBackgroundColor)
         return cell
     }
 
@@ -54,7 +55,7 @@ class DataVC: UITableViewController {
             have an ISBN or Google Books ID which corresponds to a book already in the app; \
             other rows will be added as new books.
             """, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Import", style: .default) { [unowned self] _ in
+        alert.addAction(UIAlertAction(title: "Import", style: .default) { _ in
             SVProgressHUD.show(withStatus: "Importing")
             UserEngagement.logEvent(.csvImport)
 
@@ -140,7 +141,7 @@ class DataVC: UITableViewController {
 
         // The initial WARNING action
         let areYouSure = UIAlertController(title: "Warning", message: "This will delete all books saved in the application. Are you sure you want to continue?", preferredStyle: .alert)
-        areYouSure.addAction(UIAlertAction(title: "Delete", style: .destructive) { [unowned self] _ in
+        areYouSure.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
             self.present(confirmDelete, animated: true)
         })
         areYouSure.addAction(UIAlertAction(title: "Cancel", style: .cancel))
