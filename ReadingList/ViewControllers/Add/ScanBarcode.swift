@@ -175,6 +175,7 @@ class ScanBarcode: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
         SVProgressHUD.show(withStatus: "Searching...")
 
         GoogleBooks.fetch(isbn: isbn)
+            .always(on: .main) { SVProgressHUD.dismiss() }
             .catch(on: .main) { error in
                 self.feedbackGenerator.notificationOccurred(.error)
                 switch error {
