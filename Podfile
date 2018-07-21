@@ -20,12 +20,17 @@ target 'ReadingList' do
   pod 'SwiftLint'
 
   target 'ReadingList_UITests' do
-    inherit! :search_paths
+    inherit! :complete
     # Pods for testing
   end
 
   target 'ReadingList_UnitTests' do
-    inherit! :search_paths
+    inherit! :complete
+    # Pods for testing
+  end
+
+  target 'ReadingList_Screenshots' do
+    inherit! :complete
     # Pods for testing
   end
 
