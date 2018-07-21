@@ -1,6 +1,6 @@
 import Foundation
 
-extension UserDefaults {
+public extension UserDefaults {
     func incrementCounter(withKey key: String) {
         let newCount = UserDefaults.standard.integer(forKey: key) + 1
         UserDefaults.standard.set(newCount, forKey: key)
@@ -12,7 +12,7 @@ extension UserDefaults {
     }
 }
 
-extension String {
+public extension String {
     /// Return whether the string contains any characters which are not whitespace.
     var isEmptyOrWhitespace: Bool {
         return self.trimming().isEmpty
@@ -54,7 +54,7 @@ extension String {
     }
 }
 
-extension Int {
+public extension Int {
     var string: String {
         return String(describing: self)
     }
@@ -69,19 +69,19 @@ extension Int {
     }
 }
 
-extension Int32 {
+public extension Int32 {
     var nsNumber: NSNumber {
         return NSNumber(value: self)
     }
 }
 
-extension NSNumber {
+public extension NSNumber {
     var int32: Int32 {
         return Int32(truncating: self)
     }
 }
 
-extension NSSortDescriptor {
+public extension NSSortDescriptor {
     convenience init<Root, Value>(_ keyPath: KeyPath<Root, Value>, ascending: Bool = true) {
         self.init(keyPath: keyPath, ascending: ascending)
     }
@@ -91,13 +91,13 @@ extension NSSortDescriptor {
     }
 }
 
-extension Collection {
+public extension Collection {
     subscript (safe index: Index) -> Element? {
         return indices.contains(index) ? self[index] : nil
     }
 }
 
-extension URL {
+public extension URL {
     static func temporary(fileWithName fileName: String) -> URL {
         return URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(fileName)
     }
@@ -115,13 +115,13 @@ extension URL {
     }
 }
 
-extension String.SubSequence {
+public extension String.SubSequence {
     func trimming() -> String {
         return self.trimmingCharacters(in: CharacterSet.whitespaces)
     }
 }
 
-extension FileManager {
+public extension FileManager {
     func removeTemporaryFiles() {
         let tmpFiles: [URL]
         do {
@@ -143,7 +143,7 @@ extension FileManager {
     }
 }
 
-extension Array where Element: Equatable {
+public extension Array where Element: Equatable {
     func distinct() -> [Element] {
         var uniqueValues: [Element] = []
         forEach { item in
@@ -159,7 +159,7 @@ extension Array where Element: Equatable {
     }
 }
 
-extension Date {
+public extension Date {
     init?(iso: String?) {
         let dateStringFormatter = DateFormatter()
         dateStringFormatter.dateFormat = "yyyy-MM-dd"
@@ -211,7 +211,7 @@ extension Date {
     }
 }
 
-extension NSPredicate {
+public extension NSPredicate {
 
     convenience init(boolean: Bool) {
         switch boolean {

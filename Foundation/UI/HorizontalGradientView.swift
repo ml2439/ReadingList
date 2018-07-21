@@ -2,15 +2,15 @@ import Foundation
 import UIKit
 
 @IBDesignable
-class HorizontalGradientView: UIView {
+public class HorizontalGradientView: UIView {
 
-    var colorPosition: NSNumber = 0.4 {
+    public var colorPosition: NSNumber = 0.4 {
         didSet {
             setupGradient()
         }
     }
 
-    var color: UIColor = .white {
+    public var color: UIColor = .white {
         didSet {
             setupGradient()
         }
@@ -28,13 +28,13 @@ class HorizontalGradientView: UIView {
         gradient.frame = bounds
     }
 
-    override func awakeFromNib() {
+    public override func awakeFromNib() {
         super.awakeFromNib()
         setupGradient()
         layer.insertSublayer(gradient, at: 0)
     }
 
-    override func layoutSubviews() {
+    public override func layoutSubviews() {
         super.layoutSubviews()
         gradient.frame = bounds
     }

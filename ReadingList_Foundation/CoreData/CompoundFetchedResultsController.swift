@@ -13,22 +13,22 @@ import CoreData
  scending - and wrapped in a CompoundFetchedResultsController. This will maintain the ease of use
  in a UITableViewController, and the functionality provided by a NSFetchedResultsControllerDelegate.
  */
-class CompoundFetchedResultsController<T: NSFetchRequestResult>: NSObject, NSFetchedResultsControllerDelegate {
+public class CompoundFetchedResultsController<T: NSFetchRequestResult>: NSObject, NSFetchedResultsControllerDelegate {
 
     // The wrapperd controllers
-    let controllers: [NSFetchedResultsController<T>]
+    public let controllers: [NSFetchedResultsController<T>]
 
     // A delegate to notify of changes. Each of the controllers' delegates are set to this class,
     // so that we can map the index paths in the notifications before forwarding to this delegate.
-    weak var delegate: NSFetchedResultsControllerDelegate? {
+    public weak var delegate: NSFetchedResultsControllerDelegate? {
         didSet { controllers.forEach { $0.delegate = self } }
     }
 
-    init(controllers: [NSFetchedResultsController<T>]) { self.controllers = controllers }
+    public init(controllers: [NSFetchedResultsController<T>]) { self.controllers = controllers }
 
-    func performFetch() throws { controllers.forEach { try? $0.performFetch() } }
+    public func performFetch() throws { controllers.forEach { try? $0.performFetch() } }
 
-    var sections: [NSFetchedResultsSectionInfo]? {
+    public var sections: [NSFetchedResultsSectionInfo]? {
         // To get the flattened sections array, we simply reduce-by-concatenation the inner controllers' sections arrays.
         get { return controllers.compactMap { $0.sections }.reduce([], +) }
     }
@@ -41,7 +41,7 @@ class CompoundFetchedResultsController<T: NSFetchRequestResult>: NSObject, NSFet
         return controllers.prefix(upTo: controllerIndex).map { $0.sections!.count }.reduce(0, +)
     }
 
-    func object(at indexPath: IndexPath) -> T {
+    public func object(at indexPath: IndexPath) -> T {
         // Sum the section counts of the controllers, in order, until we exceed the section of the supplied index path.
         // At that point, we have identifiers the controller which should be used to obtain the object, and just
         // adjust the supplied index path's section accordingly.
@@ -56,7 +56,7 @@ class CompoundFetchedResultsController<T: NSFetchRequestResult>: NSObject, NSFet
         fatalError("Could not find index path \(indexPath).")
     }
 
-    func indexPath(forObject object: T) -> IndexPath? {
+    public func indexPath(forObject object: T) -> IndexPath? {
         // Given an object, to determine which controller it is in, we just query each controller in turn.
         for controller in controllers {
             if let indexPath = controller.indexPath(forObject: object) {
@@ -66,17 +66,17 @@ class CompoundFetchedResultsController<T: NSFetchRequestResult>: NSObject, NSFet
         return nil
     }
 
-    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+    public func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         // Forward on the willChange notification
         delegate?.controllerWillChangeContent?(controller)
     }
 
-    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+    public func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         // Forward on the didlChange notification
         delegate?.controllerDidChangeContent?(controller)
     }
 
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+    public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
 
         let sectionOffset = self.sectionOffset(forController: controller as! NSFetchedResultsController<T>)
 
@@ -90,7 +90,7 @@ class CompoundFetchedResultsController<T: NSFetchRequestResult>: NSObject, NSFet
         delegate?.controller?(controller, didChange: anObject, at: adjustIndexPath(indexPath), for: type, newIndexPath: adjustIndexPath(newIndexPath))
     }
 
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
+    public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
 
         let sectionOffset = self.sectionOffset(forController: controller as! NSFetchedResultsController<T>)
 

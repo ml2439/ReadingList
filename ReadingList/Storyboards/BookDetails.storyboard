@@ -102,7 +102,7 @@
                                                         <rect key="frame" x="0.0" y="192" width="720" height="1"/>
                                                         <color key="backgroundColor" white="0.75" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                                         <constraints>
-                                                            <constraint firstAttribute="height" constant="1" id="ngb-Bt-YD4" customClass="HairlineConstraint" customModule="Reading_List" customModuleProvider="target"/>
+                                                            <constraint firstAttribute="height" constant="1" id="ngb-Bt-YD4" customClass="HairlineConstraint" customModule="ReadingList_Foundation"/>
                                                         </constraints>
                                                     </view>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iOb-q7-6nl" userLabel="Description">
@@ -121,7 +121,7 @@
                                                                     <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Subhead"/>
                                                                 </userDefinedRuntimeAttributes>
                                                             </label>
-                                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JlZ-qd-SWF" customClass="HorizontalGradientView" customModule="Reading_List" customModuleProvider="target">
+                                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JlZ-qd-SWF" customClass="HorizontalGradientView" customModule="ReadingList_Foundation">
                                                                 <rect key="frame" x="621" y="46" width="99" height="15"/>
                                                             </view>
                                                             <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="see more" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DXS-Q8-6wT">
@@ -152,7 +152,7 @@
                                                         <rect key="frame" x="0.0" y="278" width="720" height="1"/>
                                                         <color key="backgroundColor" white="0.75" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                                         <constraints>
-                                                            <constraint firstAttribute="height" constant="1" id="YQZ-Es-BVd" customClass="HairlineConstraint" customModule="Reading_List" customModuleProvider="target"/>
+                                                            <constraint firstAttribute="height" constant="1" id="YQZ-Es-BVd" customClass="HairlineConstraint" customModule="ReadingList_Foundation"/>
                                                         </constraints>
                                                     </view>
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="dK7-Qi-TIg">
@@ -497,7 +497,7 @@
                                                         <rect key="frame" x="0.0" y="493" width="720" height="1"/>
                                                         <color key="backgroundColor" white="0.75" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                                         <constraints>
-                                                            <constraint firstAttribute="height" constant="1" id="ZtI-Rq-Ofe" customClass="HairlineConstraint" customModule="Reading_List" customModuleProvider="target"/>
+                                                            <constraint firstAttribute="height" constant="1" id="ZtI-Rq-Ofe" customClass="HairlineConstraint" customModule="ReadingList_Foundation"/>
                                                         </constraints>
                                                     </view>
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="bza-Z5-QWk">
@@ -784,7 +784,7 @@
                                                         <rect key="frame" x="0.0" y="706" width="720" height="1"/>
                                                         <color key="backgroundColor" white="0.75" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                                         <constraints>
-                                                            <constraint firstAttribute="height" constant="1" id="BtD-V8-1bx" customClass="HairlineConstraint" customModule="Reading_List" customModuleProvider="target"/>
+                                                            <constraint firstAttribute="height" constant="1" id="BtD-V8-1bx" customClass="HairlineConstraint" customModule="ReadingList_Foundation"/>
                                                         </constraints>
                                                     </view>
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="2Jl-qN-QRH">

@@ -1,6 +1,7 @@
 import Foundation
 import CoreData
 import Promises
+import ReadingList_Foundation
 
 class BookCSVImporter {
     private let parserDelegate: BookCSVParserDelegate //swiftlint:disable:this weak_delegate
@@ -24,11 +25,6 @@ class BookCSVImporter {
         parser!.delegate = parserDelegate
         parser!.begin()
     }
-}
-
-enum CSVImportError {
-    case invalidCsv
-    case missingHeaders
 }
 
 struct BookCSVImportResults {

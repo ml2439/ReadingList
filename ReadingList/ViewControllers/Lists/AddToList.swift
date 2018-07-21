@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 import CoreData
+import ReadingList_Foundation
 
 class AddToList: UITableViewController {
 

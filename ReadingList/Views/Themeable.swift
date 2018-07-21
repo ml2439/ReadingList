@@ -3,6 +3,7 @@ import Foundation
 import Eureka
 import ImageRow
 import SafariServices
+import ReadingList_Foundation
 
 @objc enum Theme: Int {
     case normal = 1
@@ -140,6 +141,12 @@ extension UIViewController {
             safariVC.preferredBarTintColor = .black
         }
         present(safariVC, animated: true, completion: nil)
+    }
+
+    func inThemedNavController(modalPresentationStyle: UIModalPresentationStyle = .formSheet) -> UINavigationController {
+        let nav = ThemedNavigationController(rootViewController: self)
+        nav.modalPresentationStyle = modalPresentationStyle
+        return nav
     }
 }
 

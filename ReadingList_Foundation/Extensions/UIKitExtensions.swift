@@ -2,7 +2,7 @@ import Foundation
 import UIKit
 import AVFoundation
 
-extension UINib {
+public extension UINib {
     convenience init<T>(_ class: T.Type) where T: UIView {
         self.init(nibName: String(describing: T.self), bundle: nil)
     }
@@ -12,7 +12,7 @@ extension UINib {
     }
 }
 
-extension UIView {
+public extension UIView {
     @IBInspectable var maskedCornerRadius: CGFloat {
         get {
             return layer.cornerRadius
@@ -47,7 +47,7 @@ extension UIView {
     }
 }
 
-extension UIStoryboard {
+public extension UIStoryboard {
     func instantiateRoot(withStyle style: UIModalPresentationStyle? = nil) -> UIViewController {
         let viewController = self.instantiateInitialViewController()!
         if let style = style {
@@ -62,7 +62,7 @@ extension UIStoryboard {
 }
 
 @available(iOS 11.0, *)
-extension UISwipeActionsConfiguration {
+public extension UISwipeActionsConfiguration {
     convenience init(performFirstActionWithFullSwipe: Bool, actions: [UIContextualAction]) {
         self.init(actions: actions)
         self.performsFirstActionWithFullSwipe = performFirstActionWithFullSwipe
@@ -70,7 +70,7 @@ extension UISwipeActionsConfiguration {
 }
 
 @available(iOS 11.0, *)
-extension UIContextualAction {
+public extension UIContextualAction {
     convenience init(style: UIContextualAction.Style, title: String?, image: UIImage?,
                      backgroundColor: UIColor? = nil, handler: @escaping UIContextualActionHandler) {
         self.init(style: style, title: title, handler: handler)
@@ -82,7 +82,7 @@ extension UIContextualAction {
     }
 }
 
-extension UISearchController {
+public extension UISearchController {
     convenience init(filterPlaceholderText: String) {
         self.init(searchResultsController: nil)
         dimsBackgroundDuringPresentation = false
@@ -96,21 +96,15 @@ extension UISearchController {
     }
 }
 
-extension UIViewController {
+public extension UIViewController {
     func inNavigationController(modalPresentationStyle: UIModalPresentationStyle = .formSheet) -> UINavigationController {
         let nav = UINavigationController(rootViewController: self)
         nav.modalPresentationStyle = modalPresentationStyle
         return nav
     }
-
-    func inThemedNavController(modalPresentationStyle: UIModalPresentationStyle = .formSheet) -> UINavigationController {
-        let nav = ThemedNavigationController(rootViewController: self)
-        nav.modalPresentationStyle = modalPresentationStyle
-        return nav
-    }
 }
 
-extension UISplitViewController {
+public extension UISplitViewController {
 
     var masterNavigationController: UINavigationController {
         return viewControllers[0] as! UINavigationController
@@ -149,14 +143,14 @@ extension UISplitViewController {
     }
 }
 
-extension UINavigationController {
+public extension UINavigationController {
     func dismissAndPopToRoot() {
         dismiss(animated: false)
         popToRootViewController(animated: false)
     }
 }
 
-extension UIPopoverPresentationController {
+public extension UIPopoverPresentationController {
 
     func setSourceCell(_ cell: UITableViewCell, inTableView tableView: UITableView, arrowDirections: UIPopoverArrowDirection = .any) {
         self.sourceRect = cell.frame
@@ -170,7 +164,7 @@ extension UIPopoverPresentationController {
     }
 }
 
-extension UITabBarItem {
+public extension UITabBarItem {
 
     func configure(tag: Int, title: String, image: UIImage, selectedImage: UIImage) {
         self.tag = tag
@@ -180,7 +174,7 @@ extension UITabBarItem {
     }
 }
 
-extension UIActivityType {
+public extension UIActivityType {
     static var documentUnsuitableTypes: [UIActivityType] {
         var types: [UIActivityType] = [addToReadingList, assignToContact, saveToCameraRoll, postToFlickr, postToVimeo,
                                        postToTencentWeibo, postToTwitter, postToFacebook, openInIBooks]
@@ -191,7 +185,7 @@ extension UIActivityType {
     }
 }
 
-extension UISearchBar {
+public extension UISearchBar {
     var isActive: Bool {
         get {
             return isUserInteractionEnabled
@@ -222,27 +216,27 @@ extension UISearchBar {
     }
 }
 
-extension UIBarButtonItem {
+public extension UIBarButtonItem {
     func setHidden(_ hidden: Bool) {
         isEnabled = !hidden
         tintColor = hidden ? UIColor.clear : nil
     }
 }
 
-extension UITableViewController {
+public extension UITableViewController {
     @objc func toggleEditingAnimated() {
         setEditing(!isEditing, animated: true)
     }
 }
 
-extension UITableViewRowAction {
+public extension UITableViewRowAction {
     convenience init(style: UITableViewRowActionStyle, title: String?, color: UIColor, handler: @escaping (UITableViewRowAction, IndexPath) -> Void) {
         self.init(style: style, title: title, handler: handler)
         self.backgroundColor = color
     }
 }
 
-extension UIScrollView {
+public extension UIScrollView {
     var universalContentInset: UIEdgeInsets {
         if #available(iOS 11.0, *) {
             return adjustedContentInset
@@ -252,7 +246,7 @@ extension UIScrollView {
     }
 }
 
-extension UILabel {
+public extension UILabel {
     convenience init(font: UIFont, color: UIColor, text: String) {
         self.init()
         self.font = font
@@ -290,7 +284,7 @@ extension UILabel {
     }
 }
 
-extension UIColor {
+public extension UIColor {
     convenience init(fromHex hex: UInt32) {
         self.init(
             red: CGFloat((hex & 0xFF0000) >> 16) / 255.0,
@@ -304,29 +298,14 @@ extension UIColor {
     static let buttonBlue = UIColor(red: 0, green: 0.478431, blue: 1, alpha: 1)
 }
 
-extension UIFont {
-    static let gillSans = UIFont(name: "GillSans", size: 12)!
-    static let gillSansSemiBold = UIFont(name: "GillSans-Semibold", size: 12)!
-
-    static func gillSans(ofSize: CGFloat) -> UIFont {
-        return gillSans.withSize(ofSize)
-    }
-
-    static func gillSans(forTextStyle textStyle: UIFontTextStyle) -> UIFont {
-        return gillSans.scaled(forTextStyle: textStyle)
-    }
-
-    static func gillSansSemiBold(forTextStyle textStyle: UIFontTextStyle) -> UIFont {
-        return gillSansSemiBold.scaled(forTextStyle: textStyle)
-    }
-
+public extension UIFont {
     func scaled(forTextStyle textStyle: UIFontTextStyle) -> UIFont {
         let fontSize = UIFont.preferredFont(forTextStyle: textStyle).pointSize
         return self.withSize(fontSize)
     }
 }
 
-extension UIImage {
+public extension UIImage {
     convenience init?(optionalData: Data?) {
         if let data = optionalData {
             self.init(data: data)
@@ -336,7 +315,7 @@ extension UIImage {
     }
 }
 
-extension NSAttributedString {
+public extension NSAttributedString {
     @objc convenience init(_ string: String, withFont font: UIFont) {
         self.init(string: string, attributes: [NSAttributedStringKey.font: font])
     }
@@ -350,13 +329,13 @@ extension NSAttributedString {
     }
 }
 
-extension UITableView {
+public extension UITableView {
     func advisedFetchBatchSize(forTypicalCell cell: UITableViewCell) -> Int {
         return Int((self.frame.height / cell.frame.height) * 1.3)
     }
 }
 
-extension UITableViewCell {
+public extension UITableViewCell {
     var isEnabled: Bool {
         get {
             return isUserInteractionEnabled && textLabel?.isEnabled != false && detailTextLabel?.isEnabled != false
@@ -374,7 +353,7 @@ extension UITableViewCell {
     }
 }
 
-extension UIDeviceOrientation {
+public extension UIDeviceOrientation {
     var videoOrientation: AVCaptureVideoOrientation? {
         switch self {
         case .portrait: return .portrait
@@ -386,7 +365,7 @@ extension UIDeviceOrientation {
     }
 }
 
-extension UIDevice {
+public extension UIDevice {
 
     // From https://stackoverflow.com/a/26962452/5513562
     var modelIdentifier: String {

@@ -1,15 +1,15 @@
 import Foundation
 
-struct UserSetting<SettingType> {
+public struct UserSetting<SettingType> {
     private let key: String
     private let defaultValue: SettingType
 
-    init(key: String, defaultValue: SettingType) {
+    public init(key: String, defaultValue: SettingType) {
         self.key = key
         self.defaultValue = defaultValue
     }
 
-    var value: SettingType {
+    public var value: SettingType {
         get {
             guard let settingsObject = UserDefaults.standard.object(forKey: key) else { return defaultValue }
             return settingsObject as! SettingType
@@ -20,16 +20,16 @@ struct UserSetting<SettingType> {
     }
 }
 
-struct WrappedUserSetting<SettingType: RawRepresentable> {
+public struct WrappedUserSetting<SettingType: RawRepresentable> {
     private let key: String
     private let defaultValue: SettingType
 
-    init(key: String, defaultValue: SettingType) {
+    public init(key: String, defaultValue: SettingType) {
         self.key = key
         self.defaultValue = defaultValue
     }
 
-    var value: SettingType {
+    public var value: SettingType {
         get {
             guard let settingsObject = UserDefaults.standard.object(forKey: key) else { return defaultValue }
             return SettingType(rawValue: settingsObject as! SettingType.RawValue)!

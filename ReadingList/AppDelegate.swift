@@ -2,6 +2,7 @@ import UIKit
 import SVProgressHUD
 import SwiftyStoreKit
 import CoreData
+import ReadingList_Foundation
 
 var appDelegate: AppDelegate {
     return UIApplication.shared.delegate as! AppDelegate

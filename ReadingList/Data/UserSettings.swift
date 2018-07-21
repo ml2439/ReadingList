@@ -1,4 +1,5 @@
 import Foundation
+import ReadingList_Foundation
 
 enum TableSortOrder: Int {
     case customOrder = 1

@@ -2,13 +2,13 @@ import Foundation
 import UIKit
 
 // From https://medium.com/zenchef-tech-and-product/how-to-visualize-reusable-xibs-in-storyboards-using-ibdesignable-c0488c7f525d
-class XibView: UIView {
+public class XibView: UIView {
 
-    var contentView: UIView?
+    public var contentView: UIView?
 
     @IBInspectable var nibName: String?
 
-    override func awakeFromNib() {
+    public override func awakeFromNib() {
         super.awakeFromNib()
         xibSetup()
     }
@@ -30,7 +30,7 @@ class XibView: UIView {
             options: nil).first as? UIView
     }
 
-    override func prepareForInterfaceBuilder() {
+    public override func prepareForInterfaceBuilder() {
         super.prepareForInterfaceBuilder()
         xibSetup()
         contentView?.prepareForInterfaceBuilder()

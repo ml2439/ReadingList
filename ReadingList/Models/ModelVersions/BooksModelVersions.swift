@@ -1,5 +1,6 @@
 import Foundation
 import CoreData
+import ReadingList_Foundation
 
 enum BooksModelVersion: String {
     case version5 = "books_5"

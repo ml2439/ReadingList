@@ -365,7 +365,8 @@ class AddAuthorForm: FormViewController {
         // is called when a right-swipe is started - the user could reverse and bring this view back
         let lastName = (form.rowBy(tag: lastNameRow) as! _TextRow).value
         if lastName?.isEmptyOrWhitespace != false {
-            presentingRow.removeSelf()
+            guard let index = presentingRow.indexPath?.row else { return }
+            presentingRow.section!.remove(at: index)
         }
     }
 

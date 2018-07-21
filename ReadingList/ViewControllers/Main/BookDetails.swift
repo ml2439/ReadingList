@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 import CoreData
+import ReadingList_Foundation
 
 class BookDetails: UIViewController, UIScrollViewDelegate {
     @IBOutlet private weak var cover: UIImageView!
@@ -322,7 +323,7 @@ extension BookDetails: ThemeableViewController {
         view.backgroundColor = theme.viewBackgroundColor
         navigationController?.view.backgroundColor = theme.viewBackgroundColor
         navigationController?.navigationBar.initialise(withTheme: theme)
-        (navigationItem.titleView as! UINavigationBarLabel).initialise(fromTheme: theme)
+        (navigationItem.titleView as! UINavigationBarLabel).textColor = theme.titleTextColor
         titleAuthorHeadings[0].textColor = theme.titleTextColor
         titleAuthorHeadings[1].textColor = theme.subtitleTextColor
 

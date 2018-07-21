@@ -88,6 +88,6 @@ public final class MigrationStep {
     }
 }
 
-enum MigrationError: Error {
+public enum MigrationError: Error {
     case incompatibleStore
 }

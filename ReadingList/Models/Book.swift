@@ -1,5 +1,6 @@
 import Foundation
 import CoreData
+import ReadingList_Foundation
 
 @objc(Book)
 class Book: NSManagedObject {
