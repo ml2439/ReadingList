@@ -1,5 +1,4 @@
 PODS:
-  - CHCSVParser (2.1.0)
   - Crashlytics (3.10.5):
     - Fabric (~> 1.7.9)
   - DZNEmptyDataSet (1.8.1)
@@ -39,7 +38,6 @@ PODS:
   - SwiftyStoreKit (0.13.3)
 
 DEPENDENCIES:
-  - CHCSVParser (from `https://github.com/davedelong/CHCSVParser.git`)
   - Crashlytics
   - DZNEmptyDataSet (~> 1.8)
   - Eureka (from `https://github.com/xmartlabs/Eureka.git`, commit `ec14ae696e`)
@@ -74,22 +72,16 @@ SPEC REPOS:
     - SwiftyStoreKit
 
 EXTERNAL SOURCES:
-  CHCSVParser:
-    :git: https://github.com/davedelong/CHCSVParser.git
   Eureka:
     :commit: ec14ae696e
     :git: https://github.com/xmartlabs/Eureka.git
 
 CHECKOUT OPTIONS:
-  CHCSVParser:
-    :commit: a6c23dab9ca633a8ba791463c9e9d3e1ff991a98
-    :git: https://github.com/davedelong/CHCSVParser.git
   Eureka:
     :commit: ec14ae696e
     :git: https://github.com/xmartlabs/Eureka.git
 
 SPEC CHECKSUMS:
-  CHCSVParser: 64da26e2b4ddbf7527f7f03120bf91d83d28f354
   Crashlytics: 7f2e38d302d9da96475b3d64d86fb29e31a542b7
   DZNEmptyDataSet: 9525833b9e68ac21c30253e1d3d7076cc828eaa7
   Eureka: 0748c7bbb2560130e43c7bfa83e99c98854a1f42
@@ -109,6 +101,6 @@ SPEC CHECKSUMS:
   SwiftyJSON: c29297daf073d2aa016295d5809cdd68045c39b3
   SwiftyStoreKit: 9ebd15971e28aa2989825fe8bc092eb5f75dd0b2
 
-PODFILE CHECKSUM: 9db94e03100c475da54a75fd1e2def6b41753da4
+PODFILE CHECKSUM: 10158a82f8ab7a1ed083406d6ef414dc17ad047f
 
 COCOAPODS: 1.5.3

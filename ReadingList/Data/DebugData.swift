@@ -7,12 +7,11 @@ extension DebugSettings {
         PersistentStoreManager.deleteAll()
 
         let csvPath = Bundle.main.url(forResource: "examplebooks", withExtension: "csv")!
-        BookCSVImporter(includeImages: includeImages).startImport(fromFileAt: csvPath) { error, _ in
-            guard error == nil else { fatalError("Error in CSV file") }
-            DispatchQueue.main.async {
+        BookCSVImporter().importBooks(includeImages: includeImages, from: csvPath)
+            .catch { _ in fatalError("Error importing test data") }
+            .then(on: .main) { _ in
                 completion?()
             }
-        }
     }
 
     static func initialiseFromCommandLine() {

@@ -8,7 +8,6 @@ import ReadingList_Foundation
 class DataVC: UITableViewController {
 
     var importUrl: URL?
-    var csvImporter: BookCSVImporter?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -60,26 +59,28 @@ class DataVC: UITableViewController {
             SVProgressHUD.show(withStatus: "Importing")
             UserEngagement.logEvent(.csvImport)
 
-            self.csvImporter = BookCSVImporter()
-            self.csvImporter!.startImport(fromFileAt: url) { error, results in
-                if let error = error {
+            BookCSVImporter().importBooks(from: url)
+                .always(on: .main) {
                     SVProgressHUD.dismiss()
-                    self.presentCsvErrorAlert(error)
-                    return
                 }
-                guard let results = results else { fatalError("error and results were nil") }
-                var statusMessagePieces = ["\(results.success) books imported"]
+                .catch(on: .main, self.presentCsvErrorAlert)
+                .then(on: .main) { results in
+                    var statusMessagePieces = ["\(results.success) books imported"]
 
-                if results.duplicate != 0 { statusMessagePieces.append("\(results.duplicate) rows ignored due pre-existing data") }
-                if results.error != 0 { statusMessagePieces.append("\(results.error) rows ignored due to invalid data") }
-                SVProgressHUD.showInfo(withStatus: statusMessagePieces.joined(separator: ". "))
-            }
+                    if results.duplicate != 0 { statusMessagePieces.append("\(results.duplicate) rows ignored due pre-existing data") }
+                    if results.error != 0 { statusMessagePieces.append("\(results.error) rows ignored due to invalid data") }
+                    SVProgressHUD.showInfo(withStatus: statusMessagePieces.joined(separator: ". "))
+                }
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         present(alert, animated: true)
     }
 
-    func presentCsvErrorAlert(_ error: CSVImportError) {
+    func presentCsvErrorAlert(_ error: Error) {
+        guard let error = error as? CSVError else {
+            return
+        }
+
         let title = error == .invalidCsv ? "Invalid CSV File" : "Missing CSV Columns"
         let reason = error == .invalidCsv ? "not valid" : "missing required columns"
         let alert = UIAlertController(title: title, message: """

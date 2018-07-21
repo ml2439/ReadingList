@@ -11,7 +11,6 @@ target 'ReadingList' do
   pod 'ImageRow', '~> 3.0'
   pod 'SVProgressHUD', '~> 2.2'
   pod 'SwiftyStoreKit', '~> 0.13'
-  pod 'CHCSVParser', :git => 'https://github.com/davedelong/CHCSVParser.git'
   pod 'PromisesSwift', '~> 1.2'
   pod 'SimulatorStatusMagic', :configurations => ['Debug']
   pod 'Fabric'

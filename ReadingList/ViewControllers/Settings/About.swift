@@ -158,9 +158,8 @@ class Attributions: UITableViewController {
         case 2: presentThemedSafariViewController(URL(string: "https://github.com/dzenbot/DZNEmptyDataSet")!)
         case 3: presentThemedSafariViewController(URL(string: "https://github.com/SwiftyJSON/SwiftyJSON")!)
         case 4: presentThemedSafariViewController(URL(string: "https://github.com/SVProgressHUD/SVProgressHUD")!)
-        case 5: presentThemedSafariViewController(URL(string: "https://github.com/davedelong/CHCSVParser")!)
-        case 6: presentThemedSafariViewController(URL(string: "https://github.com/bizz84/SwiftyStoreKit")!)
-        case 7: presentThemedSafariViewController(URL(string: "https://github.com/google/promises")!)
+        case 5: presentThemedSafariViewController(URL(string: "https://github.com/bizz84/SwiftyStoreKit")!)
+        case 6: presentThemedSafariViewController(URL(string: "https://github.com/google/promises")!)
         default: return
         }
         tableView.deselectRow(at: indexPath, animated: true)

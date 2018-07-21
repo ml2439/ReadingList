@@ -25,7 +25,6 @@
 		1C20B7A421035A8E0068F3D1 /* UIKitExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD1D2B5202BC9C400ACA5D9 /* UIKitExtensions.swift */; };
 		1C20B7A721035B9D0068F3D1 /* CoreDataExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C20B7A621035B9D0068F3D1 /* CoreDataExtensions.swift */; };
 		1C20B7A921035C4C0068F3D1 /* Fonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C20B7A821035C4C0068F3D1 /* Fonts.swift */; };
-		1C20B7AA210366970068F3D1 /* CSVParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C669280203A26F4001ED046 /* CSVParser.swift */; };
 		1C20B7AB210366B20068F3D1 /* URLSessionExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C59932B20FB87CE00260D12 /* URLSessionExtensions.swift */; };
 		1C20B7AC210367800068F3D1 /* XibView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD83C3D1F9BC0BA00E88E31 /* XibView.swift */; };
 		1C20B7B52103699A0068F3D1 /* NoCancelSearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C20B7AD210369990068F3D1 /* NoCancelSearchBar.swift */; };
@@ -83,6 +82,7 @@
 		1CDA41FD20EC1AAA00273D4D /* StarRatingCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1CDA41FC20EC1AAA00273D4D /* StarRatingCell.xib */; };
 		1CDA41FF20EC1C0200273D4D /* StarRatingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDA41FE20EC1C0200273D4D /* StarRatingCell.swift */; };
 		1CDA420120EF8C4F00273D4D /* Language.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDA420020EF8C4F00273D4D /* Language.swift */; };
+		1CDC04AE2103D0E50088EBCB /* TinyCsvParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDC04AD2103D0E50088EBCB /* TinyCsvParser.swift */; };
 		1CDD535E1FA6609600A5ED66 /* SettingsHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDD535D1FA6609600A5ED66 /* SettingsHeader.swift */; };
 		1CDD53601FA7B38000A5ED66 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1CDD535F1FA7B38000A5ED66 /* Assets.xcassets */; };
 		1CF4B5FE2055701900F8527C /* BookTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1CF4B5FD2055701900F8527C /* BookTableViewCell.xib */; };
@@ -201,7 +201,6 @@
 		1C64AB212041E7E40089CD57 /* BookMapping_8_9.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookMapping_8_9.swift; sourceTree = "<group>"; };
 		1C66927A20343D63001ED046 /* EditBookReadState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditBookReadState.swift; sourceTree = "<group>"; };
 		1C66927C203849EA001ED046 /* BookTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookTableViewCell.swift; sourceTree = "<group>"; };
-		1C669280203A26F4001ED046 /* CSVParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSVParser.swift; sourceTree = "<group>"; };
 		1C6EA1891FFAEB6C0013EE5C /* BookDetails.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = BookDetails.storyboard; sourceTree = "<group>"; };
 		1C6EA18B1FFAEBCC0013EE5C /* BookDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookDetails.swift; sourceTree = "<group>"; };
 		1C73B0BA2046973F00E8EAC7 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
@@ -254,6 +253,7 @@
 		1CDA41FC20EC1AAA00273D4D /* StarRatingCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = StarRatingCell.xib; sourceTree = "<group>"; };
 		1CDA41FE20EC1C0200273D4D /* StarRatingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarRatingCell.swift; sourceTree = "<group>"; };
 		1CDA420020EF8C4F00273D4D /* Language.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Language.swift; sourceTree = "<group>"; };
+		1CDC04AD2103D0E50088EBCB /* TinyCsvParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TinyCsvParser.swift; sourceTree = "<group>"; };
 		1CDD535D1FA6609600A5ED66 /* SettingsHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsHeader.swift; sourceTree = "<group>"; };
 		1CDD535F1FA7B38000A5ED66 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1CF4B5FD2055701900F8527C /* BookTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BookTableViewCell.xib; sourceTree = "<group>"; };
@@ -386,6 +386,7 @@
 				1CD1D2B3202BC64900ACA5D9 /* CSVExport.swift */,
 				1CD111FF202DA47B00BE3E1D /* ISBN13.swift */,
 				1C39544B202F9698007ACCB1 /* UserSetting.swift */,
+				1CDC04AD2103D0E50088EBCB /* TinyCsvParser.swift */,
 				1C20B78521034D4A0068F3D1 /* ReadingList_Foundation.h */,
 				1C20B78621034D4A0068F3D1 /* Info.plist */,
 			);
@@ -546,7 +547,6 @@
 		4925007A1C0B1CFC00C149B5 /* Data */ = {
 			isa = PBXGroup;
 			children = (
-				1C669280203A26F4001ED046 /* CSVParser.swift */,
 				49160F5E1E809DFE00168FD0 /* BookCSVImporter.swift */,
 				4937A1471E9E1FB900A3B0D1 /* DebugSettings.swift */,
 				1C0DC737204B119E0044B377 /* DebugData.swift */,
@@ -956,7 +956,6 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-ReadingList/Pods-ReadingList-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/CHCSVParser/CHCSVParser.framework",
 				"${BUILT_PRODUCTS_DIR}/DZNEmptyDataSet/DZNEmptyDataSet.framework",
 				"${BUILT_PRODUCTS_DIR}/Eureka/Eureka.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
@@ -971,7 +970,6 @@
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CHCSVParser.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DZNEmptyDataSet.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Eureka.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
@@ -1010,7 +1008,6 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-ReadingList-ReadingList_Screenshots/Pods-ReadingList-ReadingList_Screenshots-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/CHCSVParser/CHCSVParser.framework",
 				"${BUILT_PRODUCTS_DIR}/DZNEmptyDataSet/DZNEmptyDataSet.framework",
 				"${BUILT_PRODUCTS_DIR}/Eureka/Eureka.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
@@ -1025,7 +1022,6 @@
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CHCSVParser.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DZNEmptyDataSet.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Eureka.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
@@ -1065,7 +1061,6 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-ReadingList-ReadingList_UnitTests/Pods-ReadingList-ReadingList_UnitTests-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/CHCSVParser/CHCSVParser.framework",
 				"${BUILT_PRODUCTS_DIR}/DZNEmptyDataSet/DZNEmptyDataSet.framework",
 				"${BUILT_PRODUCTS_DIR}/Eureka/Eureka.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
@@ -1080,7 +1075,6 @@
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CHCSVParser.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DZNEmptyDataSet.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Eureka.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
@@ -1123,7 +1117,6 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-ReadingList-ReadingList_UITests/Pods-ReadingList-ReadingList_UITests-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/CHCSVParser/CHCSVParser.framework",
 				"${BUILT_PRODUCTS_DIR}/DZNEmptyDataSet/DZNEmptyDataSet.framework",
 				"${BUILT_PRODUCTS_DIR}/Eureka/Eureka.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
@@ -1138,7 +1131,6 @@
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CHCSVParser.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DZNEmptyDataSet.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Eureka.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
@@ -1217,6 +1209,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1CDC04AE2103D0E50088EBCB /* TinyCsvParser.swift in Sources */,
 				1C20B79221034D5E0068F3D1 /* UserSetting.swift in Sources */,
 				1C20B7BB2103699A0068F3D1 /* TextBoxAlertController.swift in Sources */,
 				1C20B79121034D5E0068F3D1 /* CSVExport.swift in Sources */,
@@ -1290,7 +1283,6 @@
 				49B2CEF81F39A4D300C6B45D /* SortOrder.swift in Sources */,
 				1C75AEFE2042F3A800FB9456 /* BookMapping_8_9.xcmappingmodel in Sources */,
 				1CD1125E202DF7F000BE3E1D /* BooksModelVersions.swift in Sources */,
-				1C20B7AA210366970068F3D1 /* CSVParser.swift in Sources */,
 				1C42F65D20645C510024CC84 /* Themeable.swift in Sources */,
 				1CD07236204A1F7D00DCFBDE /* BookMapping_9_10.xcmappingmodel in Sources */,
 				49B8D8E11F499A5300D4C4EF /* UserSettings.swift in Sources */,
