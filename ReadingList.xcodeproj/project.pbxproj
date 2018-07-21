@@ -98,7 +98,6 @@
 		4942348E1E70AFA100CEEB4C /* SearchOnline.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4942348A1E70AFA100CEEB4C /* SearchOnline.storyboard */; };
 		4942348F1E70AFA100CEEB4C /* ScanBarcode.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4942348B1E70AFA100CEEB4C /* ScanBarcode.storyboard */; };
 		4943DB791DBD5104004CAF30 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4943DB781DBD5104004CAF30 /* Settings.swift */; };
-		494D65D51EB906CB00764DC1 /* examplebooks.csv in Resources */ = {isa = PBXBuildFile; fileRef = 494D65D41EB906CB00764DC1 /* examplebooks.csv */; };
 		495C5D101BF1404D00E00C07 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495C5D0F1BF1404D00E00C07 /* AppDelegate.swift */; };
 		495C5D3F1BF1412600E00C07 /* BookTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495C5D3E1BF1412600E00C07 /* BookTable.swift */; };
 		495C5D411BF1423900E00C07 /* Book.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495C5D401BF1423900E00C07 /* Book.swift */; };
@@ -112,7 +111,6 @@
 		49CEB80A1E9D8C06003FD859 /* Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49CEB8091E9D8C06003FD859 /* Debug.swift */; };
 		49D0FAAB1F2B284000101EE1 /* UserEngagement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49D0FAAA1F2B284000101EE1 /* UserEngagement.swift */; };
 		49E95D0F1DD7D9EC00C215F8 /* GoogleBooks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49E95D0E1DD7D9EC00C215F8 /* GoogleBooks.swift */; };
-		49F3863C1E86D64A001F5D75 /* example_barcode.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 49F3863B1E86D64A001F5D75 /* example_barcode.jpg */; };
 		49FE2ED51D6F675D00F04239 /* SearchOnline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49FE2ED41D6F675D00F04239 /* SearchOnline.swift */; };
 		5C63D0CE89C952098308228E /* Pods_ReadingList_ReadingList_UnitTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97AF0989D558270BAE1D6865 /* Pods_ReadingList_ReadingList_UnitTests.framework */; };
 		A4A7A4FDE9FD6A9AB07ED6B9 /* Pods_ReadingList.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1690BF3A2297CCE10C51F06 /* Pods_ReadingList.framework */; };
@@ -809,6 +807,7 @@
 				495C5D081BF1404D00E00C07 /* Sources */,
 				495C5D091BF1404D00E00C07 /* Frameworks */,
 				495C5D0A1BF1404D00E00C07 /* Resources */,
+				1C20B7BD21037F4A0068F3D1 /* Copy Debug Bundle Resources */,
 				0D8E30982D54AB308B0C0608 /* [CP] Embed Pods Frameworks */,
 				1C20B78F21034D4B0068F3D1 /* Embed Frameworks */,
 				4937A1491EA0323200A3B0D1 /* Run Fabric script */,
@@ -932,10 +931,8 @@
 				1C6EA18A1FFAEB6C0013EE5C /* BookDetails.storyboard in Resources */,
 				4942348F1E70AFA100CEEB4C /* ScanBarcode.storyboard in Resources */,
 				1CDD53601FA7B38000A5ED66 /* Assets.xcassets in Resources */,
-				49F3863C1E86D64A001F5D75 /* example_barcode.jpg in Resources */,
 				1CC4C04B2058765F0034A218 /* BookTable.storyboard in Resources */,
 				1C4765931FB8F012005F6AEC /* GoogleService-Info.plist in Resources */,
-				494D65D51EB906CB00764DC1 /* examplebooks.csv in Resources */,
 				1C5CDF2620113A3900A757A3 /* AddToList.storyboard in Resources */,
 				1CFCD0182013BC4C00D27301 /* Organise.storyboard in Resources */,
 				49043DB71EBF1E0B00E74370 /* SearchBooksEmptyDataset.xib in Resources */,
@@ -988,6 +985,20 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ReadingList/Pods-ReadingList-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		1C20B7BD21037F4A0068F3D1 /* Copy Debug Bundle Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Debug Bundle Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ \"${CONFIGURATION}\" == \"Debug\" ]; then\n    cp -r \"${PROJECT_DIR}/ReadingList/TestData/examplebooks.csv\" \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app\"\n    cp -r \"${PROJECT_DIR}/ReadingList/TestData/example_barcode.jpg\" \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app\"\nfi";
 		};
 		1C3E4E48208CF89400E66CCC /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
