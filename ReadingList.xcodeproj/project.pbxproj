@@ -89,7 +89,6 @@
 		1CFCD0182013BC4C00D27301 /* Organise.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1CFCD0172013BC4C00D27301 /* Organise.storyboard */; };
 		1CFCD01A2013BD6A00D27301 /* Organise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CFCD0192013BD6A00D27301 /* Organise.swift */; };
 		1CFCD01C20150DAA00D27301 /* ListBookTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CFCD01B20150DAA00D27301 /* ListBookTable.swift */; };
-		405E3608E9B00FF13A86DE4D /* Pods_ReadingList_ReadingList_UITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B81008C39ED366477C5FF2C2 /* Pods_ReadingList_ReadingList_UITests.framework */; };
 		49043DB71EBF1E0B00E74370 /* SearchBooksEmptyDataset.xib in Resources */ = {isa = PBXBuildFile; fileRef = 49043DB61EBF1E0B00E74370 /* SearchBooksEmptyDataset.xib */; };
 		49160F5F1E809DFE00168FD0 /* BookCSVImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49160F5E1E809DFE00168FD0 /* BookCSVImporter.swift */; };
 		491F14621C02228C0052B355 /* ScanBarcode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491F14611C02228C0052B355 /* ScanBarcode.swift */; };
@@ -109,17 +108,15 @@
 		49B2CEF81F39A4D300C6B45D /* SortOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49B2CEF71F39A4D300C6B45D /* SortOrder.swift */; };
 		49B8D8E11F499A5300D4C4EF /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49B8D8E01F499A5300D4C4EF /* UserSettings.swift */; };
 		49B8D8E71F4A08E700D4C4EF /* BookMapping_6_7.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49B8D8E61F4A08E700D4C4EF /* BookMapping_6_7.swift */; };
+		49BFCB36B6CFE39C7650E36E /* Pods_ReadingList_ReadingList_Screenshots.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AC9E8D9740D46A61613F1978 /* Pods_ReadingList_ReadingList_Screenshots.framework */; };
 		49CEB80A1E9D8C06003FD859 /* Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49CEB8091E9D8C06003FD859 /* Debug.swift */; };
 		49D0FAAB1F2B284000101EE1 /* UserEngagement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49D0FAAA1F2B284000101EE1 /* UserEngagement.swift */; };
 		49E95D0F1DD7D9EC00C215F8 /* GoogleBooks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49E95D0E1DD7D9EC00C215F8 /* GoogleBooks.swift */; };
 		49F3863C1E86D64A001F5D75 /* example_barcode.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 49F3863B1E86D64A001F5D75 /* example_barcode.jpg */; };
 		49FE2ED51D6F675D00F04239 /* SearchOnline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49FE2ED41D6F675D00F04239 /* SearchOnline.swift */; };
-		5F2B615993966C0AAF915BDE /* Pods_ReadingList_UnitTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CC61B0F9F5338953D41FBFCB /* Pods_ReadingList_UnitTests.framework */; };
-		61CA68ED5D549DECEF1B68DE /* Pods_ReadingList_Screenshots.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93C4D01B89CCDA3635126735 /* Pods_ReadingList_Screenshots.framework */; };
+		5C63D0CE89C952098308228E /* Pods_ReadingList_ReadingList_UnitTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97AF0989D558270BAE1D6865 /* Pods_ReadingList_ReadingList_UnitTests.framework */; };
 		A4A7A4FDE9FD6A9AB07ED6B9 /* Pods_ReadingList.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1690BF3A2297CCE10C51F06 /* Pods_ReadingList.framework */; };
-		BA9CF0A6B3EB77C4444A3224 /* Pods_ReadingList_ReadingList_Screenshots.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AC9E8D9740D46A61613F1978 /* Pods_ReadingList_ReadingList_Screenshots.framework */; };
-		F4319044D8C5E12E90DF3DC7 /* Pods_ReadingList_ReadingList_UnitTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97AF0989D558270BAE1D6865 /* Pods_ReadingList_ReadingList_UnitTests.framework */; };
-		FC0896D68663499C5FBF62E8 /* Pods_ReadingList_UITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F865478F3A4FF343823876A /* Pods_ReadingList_UITests.framework */; };
+		F41F8F5B0059198446DB917B /* Pods_ReadingList_ReadingList_UITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B81008C39ED366477C5FF2C2 /* Pods_ReadingList_ReadingList_UITests.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -326,8 +323,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5F2B615993966C0AAF915BDE /* Pods_ReadingList_UnitTests.framework in Frameworks */,
-				F4319044D8C5E12E90DF3DC7 /* Pods_ReadingList_ReadingList_UnitTests.framework in Frameworks */,
+				5C63D0CE89C952098308228E /* Pods_ReadingList_ReadingList_UnitTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -335,8 +331,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FC0896D68663499C5FBF62E8 /* Pods_ReadingList_UITests.framework in Frameworks */,
-				405E3608E9B00FF13A86DE4D /* Pods_ReadingList_ReadingList_UITests.framework in Frameworks */,
+				F41F8F5B0059198446DB917B /* Pods_ReadingList_ReadingList_UITests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -344,8 +339,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				61CA68ED5D549DECEF1B68DE /* Pods_ReadingList_Screenshots.framework in Frameworks */,
-				BA9CF0A6B3EB77C4444A3224 /* Pods_ReadingList_ReadingList_Screenshots.framework in Frameworks */,
+				49BFCB36B6CFE39C7650E36E /* Pods_ReadingList_ReadingList_Screenshots.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1684,7 +1678,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = NO;
+				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
