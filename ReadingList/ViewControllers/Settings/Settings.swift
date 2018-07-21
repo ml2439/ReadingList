@@ -1,5 +1,6 @@
 import UIKit
 import MessageUI
+import ReadingList_Foundation
 
 class Settings: UITableViewController {
 

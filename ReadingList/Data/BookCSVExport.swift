@@ -1,4 +1,5 @@
 import Foundation
+import ReadingList_Foundation
 
 class BookCSVExport {
     static func build(withLists lists: [String]) -> CsvExport<Book> {

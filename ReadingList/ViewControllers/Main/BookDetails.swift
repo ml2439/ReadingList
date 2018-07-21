@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 import CoreData
+import ReadingList_Foundation
 
 class BookDetails: UIViewController, UIScrollViewDelegate {
     @IBOutlet private weak var cover: UIImageView!
@@ -220,7 +221,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         let updatedObjects = userInfo[NSUpdatedObjectsKey] as? NSSet ?? NSSet()
         let createdObjects = userInfo[NSInsertedObjectsKey] as? NSSet ?? NSSet()
         func setContainsRelatedList(_ set: NSSet) -> Bool {
-            return set.compactMap { $0 as? List }.any { $0.books.contains(book) }
+            return set.compactMap { $0 as? List }.contains { $0.books.contains(book) }
         }
 
         if updatedObjects.contains(book) || setContainsRelatedList(deletedObjects) || setContainsRelatedList(updatedObjects) || setContainsRelatedList(createdObjects) {
@@ -322,7 +323,7 @@ extension BookDetails: ThemeableViewController {
         view.backgroundColor = theme.viewBackgroundColor
         navigationController?.view.backgroundColor = theme.viewBackgroundColor
         navigationController?.navigationBar.initialise(withTheme: theme)
-        (navigationItem.titleView as! UINavigationBarLabel).initialise(fromTheme: theme)
+        (navigationItem.titleView as! UINavigationBarLabel).textColor = theme.titleTextColor
         titleAuthorHeadings[0].textColor = theme.titleTextColor
         titleAuthorHeadings[1].textColor = theme.subtitleTextColor
 

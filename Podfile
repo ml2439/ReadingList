@@ -1,5 +1,5 @@
 # Uncomment the next line to define a global platform for your project
-platform :ios, '10.0'
+platform :ios, '10.3'
 
 target 'ReadingList' do
   use_frameworks!
@@ -20,12 +20,12 @@ target 'ReadingList' do
   pod 'SwiftLint'
 
   target 'ReadingList_UITests' do
-    inherit! :complete
+    inherit! :search_paths
     # Pods for testing
   end
 
   target 'ReadingList_UnitTests' do
-    inherit! :complete
+    inherit! :search_paths
     # Pods for testing
   end
 

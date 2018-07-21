@@ -1,10 +1,10 @@
 import Foundation
 
-struct ISBN13 {
+public struct ISBN13 {
 
-    let string: String
+    public let string: String
 
-    init?(_ input: String?) {
+    public init?(_ input: String?) {
         guard let input = input else { return nil }
 
         let sanitisedInput = input.replacingOccurrences(of: "-", with: "")
@@ -21,13 +21,13 @@ struct ISBN13 {
         // ten (10), so, in all cases, a single check digit results.
         var sum = 0
         for (index, character) in sanitisedInput.enumerated() {
-            guard let thisDigit = Int(string: String(character)) else {
+            guard let thisDigit = Int(String(character)) else {
                 return nil
             }
             if index == 12 {
                 let remainer = sum % 10
                 let checkDigit = remainer == 0 ? 0 : 10 - remainer
-                if Int(string: String(character)) != checkDigit {
+                if Int(String(character)) != checkDigit {
                     return nil
                 }
             } else {

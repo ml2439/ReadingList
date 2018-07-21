@@ -1,8 +1,8 @@
 import Foundation
 import UIKit
 
-class UINavigationBarLabel: UILabel {
-    convenience init() {
+public class UINavigationBarLabel: UILabel {
+    public convenience init() {
         self.init(frame: CGRect.zero)
         backgroundColor = .clear
         textAlignment = .center
@@ -10,12 +10,8 @@ class UINavigationBarLabel: UILabel {
         font = UIFont.boldSystemFont(ofSize: 16)
     }
 
-    func setTitle(_ title: String?) {
+    public func setTitle(_ title: String?) {
         text = title
         sizeToFit()
-    }
-
-    func initialise(fromTheme theme: Theme) {
-        textColor = theme.titleTextColor
     }
 }

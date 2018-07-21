@@ -2,6 +2,7 @@ import Foundation
 import UIKit
 import CoreData
 import DZNEmptyDataSet
+import ReadingList_Foundation
 
 class Organise: UITableViewController {
 

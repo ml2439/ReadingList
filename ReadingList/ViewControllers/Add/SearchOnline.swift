@@ -4,6 +4,7 @@ import SVProgressHUD
 import Crashlytics
 import CoreData
 import Promises
+import ReadingList_Foundation
 
 class SearchOnline: UITableViewController {
 

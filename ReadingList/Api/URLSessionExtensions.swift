@@ -2,7 +2,7 @@ import Foundation
 import Promises
 import SwiftyJSON
 
-extension URLSession {
+public extension URLSession {
 
     /**
      Starts and returns a Data task
@@ -38,6 +38,6 @@ extension URLSession {
     }
 }
 
-enum HTTPError: Error {
+public enum HTTPError: Error {
     case noJsonData
 }
