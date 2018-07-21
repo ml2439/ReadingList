@@ -1,7 +1,6 @@
 excluded:
   - Pods
   - ReadingList_Screenshots/SnapshotHelper.swift
-  - Foundation/EurekaPickerRow
 identifier_name:
   excluded:
     - id
