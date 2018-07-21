@@ -58,9 +58,9 @@ class GoogleBooksTests: XCTestCase {
             // Everything must have an ID, a title and at least 1 author
             XCTAssertNotNil(result.id)
             XCTAssertNotNil(result.title)
-            XCTAssert(!result.title.isEmptyOrWhitespace)
+            XCTAssert(!result.title.trimmingCharacters(in: CharacterSet.whitespaces).isEmpty)
             XCTAssertGreaterThan(result.authors.count, 0)
-            XCTAssert(!result.authors.any { $0.isEmptyOrWhitespace })
+            XCTAssert(!result.authors.contains { $0.trimmingCharacters(in: CharacterSet.whitespaces).isEmpty })
         }
 
         let resultsWithIsbn = parseResult.filter { $0.isbn13 != nil }.count
