@@ -63,6 +63,7 @@ private class BookCSVParserDelegate: CSVParserDelegate {
         book.title = title
         book.setAuthors(createAuthors(authors))
         book.googleBooksId = values["Google Books ID"]
+        book.manualBookId = book.googleBooksId == nil ? UUID().uuidString : nil
         book.isbn13 = ISBN13(values["ISBN-13"])?.string
         book.pageCount = Int(values["Page Count"])?.nsNumber
         book.currentPage = Int(values["Current Page"])?.nsNumber
