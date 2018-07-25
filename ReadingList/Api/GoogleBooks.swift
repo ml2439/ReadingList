@@ -1,6 +1,7 @@
 import Foundation
 import SwiftyJSON
 import Promises
+import ReadingList_Foundation
 
 class GoogleBooks {
 
@@ -208,7 +209,7 @@ class FetchResult {
     let id: String
     var title: String
     var authors = [String]()
-    var isbn13: String?
+    var isbn13: ISBN13?
     var description: String?
     var subjects = [String]()
     var languageCode: String?
@@ -223,7 +224,7 @@ class FetchResult {
         id = searchResult.id
         title = searchResult.title
         authors = searchResult.authors
-        isbn13 = searchResult.isbn13
+        isbn13 = ISBN13(searchResult.isbn13)
     }
 }
 

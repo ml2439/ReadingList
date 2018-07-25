@@ -82,7 +82,7 @@ extension Book {
         coverImage = fetchResult.coverImage
         pageCount = fetchResult.pageCount?.nsNumber
         publicationDate = fetchResult.publishedDate
-        isbn13 = fetchResult.isbn13
+        isbn13 = fetchResult.isbn13?.string
         languageCode = fetchResult.languageCode
     }
 
