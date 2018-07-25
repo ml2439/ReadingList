@@ -1,10 +1,8 @@
 # Uncomment the next line to define a global platform for your project
 platform :ios, '10.3'
+use_frameworks!
 
-target 'ReadingList' do
-  use_frameworks!
-
-  # Pods for books
+def all_pods
   pod 'DZNEmptyDataSet', '~> 1.8'
   pod 'SwiftyJSON', '~> 4.0'
   pod 'Eureka', :git => 'https://github.com/xmartlabs/Eureka.git', :commit => 'ec14ae696e' # to use customised UIPickerViews
@@ -18,20 +16,17 @@ target 'ReadingList' do
   pod 'Crashlytics'
   pod 'Firebase/Core'
   pod 'SwiftLint'
+end
 
-  target 'ReadingList_UITests' do
-    inherit! :complete
-    # Pods for testing
-  end
-
-  target 'ReadingList_UnitTests' do
-    inherit! :complete
-    # Pods for testing
-  end
-
-  target 'ReadingList_Screenshots' do
-    inherit! :complete
-    # Pods for testing
-  end
-
+target 'ReadingList' do
+  all_pods
+end
+target 'ReadingList_UITests' do
+  all_pods
+end
+target 'ReadingList_UnitTests' do
+  all_pods
+end
+target 'ReadingList_Screenshots' do
+  all_pods
 end
