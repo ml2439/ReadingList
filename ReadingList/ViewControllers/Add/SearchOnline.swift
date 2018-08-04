@@ -143,7 +143,10 @@ class SearchOnline: UITableViewController {
 
     func performSearch(searchText: String) {
         // Don't bother searching for empty text
-        guard !searchText.isEmptyOrWhitespace else { emptyDatasetView.setEmptyDatasetReason(.noSearch); return }
+        guard !searchText.isEmptyOrWhitespace else {
+            displaySearchResults(nil)
+            return
+        }
 
         SVProgressHUD.show(withStatus: "Searching...")
         feedbackGenerator.prepare()
@@ -156,15 +159,20 @@ class SearchOnline: UITableViewController {
             .then(on: .main, displaySearchResults)
     }
 
-    func displaySearchResults(_ results: [SearchResult]) {
-        if results.isEmpty {
-            feedbackGenerator.notificationOccurred(.warning)
-            emptyDatasetView.setEmptyDatasetReason(.noResults)
+    /// - Parameter results: Provide nil to indicate that a search was not performed
+    func displaySearchResults(_ results: [SearchResult]?) {
+        if let results = results {
+            if results.isEmpty {
+                feedbackGenerator.notificationOccurred(.warning)
+                emptyDatasetView.setEmptyDatasetReason(.noResults)
+            } else {
+                feedbackGenerator.notificationOccurred(.success)
+            }
         } else {
-            feedbackGenerator.notificationOccurred(.success)
+            emptyDatasetView.setEmptyDatasetReason(.noSearch)
         }
 
-        tableItems = results
+        tableItems = results ?? []
         tableView.backgroundView = tableItems.isEmpty ? emptyDatasetView : nil
         tableView.reloadData()
 
@@ -275,7 +283,7 @@ extension SearchOnline: UISearchBarDelegate {
 
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if searchText.isEmpty {
-            displaySearchResults([SearchResult]())
+            displaySearchResults(nil)
         }
     }
 }
