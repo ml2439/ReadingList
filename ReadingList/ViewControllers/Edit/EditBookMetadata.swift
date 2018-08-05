@@ -4,6 +4,7 @@ import ImageRow
 import UIKit
 import CoreData
 import SVProgressHUD
+import ReadingList_Foundation
 
 class EditBookMetadata: FormViewController {
 
@@ -61,11 +62,13 @@ class EditBookMetadata: FormViewController {
             +++ AuthorSection(book: book, navigationController: navigationController!)
 
             +++ Section(header: "Additional Information", footer: "")
-            <<< TextRow(isbnRowKey) {
+            <<< IntRow(isbnRowKey) {
                 $0.title = "ISBN"
-                $0.value = book.isbn13
-                $0.disabled = Condition(booleanLiteral: true)
-                $0.hidden = Condition(booleanLiteral: isAddingNewBook || book.isbn13 == nil)
+                $0.value = Int(book.isbn13)
+                $0.formatter = nil
+                $0.onChange {
+                    book.isbn13 = $0.value?.string
+                }
             }
             <<< IntRow {
                 $0.title = "Page Count"
