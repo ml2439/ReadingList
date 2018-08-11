@@ -20,7 +20,10 @@ public class ExpandableLabel: UIView {
     }
 
     @IBInspectable public var text: String? {
-        didSet { label.text = text }
+        didSet {
+            label.text = text
+            layoutIfNeeded()
+        }
     }
 
     @IBInspectable public var color: UIColor = .black {
@@ -46,7 +49,7 @@ public class ExpandableLabel: UIView {
         }
     }
 
-    private var shouldTruncateLongDescriptions = true
+    private var labelIsExpanded = false
 
     private func setup() {
         super.awakeFromNib()
@@ -79,11 +82,10 @@ public class ExpandableLabel: UIView {
         gradientView.isOpaque = true
 
         invalidateIntrinsicContentSize()
-        layoutIfNeeded()
 
         addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(seeMoreTapped)))
     }
-    
+
     func setupGradient() {
         let opaque = gradientColor.withAlphaComponent(1.0)
         let clear = gradientColor.withAlphaComponent(0.0)
@@ -97,12 +99,13 @@ public class ExpandableLabel: UIView {
         super.layoutIfNeeded()
         gradient.frame = gradientView.bounds
 
-        if !shouldTruncateLongDescriptions {
+        if labelIsExpanded {
             gradientView.isHidden = true
             seeMore.isHidden = true
-        } else if gradientView.isHidden == label.isTruncated {
-            gradientView.isHidden = false
-            seeMore.isHidden = false
+        } else {
+            let isTruncated = label.isTruncated
+            gradientView.isHidden = !isTruncated
+            seeMore.isHidden = !isTruncated
         }
     }
 
@@ -111,15 +114,10 @@ public class ExpandableLabel: UIView {
     }
 
     @objc private func seeMoreTapped() {
-        guard shouldTruncateLongDescriptions else { return }
+        guard !labelIsExpanded else { return }
 
-        // We cannot just set isHidden to true here, because we cannot be sure whether the relayout will be called before or after
-        // the description label starts reporting isTruncated = false.
-        // Instead, store the knowledge that the button should be hidden here; when layout is called, if the button is disabled it will be hidden.
-        shouldTruncateLongDescriptions = false
         label.numberOfLines = 0
-
-        // Relaying out the parent is sometimes required
+        labelIsExpanded = true
         layoutIfNeeded()
     }
 }

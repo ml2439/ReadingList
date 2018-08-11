@@ -11,7 +11,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
 
     @IBOutlet private var titleAuthorHeadings: [UILabel]!
     @IBOutlet private weak var bookDescription: ExpandableLabel!
-    
+
     @IBOutlet private weak var ratingStarsStackView: UIStackView!
     @IBOutlet private var tableVaules: [UILabel]!
     @IBOutlet private var tableSubHeadings: [UILabel]!
@@ -23,6 +23,8 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     @IBOutlet private weak var listsStack: UIStackView!
     @IBOutlet private weak var listDetailsView: UIView!
     @IBOutlet private weak var noLists: UILabel!
+    @IBOutlet private weak var noNotes: UILabel!
+    @IBOutlet private weak var bookNotes: ExpandableLabel!
 
     var didShowNavigationItemTitle = false
 
@@ -109,13 +111,15 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
                 star.isHidden = index + 1 > rating.intValue
             }
         }
+        bookNotes.text = book.notes
+        bookNotes.isHidden = book.notes == nil
+        noNotes.isHidden = book.notes != nil || book.rating != nil
 
-        setTextOrHideLine(tableVaules[5], book.notes)
-        setTextOrHideLine(tableVaules[6], book.isbn13)
-        setTextOrHideLine(tableVaules[7], book.pageCount?.intValue.string)
-        setTextOrHideLine(tableVaules[8], book.publicationDate?.toPrettyString(short: false))
-        setTextOrHideLine(tableVaules[9], book.subjects.map { $0.name }.sorted().joined(separator: ", ").nilIfWhitespace())
-        setTextOrHideLine(tableVaules[10], book.languageCode == nil ? nil : Language.byIsoCode[book.languageCode!]?.displayName)
+        setTextOrHideLine(tableVaules[5], book.isbn13)
+        setTextOrHideLine(tableVaules[6], book.pageCount?.intValue.string)
+        setTextOrHideLine(tableVaules[7], book.publicationDate?.toPrettyString(short: false))
+        setTextOrHideLine(tableVaules[8], book.subjects.map { $0.name }.sorted().joined(separator: ", ").nilIfWhitespace())
+        setTextOrHideLine(tableVaules[9], book.languageCode == nil ? nil : Language.byIsoCode[book.languageCode!]?.displayName)
 
         // Show or hide the links, depending on whether we have valid URLs. If both links are hidden, the enclosing stack should be too.
         googleBooks.isHidden = book.googleBooksId == nil
@@ -154,6 +158,9 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         if traitCollection.horizontalSizeClass == .regular && traitCollection.verticalSizeClass == .regular {
             titleAuthorHeadings.forEach { $0.scaleFontBy(1.3) }
         }
+
+        bookDescription.font = UIFont.gillSans(forTextStyle: .subheadline)
+        bookNotes.font = UIFont.gillSans(forTextStyle: .subheadline)
 
         // Watch for changes in the managed object context
         NotificationCenter.default.addObserver(self, selector: #selector(saveOccurred(_:)), name: NSNotification.Name.NSManagedObjectContextDidSave, object: PersistentStoreManager.container.viewContext)
@@ -302,8 +309,9 @@ extension BookDetails: ThemeableViewController {
         titleAuthorHeadings[1].textColor = theme.subtitleTextColor
 
         bookDescription.color = theme.subtitleTextColor
-        bookDescription.font = UIFont.gillSans(forTextStyle: .subheadline)
         bookDescription.gradientColor = theme.viewBackgroundColor
+        bookNotes.color = theme.subtitleTextColor
+        bookNotes.gradientColor = theme.viewBackgroundColor
 
         titles.forEach { $0.textColor = theme.titleTextColor }
         tableSubHeadings.forEach { $0.textColor = theme.subtitleTextColor }
