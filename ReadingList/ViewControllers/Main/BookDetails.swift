@@ -10,8 +10,8 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     @IBOutlet private var titles: [UILabel]!
 
     @IBOutlet private var titleAuthorHeadings: [UILabel]!
-    @IBOutlet private weak var bookDescription: UILabel!
-
+    @IBOutlet private weak var bookDescription: ExpandableLabel!
+    
     @IBOutlet private weak var ratingStarsStackView: UIStackView!
     @IBOutlet private var tableVaules: [UILabel]!
     @IBOutlet private var tableSubHeadings: [UILabel]!
@@ -25,7 +25,6 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     @IBOutlet private weak var noLists: UILabel!
 
     var didShowNavigationItemTitle = false
-    var shouldTruncateLongDescriptions = true
 
     var parentSplitViewController: UISplitViewController? {
         return appDelegate.tabBarController.selectedSplitViewController
@@ -64,8 +63,8 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         }
 
         bookDescription.text = book.bookDescription
-        bookDescription.superview!.isHidden = book.bookDescription == nil
-        bookDescription.superview!.nextSibling!.isHidden = book.bookDescription == nil
+        bookDescription.isHidden = book.bookDescription == nil
+        bookDescription.nextSibling!.isHidden = book.bookDescription == nil
 
         func setTextOrHideLine(_ label: UILabel, _ string: String?) {
             // The detail labels are within a view, within a horizonal-stack
@@ -142,9 +141,6 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         // shown without any books being selected.
         setViewEnabled(false)
 
-        // Listen for taps on the book description, which should remove any truncation
-        bookDescription.superview!.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(seeMoreDescription)))
-
         // Listen for taps on the Google and Amazon labels, which should act like buttons and open the relevant webpage
         amazon.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(amazonButtonPressed)))
         googleBooks.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(googleBooksButtonPressed)))
@@ -168,18 +164,9 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
-        // If we should not be truncating long descriptions, hide the siblings of the description label (which are the see more
-        // button and a spacer view)
-        let truncationViews = bookDescription.siblings
-        guard shouldTruncateLongDescriptions else { truncationViews.forEach { $0.isHidden = true }; return }
-
         // In "regular" size classed devices, the description text can be less truncated
         if traitCollection.horizontalSizeClass == .regular && traitCollection.verticalSizeClass == .regular {
             bookDescription.numberOfLines = 8
-        }
-
-        if truncationViews.first!.isHidden == bookDescription.isTruncated {
-            truncationViews.forEach { $0.isHidden = !bookDescription.isTruncated }
         }
     }
 
@@ -191,19 +178,6 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     @IBAction private func editBookPressed(_ sender: Any) {
         guard let book = book else { return }
         present(EditBookMetadata(bookToEditID: book.objectID).inThemedNavController(), animated: true)
-    }
-
-    @objc func seeMoreDescription() {
-        guard shouldTruncateLongDescriptions else { return }
-
-        // We cannot just set isHidden to true here, because we cannot be sure whether the relayout will be called before or after
-        // the description label starts reporting isTruncated = false.
-        // Instead, store the knowledge that the button should be hidden here; when layout is called, if the button is disabled it will be hidden.
-        shouldTruncateLongDescriptions = false
-        bookDescription.numberOfLines = 0
-
-        // Relaying out the parent stackview is required to adjust the space between the separator and the description label
-        (bookDescription.superview!.superview as! UIStackView).layoutIfNeeded()
     }
 
     @objc func saveOccurred(_ notification: Notification) {
@@ -327,8 +301,9 @@ extension BookDetails: ThemeableViewController {
         titleAuthorHeadings[0].textColor = theme.titleTextColor
         titleAuthorHeadings[1].textColor = theme.subtitleTextColor
 
-        bookDescription.textColor = theme.subtitleTextColor
-        bookDescription.siblings.compactMap { $0 as? HorizontalGradientView }.first!.color = theme.viewBackgroundColor
+        bookDescription.color = theme.subtitleTextColor
+        bookDescription.font = UIFont.gillSans(forTextStyle: .subheadline)
+        bookDescription.gradientColor = theme.viewBackgroundColor
 
         titles.forEach { $0.textColor = theme.titleTextColor }
         tableSubHeadings.forEach { $0.textColor = theme.subtitleTextColor }

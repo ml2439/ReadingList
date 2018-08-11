@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="n9u-1T-KRj">
-    <device id="ipad9_7" orientation="portrait">
+    <device id="retina5_5" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
-        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -17,23 +16,23 @@
             <objects>
                 <viewController storyboardIdentifier="BookDetails" extendedLayoutIncludesOpaqueBars="YES" id="7uR-tE-cQd" customClass="BookDetails" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8ct-o2-5pB">
-                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bTb-kP-Eva">
-                                <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qHr-le-Bwg" userLabel="Content View">
-                                        <rect key="frame" x="0.0" y="0.0" width="768" height="986"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="910.33333333333337"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="12" translatesAutoresizingMaskIntoConstraints="NO" id="bhg-kb-dQx" userLabel="Main Stack View">
-                                                <rect key="frame" x="24" y="24" width="720" height="938"/>
+                                                <rect key="frame" x="18" y="18" width="378" height="874.33333333333337"/>
                                                 <subviews>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yhn-N0-bz4" userLabel="CoverAndTitle">
-                                                        <rect key="frame" x="0.0" y="0.0" width="720" height="180"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="378" height="120"/>
                                                         <subviews>
                                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="CoverPlaceholder" translatesAutoresizingMaskIntoConstraints="NO" id="3DD-HK-Aea">
-                                                                <rect key="frame" x="0.0" y="0.0" width="120" height="180"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="80" height="120"/>
                                                                 <constraints>
                                                                     <constraint firstAttribute="width" secondItem="3DD-HK-Aea" secondAttribute="height" multiplier="2:3" id="Kpn-kd-B7x"/>
                                                                     <constraint firstAttribute="width" constant="80" id="vTU-uk-RYr">
@@ -50,10 +49,10 @@
                                                                 </userDefinedRuntimeAttributes>
                                                             </imageView>
                                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="Idg-j1-qMK" userLabel="TitleAndAuthorStack">
-                                                                <rect key="frame" x="140" y="0.0" width="580" height="42"/>
+                                                                <rect key="frame" x="92" y="0.0" width="286" height="42.333333333333336"/>
                                                                 <subviews>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="La Belle Sauvage" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KUv-Qb-XLN" userLabel="BookTitle">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="131" height="21.5"/>
+                                                                        <rect key="frame" x="0.0" y="0.0" width="131" height="21.666666666666668"/>
                                                                         <fontDescription key="fontDescription" name="GillSans-SemiBold" family="Gill Sans" pointSize="18"/>
                                                                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                                         <nil key="highlightedColor"/>
@@ -62,7 +61,7 @@
                                                                         </userDefinedRuntimeAttributes>
                                                                     </label>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Phillip Pullman" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Uvq-kK-HxE" userLabel="Author">
-                                                                        <rect key="frame" x="0.0" y="23.5" width="93" height="18.5"/>
+                                                                        <rect key="frame" x="0.0" y="23.666666666666664" width="93" height="18.666666666666664"/>
                                                                         <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="16"/>
                                                                         <color key="textColor" red="0.40784313725490196" green="0.40784313725490196" blue="0.40784313725490196" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                         <nil key="highlightedColor"/>
@@ -73,7 +72,7 @@
                                                                 </subviews>
                                                             </stackView>
                                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xYF-nW-8G6" customClass="StartFinishButton" customModule="Reading_List" customModuleProvider="target">
-                                                                <rect key="frame" x="140" y="54" width="64" height="25"/>
+                                                                <rect key="frame" x="92" y="54.333333333333329" width="64" height="25"/>
                                                                 <constraints>
                                                                     <constraint firstAttribute="width" constant="64" id="Zow-Kx-gcs"/>
                                                                     <constraint firstAttribute="height" constant="25" id="p26-Nk-Wkh"/>
@@ -99,70 +98,41 @@
                                                         </constraints>
                                                     </view>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="XWs-sG-Z2Z" userLabel="Separator">
-                                                        <rect key="frame" x="0.0" y="192" width="720" height="1"/>
+                                                        <rect key="frame" x="0.0" y="132" width="378" height="1"/>
                                                         <color key="backgroundColor" white="0.75" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="1" id="ngb-Bt-YD4" customClass="HairlineConstraint" customModule="ReadingList_Foundation"/>
                                                         </constraints>
                                                     </view>
-                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iOb-q7-6nl" userLabel="Description">
-                                                        <rect key="frame" x="0.0" y="205" width="720" height="61"/>
-                                                        <subviews>
-                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3dC-9n-NG8">
-                                                                <rect key="frame" x="0.0" y="0.0" width="720" height="61"/>
-                                                                <constraints>
-                                                                    <constraint firstAttribute="height" constant="61" placeholder="YES" id="DkW-1d-yPY"/>
-                                                                </constraints>
-                                                                <string key="text">The setting is a world dominated by the Magisterium, also commonly called "the Church", an international theocracy which actively suppresses heresy. In this world, humans' souls naturally exist outside of their bodies in the form of sentient "dæmons", in animal form which accompany, aid, and comfort their humans. Children's dæmons can freely and instantaneously change their appearance into that of any real or mythical creature. When puberty is reached, their dæmons settle into one permanent form.</string>
-                                                                <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
-                                                                <color key="textColor" red="0.33333333333333331" green="0.3333333432674408" blue="0.3333333432674408" alpha="1" colorSpace="calibratedRGB"/>
-                                                                <nil key="highlightedColor"/>
-                                                                <userDefinedRuntimeAttributes>
-                                                                    <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Subhead"/>
-                                                                </userDefinedRuntimeAttributes>
-                                                            </label>
-                                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JlZ-qd-SWF" customClass="HorizontalGradientView" customModule="ReadingList_Foundation">
-                                                                <rect key="frame" x="621" y="46" width="99" height="15"/>
-                                                            </view>
-                                                            <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="see more" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DXS-Q8-6wT">
-                                                                <rect key="frame" x="670.5" y="46" width="49.5" height="15"/>
-                                                                <gestureRecognizers/>
-                                                                <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
-                                                                <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                                <nil key="highlightedColor"/>
-                                                                <userDefinedRuntimeAttributes>
-                                                                    <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Subhead"/>
-                                                                </userDefinedRuntimeAttributes>
-                                                            </label>
-                                                        </subviews>
-                                                        <constraints>
-                                                            <constraint firstAttribute="bottom" secondItem="JlZ-qd-SWF" secondAttribute="bottom" id="Bg0-gx-8LE"/>
-                                                            <constraint firstItem="DXS-Q8-6wT" firstAttribute="bottom" secondItem="3dC-9n-NG8" secondAttribute="bottom" id="ENk-aS-hCb"/>
-                                                            <constraint firstAttribute="bottom" secondItem="3dC-9n-NG8" secondAttribute="bottom" id="Pxz-BK-QEA"/>
-                                                            <constraint firstAttribute="trailing" secondItem="JlZ-qd-SWF" secondAttribute="trailing" id="Vki-9K-QTT"/>
-                                                            <constraint firstAttribute="trailing" secondItem="3dC-9n-NG8" secondAttribute="trailing" id="dCH-SO-02P"/>
-                                                            <constraint firstItem="3dC-9n-NG8" firstAttribute="top" secondItem="iOb-q7-6nl" secondAttribute="top" id="g3Q-YO-kZd"/>
-                                                            <constraint firstItem="JlZ-qd-SWF" firstAttribute="width" secondItem="DXS-Q8-6wT" secondAttribute="width" multiplier="2" id="jBh-Ze-DLO"/>
-                                                            <constraint firstItem="DXS-Q8-6wT" firstAttribute="trailing" secondItem="3dC-9n-NG8" secondAttribute="trailing" id="oGJ-aO-dMT"/>
-                                                            <constraint firstItem="DXS-Q8-6wT" firstAttribute="height" secondItem="JlZ-qd-SWF" secondAttribute="height" id="pGx-kV-WLw"/>
-                                                            <constraint firstItem="3dC-9n-NG8" firstAttribute="leading" secondItem="iOb-q7-6nl" secondAttribute="leading" id="w2n-hN-3hx"/>
-                                                        </constraints>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="G5L-nH-fCB" customClass="ExpandableLabel" customModule="ReadingList_Foundation">
+                                                        <rect key="frame" x="0.0" y="145" width="378" height="57.333333333333343"/>
+                                                        <userDefinedRuntimeAttributes>
+                                                            <userDefinedRuntimeAttribute type="string" keyPath="text">
+                                                                <string key="value">The setting is a world dominated by the Magisterium, also commonly called "the Church", an international theocracy which actively suppresses heresy. In this world, humans' souls naturally exist outside of their bodies in the form of sentient "dæmons", in animal form which accompany, aid, and comfort their humans. Children's dæmons can freely and instantaneously change their appearance into that of any real or mythical creature. When puberty is reached, their dæmons settle into one permanent form.</string>
+                                                            </userDefinedRuntimeAttribute>
+                                                            <userDefinedRuntimeAttribute type="number" keyPath="numberOfLines">
+                                                                <integer key="value" value="4"/>
+                                                            </userDefinedRuntimeAttribute>
+                                                            <userDefinedRuntimeAttribute type="color" keyPath="color">
+                                                                <color key="value" red="0.33333333329999998" green="0.33333334329999997" blue="0.33333334329999997" alpha="1" colorSpace="calibratedRGB"/>
+                                                            </userDefinedRuntimeAttribute>
+                                                        </userDefinedRuntimeAttributes>
                                                     </view>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VZx-ih-0hi" userLabel="Separator">
-                                                        <rect key="frame" x="0.0" y="278" width="720" height="1"/>
+                                                        <rect key="frame" x="0.0" y="214.33333333333334" width="378" height="1"/>
                                                         <color key="backgroundColor" white="0.75" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="1" id="YQZ-Es-BVd" customClass="HairlineConstraint" customModule="ReadingList_Foundation"/>
                                                         </constraints>
                                                     </view>
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="dK7-Qi-TIg">
-                                                        <rect key="frame" x="0.0" y="291" width="720" height="190"/>
+                                                        <rect key="frame" x="0.0" y="227.33333333333337" width="378" height="190"/>
                                                         <subviews>
                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KgY-4c-9LI" userLabel="ReadingLogTitle">
-                                                                <rect key="frame" x="0.0" y="0.0" width="720" height="30"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="378" height="30"/>
                                                                 <subviews>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Reading Log" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6j3-21-YIa">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="79" height="30"/>
+                                                                        <rect key="frame" x="0.0" y="0.0" width="78.666666666666671" height="30"/>
                                                                         <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="16"/>
                                                                         <nil key="textColor"/>
                                                                         <nil key="highlightedColor"/>
@@ -171,7 +141,7 @@
                                                                         </userDefinedRuntimeAttributes>
                                                                     </label>
                                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="k1X-lP-rpw">
-                                                                        <rect key="frame" x="672" y="0.0" width="48" height="30"/>
+                                                                        <rect key="frame" x="330" y="0.0" width="48" height="30"/>
                                                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                                         <state key="normal" title="Update"/>
                                                                         <connections>
@@ -190,16 +160,16 @@
                                                                 </constraints>
                                                             </view>
                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gtb-h2-j2n">
-                                                                <rect key="frame" x="0.0" y="38" width="720" height="152"/>
+                                                                <rect key="frame" x="0.0" y="37.999999999999972" width="378" height="152"/>
                                                                 <subviews>
                                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="e0v-jg-F1e">
-                                                                        <rect key="frame" x="32" y="0.0" width="688" height="152"/>
+                                                                        <rect key="frame" x="16" y="0.0" width="362" height="152"/>
                                                                         <subviews>
                                                                             <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="4lf-x5-qUh">
-                                                                                <rect key="frame" x="0.0" y="0.0" width="688" height="20"/>
+                                                                                <rect key="frame" x="0.0" y="0.0" width="362" height="20"/>
                                                                                 <subviews>
                                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Read State" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hoh-H9-zYK">
-                                                                                        <rect key="frame" x="0.0" y="0.0" width="56.5" height="15"/>
+                                                                                        <rect key="frame" x="0.0" y="0.0" width="56.333333333333336" height="15"/>
                                                                                         <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
                                                                                         <color key="textColor" red="0.33333333329999998" green="0.33333333329999998" blue="0.33333333329999998" alpha="1" colorSpace="calibratedRGB"/>
                                                                                         <nil key="highlightedColor"/>
@@ -208,10 +178,10 @@
                                                                                         </userDefinedRuntimeAttributes>
                                                                                     </label>
                                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Vle-Xn-aLf">
-                                                                                        <rect key="frame" x="72.5" y="0.0" width="615.5" height="20"/>
+                                                                                        <rect key="frame" x="72.333333333333343" y="0.0" width="289.66666666666663" height="20"/>
                                                                                         <subviews>
                                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Finished" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="P98-Ye-gdn">
-                                                                                                <rect key="frame" x="0.0" y="0.0" width="615.5" height="20"/>
+                                                                                                <rect key="frame" x="0.0" y="0.0" width="289.66666666666669" height="20"/>
                                                                                                 <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
                                                                                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                                                                 <nil key="highlightedColor"/>
@@ -233,10 +203,10 @@
                                                                                 </constraints>
                                                                             </stackView>
                                                                             <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="TkP-k5-Du8">
-                                                                                <rect key="frame" x="0.0" y="22" width="688" height="20"/>
+                                                                                <rect key="frame" x="0.0" y="22" width="362" height="20"/>
                                                                                 <subviews>
                                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Started" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XDm-mx-SgA">
-                                                                                        <rect key="frame" x="0.0" y="0.0" width="56.5" height="15"/>
+                                                                                        <rect key="frame" x="0.0" y="0.0" width="56.333333333333336" height="15"/>
                                                                                         <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
                                                                                         <color key="textColor" red="0.33333333329999998" green="0.33333333329999998" blue="0.33333333329999998" alpha="1" colorSpace="calibratedRGB"/>
                                                                                         <nil key="highlightedColor"/>
@@ -245,10 +215,10 @@
                                                                                         </userDefinedRuntimeAttributes>
                                                                                     </label>
                                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HRm-Pj-Aeh">
-                                                                                        <rect key="frame" x="72.5" y="0.0" width="615.5" height="20"/>
+                                                                                        <rect key="frame" x="72.333333333333343" y="0.0" width="289.66666666666663" height="20"/>
                                                                                         <subviews>
                                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="19 December 2017" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6aZ-t0-uXB">
-                                                                                                <rect key="frame" x="0.0" y="0.0" width="615.5" height="20"/>
+                                                                                                <rect key="frame" x="0.0" y="0.0" width="289.66666666666669" height="20"/>
                                                                                                 <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
                                                                                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                                                                 <nil key="highlightedColor"/>
@@ -270,10 +240,10 @@
                                                                                 </constraints>
                                                                             </stackView>
                                                                             <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="5vF-J0-AYM">
-                                                                                <rect key="frame" x="0.0" y="44" width="688" height="20"/>
+                                                                                <rect key="frame" x="0.0" y="44" width="362" height="20"/>
                                                                                 <subviews>
                                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Finished" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GZy-9B-WfN">
-                                                                                        <rect key="frame" x="0.0" y="0.0" width="56.5" height="15"/>
+                                                                                        <rect key="frame" x="0.0" y="0.0" width="56.333333333333336" height="15"/>
                                                                                         <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
                                                                                         <color key="textColor" red="0.33333333329999998" green="0.33333333329999998" blue="0.33333333329999998" alpha="1" colorSpace="calibratedRGB"/>
                                                                                         <nil key="highlightedColor"/>
@@ -282,10 +252,10 @@
                                                                                         </userDefinedRuntimeAttributes>
                                                                                     </label>
                                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aks-wW-Y9j">
-                                                                                        <rect key="frame" x="72.5" y="0.0" width="615.5" height="20"/>
+                                                                                        <rect key="frame" x="72.333333333333343" y="0.0" width="289.66666666666663" height="20"/>
                                                                                         <subviews>
                                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2 January 2018" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UR9-Oj-q8e">
-                                                                                                <rect key="frame" x="0.0" y="0.0" width="615.5" height="20"/>
+                                                                                                <rect key="frame" x="0.0" y="0.0" width="289.66666666666669" height="20"/>
                                                                                                 <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
                                                                                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                                                                 <nil key="highlightedColor"/>
@@ -307,10 +277,10 @@
                                                                                 </constraints>
                                                                             </stackView>
                                                                             <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="V8L-zn-Idd">
-                                                                                <rect key="frame" x="0.0" y="66" width="688" height="20"/>
+                                                                                <rect key="frame" x="0.0" y="66" width="362" height="20"/>
                                                                                 <subviews>
                                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Read Time" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cah-EW-cNv">
-                                                                                        <rect key="frame" x="0.0" y="0.0" width="56.5" height="15"/>
+                                                                                        <rect key="frame" x="0.0" y="0.0" width="56.333333333333336" height="15"/>
                                                                                         <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
                                                                                         <color key="textColor" red="0.33333333329999998" green="0.33333333329999998" blue="0.33333333329999998" alpha="1" colorSpace="calibratedRGB"/>
                                                                                         <nil key="highlightedColor"/>
@@ -319,10 +289,10 @@
                                                                                         </userDefinedRuntimeAttributes>
                                                                                     </label>
                                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PM7-bq-oyd">
-                                                                                        <rect key="frame" x="72.5" y="0.0" width="615.5" height="20"/>
+                                                                                        <rect key="frame" x="72.333333333333343" y="0.0" width="289.66666666666663" height="20"/>
                                                                                         <subviews>
                                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="32 days" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mtG-OO-VDn">
-                                                                                                <rect key="frame" x="0.0" y="0.0" width="615.5" height="20"/>
+                                                                                                <rect key="frame" x="0.0" y="0.0" width="289.66666666666669" height="20"/>
                                                                                                 <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
                                                                                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                                                                 <nil key="highlightedColor"/>
@@ -344,10 +314,10 @@
                                                                                 </constraints>
                                                                             </stackView>
                                                                             <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="nSe-W3-8DO">
-                                                                                <rect key="frame" x="0.0" y="88" width="688" height="20"/>
+                                                                                <rect key="frame" x="0.0" y="88" width="362" height="20"/>
                                                                                 <subviews>
                                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Page" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QwM-ug-90X">
-                                                                                        <rect key="frame" x="0.0" y="0.0" width="56.5" height="15"/>
+                                                                                        <rect key="frame" x="0.0" y="0.0" width="56.333333333333336" height="15"/>
                                                                                         <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
                                                                                         <color key="textColor" red="0.33333333329999998" green="0.33333333329999998" blue="0.33333333329999998" alpha="1" colorSpace="calibratedRGB"/>
                                                                                         <nil key="highlightedColor"/>
@@ -356,10 +326,10 @@
                                                                                         </userDefinedRuntimeAttributes>
                                                                                     </label>
                                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="63S-Ui-SPZ">
-                                                                                        <rect key="frame" x="72.5" y="0.0" width="615.5" height="20"/>
+                                                                                        <rect key="frame" x="72.333333333333343" y="0.0" width="289.66666666666663" height="20"/>
                                                                                         <subviews>
                                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="27" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CiQ-Tc-gbA">
-                                                                                                <rect key="frame" x="0.0" y="0.0" width="615.5" height="20"/>
+                                                                                                <rect key="frame" x="0.0" y="0.0" width="289.66666666666669" height="20"/>
                                                                                                 <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
                                                                                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                                                                 <nil key="highlightedColor"/>
@@ -381,10 +351,10 @@
                                                                                 </constraints>
                                                                             </stackView>
                                                                             <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="q4B-ih-pXA">
-                                                                                <rect key="frame" x="0.0" y="110" width="688" height="20"/>
+                                                                                <rect key="frame" x="0.0" y="110" width="362" height="20"/>
                                                                                 <subviews>
                                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Rating" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="arj-ZO-irS">
-                                                                                        <rect key="frame" x="0.0" y="0.0" width="56.5" height="15"/>
+                                                                                        <rect key="frame" x="0.0" y="0.0" width="56.333333333333336" height="15"/>
                                                                                         <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
                                                                                         <color key="textColor" red="0.33333333329999998" green="0.33333333329999998" blue="0.33333333329999998" alpha="1" colorSpace="calibratedRGB"/>
                                                                                         <nil key="highlightedColor"/>
@@ -393,7 +363,7 @@
                                                                                         </userDefinedRuntimeAttributes>
                                                                                     </label>
                                                                                     <stackView opaque="NO" contentMode="scaleToFill" alignment="bottom" translatesAutoresizingMaskIntoConstraints="NO" id="wCA-VX-u81" userLabel="RatingStarsStackView">
-                                                                                        <rect key="frame" x="72.5" y="0.0" width="80" height="16"/>
+                                                                                        <rect key="frame" x="72.333333333333329" y="0.0" width="79.999999999999986" height="16"/>
                                                                                         <subviews>
                                                                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="rating-star-filled" translatesAutoresizingMaskIntoConstraints="NO" id="bxa-ry-U3I" userLabel="star1">
                                                                                                 <rect key="frame" x="0.0" y="0.0" width="16" height="16"/>
@@ -406,13 +376,13 @@
                                                                                                 <rect key="frame" x="16" y="0.0" width="16" height="16"/>
                                                                                             </imageView>
                                                                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="rating-star-filled" translatesAutoresizingMaskIntoConstraints="NO" id="jVD-S4-lWq" userLabel="star3">
-                                                                                                <rect key="frame" x="32" y="0.0" width="16" height="16"/>
+                                                                                                <rect key="frame" x="32.000000000000014" y="0.0" width="16" height="16"/>
                                                                                             </imageView>
                                                                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="rating-star-filled" translatesAutoresizingMaskIntoConstraints="NO" id="DQL-E8-Mrh" userLabel="star4">
-                                                                                                <rect key="frame" x="48" y="0.0" width="16" height="16"/>
+                                                                                                <rect key="frame" x="48.000000000000014" y="0.0" width="16" height="16"/>
                                                                                             </imageView>
                                                                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="rating-star-filled" translatesAutoresizingMaskIntoConstraints="NO" id="HIO-Vx-7QK" userLabel="star5">
-                                                                                                <rect key="frame" x="64" y="0.0" width="16" height="16"/>
+                                                                                                <rect key="frame" x="64.000000000000014" y="0.0" width="16" height="16"/>
                                                                                             </imageView>
                                                                                         </subviews>
                                                                                         <constraints>
@@ -427,7 +397,7 @@
                                                                                         </constraints>
                                                                                     </stackView>
                                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nHe-7h-6G3" userLabel="RatingSpacingView">
-                                                                                        <rect key="frame" x="168.5" y="0.0" width="519.5" height="20"/>
+                                                                                        <rect key="frame" x="168.33333333333337" y="0.0" width="193.66666666666663" height="20"/>
                                                                                     </view>
                                                                                 </subviews>
                                                                                 <constraints>
@@ -435,10 +405,10 @@
                                                                                 </constraints>
                                                                             </stackView>
                                                                             <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="P6K-rY-yTR">
-                                                                                <rect key="frame" x="0.0" y="132" width="688" height="20"/>
+                                                                                <rect key="frame" x="0.0" y="132" width="362" height="20"/>
                                                                                 <subviews>
                                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Notes" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8HH-zh-C9L">
-                                                                                        <rect key="frame" x="0.0" y="0.0" width="56.5" height="15"/>
+                                                                                        <rect key="frame" x="0.0" y="0.0" width="56.333333333333336" height="15"/>
                                                                                         <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
                                                                                         <color key="textColor" red="0.33333333329999998" green="0.33333333329999998" blue="0.33333333329999998" alpha="1" colorSpace="calibratedRGB"/>
                                                                                         <nil key="highlightedColor"/>
@@ -447,10 +417,10 @@
                                                                                         </userDefinedRuntimeAttributes>
                                                                                     </label>
                                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eF0-WB-afL">
-                                                                                        <rect key="frame" x="72.5" y="0.0" width="615.5" height="20"/>
+                                                                                        <rect key="frame" x="72.333333333333343" y="0.0" width="289.66666666666663" height="20"/>
                                                                                         <subviews>
                                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="If you have any notes, they will be shown here, even if they are more than 1 lines long..." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1lx-c8-Jjp">
-                                                                                                <rect key="frame" x="0.0" y="0.0" width="615.5" height="20"/>
+                                                                                                <rect key="frame" x="0.0" y="0.0" width="289.66666666666669" height="20"/>
                                                                                                 <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
                                                                                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                                                                 <nil key="highlightedColor"/>
@@ -494,17 +464,17 @@
                                                         </subviews>
                                                     </stackView>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Vo9-bZ-62H" userLabel="Separator">
-                                                        <rect key="frame" x="0.0" y="493" width="720" height="1"/>
+                                                        <rect key="frame" x="0.0" y="429.33333333333331" width="378" height="1"/>
                                                         <color key="backgroundColor" white="0.75" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="1" id="ZtI-Rq-Ofe" customClass="HairlineConstraint" customModule="ReadingList_Foundation"/>
                                                         </constraints>
                                                     </view>
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="bza-Z5-QWk">
-                                                        <rect key="frame" x="0.0" y="506" width="720" height="188"/>
+                                                        <rect key="frame" x="0.0" y="442.33333333333326" width="378" height="188"/>
                                                         <subviews>
                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7hf-Cy-beu" userLabel="OrganiseTitle">
-                                                                <rect key="frame" x="0.0" y="0.0" width="720" height="30"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="378" height="30"/>
                                                                 <subviews>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Book Details" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="l1w-iY-3mz">
                                                                         <rect key="frame" x="0.0" y="0.0" width="84" height="30"/>
@@ -516,7 +486,7 @@
                                                                         </userDefinedRuntimeAttributes>
                                                                     </label>
                                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0uQ-5z-XUr">
-                                                                        <rect key="frame" x="690" y="0.0" width="30" height="30"/>
+                                                                        <rect key="frame" x="348" y="0.0" width="30" height="30"/>
                                                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                                         <state key="normal" title="Edit"/>
                                                                         <connections>
@@ -535,16 +505,16 @@
                                                                 </constraints>
                                                             </view>
                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="46D-I0-I2V">
-                                                                <rect key="frame" x="0.0" y="38" width="720" height="150"/>
+                                                                <rect key="frame" x="0.0" y="38" width="378" height="150"/>
                                                                 <subviews>
                                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="iAd-Xj-pGQ">
-                                                                        <rect key="frame" x="16" y="0.0" width="704" height="150"/>
+                                                                        <rect key="frame" x="16" y="0.0" width="362" height="150"/>
                                                                         <subviews>
                                                                             <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="eeC-fd-cO4">
-                                                                                <rect key="frame" x="0.0" y="0.0" width="704" height="20"/>
+                                                                                <rect key="frame" x="0.0" y="0.0" width="362" height="20"/>
                                                                                 <subviews>
                                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="ISBN" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HIO-ZT-2aY">
-                                                                                        <rect key="frame" x="0.0" y="0.0" width="72.5" height="15"/>
+                                                                                        <rect key="frame" x="0.0" y="0.0" width="56.333333333333336" height="15"/>
                                                                                         <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
                                                                                         <color key="textColor" red="0.33333333329999998" green="0.33333333329999998" blue="0.33333333329999998" alpha="1" colorSpace="calibratedRGB"/>
                                                                                         <nil key="highlightedColor"/>
@@ -553,10 +523,10 @@
                                                                                         </userDefinedRuntimeAttributes>
                                                                                     </label>
                                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="p0y-Zd-LuG">
-                                                                                        <rect key="frame" x="88.5" y="0.0" width="615.5" height="20"/>
+                                                                                        <rect key="frame" x="72.333333333333343" y="0.0" width="289.66666666666663" height="20"/>
                                                                                         <subviews>
                                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="9781476781105" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9xr-Xs-NDK">
-                                                                                                <rect key="frame" x="0.0" y="0.0" width="615.5" height="20"/>
+                                                                                                <rect key="frame" x="0.0" y="0.0" width="289.66666666666669" height="20"/>
                                                                                                 <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
                                                                                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                                                                 <nil key="highlightedColor"/>
@@ -578,10 +548,10 @@
                                                                                 </constraints>
                                                                             </stackView>
                                                                             <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="hmH-PD-tAR">
-                                                                                <rect key="frame" x="0.0" y="22" width="704" height="20"/>
+                                                                                <rect key="frame" x="0.0" y="22.000000000000057" width="362" height="20"/>
                                                                                 <subviews>
                                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Pages" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wgT-jX-mIH">
-                                                                                        <rect key="frame" x="0.0" y="0.0" width="72.5" height="15"/>
+                                                                                        <rect key="frame" x="0.0" y="0.0" width="56.333333333333336" height="15"/>
                                                                                         <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
                                                                                         <color key="textColor" red="0.33333333329999998" green="0.33333333329999998" blue="0.33333333329999998" alpha="1" colorSpace="calibratedRGB"/>
                                                                                         <nil key="highlightedColor"/>
@@ -590,10 +560,10 @@
                                                                                         </userDefinedRuntimeAttributes>
                                                                                     </label>
                                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qMZ-YG-lgd">
-                                                                                        <rect key="frame" x="88.5" y="0.0" width="615.5" height="20"/>
+                                                                                        <rect key="frame" x="72.333333333333343" y="0.0" width="289.66666666666663" height="20"/>
                                                                                         <subviews>
                                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="480" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cXF-BD-6WQ">
-                                                                                                <rect key="frame" x="0.0" y="0.0" width="615.5" height="20"/>
+                                                                                                <rect key="frame" x="0.0" y="0.0" width="289.66666666666669" height="20"/>
                                                                                                 <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
                                                                                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                                                                 <nil key="highlightedColor"/>
@@ -615,10 +585,10 @@
                                                                                 </constraints>
                                                                             </stackView>
                                                                             <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="dv8-c5-g18">
-                                                                                <rect key="frame" x="0.0" y="44" width="704" height="20"/>
+                                                                                <rect key="frame" x="0.0" y="44.000000000000057" width="362" height="20"/>
                                                                                 <subviews>
                                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Published" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5Ob-tP-Vww">
-                                                                                        <rect key="frame" x="0.0" y="0.0" width="72.5" height="15"/>
+                                                                                        <rect key="frame" x="0.0" y="0.0" width="56.333333333333336" height="15"/>
                                                                                         <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
                                                                                         <color key="textColor" red="0.33333333329999998" green="0.33333333329999998" blue="0.33333333329999998" alpha="1" colorSpace="calibratedRGB"/>
                                                                                         <nil key="highlightedColor"/>
@@ -627,10 +597,10 @@
                                                                                         </userDefinedRuntimeAttributes>
                                                                                     </label>
                                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="w9y-V6-uj4">
-                                                                                        <rect key="frame" x="88.5" y="0.0" width="615.5" height="20"/>
+                                                                                        <rect key="frame" x="72.333333333333343" y="0.0" width="289.66666666666663" height="20"/>
                                                                                         <subviews>
                                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2 November 2017" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zoz-3C-YU5">
-                                                                                                <rect key="frame" x="0.0" y="0.0" width="615.5" height="20"/>
+                                                                                                <rect key="frame" x="0.0" y="0.0" width="289.66666666666669" height="20"/>
                                                                                                 <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
                                                                                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                                                                 <nil key="highlightedColor"/>
@@ -652,10 +622,10 @@
                                                                                 </constraints>
                                                                             </stackView>
                                                                             <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="Q6V-Vs-fIy">
-                                                                                <rect key="frame" x="0.0" y="66" width="704" height="20"/>
+                                                                                <rect key="frame" x="0.0" y="66.000000000000057" width="362" height="20"/>
                                                                                 <subviews>
                                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Language" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="R6w-p1-Dhq">
-                                                                                        <rect key="frame" x="0.0" y="0.0" width="72.5" height="15"/>
+                                                                                        <rect key="frame" x="0.0" y="0.0" width="56.333333333333336" height="15"/>
                                                                                         <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
                                                                                         <color key="textColor" red="0.33333333329999998" green="0.33333333329999998" blue="0.33333333329999998" alpha="1" colorSpace="calibratedRGB"/>
                                                                                         <nil key="highlightedColor"/>
@@ -664,10 +634,10 @@
                                                                                         </userDefinedRuntimeAttributes>
                                                                                     </label>
                                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="18F-mj-2lb">
-                                                                                        <rect key="frame" x="88.5" y="0.0" width="615.5" height="20"/>
+                                                                                        <rect key="frame" x="72.333333333333343" y="0.0" width="289.66666666666663" height="20"/>
                                                                                         <subviews>
                                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="English" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oLc-lz-RbE">
-                                                                                                <rect key="frame" x="0.0" y="0.0" width="615.5" height="20"/>
+                                                                                                <rect key="frame" x="0.0" y="0.0" width="289.66666666666669" height="20"/>
                                                                                                 <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
                                                                                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                                                                 <nil key="highlightedColor"/>
@@ -689,10 +659,10 @@
                                                                                 </constraints>
                                                                             </stackView>
                                                                             <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="6ES-NX-Rgl">
-                                                                                <rect key="frame" x="0.0" y="88" width="704" height="20"/>
+                                                                                <rect key="frame" x="0.0" y="88.000000000000057" width="362" height="20"/>
                                                                                 <subviews>
                                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Subjects" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="d0F-Jj-4CA">
-                                                                                        <rect key="frame" x="0.0" y="0.0" width="72.5" height="15"/>
+                                                                                        <rect key="frame" x="0.0" y="0.0" width="56.333333333333336" height="15"/>
                                                                                         <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
                                                                                         <color key="textColor" red="0.33333333329999998" green="0.33333333329999998" blue="0.33333333329999998" alpha="1" colorSpace="calibratedRGB"/>
                                                                                         <nil key="highlightedColor"/>
@@ -701,10 +671,10 @@
                                                                                         </userDefinedRuntimeAttributes>
                                                                                     </label>
                                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fes-hP-75S">
-                                                                                        <rect key="frame" x="88.5" y="0.0" width="615.5" height="20"/>
+                                                                                        <rect key="frame" x="72.333333333333343" y="0.0" width="289.66666666666663" height="20"/>
                                                                                         <subviews>
                                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Fiction, Fantasy &amp; Magic, Action &amp; Adventure, Young Adult" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="i89-sm-QGQ">
-                                                                                                <rect key="frame" x="0.0" y="0.0" width="615.5" height="20"/>
+                                                                                                <rect key="frame" x="0.0" y="0.0" width="289.66666666666669" height="20"/>
                                                                                                 <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
                                                                                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                                                                 <nil key="highlightedColor"/>
@@ -726,10 +696,10 @@
                                                                                 </constraints>
                                                                             </stackView>
                                                                             <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="Wsg-wK-pbA">
-                                                                                <rect key="frame" x="0.0" y="110" width="704" height="40"/>
+                                                                                <rect key="frame" x="0.0" y="110.00000000000006" width="362" height="40"/>
                                                                                 <subviews>
                                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Online" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ogo-6q-uuN">
-                                                                                        <rect key="frame" x="0.0" y="0.0" width="72.5" height="15"/>
+                                                                                        <rect key="frame" x="0.0" y="0.0" width="56.333333333333336" height="15"/>
                                                                                         <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
                                                                                         <color key="textColor" red="0.33333333329999998" green="0.33333333329999998" blue="0.33333333329999998" alpha="1" colorSpace="calibratedRGB"/>
                                                                                         <nil key="highlightedColor"/>
@@ -738,10 +708,10 @@
                                                                                         </userDefinedRuntimeAttributes>
                                                                                     </label>
                                                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="ghC-oq-svx">
-                                                                                        <rect key="frame" x="88.5" y="0.0" width="615.5" height="34"/>
+                                                                                        <rect key="frame" x="72.333333333333343" y="0.0" width="289.66666666666663" height="34"/>
                                                                                         <subviews>
                                                                                             <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Google Books" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NOF-Yd-fv3">
-                                                                                                <rect key="frame" x="0.0" y="0.0" width="615.5" height="15"/>
+                                                                                                <rect key="frame" x="0.0" y="0.0" width="289.66666666666669" height="15"/>
                                                                                                 <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
                                                                                                 <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                                                 <nil key="highlightedColor"/>
@@ -750,7 +720,7 @@
                                                                                                 </userDefinedRuntimeAttributes>
                                                                                             </label>
                                                                                             <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Amazon" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kFh-Vj-XIY">
-                                                                                                <rect key="frame" x="0.0" y="19" width="615.5" height="15"/>
+                                                                                                <rect key="frame" x="0.0" y="19" width="289.66666666666669" height="15"/>
                                                                                                 <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
                                                                                                 <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                                                 <nil key="highlightedColor"/>
@@ -781,20 +751,20 @@
                                                         </subviews>
                                                     </stackView>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ldU-QI-O4q" userLabel="Separator">
-                                                        <rect key="frame" x="0.0" y="706" width="720" height="1"/>
+                                                        <rect key="frame" x="0.0" y="642.33333333333337" width="378" height="1"/>
                                                         <color key="backgroundColor" white="0.75" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="1" id="BtD-V8-1bx" customClass="HairlineConstraint" customModule="ReadingList_Foundation"/>
                                                         </constraints>
                                                     </view>
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="2Jl-qN-QRH">
-                                                        <rect key="frame" x="0.0" y="719" width="720" height="219"/>
+                                                        <rect key="frame" x="0.0" y="655.33333333333337" width="378" height="219"/>
                                                         <subviews>
                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vmf-Me-0Kl" userLabel="OrganiseTitle">
-                                                                <rect key="frame" x="0.0" y="0.0" width="720" height="30"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="378" height="30"/>
                                                                 <subviews>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Organise" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="N1v-kb-kYE">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="58.5" height="30"/>
+                                                                        <rect key="frame" x="0.0" y="0.0" width="58.666666666666664" height="30"/>
                                                                         <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="16"/>
                                                                         <nil key="textColor"/>
                                                                         <nil key="highlightedColor"/>
@@ -803,7 +773,7 @@
                                                                         </userDefinedRuntimeAttributes>
                                                                     </label>
                                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5eR-3P-EAn">
-                                                                        <rect key="frame" x="650" y="0.0" width="70" height="30"/>
+                                                                        <rect key="frame" x="308" y="0.0" width="70" height="30"/>
                                                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                                         <state key="normal" title="Add to List"/>
                                                                         <connections>
@@ -822,7 +792,7 @@
                                                                 </constraints>
                                                             </view>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Not Added To Any Lists" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DsS-u3-Ynr">
-                                                                <rect key="frame" x="0.0" y="38" width="720" height="15"/>
+                                                                <rect key="frame" x="0.0" y="38" width="378" height="15"/>
                                                                 <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
                                                                 <color key="textColor" red="0.33333333329999998" green="0.33333333329999998" blue="0.33333333329999998" alpha="1" colorSpace="calibratedRGB"/>
                                                                 <nil key="highlightedColor"/>
@@ -831,16 +801,16 @@
                                                                 </userDefinedRuntimeAttributes>
                                                             </label>
                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Nrx-DT-QDi">
-                                                                <rect key="frame" x="0.0" y="61" width="720" height="158"/>
+                                                                <rect key="frame" x="0.0" y="61" width="378" height="158"/>
                                                                 <subviews>
                                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="CrF-bJ-izg">
-                                                                        <rect key="frame" x="16" y="0.0" width="704" height="158"/>
+                                                                        <rect key="frame" x="16" y="0.0" width="362" height="158"/>
                                                                         <subviews>
                                                                             <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="aA6-z1-jXi">
-                                                                                <rect key="frame" x="0.0" y="0.0" width="704" height="158"/>
+                                                                                <rect key="frame" x="0.0" y="0.0" width="362" height="158"/>
                                                                                 <subviews>
                                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Lists" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BdG-SU-Xfn">
-                                                                                        <rect key="frame" x="0.0" y="0.0" width="72.5" height="15"/>
+                                                                                        <rect key="frame" x="0.0" y="0.0" width="56.333333333333336" height="15"/>
                                                                                         <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="13"/>
                                                                                         <color key="textColor" red="0.33333333329999998" green="0.33333333329999998" blue="0.33333333329999998" alpha="1" colorSpace="calibratedRGB"/>
                                                                                         <nil key="highlightedColor"/>
@@ -849,7 +819,7 @@
                                                                                         </userDefinedRuntimeAttributes>
                                                                                     </label>
                                                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="cqY-si-z1C">
-                                                                                        <rect key="frame" x="88.5" y="0.0" width="615.5" height="50"/>
+                                                                                        <rect key="frame" x="72.333333333333343" y="0.0" width="289.66666666666663" height="50"/>
                                                                                     </stackView>
                                                                                 </subviews>
                                                                             </stackView>
@@ -924,7 +894,7 @@
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="amazon" destination="kFh-Vj-XIY" id="bjc-vs-P9G"/>
-                        <outlet property="bookDescription" destination="3dC-9n-NG8" id="Dh4-fp-OAy"/>
+                        <outlet property="bookDescription" destination="G5L-nH-fCB" id="Q0p-9Z-1Ob"/>
                         <outlet property="changeReadStateButton" destination="xYF-nW-8G6" id="yN3-e9-bhf"/>
                         <outlet property="cover" destination="3DD-HK-Aea" id="2gC-KM-MtG"/>
                         <outlet property="googleBooks" destination="NOF-Yd-fv3" id="AFe-29-WxD"/>
@@ -979,7 +949,7 @@
             <objects>
                 <navigationController id="n9u-1T-KRj" customClass="ThemedNavigationController" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="7qb-2f-sZb">
-                        <rect key="frame" x="0.0" y="20" width="768" height="44"/>
+                        <rect key="frame" x="0.0" y="20" width="414" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
