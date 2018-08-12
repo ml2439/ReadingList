@@ -38,7 +38,11 @@ public class ExpandableLabel: UIView {
     }
 
     @IBInspectable public var numberOfLines: Int = 4 {
-        didSet { label.numberOfLines = numberOfLines }
+        didSet {
+            if !labelIsExpanded {
+                label.numberOfLines = numberOfLines
+            }
+        }
     }
 
     public var font: UIFont {
