@@ -65,17 +65,10 @@ public class ExpandableLabel: UIView {
         addSubview(gradientView)
         addSubview(seeMore)
 
-        func pin(_ view: UIView, to other: UIView, multiplier: CGFloat = 1.0, attributes: NSLayoutAttribute...) {
-            for attribute in attributes {
-                NSLayoutConstraint(item: view, attribute: attribute, relatedBy: .equal, toItem: other,
-                                   attribute: attribute, multiplier: multiplier, constant: 0.0).isActive = true
-            }
-        }
-
-        pin(label, to: self, attributes: .leading, .trailing, .top, .bottom)
-        pin(seeMore, to: self, attributes: .trailing, .bottom)
-        pin(gradientView, to: seeMore, attributes: .trailing, .bottom, .height)
-        pin(gradientView, to: seeMore, multiplier: 2.0, attributes: .width)
+        label.pin(to: self, attributes: .leading, .trailing, .top, .bottom)
+        seeMore.pin(to: self, attributes: .trailing, .bottom)
+        gradientView.pin(to: seeMore, attributes: .trailing, .bottom, .height)
+        gradientView.pin(to: seeMore, multiplier: 2.0, attributes: .width)
 
         setupGradient()
         gradientView.layer.insertSublayer(gradient, at: 0)

@@ -45,6 +45,19 @@ public extension UIView {
             view.removeFromSuperview()
         }
     }
+
+    func pin(to other: UIView, multiplier: CGFloat = 1.0, attributes: NSLayoutAttribute...) {
+        for attribute in attributes {
+            NSLayoutConstraint(item: self, attribute: attribute, relatedBy: .equal, toItem: other,
+                               attribute: attribute, multiplier: multiplier, constant: 0.0).isActive = true
+        }
+    }
+
+    func fix(attribute: NSLayoutAttribute, to constant: CGFloat) {
+        NSLayoutConstraint(item: self, attribute: attribute, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute,
+                           multiplier: 1.0, constant: constant).isActive = true
+
+    }
 }
 
 public extension UIStoryboard {
