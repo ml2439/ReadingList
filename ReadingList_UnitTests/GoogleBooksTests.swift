@@ -25,7 +25,7 @@ class GoogleBooksTests: XCTestCase {
         XCTAssertEqual(book.authors.count, parseResult.authors.count)
         XCTAssertEqual(book.subjects.map { $0.name }, parseResult.subjects)
         XCTAssertEqual(book.pageCount?.intValue, parseResult.pageCount)
-        XCTAssertEqual(book.isbn13, parseResult.isbn13)
+        XCTAssertEqual(book.isbn13, parseResult.isbn13?.string)
         XCTAssertEqual(book.bookDescription, parseResult.description)
     }
 
@@ -39,7 +39,7 @@ class GoogleBooksTests: XCTestCase {
         XCTAssertEqual("Fiction", parseResult.subjects[0])
         XCTAssertEqual("Satire", parseResult.subjects[1])
         XCTAssertEqual(304, parseResult.pageCount)
-        XCTAssertEqual("9781786070166", parseResult.isbn13)
+        XCTAssertEqual("9781786070166", parseResult.isbn13?.string)
         XCTAssertNotNil(parseResult.description)
 
         let book = Book(context: testContainer.viewContext, readState: .toRead)
