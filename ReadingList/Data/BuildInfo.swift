@@ -40,7 +40,7 @@ extension BuildInfo.BuildType {
     var userFacingDescription: String {
         switch BuildInfo.appConfiguration {
         case .appStore: return "v\(BuildInfo.appVersion)"
-        case .testFlight: return "v\(BuildInfo.appVersion) beta\(BuildInfo.appBuildNumber)"
+        case .testFlight: return "v\(BuildInfo.appVersion) beta \(BuildInfo.appBuildNumber)"
         case .debug: return "v\(BuildInfo.appVersion) debug"
         }
     }
