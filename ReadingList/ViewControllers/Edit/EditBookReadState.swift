@@ -37,7 +37,7 @@ class EditBookReadState: FormViewController {
         let finishedReadingKey = "finishedReading"
         let currentPageKey = "currentPage"
 
-        form +++ Section(header: "Current State", footer: "")
+        form +++ Section(header: "Reading Log", footer: "")
             <<< SegmentedRow<BookReadState>(readStateKey) {
                 $0.options = [.toRead, .reading, .finished]
                 $0.value = book.readState
@@ -63,18 +63,15 @@ class EditBookReadState: FormViewController {
                     }
                 }
             }
-
-            +++ Section(header: "Reading Log", footer: "") {
-                $0.hidden = Condition.function([readStateKey]) { [unowned self] _ in
-                    self.book.readState == .toRead
-                }
-            }
             <<< DateRow(startedReadingKey) {
                 $0.title = "Started"
                 //$0.maximumDate = Date.startOfToday()
                 $0.value = book.startedReading ?? now
                 $0.onChange { [unowned self] cell in
                     self.book.startedReading = cell.value
+                }
+                $0.hidden = Condition.function([readStateKey]) { [unowned self] _ in
+                    self.book.readState == .toRead
                 }
             }
             <<< DateRow(finishedReadingKey) {
@@ -96,24 +93,6 @@ class EditBookReadState: FormViewController {
                 }
                 $0.onChange { [unowned self] cell in
                     self.book.currentPage = cell.value?.nsNumber
-                }
-            }
-            <<< StarRatingRow { [unowned self] in
-                $0.value = self.book.rating?.intValue
-                $0.onChange { [unowned self] in
-                    self.book.rating = $0.value == nil ? nil : NSNumber(value: $0.value!)
-                }
-            }
-
-            +++ Section(header: "Notes", footer: "")
-            <<< TextAreaRow {
-                $0.placeholder = "Add your personal notes here..."
-                $0.value = book.notes
-                $0.cellSetup { [unowned self] cell, _ in
-                    cell.height = { (self.view.frame.height / 3) - 10 }
-                }
-                $0.onChange { [unowned self] cell in
-                    self.book.notes = cell.value
                 }
             }
 

@@ -60,6 +60,7 @@
 		1C87F5BA1FAE4AF500E44043 /* General.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C87F5B91FAE4AF500E44043 /* General.swift */; };
 		1C87F5BC1FAE582A00E44043 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C87F5BB1FAE582A00E44043 /* Data.swift */; };
 		1CAE41BB204597EB002AF7DF /* SearchBooksEmptyDataSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CAE41BA204597EB002AF7DF /* SearchBooksEmptyDataSet.swift */; };
+		1CB9ECA5212087C1008816C0 /* EditBookNotes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB9ECA4212087C1008816C0 /* EditBookNotes.swift */; };
 		1CC18FA51FA4AC02000FB7E5 /* SettingsHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1CC18FA41FA4AC02000FB7E5 /* SettingsHeader.xib */; };
 		1CC440C6204FDC0B00906120 /* BookMapping_10_11.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC440C5204FDC0B00906120 /* BookMapping_10_11.swift */; };
 		1CC440C82050822400906120 /* GoogleBooksTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC440C72050822400906120 /* GoogleBooksTests.swift */; };
@@ -215,6 +216,7 @@
 		1C87F5B91FAE4AF500E44043 /* General.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = General.swift; sourceTree = "<group>"; };
 		1C87F5BB1FAE582A00E44043 /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
 		1CAE41BA204597EB002AF7DF /* SearchBooksEmptyDataSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBooksEmptyDataSet.swift; sourceTree = "<group>"; };
+		1CB9ECA4212087C1008816C0 /* EditBookNotes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditBookNotes.swift; sourceTree = "<group>"; };
 		1CC18FA41FA4AC02000FB7E5 /* SettingsHeader.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SettingsHeader.xib; sourceTree = "<group>"; };
 		1CC440C2204FDBA200906120 /* books_11.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = books_11.xcdatamodel; sourceTree = "<group>"; };
 		1CC440C5204FDC0B00906120 /* BookMapping_10_11.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookMapping_10_11.swift; sourceTree = "<group>"; };
@@ -540,6 +542,7 @@
 			children = (
 				1C39544D2030A4F0007ACCB1 /* EditBookMetadata.swift */,
 				1C66927A20343D63001ED046 /* EditBookReadState.swift */,
+				1CB9ECA4212087C1008816C0 /* EditBookNotes.swift */,
 			);
 			path = Edit;
 			sourceTree = "<group>";
@@ -1324,6 +1327,7 @@
 				1C59932520F5313D00260D12 /* BookMapping_11_12.swift in Sources */,
 				1C87F5B81FAE4A5200E44043 /* About.swift in Sources */,
 				49E95D0F1DD7D9EC00C215F8 /* GoogleBooks.swift in Sources */,
+				1CB9ECA5212087C1008816C0 /* EditBookNotes.swift in Sources */,
 				49D0FAAB1F2B284000101EE1 /* UserEngagement.swift in Sources */,
 				49B8D8E71F4A08E700D4C4EF /* BookMapping_6_7.swift in Sources */,
 				499470681DB40D22008CB06E /* TabBarController.swift in Sources */,

@@ -105,14 +105,15 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
 
         setTextOrHideLine(tableVaules[4], pageNumberText)
 
-        ratingStarsStackView.superview!.isHidden = book.rating == nil
+        ratingStarsStackView.superview!.superview!.superview!.isHidden = book.rating == nil
         if let rating = book.rating {
             for (index, star) in ratingStarsStackView.arrangedSubviews[...4].enumerated() {
                 star.isHidden = index + 1 > rating.intValue
             }
         }
-        bookNotes.text = book.notes
+
         bookNotes.isHidden = book.notes == nil
+        bookNotes.text = book.notes
         noNotes.isHidden = book.notes != nil || book.rating != nil
 
         setTextOrHideLine(tableVaules[5], book.isbn13)
@@ -185,6 +186,11 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     @IBAction private func editBookPressed(_ sender: Any) {
         guard let book = book else { return }
         present(EditBookMetadata(bookToEditID: book.objectID).inThemedNavController(), animated: true)
+    }
+
+    @IBAction private func updateNotesPressed(_ sender: Any) {
+        guard let book = book else { return }
+        present(EditBookNotes(existingBookID: book.objectID).inThemedNavController(), animated: true)
     }
 
     @objc func saveOccurred(_ notification: Notification) {
