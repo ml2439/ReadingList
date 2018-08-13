@@ -35,7 +35,6 @@
 		1C20B7B92103699A0068F3D1 /* BorderedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C20B7B1210369990068F3D1 /* BorderedButton.swift */; };
 		1C20B7BA2103699A0068F3D1 /* TableHeaderSearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C20B7B22103699A0068F3D1 /* TableHeaderSearchBar.swift */; };
 		1C20B7BB2103699A0068F3D1 /* TextBoxAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C20B7B32103699A0068F3D1 /* TextBoxAlertController.swift */; };
-		1C20B7BC2103699A0068F3D1 /* HorizontalGradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C20B7B42103699A0068F3D1 /* HorizontalGradientView.swift */; };
 		1C22D4A6202BBDC0004264B4 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C22D4A5202BBDC0004264B4 /* StoreKit.framework */; };
 		1C39544A202F948B007ACCB1 /* Subject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C395449202F948B007ACCB1 /* Subject.swift */; };
 		1C39544E2030A4F0007ACCB1 /* EditBookMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C39544D2030A4F0007ACCB1 /* EditBookMetadata.swift */; };
@@ -182,7 +181,6 @@
 		1C20B7B1210369990068F3D1 /* BorderedButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BorderedButton.swift; path = ReadingList_Foundation/UI/BorderedButton.swift; sourceTree = SOURCE_ROOT; };
 		1C20B7B22103699A0068F3D1 /* TableHeaderSearchBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TableHeaderSearchBar.swift; path = ReadingList_Foundation/UI/TableHeaderSearchBar.swift; sourceTree = SOURCE_ROOT; };
 		1C20B7B32103699A0068F3D1 /* TextBoxAlertController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TextBoxAlertController.swift; path = ReadingList_Foundation/UI/TextBoxAlertController.swift; sourceTree = SOURCE_ROOT; };
-		1C20B7B42103699A0068F3D1 /* HorizontalGradientView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HorizontalGradientView.swift; path = ReadingList_Foundation/UI/HorizontalGradientView.swift; sourceTree = SOURCE_ROOT; };
 		1C22D4A5202BBDC0004264B4 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		1C395447202F7966007ACCB1 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		1C395449202F948B007ACCB1 /* Subject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subject.swift; sourceTree = "<group>"; };
@@ -509,7 +507,6 @@
 				1C3BFE6C211A462400CE77EC /* ExpandableLabel.swift */,
 				1C20B7B1210369990068F3D1 /* BorderedButton.swift */,
 				1C20B7AF210369990068F3D1 /* HairlineConstraint.swift */,
-				1C20B7B42103699A0068F3D1 /* HorizontalGradientView.swift */,
 				1C20B7B0210369990068F3D1 /* NavigationBarLabel.swift */,
 				1C20B7AD210369990068F3D1 /* NoCancelSearchBar.swift */,
 				1C20B7B22103699A0068F3D1 /* TableHeaderSearchBar.swift */,
@@ -1251,7 +1248,6 @@
 				1C20B7B52103699A0068F3D1 /* NoCancelSearchBar.swift in Sources */,
 				1C20B7BA2103699A0068F3D1 /* TableHeaderSearchBar.swift in Sources */,
 				1C20B79921035A1E0068F3D1 /* CompoundFetchedResultsController.swift in Sources */,
-				1C20B7BC2103699A0068F3D1 /* HorizontalGradientView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
