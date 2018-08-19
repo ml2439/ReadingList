@@ -1,27 +1,51 @@
 PODS:
   - CHCSVParser (2.1.0)
-  - Crashlytics (3.10.5):
-    - Fabric (~> 1.7.9)
+  - Crashlytics (3.10.7):
+    - Fabric (~> 1.7.11)
   - DZNEmptyDataSet (1.8.1)
   - Eureka (4.2.0)
-  - Fabric (1.7.9)
-  - Firebase/Core (5.4.1):
+  - Fabric (1.7.11)
+  - Firebase/Core (5.6.0):
     - Firebase/CoreOnly
-    - FirebaseAnalytics (= 5.0.1)
-  - Firebase/CoreOnly (5.4.1):
-    - FirebaseCore (= 5.0.6)
-  - FirebaseAnalytics (5.0.1):
-    - FirebaseCore (~> 5.0)
-    - FirebaseInstanceID (~> 3.0)
-    - "GoogleToolboxForMac/NSData+zlib (~> 2.1)"
+    - FirebaseAnalytics (= 5.1.1)
+  - Firebase/CoreOnly (5.6.0):
+    - FirebaseCore (= 5.1.1)
+  - FirebaseAnalytics (5.1.1):
+    - FirebaseCore (~> 5.1)
+    - FirebaseInstanceID (~> 3.2)
+    - GoogleAppMeasurement (~> 5.1)
+    - GoogleUtilities/AppDelegateSwizzler (~> 5.2.0)
+    - GoogleUtilities/MethodSwizzler (~> 5.2.0)
+    - GoogleUtilities/Network (~> 5.2)
+    - "GoogleUtilities/NSData+zlib (~> 5.2)"
     - nanopb (~> 0.3)
-  - FirebaseCore (5.0.6):
-    - "GoogleToolboxForMac/NSData+zlib (~> 2.1)"
-  - FirebaseInstanceID (3.1.1):
-    - FirebaseCore (~> 5.0)
-  - GoogleToolboxForMac/Defines (2.1.4)
-  - "GoogleToolboxForMac/NSData+zlib (2.1.4)":
-    - GoogleToolboxForMac/Defines (= 2.1.4)
+  - FirebaseCore (5.1.1):
+    - GoogleUtilities/Logger (~> 5.2)
+  - FirebaseInstanceID (3.2.1):
+    - FirebaseCore (~> 5.1)
+    - GoogleUtilities/Environment (~> 5.2)
+  - GoogleAppMeasurement (5.1.1):
+    - GoogleUtilities/AppDelegateSwizzler (~> 5.2.0)
+    - GoogleUtilities/MethodSwizzler (~> 5.2.0)
+    - GoogleUtilities/Network (~> 5.2)
+    - "GoogleUtilities/NSData+zlib (~> 5.2)"
+    - nanopb (~> 0.3)
+  - GoogleUtilities/AppDelegateSwizzler (5.2.2):
+    - GoogleUtilities/Environment
+    - GoogleUtilities/Logger
+    - GoogleUtilities/Network
+  - GoogleUtilities/Environment (5.2.2)
+  - GoogleUtilities/Logger (5.2.2):
+    - GoogleUtilities/Environment
+  - GoogleUtilities/MethodSwizzler (5.2.2):
+    - GoogleUtilities/Logger
+  - GoogleUtilities/Network (5.2.2):
+    - GoogleUtilities/Logger
+    - "GoogleUtilities/NSData+zlib"
+    - GoogleUtilities/Reachability
+  - "GoogleUtilities/NSData+zlib (5.2.2)"
+  - GoogleUtilities/Reachability (5.2.2):
+    - GoogleUtilities/Logger
   - ImageRow (3.1.0):
     - Eureka (~> 4.0)
   - nanopb (0.3.8):
@@ -34,7 +58,7 @@ PODS:
     - PromisesObjC (= 1.2.3)
   - SimulatorStatusMagic (2.2)
   - SVProgressHUD (2.2.5)
-  - SwiftLint (0.26.0)
+  - SwiftLint (0.27.0)
   - SwiftyJSON (4.1.0)
   - SwiftyStoreKit (0.13.3)
 
@@ -62,7 +86,8 @@ SPEC REPOS:
     - FirebaseAnalytics
     - FirebaseCore
     - FirebaseInstanceID
-    - GoogleToolboxForMac
+    - GoogleAppMeasurement
+    - GoogleUtilities
     - ImageRow
     - nanopb
     - PromisesObjC
@@ -90,22 +115,23 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   CHCSVParser: 64da26e2b4ddbf7527f7f03120bf91d83d28f354
-  Crashlytics: 7f2e38d302d9da96475b3d64d86fb29e31a542b7
+  Crashlytics: ccaac42660eb9351b9960c0d66106b0bcf99f4fa
   DZNEmptyDataSet: 9525833b9e68ac21c30253e1d3d7076cc828eaa7
   Eureka: 0748c7bbb2560130e43c7bfa83e99c98854a1f42
-  Fabric: a2917d3895e4c1569b9c3170de7320ea1b1e6661
-  Firebase: 355bd535bfdacaa82a7fe8d9784115edefd6fc03
-  FirebaseAnalytics: b3628aea54c50464c32c393fb2ea032566e7ecc2
-  FirebaseCore: 4c28e3b9708ba48a765e76515f913a71596eb5dd
-  FirebaseInstanceID: f3f0657372592ecdfdfe2cac604a5a75758376a6
-  GoogleToolboxForMac: 91c824d21e85b31c2aae9bb011c5027c9b4e738f
+  Fabric: f233c9492b3bbc1f04e3882986740f7988a58edb
+  Firebase: 75ea9e232eefa158c1049028030b8f661a2ccb62
+  FirebaseAnalytics: 993577e91157feb40945abedd6ab346d8a4b6ac8
+  FirebaseCore: cb9ee75e0894def766167c95a4d5a14b1c138269
+  FirebaseInstanceID: ea5af6920d0a4a29b40459d055bebe4a6c1333c4
+  GoogleAppMeasurement: f7507b39b70ad0bd80b3d81518b2f43868974307
+  GoogleUtilities: 06b66f9567769a7958db20a92f0128b2843e49d5
   ImageRow: 1ea483078bfa3d880a7fc76fdfcddfd5f29a9e6b
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
   PromisesObjC: a3a4263d8a9260214267e0b3788d0f83466ad449
   PromisesSwift: f7f45c21986419e85f7c5b645ed8c6a2c10c04b4
   SimulatorStatusMagic: 0389a805fa8bd001e2977c4046730bdbd6642861
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
-  SwiftLint: f6b83e8d95ee1e91e11932d843af4fdcbf3fc764
+  SwiftLint: 3207c1faa2240bf8973b191820a116113cd11073
   SwiftyJSON: c29297daf073d2aa016295d5809cdd68045c39b3
   SwiftyStoreKit: 9ebd15971e28aa2989825fe8bc092eb5f75dd0b2
 
