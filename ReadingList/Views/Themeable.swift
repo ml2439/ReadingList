@@ -347,6 +347,11 @@ extension Theme {
             cell.textField.textColor = self.titleTextColor
             cell.textField.keyboardAppearance = self.keyboardAppearance
         }
+        Int64Row.defaultCellUpdate = { cell, _ in
+            initialiseCell(cell)
+            cell.textField.textColor = self.titleTextColor
+            cell.textField.keyboardAppearance = self.keyboardAppearance
+        }
         TextAreaRow.defaultCellUpdate = { cell, row in
             initialiseCell(cell)
             cell.placeholderLabel?.textColor = self.placeholderTextColor
