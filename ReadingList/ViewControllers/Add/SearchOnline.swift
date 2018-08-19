@@ -175,6 +175,9 @@ class SearchOnline: UITableViewController {
         tableItems = results ?? []
         tableView.backgroundView = tableItems.isEmpty ? emptyDatasetView : nil
         tableView.reloadData()
+        if !tableItems.isEmpty {
+            tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
+        }
 
         // No results should hide the toolbar. Unselecting previously selected results should disable the Add All button
         navigationController!.setToolbarHidden(tableItems.isEmpty, animated: true)
