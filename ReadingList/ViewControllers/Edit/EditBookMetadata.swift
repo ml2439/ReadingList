@@ -62,12 +62,12 @@ class EditBookMetadata: FormViewController {
             +++ AuthorSection(book: book, navigationController: navigationController!)
 
             +++ Section(header: "Additional Information", footer: "")
-            <<< IntRow(isbnRowKey) {
+            <<< Int64Row(isbnRowKey) {
                 $0.title = "ISBN"
-                $0.value = Int(book.isbn13)
+                $0.value = book.isbn13?.int64Value
                 $0.formatter = nil
                 $0.onChange {
-                    book.isbn13 = $0.value?.string
+                    book.isbn13 = $0.value?.nsNumber
                 }
             }
             <<< IntRow {

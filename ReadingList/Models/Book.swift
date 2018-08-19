@@ -8,7 +8,7 @@ class Book: NSManagedObject {
     @NSManaged var startedReading: Date?
     @NSManaged var finishedReading: Date?
 
-    @NSManaged var isbn13: String?
+    @NSManaged var isbn13: NSNumber?
     @NSManaged var googleBooksId: String?
     @NSManaged var manualBookId: String?
 
@@ -47,12 +47,16 @@ class Book: NSManagedObject {
         // The sort manipulation should be in a method which allows setting of dates
         if readState == .toRead && sort == nil {
             let maxSort = Book.maxSort(fromContext: managedObjectContext!) ?? 0
-            self.sort = (maxSort + 1).nsNumber
+            sort = (maxSort + 1).nsNumber
         }
 
-        // Sort is not (yet) supported for non To Read books
+        // Sort is not supported for non To Read books
         if readState != .toRead && sort != nil {
-            self.sort = nil
+            sort = nil
+        }
+        // Current page is not supported for non Reading books
+        if readState != .reading && currentPage != nil {
+            currentPage = nil
         }
     }
 
@@ -82,7 +86,9 @@ extension Book {
         coverImage = fetchResult.coverImage
         pageCount = fetchResult.pageCount?.nsNumber
         publicationDate = fetchResult.publishedDate
-        isbn13 = fetchResult.isbn13?.string
+        if let isbnInt = fetchResult.isbn13?.int {
+            isbn13 = NSNumber(value: isbnInt)
+        }
         languageCode = fetchResult.languageCode
     }
 
@@ -90,7 +96,9 @@ extension Book {
         googleBooksId = searchResult.id
         title = searchResult.title
         populateAuthors(fromStrings: searchResult.authors)
-        isbn13 = searchResult.isbn13
+        if let isbnInt = ISBN13(searchResult.isbn13)?.int {
+            isbn13 = NSNumber(value: isbnInt)
+        }
         self.coverImage = coverImage
     }
 
@@ -158,8 +166,8 @@ extension Book {
     }
 
     @objc func validateIsbn13(_ value: AutoreleasingUnsafeMutablePointer<AnyObject?>) throws {
-        guard let isbn13 = value.pointee as? String else { return }
-        if ISBN13(isbn13) == nil {
+        guard let isbn13 = value.pointee as? Int64 else { return }
+        if !ISBN13.isValid(isbn13) {
             throw BookValidationError.invalidIsbn.NSError()
         }
     }
@@ -182,7 +190,6 @@ extension Book {
     }
 
     func interPropertyValiatation() throws {
-        // FUTURE: Check read state with current page
         switch readState {
         case .toRead:
             if startedReading != nil || finishedReading != nil {
@@ -197,7 +204,9 @@ extension Book {
                 throw BookValidationError.invalidReadDates.NSError()
             }
         }
-
+        if readState != .reading && currentPage != nil {
+            throw BookValidationError.presentCurrentPage.NSError()
+        }
         if googleBooksId == nil && manualBookId == nil {
             throw BookValidationError.missingIdentifier.NSError()
         }
@@ -239,6 +248,7 @@ enum BookValidationError: Int {
     case missingIdentifier = 5
     case conflictingIdentifiers = 6
     case noAuthors = 7
+    case presentCurrentPage = 8
 }
 
 extension BookValidationError {
@@ -251,6 +261,7 @@ extension BookValidationError {
         case .conflictingIdentifiers: return "GoogleBooksId and ManualBooksId cannot both be non nil"
         case .missingIdentifier: return "GoogleBooksId and ManualBooksId cannot both be nil"
         case .noAuthors: return "Authors array must be non-empty"
+        case .presentCurrentPage: return "CurrentPage must be nil when not Currently Reading"
         }
     }
 

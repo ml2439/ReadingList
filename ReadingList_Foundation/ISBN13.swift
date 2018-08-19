@@ -2,39 +2,49 @@ import Foundation
 
 public struct ISBN13 {
 
-    public let string: String
+    public var string: String {
+        return String(int)
+    }
 
-    public init?(_ input: String?) {
-        guard let input = input else { return nil }
+    public var number: NSNumber {
+        return NSNumber(value: int)
+    }
 
-        let sanitisedInput = input.replacingOccurrences(of: "-", with: "")
-        guard sanitisedInput.count == 13, sanitisedInput.hasPrefix("978") || sanitisedInput.hasPrefix("979"),
-            Int64(sanitisedInput) != nil else {
-            return nil
+    public let int: Int64
+
+    public init?(_ value: Int64) {
+        guard ISBN13.isValid(value) else { return nil }
+        int = value
+    }
+
+    public init?(_ string: String?) {
+        guard let sanitisedInput = string?.replacingOccurrences(of: "-", with: ""),
+            let parsedInt = Int64(sanitisedInput) else { return nil }
+
+        self.init(parsedInt)
+    }
+
+    public static func isValid(_ value: Int64) -> Bool {
+        // Early fail if the number is the wrong size
+        if value < 9_780_000_000_000 || value >= 9_800_000_000_000 {
+            return false
         }
 
-        // The calculation of an ISBN-13 check digit begins with the first
-        // 12 digits of the thirteen-digit ISBN (thus excluding the check digit itself).
-        // Each digit, from left to right, is alternately multiplied by 1 or 3,
-        // then those products are summed modulo 10 to give a value ranging from 0 to 9.
-        // Subtracted from 10, that leaves a result from 1 to 10. A zero (0) replaces a
-        // ten (10), so, in all cases, a single check digit results.
-        var sum = 0
-        for (index, character) in sanitisedInput.enumerated() {
-            guard let thisDigit = Int(String(character)) else {
-                return nil
-            }
-            if index == 12 {
-                let remainer = sum % 10
-                let checkDigit = remainer == 0 ? 0 : 10 - remainer
-                if Int(String(character)) != checkDigit {
-                    return nil
-                }
-            } else {
-                sum += (index % 2 == 1 ? 3 : 1) * thisDigit
-            }
+        // The last digit of the number is the check digit.
+        let actualCheckDigit = Int(truncatingIfNeeded: value % 10)
+
+        var digitsToBeProcessed: Int64 = value / 10
+        var computedCheckValue = 0
+        for digitIndex in 1...12 {
+            let thisDigit = Int(truncatingIfNeeded: digitsToBeProcessed % 10)
+            computedCheckValue += (digitIndex % 2 == 0 ? 1 : 3) * thisDigit
+            digitsToBeProcessed /= 10
         }
 
-        string = sanitisedInput
+        computedCheckValue %= 10
+        if computedCheckValue != 0 {
+            computedCheckValue = 10 - computedCheckValue
+        }
+        return computedCheckValue == actualCheckDigit
     }
 }

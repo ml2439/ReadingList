@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1C0C76572122BED900E0B645 /* BookMapping_12_13.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0C76562122BED900E0B645 /* BookMapping_12_13.swift */; };
+		1C0C765A21256BBE00E0B645 /* Int64Row.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0C765921256BBE00E0B645 /* Int64Row.swift */; };
 		1C0DC734204B09610044B377 /* BookCSVExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0DC733204B09610044B377 /* BookCSVExport.swift */; };
 		1C0DC736204B0A230044B377 /* BookReadState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0DC735204B0A230044B377 /* BookReadState.swift */; };
 		1C0DC738204B119E0044B377 /* DebugData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0DC737204B119E0044B377 /* DebugData.swift */; };
@@ -55,6 +57,8 @@
 		1C73B0BB2046973F00E8EAC7 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C73B0BA2046973F00E8EAC7 /* Extensions.swift */; };
 		1C75AEFC2042F38600FB9456 /* books.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1C75AEF62042F38600FB9456 /* books.xcdatamodeld */; };
 		1C75AEFE2042F3A800FB9456 /* BookMapping_8_9.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 1C75AEFD2042F3A800FB9456 /* BookMapping_8_9.xcmappingmodel */; };
+		1C788961212618C0001C35E8 /* BookMapping_12_13.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 1C788960212618C0001C35E8 /* BookMapping_12_13.xcmappingmodel */; };
+		1C78896321262219001C35E8 /* IsbnTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C78896221262219001C35E8 /* IsbnTests.swift */; };
 		1C87F5B81FAE4A5200E44043 /* About.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C87F5B71FAE4A5200E44043 /* About.swift */; };
 		1C87F5BA1FAE4AF500E44043 /* General.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C87F5B91FAE4AF500E44043 /* General.swift */; };
 		1C87F5BC1FAE582A00E44043 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C87F5BB1FAE582A00E44043 /* Data.swift */; };
@@ -165,6 +169,9 @@
 
 /* Begin PBXFileReference section */
 		15D3C05006BE65319088DF2C /* Pods-ReadingList-ReadingList_Screenshots.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReadingList-ReadingList_Screenshots.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ReadingList-ReadingList_Screenshots/Pods-ReadingList-ReadingList_Screenshots.debug.xcconfig"; sourceTree = "<group>"; };
+		1C0C76532121740200E0B645 /* books_13.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = books_13.xcdatamodel; sourceTree = "<group>"; };
+		1C0C76562122BED900E0B645 /* BookMapping_12_13.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookMapping_12_13.swift; sourceTree = "<group>"; };
+		1C0C765921256BBE00E0B645 /* Int64Row.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Int64Row.swift; sourceTree = "<group>"; };
 		1C0DC733204B09610044B377 /* BookCSVExport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookCSVExport.swift; sourceTree = "<group>"; };
 		1C0DC735204B0A230044B377 /* BookReadState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookReadState.swift; sourceTree = "<group>"; };
 		1C0DC737204B119E0044B377 /* DebugData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugData.swift; sourceTree = "<group>"; };
@@ -210,6 +217,8 @@
 		1C75AEFA2042F38600FB9456 /* books_8.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = books_8.xcdatamodel; sourceTree = "<group>"; };
 		1C75AEFB2042F38600FB9456 /* books_7.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = books_7.xcdatamodel; sourceTree = "<group>"; };
 		1C75AEFD2042F3A800FB9456 /* BookMapping_8_9.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = BookMapping_8_9.xcmappingmodel; sourceTree = "<group>"; };
+		1C788960212618C0001C35E8 /* BookMapping_12_13.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = BookMapping_12_13.xcmappingmodel; sourceTree = "<group>"; };
+		1C78896221262219001C35E8 /* IsbnTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IsbnTests.swift; sourceTree = "<group>"; };
 		1C87F5B71FAE4A5200E44043 /* About.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = About.swift; sourceTree = "<group>"; };
 		1C87F5B91FAE4AF500E44043 /* General.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = General.swift; sourceTree = "<group>"; };
 		1C87F5BB1FAE582A00E44043 /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
@@ -417,6 +426,7 @@
 				1CDA41FC20EC1AAA00273D4D /* StarRatingCell.xib */,
 				1CDA41FE20EC1C0200273D4D /* StarRatingCell.swift */,
 				1C20B7A821035C4C0068F3D1 /* Fonts.swift */,
+				1C0C765921256BBE00E0B645 /* Int64Row.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -439,6 +449,7 @@
 				1CD11211202DD2DC00BE3E1D /* GoogleBooksSearchResult.json */,
 				1CD11210202DD2DC00BE3E1D /* ModelTests.swift */,
 				1CC440C72050822400906120 /* GoogleBooksTests.swift */,
+				1C78896221262219001C35E8 /* IsbnTests.swift */,
 				1C73B0BA2046973F00E8EAC7 /* Extensions.swift */,
 				1CD11209202DD29500BE3E1D /* Info.plist */,
 			);
@@ -469,6 +480,8 @@
 		1CD11250202DED5500BE3E1D /* Migrations */ = {
 			isa = PBXGroup;
 			children = (
+				1C788960212618C0001C35E8 /* BookMapping_12_13.xcmappingmodel */,
+				1C0C76562122BED900E0B645 /* BookMapping_12_13.swift */,
 				1C59932620F535B600260D12 /* BookMapping_11_12.xcmappingmodel */,
 				1C59932420F5313D00260D12 /* BookMapping_11_12.swift */,
 				1C5180AB20544427008C6EA4 /* BookMapping_10_11.xcmappingmodel */,
@@ -1256,6 +1269,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1C73B0BB2046973F00E8EAC7 /* Extensions.swift in Sources */,
+				1C78896321262219001C35E8 /* IsbnTests.swift in Sources */,
 				1CD11214202DD2DC00BE3E1D /* ModelTests.swift in Sources */,
 				1CC440C82050822400906120 /* GoogleBooksTests.swift in Sources */,
 			);
@@ -1299,6 +1313,7 @@
 				1C5CDF2920113B3300A757A3 /* AddToList.swift in Sources */,
 				1CD111F9202DA42800BE3E1D /* BookMapping_6_7.xcmappingmodel in Sources */,
 				495C5D3F1BF1412600E00C07 /* BookTable.swift in Sources */,
+				1C788961212618C0001C35E8 /* BookMapping_12_13.xcmappingmodel in Sources */,
 				1CDA41FF20EC1C0200273D4D /* StarRatingCell.swift in Sources */,
 				4943DB791DBD5104004CAF30 /* Settings.swift in Sources */,
 				49B2CEF81F39A4D300C6B45D /* SortOrder.swift in Sources */,
@@ -1324,6 +1339,7 @@
 				1C87F5B81FAE4A5200E44043 /* About.swift in Sources */,
 				49E95D0F1DD7D9EC00C215F8 /* GoogleBooks.swift in Sources */,
 				1CB9ECA5212087C1008816C0 /* EditBookNotes.swift in Sources */,
+				1C0C76572122BED900E0B645 /* BookMapping_12_13.swift in Sources */,
 				49D0FAAB1F2B284000101EE1 /* UserEngagement.swift in Sources */,
 				49B8D8E71F4A08E700D4C4EF /* BookMapping_6_7.swift in Sources */,
 				499470681DB40D22008CB06E /* TabBarController.swift in Sources */,
@@ -1343,6 +1359,7 @@
 				1C1C887F1FE05A9D00A20402 /* Tip.swift in Sources */,
 				1C20B7A721035B9D0068F3D1 /* CoreDataExtensions.swift in Sources */,
 				1C20B7A921035C4C0068F3D1 /* Fonts.swift in Sources */,
+				1C0C765A21256BBE00E0B645 /* Int64Row.swift in Sources */,
 				1C42F65B20605BD00024CC84 /* BuildInfo.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1838,6 +1855,7 @@
 		1C75AEF62042F38600FB9456 /* books.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				1C0C76532121740200E0B645 /* books_13.xcdatamodel */,
 				1CDA41F920EBF7DD00273D4D /* books_12.xcdatamodel */,
 				1CC440C2204FDBA200906120 /* books_11.xcdatamodel */,
 				1CD072342048BA7E00DCFBDE /* books_10.xcdatamodel */,
@@ -1847,7 +1865,7 @@
 				1C75AEFA2042F38600FB9456 /* books_8.xcdatamodel */,
 				1C75AEFB2042F38600FB9456 /* books_7.xcdatamodel */,
 			);
-			currentVersion = 1CDA41F920EBF7DD00273D4D /* books_12.xcdatamodel */;
+			currentVersion = 1C0C76532121740200E0B645 /* books_13.xcdatamodel */;
 			path = books.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

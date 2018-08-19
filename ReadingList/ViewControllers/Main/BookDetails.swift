@@ -116,7 +116,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         bookNotes.text = book.notes
         noNotes.isHidden = book.notes != nil || book.rating != nil
 
-        setTextOrHideLine(tableVaules[5], book.isbn13)
+        setTextOrHideLine(tableVaules[5], book.isbn13?.stringValue)
         setTextOrHideLine(tableVaules[6], book.pageCount?.intValue.string)
         setTextOrHideLine(tableVaules[7], book.publicationDate?.toPrettyString(short: false))
         setTextOrHideLine(tableVaules[8], book.subjects.map { $0.name }.sorted().joined(separator: ", ").nilIfWhitespace())

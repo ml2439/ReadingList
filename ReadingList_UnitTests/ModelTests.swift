@@ -92,10 +92,10 @@ class ModelTests: XCTestCase {
         book.setAuthors([Author(lastName: "Test", firstNames: "Author")])
         book.manualBookId = UUID().uuidString
 
-        book.isbn13 = "1234567891234"
+        book.isbn13 = 1234567891234
         XCTAssertThrowsError(try book.validateForUpdate(), "Valid ISBN")
 
-        book.isbn13 = "9781786070166"
+        book.isbn13 = 9781786070166
         XCTAssertNoThrow(try book.validateForUpdate(), "Invalid ISBN")
     }
 }

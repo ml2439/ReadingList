@@ -69,6 +69,12 @@ public extension Int {
     }
 }
 
+public extension Int64 {
+    var nsNumber: NSNumber {
+        return NSNumber(value: self)
+    }
+}
+
 public extension Int32 {
     var nsNumber: NSNumber {
         return NSNumber(value: self)
