@@ -54,8 +54,8 @@ extension Theme {
     var placeholderTextColor: UIColor {
         switch self {
         case .normal: return UIColor.hex(0xCDCDD3)
-        case .dark: return UIColor.hex(0x303030)
-        case .black: return UIColor.hex(0x262626)
+        case .dark: return UIColor.hex(0x404040)
+        case .black: return UIColor.hex(0x363636)
         }
     }
 
