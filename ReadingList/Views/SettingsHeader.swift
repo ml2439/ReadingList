@@ -8,7 +8,7 @@ class SettingsHeader: UIView {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        versionNumber.text = "\(BuildInfo.appConfiguration.userFacingDescription)"
+        versionNumber.text = "v\(BuildInfo.appConfiguration.userFacingDescription)"
     }
 
     func initialise(withTheme theme: Theme) {

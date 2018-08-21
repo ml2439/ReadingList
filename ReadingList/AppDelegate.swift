@@ -42,7 +42,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         // Initialise app-level theme, and monitor the set theme
                         self.initialiseTheme()
                         self.monitorThemeSetting()
-                        UserSettings.mostRecentWorkingVersion.value = BuildInfo.appVersion
+                        UserSettings.mostRecentWorkingVersion.value = BuildInfo.appConfiguration.userFacingDescription
 
                         // Once the store is loaded and the main storyboard instantiated, perform the quick action
                         // or open the CSV file, is specified. This is done here rather than in application:open, for example,
@@ -73,14 +73,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         #if RELEASE
         // This is a common error during development, but shouldn't occur in production
-        guard mostRecentWorkingVersion != BuildInfo.appVersion else { fatalError("Migration error thrown for store of same version.") }
+        guard mostRecentWorkingVersion != BuildInfo.appConfiguration.userFacingDescription else { fatalError("Migration error thrown for store of same version.") }
         #endif
 
         guard window!.rootViewController!.presentedViewController == nil else { return }
         let alert = UIAlertController(title: "Incompatible Data", message: """
             The data on this device is not compatible with this version of Reading List.
 
-            You previously had version \(mostRecentWorkingVersion), but now have version \(BuildInfo.appVersion). \
+            You previously had version \(mostRecentWorkingVersion), but now have version \(BuildInfo.appConfiguration.userFacingDescription). \
             You will need to install \(mostRecentWorkingVersion) again to be able to access your data.
             """, preferredStyle: .alert)
 

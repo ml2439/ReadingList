@@ -63,6 +63,7 @@ class UserSettings {
     static var hasEverTipped = UserSetting<Bool>(key: "hasEverTipped", defaultValue: false)
 
     /// The most recent version for which the persistent store has been successfully initialised.
+    /// This is the user facing description of the version, e.g. "1.5" or "1.6.1 beta 3".
     static var mostRecentWorkingVersion = UserSetting<String?>(key: "mostRecentWorkingVersion", defaultValue: nil)
 
     static var theme = WrappedUserSetting<Theme>(key: "theme", defaultValue: Theme.normal)
