@@ -34,7 +34,7 @@ class ListBookTable: UITableViewController {
         let deletedObjects = userInfo[NSDeletedObjectsKey] as? NSSet ?? NSSet()
         guard !deletedObjects.contains(list) else {
             // If the list was deleted, pop back. This can't happen through any normal means at the moment.
-            navigationController!.popViewController(animated: false)
+            navigationController?.popViewController(animated: false)
             return
         }
 
