@@ -33,8 +33,10 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     }
 
     func setViewEnabled(_ enabled: Bool) {
-        // Show the whole view and nav bar buttons
-        view.isHidden = !enabled
+        // Show or hide the whole view and nav bar buttons. Exit early if nothing to do.
+        if view.isHidden != !enabled {
+            view.isHidden = !enabled
+        }
         navigationItem.rightBarButtonItems?.forEach { $0.setHidden(!enabled) }
     }
 
