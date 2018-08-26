@@ -44,6 +44,9 @@ class Book: NSManagedObject {
     override func willSave() {
         super.willSave()
 
+        // FUTURE: willSave() is called after property validation, so if we add sort/readState validation
+        // then this removal of the sort property will need to be done earlier.
+
         // The sort manipulation should be in a method which allows setting of dates
         if readState == .toRead && sort == nil {
             let maxSort = Book.maxSort(fromContext: managedObjectContext!) ?? 0
@@ -53,10 +56,6 @@ class Book: NSManagedObject {
         // Sort is not supported for non To Read books
         if readState != .toRead && sort != nil {
             sort = nil
-        }
-        // Current page is not supported for non Reading books
-        if readState != .reading && currentPage != nil {
-            currentPage = nil
         }
     }
 
@@ -236,6 +235,7 @@ extension Book {
             #endif
         }
         readState = .finished
+        currentPage = nil
         finishedReading = Date()
     }
 }
