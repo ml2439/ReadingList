@@ -22,7 +22,8 @@ public class ExpandableLabel: UIView {
     @IBInspectable public var text: String? {
         didSet {
             label.text = text
-            layoutIfNeeded()
+            showOrHideSeeMoreButton()
+            invalidateIntrinsicContentSize()
         }
     }
 
@@ -32,9 +33,20 @@ public class ExpandableLabel: UIView {
 
     public var gradientColor: UIColor = .white {
         didSet {
-            seeMore.backgroundColor = gradientColor
-            setupGradient()
+            if seeMore.backgroundColor != gradientColor {
+                seeMore.backgroundColor = gradientColor
+                setupGradient()
+            }
         }
+    }
+
+    func setupGradient() {
+        let opaque = gradientColor.withAlphaComponent(1.0)
+        let clear = gradientColor.withAlphaComponent(0.0)
+        gradient.colors = [clear.cgColor, opaque.cgColor]
+        gradient.locations = [0.0, 0.4]
+        gradient.startPoint = CGPoint(x: 0, y: 0)
+        gradient.endPoint = CGPoint(x: 1, y: 0)
     }
 
     @IBInspectable public var numberOfLines: Int = 4 {
@@ -48,8 +60,10 @@ public class ExpandableLabel: UIView {
     public var font: UIFont {
         get { return label.font }
         set {
-            label.font = newValue
-            seeMore.font = newValue
+            if label.font != newValue {
+                label.font = newValue
+                seeMore.font = newValue
+            }
         }
     }
 
@@ -58,7 +72,6 @@ public class ExpandableLabel: UIView {
     private func setup() {
         super.awakeFromNib()
 
-        font = UIFont.systemFont(ofSize: 12.0)
         seeMore.text = "see more"
         seeMore.textColor = tintColor
 
@@ -71,31 +84,16 @@ public class ExpandableLabel: UIView {
 
         label.pin(to: self, attributes: .leading, .trailing, .top, .bottom)
         seeMore.pin(to: self, attributes: .trailing, .bottom)
-        gradientView.pin(to: seeMore, attributes: .trailing, .bottom, .height)
+        gradientView.pin(to: seeMore, attributes: .top, .trailing, .bottom)
         gradientView.pin(to: seeMore, multiplier: 2.0, attributes: .width)
 
-        setupGradient()
-        gradientView.layer.insertSublayer(gradient, at: 0)
         gradientView.isOpaque = true
-
-        invalidateIntrinsicContentSize()
+        gradientView.layer.insertSublayer(gradient, at: 0)
 
         addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(seeMoreTapped)))
     }
 
-    func setupGradient() {
-        let opaque = gradientColor.withAlphaComponent(1.0)
-        let clear = gradientColor.withAlphaComponent(0.0)
-        gradient.colors = [clear.cgColor, opaque.cgColor]
-        gradient.locations = [0.0, 0.4]
-        gradient.startPoint = CGPoint(x: 0, y: 0)
-        gradient.endPoint = CGPoint(x: 1, y: 0)
-    }
-
-    override public func layoutIfNeeded() {
-        super.layoutIfNeeded()
-        gradient.frame = gradientView.bounds
-
+    func showOrHideSeeMoreButton() {
         if labelIsExpanded {
             gradientView.isHidden = true
             seeMore.isHidden = true
@@ -104,6 +102,13 @@ public class ExpandableLabel: UIView {
             gradientView.isHidden = !isTruncated
             seeMore.isHidden = !isTruncated
         }
+    }
+
+    override public func layoutSubviews() {
+        super.layoutSubviews()
+        showOrHideSeeMoreButton()
+        gradientView.layoutIfNeeded()
+        gradient.frame = gradientView.bounds
     }
 
     override public var intrinsicContentSize: CGSize {
@@ -115,6 +120,6 @@ public class ExpandableLabel: UIView {
 
         label.numberOfLines = 0
         labelIsExpanded = true
-        layoutIfNeeded()
+        showOrHideSeeMoreButton()
     }
 }
