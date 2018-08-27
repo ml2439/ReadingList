@@ -168,7 +168,7 @@ class GoogleBooksParser {
         var description = fetchResult["volumeInfo", "description"].string
 
         description = description?.components(separatedBy: "<br>")
-            .compactMap { $0.trimming().nilIfWhitespace() }
+            .map { $0.trimming() }
             .joined(separator: "\n")
 
         description = description?.components(separatedBy: "<p>")

@@ -67,9 +67,9 @@ private class BookCSVParserDelegate: CSVParserDelegate {
         book.isbn13 = ISBN13(values["ISBN-13"])?.int.nsNumber
         book.pageCount = Int(values["Page Count"])?.nsNumber
         book.currentPage = Int(values["Current Page"])?.nsNumber
-        book.notes = values["Notes"]
+        book.notes = values["Notes"]?.replacingOccurrences(of: "\r\n", with: "\n")
         book.publicationDate = Date(iso: values["Publication Date"])
-        book.bookDescription = values["Description"]
+        book.bookDescription = values["Description"]?.replacingOccurrences(of: "\r\n", with: "\n")
         book.startedReading = Date(iso: values["Started Reading"])
         book.finishedReading = Date(iso: values["Finished Reading"])
         book.subjects = Set(createSubjects(values["Subjects"]))
