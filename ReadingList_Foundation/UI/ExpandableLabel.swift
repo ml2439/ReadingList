@@ -76,6 +76,7 @@ public class ExpandableLabel: UIView {
         seeMore.textColor = tintColor
 
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.lineBreakMode = .byClipping
         seeMore.translatesAutoresizingMaskIntoConstraints = false
         gradientView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(label)
