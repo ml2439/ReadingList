@@ -6,8 +6,15 @@ import SVProgressHUD
 
 class Debug: FormViewController {
 
+    @objc func dismissSelf() {
+        dismiss(animated: true, completion: nil)
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        navigationItem.title = "Debug"
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Dismiss", style: .plain, target: self, action: #selector(dismissSelf))
 
         form +++ Section(header: "Test data", footer: "Import a set of data for both testing and screenshots")
             <<< ButtonRow {

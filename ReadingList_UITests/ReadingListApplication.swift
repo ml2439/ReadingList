@@ -62,12 +62,10 @@ class ReadingListApplication: XCUIApplication {
 
     func setBarcodeSimulation(_ mode: BarcodeScanSimulation) {
         clickTab(.settings)
-        tables.cells.staticTexts["Debug"].tap()
+        tables.otherElements.containing(.image, identifier: "AppIconOnWhiteRounded").element.press(forDuration: 1.0)
 
         tables.cells.staticTexts[mode.titleText].tap()
-        if navigationBars.count == 1 {
-            topNavBar.buttons["Settings"].tap()
-        }
+        navigationBars["Debug"].buttons["Dismiss"].tap()
     }
 
     func clickAddButton(addMethod: AddMethod) {
