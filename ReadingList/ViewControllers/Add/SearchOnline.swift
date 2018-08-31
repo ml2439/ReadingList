@@ -198,7 +198,6 @@ class SearchOnline: UITableViewController {
     }
 
     func createBook(inContext context: NSManagedObjectContext, from searchResult: SearchResult) -> Promise<Book> {
-        let book = Book(context: context, readState: .toRead)
         return GoogleBooks.fetch(googleBooksId: searchResult.id)
             .recover { error -> FetchResult in
                 switch error {
@@ -207,6 +206,7 @@ class SearchOnline: UITableViewController {
                 }
             }
             .then(on: .main) { fetchResult -> Book in
+                let book = Book(context: context, readState: .toRead)
                 book.populate(fromFetchResult: fetchResult)
                 return book
             }
