@@ -198,7 +198,7 @@ class SearchOnline: UITableViewController {
     }
 
     func createBook(inContext context: NSManagedObjectContext, from searchResult: SearchResult) -> Promise<Book> {
-        return GoogleBooks.fetch(googleBooksId: searchResult.id)
+        return GoogleBooks.fetch(searchResult: searchResult)
             .recover { error -> FetchResult in
                 switch error {
                 case GoogleError.noResult: return FetchResult(fromSearchResult: searchResult)

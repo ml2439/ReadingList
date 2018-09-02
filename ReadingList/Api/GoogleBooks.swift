@@ -20,26 +20,46 @@ class GoogleBooks {
     static func fetch(isbn: String) -> Promise<FetchResult> {
         return URLSession.shared.json(url: GoogleBooksRequest.searchIsbn(isbn).url)
             .then(GoogleBooksParser.parseSearchResults)
-            .then { searchResults -> String in
-                guard let id = searchResults.first?.id else { throw GoogleError.noResult }
-                return id
+            .then {
+                guard let id = $0.first?.id else { throw GoogleError.noResult }
+                return fetch(googleBooksId: id)
             }
-            .then(fetch(googleBooksId:))
     }
 
     /**
      Fetches the specified book from Google Books. Performs a supplementary request for the
-     book's cover data if necessary.
+     book's cover image data if necessary.
      */
     static func fetch(googleBooksId: String) -> Promise<FetchResult> {
+        return fetch(googleBooksId: googleBooksId, existingSearchResult: nil)
+    }
+
+    /**
+     Fetches the book identified by a search result from Google Books. If the fetch results are not sufficient
+     to create a Book object (sometimes fetch results miss data which is present in a search result), an attempt
+     is made to "mix" the data from the search and fetch results. Performs a supplementary request for the
+     book's cover image data if necessary.
+     */
+    static func fetch(searchResult: SearchResult) -> Promise<FetchResult> {
+        return fetch(googleBooksId: searchResult.id, existingSearchResult: searchResult)
+    }
+
+    /**
+     Fetches the specified book from Google Books. If the results are not sufficient to create a Book object,
+     and a search result was supplied, an attempt is made to "mix" the data from the search and fetch results.
+     Performs a supplementary request for the book's cover image data if necessary.
+     */
+    private static func fetch(googleBooksId: String, existingSearchResult: SearchResult?) -> Promise<FetchResult> {
         let fetchPromise = URLSession.shared.json(url: GoogleBooksRequest.fetch(googleBooksId).url)
-            .then(GoogleBooksParser.parseFetchResults)
-            .then { fetchResult -> FetchResult in
-                if let fetchResult = fetchResult {
+            .then { json -> FetchResult in
+                if let fetchResult = GoogleBooksParser.parseFetchResults(json) {
                     return fetchResult
-                } else {
-                    throw GoogleError.missingEssentialData
                 }
+                if let existingSearchResult = existingSearchResult,
+                    let fetchResult = GoogleBooksParser.parseFetchResults(json, existingSearchResult: existingSearchResult) {
+                    return fetchResult
+                }
+                throw GoogleError.missingEssentialData
             }
 
         let coverPromise = fetchPromise.then { getCover(googleBooksId: $0.id) }
@@ -147,10 +167,10 @@ class GoogleBooksParser {
         return result
     }
 
-    static func parseFetchResults(_ fetchResult: JSON) -> FetchResult? {
+    static func parseFetchResults(_ fetchResult: JSON, existingSearchResult: SearchResult? = nil) -> FetchResult? {
 
-        // Defer to the common search parsing initially
-        guard let searchResult = GoogleBooksParser.parseItem(fetchResult) else { return nil }
+        // Defer to the common search parsing initially, or use the provided search result
+        guard let searchResult = existingSearchResult ?? GoogleBooksParser.parseItem(fetchResult) else { return nil }
 
         let result = FetchResult(fromSearchResult: searchResult)
         result.pageCount = fetchResult["volumeInfo", "pageCount"].int
