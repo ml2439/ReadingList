@@ -268,11 +268,17 @@ class SearchOnline: UITableViewController {
             .catch(on: .main) { _ in
                 SVProgressHUD.showError(withStatus: "An error occurred. Please try again.")
             }
-            .then(on: .main) { _ in
+            .then(on: .main) { results in
+                let newBookCount = results.compactMap { $0.value }.count
                 editContext.saveAndLogIfErrored()
                 self.searchController.isActive = false
                 self.presentingViewController!.dismiss(animated: true) {
-                    SVProgressHUD.showInfo(withStatus: "\(selectedRows.count) \("book".pluralising(selectedRows.count)) added")
+                    var status = "\(newBookCount) \("book".pluralising(newBookCount)) added"
+                    if newBookCount != selectedRows.count {
+                        let erroredCount = selectedRows.count - newBookCount
+                        status += ". \(erroredCount) \("book".pluralising(erroredCount)) could not be added due to an error."
+                    }
+                    SVProgressHUD.showInfo(withStatus: status)
                 }
             }
     }
