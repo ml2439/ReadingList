@@ -63,7 +63,7 @@ class EditBookMetadata: FormViewController {
 
             +++ Section(header: "Additional Information", footer: "")
             <<< Int64Row(isbnRowKey) {
-                $0.title = "ISBN"
+                $0.title = "ISBN-13"
                 $0.value = book.isbn13?.int64Value
                 $0.formatter = nil
                 $0.onChange {
