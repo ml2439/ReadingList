@@ -25,7 +25,7 @@ class BookMapping_12_13: NSEntityMigrationPolicy { //swiftlint:disable:this type
     }
 
     // Returns the currentPage attribute if the read state is CurrentlyReading, otherwise returns nil.
-    @objc func currentPage(forCurrentPage currentPage: NSNumber?, readState: Int16) -> NSNumber? {
+    @objc func currentPage(forCurrentPage currentPage: NSNumber?, readState: NSNumber) -> NSNumber? {
         guard let currentPage = currentPage else { return nil }
         if readState == 1 /* BookReadState.reading = 1 */ {
             return currentPage
