@@ -61,15 +61,7 @@ class EditBookMetadata: FormViewController {
 
             +++ AuthorSection(book: book, navigationController: navigationController!)
 
-            +++ Section(header: "Additional Information", footer: "")
-            <<< Int64Row(isbnRowKey) {
-                $0.title = "ISBN-13"
-                $0.value = book.isbn13?.int64Value
-                $0.formatter = nil
-                $0.onChange {
-                    book.isbn13 = $0.value?.nsNumber
-                }
-            }
+            +++ Section(header: "Additional Information", footer: "Note: if provided, ISBN-13 must be a valid, 13 digit ISBN.")
             <<< IntRow {
                 $0.title = "Page Count"
                 $0.value = book.pageCount?.intValue
@@ -112,6 +104,14 @@ class EditBookMetadata: FormViewController {
                 $0.cell.height = { return 100 }
                 $0.value = UIImage(optionalData: book.coverImage)
                 $0.onChange { book.coverImage = $0.value == nil ? nil : UIImageJPEGRepresentation($0.value!, 0.7) }
+            }
+            <<< Int64Row(isbnRowKey) {
+                $0.title = "ISBN-13"
+                $0.value = book.isbn13?.int64Value
+                $0.formatter = nil
+                $0.onChange {
+                    book.isbn13 = $0.value?.nsNumber
+                }
             }
 
             +++ Section(header: "Description", footer: "")
@@ -247,7 +247,7 @@ class AuthorSection: MultivaluedSection {
     weak var navigationController: UINavigationController!
 
     required init(book: Book, navigationController: UINavigationController) {
-        super.init(multivaluedOptions: [.Insert, .Delete, .Reorder], header: "Authors", footer: "") {
+        super.init(multivaluedOptions: [.Insert, .Delete, .Reorder], header: "Authors", footer: "Note: at least one author is required") {
             for author in book.authors {
                 $0 <<< AuthorRow(author: author)
             }
