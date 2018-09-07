@@ -147,11 +147,16 @@ class GoogleBooksParser {
     }
 
     static func parseItem(_ item: JSON) -> SearchResult? {
-        guard let id = item["id"].string,
-            let title = item["volumeInfo", "title"].string,
-            let authors = item["volumeInfo", "authors"].array else { return nil }
+        guard let id = item["id"].string, !id.isEmptyOrWhitespace,
+            let title = item["volumeInfo", "title"].string, !title.isEmptyOrWhitespace,
+            let authorsJson = item["volumeInfo", "authors"].array, !authorsJson.isEmpty else { return nil }
+        let authors: [String] = authorsJson.compactMap {
+            guard let authorString = $0.rawString(), !authorString.isEmptyOrWhitespace else { return nil }
+            return authorString
+        }
+        guard !authors.isEmpty else { return nil }
 
-        let result = SearchResult(id: id, title: title, authors: authors.map { $0.rawString()! })
+        let result = SearchResult(id: id, title: title, authors: authors)
 
         // Convert the thumbnail URL to HTTPS
         if let thumbnailUrlString = item["volumeInfo", "imageLinks", "thumbnail"].string,
