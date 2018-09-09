@@ -8,6 +8,8 @@ notifications:
 before_install:
   - bundle install > /dev/null
   - pod repo update > /dev/null
+  - brew install xcodegen
+  - xcodegen
   - pod install
 script:
   - set -e

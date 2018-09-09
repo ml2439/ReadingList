@@ -1,0 +1,65 @@
+name: ReadingList
+targets:
+  ReadingList:
+    type: application
+    platform: iOS
+    deploymentTarget: 10.3
+    sources: [ReadingList]
+    scheme:
+      testTargets:
+        - ReadingList_UnitTests
+        - ReadingList_UITests
+        - ReadingList_Screenshots
+    dependencies:
+      - framework: StoreKit.framework
+        embed: false
+      - target: ReadingList_Foundation
+    prebuildScripts:
+      - name: SwiftLint
+        script: |
+                if [[ -z $CI ]]; then
+                  "${PODS_ROOT}/SwiftLint/swiftlint" --path "${PROJECT_DIR}"
+                fi
+    postbuildScripts:
+      - name: Run Fabric Script
+        script: |
+                if [ "${CONFIGURATION}" = "Release" ]; then
+                  "${PODS_ROOT}/Fabric/run" "$FABRIC_API_KEY" "$FABRIC_BUILD_SECRET"
+                fi
+    settings:
+      ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES: $(inherited)
+      CODE_SIGN_STYLE: Manual
+      CODE_SIGN_ENTITLEMENTS: ReadingList/ReadingList.entitlements
+      DEVELOPMENT_TEAM: YPDEV2E775
+      PRODUCT_BUNDLE_IDENTIFIER: com.andrewbennet.books
+      PROVISIONING_PROFILE_SPECIFIER: match Development com.andrewbennet.books
+    attributes:
+      SystemCapabilities:
+        com.apple.iCloud:
+          enabled: 1
+        com.apple.InAppPurchase:
+          enabled: 1
+  ReadingList_Foundation:
+    type: framework
+    platform: iOS
+    deploymentTarget: 10.3
+    sources: [ReadingList_Foundation]
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: com.andrewbennet.ReadingList-Foundation
+  ReadingList_UnitTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources: [ReadingList_UnitTests]
+  ReadingList_UITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources: [ReadingList_UITests]
+  ReadingList_Screenshots:
+    type: bundle.ui-testing
+    platform: iOS
+    sources: [ReadingList_Screenshots]
+schemes:
+  Screenshots:
+    build:
+      targets:
+        ReadingList_Screenshots: [test, run]
