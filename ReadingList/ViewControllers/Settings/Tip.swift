@@ -21,6 +21,10 @@ class Tip: UIViewController, ThemeableViewController {
             viewController.displayTipPrices()
         }
 
+        if BuildInfo.appConfiguration != .appStore {
+            explanationLabel.text = explanationLabel.text! + "\n\nNote: because you are testing a beta version of this app, you won't be able to leave any tips."
+        }
+
         monitorThemeSetting()
     }
 
@@ -36,7 +40,7 @@ class Tip: UIViewController, ThemeableViewController {
         let contentView = scrollView.subviews[0]
 
         let top = (scrollView.bounds.height - contentView.bounds.height) / 2
-        scrollView.contentInset = UIEdgeInsets(top: top, left: 0, bottom: 0, right: 0)
+        scrollView.contentInset = UIEdgeInsets(top: top < 0 ? 0 : top, left: 0, bottom: 0, right: 0)
     }
 
     func displayTipPrices() {
