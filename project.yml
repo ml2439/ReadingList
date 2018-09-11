@@ -18,7 +18,7 @@ targets:
       - name: SwiftLint
         script: |
                 if [[ -z $CI ]]; then
-                  "${PODS_ROOT}/SwiftLint/swiftlint" --path "${PROJECT_DIR}"
+                  "/usr/local/bin/swiftlint" --path "${PROJECT_DIR}"
                 fi
     postbuildScripts:
       - name: Run Fabric Script
@@ -63,3 +63,5 @@ schemes:
     build:
       targets:
         ReadingList_Screenshots: [test, run]
+options:
+  groupSortPosition: top

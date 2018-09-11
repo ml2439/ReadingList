@@ -15,7 +15,6 @@ def all_pods
   pod 'Fabric'
   pod 'Crashlytics'
   pod 'Firebase/Core'
-  pod 'SwiftLint'
 end
 
 target 'ReadingList' do
