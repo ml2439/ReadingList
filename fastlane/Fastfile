@@ -91,10 +91,9 @@ platform :ios do
 
   private_lane :commit_detailed_version_bump do
     version_number = get_version_number(target: "ReadingList")
-    commit_version_bump(
-      message: "Increment to version " + version_number,
-      force: true
-    )
+    message = "Increment to version " + version_number
+    sh("git commit -a -m '" + message + "'")
+    sh("git push")
   end
 
   desc "Increments the build number"
