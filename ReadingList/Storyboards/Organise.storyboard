@@ -21,7 +21,7 @@
         <!--Organise-->
         <scene sceneID="WvJ-QL-gyx">
             <objects>
-                <tableViewController extendedLayoutIncludesOpaqueBars="YES" clearsSelectionOnViewWillAppear="NO" id="RiX-qo-4E3" customClass="Organise" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController extendedLayoutIncludesOpaqueBars="YES" clearsSelectionOnViewWillAppear="NO" id="RiX-qo-4E3" customClass="Organise" customModule="ReadingList" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="yuf-Gn-OLe">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -74,7 +74,7 @@
         <!--My List-->
         <scene sceneID="31O-I5-KfZ">
             <objects>
-                <tableViewController title="My List" extendedLayoutIncludesOpaqueBars="YES" id="ggN-hf-l8Q" customClass="ListBookTable" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController title="My List" extendedLayoutIncludesOpaqueBars="YES" id="ggN-hf-l8Q" customClass="ListBookTable" customModule="ReadingList" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="92" sectionHeaderHeight="18" sectionFooterHeight="18" id="gO0-S4-wGF">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -97,7 +97,7 @@
         <!--Themed Navigation Controller-->
         <scene sceneID="u2M-L9-7Kb">
             <objects>
-                <navigationController id="WHn-Om-NYv" customClass="ThemedNavigationController" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
+                <navigationController id="WHn-Om-NYv" customClass="ThemedNavigationController" customModule="ReadingList" customModuleProvider="target" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="i2G-m8-7nj">
                         <rect key="frame" x="0.0" y="20" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -113,7 +113,7 @@
         <!--Organise-->
         <scene sceneID="tj0-M4-c5I">
             <objects>
-                <splitViewController id="wWH-Ym-HSc" customClass="ThemedSplitViewController" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
+                <splitViewController id="wWH-Ym-HSc" customClass="ThemedSplitViewController" customModule="ReadingList" customModuleProvider="target" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" tag="2" title="Organise" image="organise" selectedImage="organise-filled" id="ofv-YQ-PuH"/>
                     <connections>
                         <segue destination="WHn-Om-NYv" kind="relationship" relationship="masterViewController" id="vSL-Ob-iCW"/>

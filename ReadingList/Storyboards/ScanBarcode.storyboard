@@ -15,7 +15,7 @@
         <!--Scan Barcode-->
         <scene sceneID="b2c-9w-e3P">
             <objects>
-                <viewController id="MGK-ee-YjP" customClass="ScanBarcode" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="MGK-ee-YjP" customClass="ScanBarcode" customModule="ReadingList" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Li1-Bc-Q61">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -64,7 +64,7 @@
         <!--Non Rotating Navigation Controller-->
         <scene sceneID="YJu-cP-9jM">
             <objects>
-                <navigationController id="rYQ-41-cfc" customClass="NonRotatingNavigationController" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
+                <navigationController id="rYQ-41-cfc" customClass="NonRotatingNavigationController" customModule="ReadingList" customModuleProvider="target" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="rHe-eY-Zk8">
                         <rect key="frame" x="0.0" y="20" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>

@@ -137,7 +137,7 @@ EwcIExQZGiInLC0wMTU6Oz5CRkhVJG51bGzVCQoLDA0ODxAREllOU09wZXJhbmReTlNTZWxlY3Rvck5h
         <relationship name="entitymapping" type="1/1" destination="XDDEVENTITYMAPPING" idrefs="z119"></relationship>
     </object>
     <object type="XDDEVENTITYMAPPING" id="z119">
-        <attribute name="migrationpolicyclassname" type="string">Reading_List.BookMapping_8_9</attribute>
+        <attribute name="migrationpolicyclassname" type="string">ReadingList.BookMapping_8_9</attribute>
         <attribute name="sourcename" type="string">Book</attribute>
         <attribute name="mappingtypename" type="string">Undefined</attribute>
         <attribute name="mappingnumber" type="int16">2</attribute>
