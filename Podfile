@@ -2,7 +2,7 @@
 platform :ios, '10.3'
 use_frameworks!
 
-def all_pods
+target 'ReadingList' do
   pod 'DZNEmptyDataSet', '~> 1.8'
   pod 'SwiftyJSON', '~> 4.0'
   pod 'Eureka', :git => 'https://github.com/xmartlabs/Eureka.git', :commit => 'ec14ae696e' # to use customised UIPickerViews
@@ -15,17 +15,14 @@ def all_pods
   pod 'Fabric'
   pod 'Crashlytics'
   pod 'Firebase/Core'
-end
 
-target 'ReadingList' do
-  all_pods
-end
-target 'ReadingList_UITests' do
-  all_pods
-end
-target 'ReadingList_UnitTests' do
-  all_pods
-end
-target 'ReadingList_Screenshots' do
-  all_pods
+  target 'ReadingList_UnitTests' do
+    inherit! :search_paths
+  end
+  target 'ReadingList_UITests' do
+    inherit! :complete
+  end
+  target 'ReadingList_Screenshots' do
+    inherit! :complete
+  end
 end

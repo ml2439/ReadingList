@@ -1,7 +1,7 @@
 import XCTest
 import Foundation
 import CoreData
-@testable import Reading_List
+@testable import ReadingList
 
 class ModelTests: XCTestCase {
 

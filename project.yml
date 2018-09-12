@@ -50,14 +50,25 @@ targets:
     type: bundle.unit-test
     platform: iOS
     sources: [ReadingList_UnitTests]
+    dependencies:
+      - target: ReadingList
+    settings:
+      # These settings are added when Xcode creates a new project with test targets.
+      # See https://stackoverflow.com/a/30939244/5513562
+      BUNDLE_LOADER: $TEST_HOST
+      TEST_HOST: $(BUILT_PRODUCTS_DIR)/ReadingList.app/ReadingList
   ReadingList_UITests:
     type: bundle.ui-testing
     platform: iOS
     sources: [ReadingList_UITests]
+    dependencies:
+      - target: ReadingList
   ReadingList_Screenshots:
     type: bundle.ui-testing
     platform: iOS
     sources: [ReadingList_Screenshots]
+    dependencies:
+      - target: ReadingList
 schemes:
   Screenshots:
     build:

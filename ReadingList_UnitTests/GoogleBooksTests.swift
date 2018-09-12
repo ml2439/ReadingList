@@ -2,7 +2,7 @@ import XCTest
 import Foundation
 import CoreData
 import SwiftyJSON
-@testable import Reading_List
+@testable import ReadingList
 
 class GoogleBooksTests: XCTestCase {
 
