@@ -25,9 +25,8 @@ platform :ios do
   lane :beta do
     ensure_git_status_clean
     build_number = increment_build_number
-    commit_version_bump(
-      message: "[DEPLOY] Increment to build " + build_number
-    )
+    message = "[DEPLOY] Increment to build " + build_number
+    sh("git commit -a -m '" + message + "'")
     sh("git push")
   end
 
@@ -93,7 +92,8 @@ platform :ios do
   private_lane :commit_detailed_version_bump do
     version_number = get_version_number(target: "ReadingList")
     commit_version_bump(
-      message: "Increment to version " + version_number
+      message: "Increment to version " + version_number,
+      force: true
     )
   end
 
