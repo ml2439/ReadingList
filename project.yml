@@ -27,12 +27,17 @@ targets:
                   "${PODS_ROOT}/Fabric/run" "$FABRIC_API_KEY" "$FABRIC_BUILD_SECRET"
                 fi
     settings:
-      ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES: $(inherited)
-      CODE_SIGN_STYLE: Manual
-      CODE_SIGN_ENTITLEMENTS: ReadingList/ReadingList.entitlements
-      DEVELOPMENT_TEAM: YPDEV2E775
-      PRODUCT_BUNDLE_IDENTIFIER: com.andrewbennet.books
-      PROVISIONING_PROFILE_SPECIFIER: match Development com.andrewbennet.books
+      base:
+        ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES: $(inherited)
+        CODE_SIGN_STYLE: Manual
+        CODE_SIGN_ENTITLEMENTS: ReadingList/ReadingList.entitlements
+        DEVELOPMENT_TEAM: YPDEV2E775
+        PRODUCT_BUNDLE_IDENTIFIER: com.andrewbennet.books
+      configs:
+        Debug:
+          PROVISIONING_PROFILE_SPECIFIER: match Development com.andrewbennet.books
+        Release:
+          PROVISIONING_PROFILE_SPECIFIER: match AppStore com.andrewbennet.books
     attributes:
       SystemCapabilities:
         com.apple.iCloud:

@@ -51,6 +51,11 @@ Create framed screenshots for a range of devices
 fastlane ios dsyms
 ```
 Download DSYMs from iTunes and upload them to Crashlytics
+### ios reset_build_number
+```
+fastlane ios reset_build_number
+```
+
 ### ios build_number
 ```
 fastlane ios build_number
