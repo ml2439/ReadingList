@@ -38,6 +38,7 @@ targets:
           PROVISIONING_PROFILE_SPECIFIER: match Development com.andrewbennet.books
         Release:
           PROVISIONING_PROFILE_SPECIFIER: match AppStore com.andrewbennet.books
+          CODE_SIGN_IDENTITY[sdk=iphoneos*]: "iPhone Distribution: Andrew Bennet (YPDEV2E775)"
     attributes:
       SystemCapabilities:
         com.apple.iCloud:
