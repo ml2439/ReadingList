@@ -1,24 +1,24 @@
 import Foundation
 import CoreData
 
-public protocol ModelVersion: Equatable {
-    static var orderedModelVersions: [Self] { get }
-
-    var name: String { get }
-    var modelBundle: Bundle { get }
-    var modelDirectoryName: String { get }
+public protocol ModelVersion: Equatable, CaseIterable {
+    var modelName: String { get }
+    static var modelBundle: Bundle { get }
+    static var modelDirectoryName: String { get }
 }
 
 public extension ModelVersion {
 
     static var latest: Self {
-        return Self.orderedModelVersions.last!
+        let lastItemIndex = Self.allCases.index(Self.allCases.startIndex, offsetBy: Self.allCases.count - 1)
+        return Self.allCases[lastItemIndex]
     }
 
     var successor: Self? {
-        let index = Self.orderedModelVersions.index(of: self)!
-        guard index != Self.orderedModelVersions.endIndex else { return nil }
-        return Self.orderedModelVersions[index + 1]
+        let index = Self.allCases.index(of: self)!
+        let nextIndex = Self.allCases.index(after: index)
+        guard nextIndex != Self.allCases.endIndex else { return nil }
+        return Self.allCases[nextIndex]
     }
 
     init?(storeURL: URL) throws {
@@ -29,18 +29,18 @@ public extension ModelVersion {
         #if DEBUG
             // Validation check - if multiple model versions match the store, we are in trouble.
             // Run this check in debug mode only as an optimisation.
-            let matchingModels = Self.orderedModelVersions.filter {
+            let matchingModels = Self.allCases.filter {
                 $0.managedObjectModel().isConfiguration(withName: nil, compatibleWithStoreMetadata: metadata)
             }
             if matchingModels.count > 1 {
-                let modelNames = matchingModels.map { $0.name }.joined(separator: ",")
+                let modelNames = matchingModels.map { $0.modelName }.joined(separator: ",")
                 fatalError("\(matchingModels.count) model versions matched the current store (\(modelNames)). Cannot guarantee that migrations will be performed correctly")
             }
         #endif
 
         // Small optimisation: reverse the model versions so the most recent is first; if the store is already
         // at the latest version, only one managed object model will need to be loaded.
-        let version = Self.orderedModelVersions.reversed().first {
+        let version = Self.allCases.reversed().first {
             $0.managedObjectModel().isConfiguration(withName: nil, compatibleWithStoreMetadata: metadata)
         }
         guard let result = version else {
@@ -50,7 +50,7 @@ public extension ModelVersion {
     }
 
     func managedObjectModel() -> NSManagedObjectModel {
-        guard let momURL = modelBundle.url(forResource: name, withExtension: "mom", subdirectory: modelDirectoryName) else {
+        guard let momURL = Self.modelBundle.url(forResource: modelName, withExtension: "mom", subdirectory: Self.modelDirectoryName) else {
             fatalError("model version \(self) not found")
         }
         guard let model = NSManagedObjectModel(contentsOf: momURL) else { fatalError("cannot open model at \(momURL)") }
@@ -59,12 +59,12 @@ public extension ModelVersion {
 
     func mappingModelToSuccessor() -> NSMappingModel? {
         guard let nextVersion = successor else { return nil }
-        guard let mapping = NSMappingModel(from: [modelBundle], forSourceModel: managedObjectModel(), destinationModel: nextVersion.managedObjectModel()) else {
+        guard let mapping = NSMappingModel(from: [Self.modelBundle], forSourceModel: managedObjectModel(), destinationModel: nextVersion.managedObjectModel()) else {
             // If there is no mapping model, build an inferred one
-            print("Loading inferred mapping used for step \(self.name) to \(nextVersion.name).")
+            print("Loading inferred mapping used for step \(self.modelName) to \(nextVersion.modelName).")
             return try! NSMappingModel.inferredMappingModel(forSourceModel: managedObjectModel(), destinationModel: successor!.managedObjectModel())
         }
-        print("Loaded specified mapping model for step \(self.name) to \(nextVersion.name).")
+        print("Loaded specified mapping model for step \(self.modelName) to \(nextVersion.modelName).")
         return mapping
     }
 

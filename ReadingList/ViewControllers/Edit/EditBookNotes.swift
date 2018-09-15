@@ -10,7 +10,7 @@ class EditBookNotes: FormViewController {
 
     convenience init(existingBookID: NSManagedObjectID) {
         self.init()
-        self.book = editContext.object(with: existingBookID) as! Book
+        self.book = (editContext.object(with: existingBookID) as! Book)
     }
 
     override func viewDidLoad() {

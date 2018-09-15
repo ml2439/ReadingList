@@ -12,7 +12,7 @@ class EditBookReadState: FormViewController {
     convenience init(existingBookID: NSManagedObjectID) {
         self.init()
         self.editContext = PersistentStoreManager.container.viewContext.childContext()
-        self.book = editContext.object(with: existingBookID) as! Book
+        self.book = (editContext.object(with: existingBookID) as! Book)
     }
 
     convenience init(newUnsavedBook: Book, scratchpadContext: NSManagedObjectContext) {

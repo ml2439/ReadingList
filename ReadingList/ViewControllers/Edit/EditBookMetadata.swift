@@ -15,7 +15,7 @@ class EditBookMetadata: FormViewController {
     convenience init(bookToEditID: NSManagedObjectID) {
         self.init()
         self.isAddingNewBook = false
-        self.book = editBookContext.object(with: bookToEditID) as! Book
+        self.book = (editBookContext.object(with: bookToEditID) as! Book)
     }
 
     convenience init(bookToCreateReadState: BookReadState) {
@@ -101,7 +101,7 @@ class EditBookMetadata: FormViewController {
             }
             <<< ImageRow {
                 $0.title = "Cover Image"
-                $0.cell.height = { return 100 }
+                $0.cell.height = { 100 }
                 $0.value = UIImage(optionalData: book.coverImage)
                 $0.onChange { book.coverImage = $0.value == nil ? nil : $0.value!.jpegData(compressionQuality: 0.7) }
             }
@@ -252,7 +252,7 @@ class AuthorSection: MultivaluedSection {
                 $0 <<< AuthorRow(author: author)
             }
             $0.addButtonProvider = { _ in
-                return ButtonRow {
+                ButtonRow {
                     $0.title = "Add Author"
                     $0.cellUpdate { cell, _ in
                         cell.textLabel!.textAlignment = .left
@@ -404,7 +404,7 @@ class EditBookSubjectsForm: FormViewController {
 
         form +++ MultivaluedSection(multivaluedOptions: [.Insert, .Delete], header: "Subjects", footer: "Add subjects to categorise this book") {
             $0.addButtonProvider = { _ in
-                return ButtonRow {
+                ButtonRow {
                     $0.title = "Add New Subject"
                     $0.cellUpdate { cell, _ in
                         cell.textLabel?.textAlignment = .left
@@ -412,7 +412,7 @@ class EditBookSubjectsForm: FormViewController {
                 }
             }
             $0.multivaluedRowToInsertAt = { _ in
-                return TextRow {
+                TextRow {
                     $0.placeholder = "Subject"
                     $0.cell.textField.autocapitalizationType = .words
                 }
