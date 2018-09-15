@@ -7,8 +7,6 @@ notifications:
     - feedback@readinglist.app
 before_install:
   - bundle install > /dev/null
-  - brew install mint
-  - mint run yonaskolb/xcodegen
   - pod repo update > /dev/null
   - pod install
 script:
