@@ -128,7 +128,7 @@ class DataVC: UITableViewController {
     func serveCsvExport(filePath: URL, presentingIndexPath: IndexPath) {
         // Present a dialog with the resulting file
         let activityViewController = UIActivityViewController(activityItems: [filePath], applicationActivities: [])
-        activityViewController.excludedActivityTypes = UIActivityType.documentUnsuitableTypes
+        activityViewController.excludedActivityTypes = UIActivity.ActivityType.documentUnsuitableTypes
         activityViewController.popoverPresentationController?.setSourceCell(atIndexPath: presentingIndexPath, inTable: self.tableView)
 
         SVProgressHUD.dismiss()

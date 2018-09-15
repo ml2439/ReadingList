@@ -9,11 +9,11 @@ extension UIFont {
         return gillSans.withSize(ofSize)
     }
 
-    static func gillSans(forTextStyle textStyle: UIFontTextStyle) -> UIFont {
+    static func gillSans(forTextStyle textStyle: UIFont.TextStyle) -> UIFont {
         return gillSans.scaled(forTextStyle: textStyle)
     }
 
-    static func gillSansSemiBold(forTextStyle textStyle: UIFontTextStyle) -> UIFont {
+    static func gillSansSemiBold(forTextStyle textStyle: UIFont.TextStyle) -> UIFont {
         return gillSansSemiBold.scaled(forTextStyle: textStyle)
     }
 }

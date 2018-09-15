@@ -46,14 +46,14 @@ public extension UIView {
         }
     }
 
-    func pin(to other: UIView, multiplier: CGFloat = 1.0, attributes: NSLayoutAttribute...) {
+    func pin(to other: UIView, multiplier: CGFloat = 1.0, attributes: NSLayoutConstraint.Attribute...) {
         for attribute in attributes {
             NSLayoutConstraint(item: self, attribute: attribute, relatedBy: .equal, toItem: other,
                                attribute: attribute, multiplier: multiplier, constant: 0.0).isActive = true
         }
     }
 
-    func fix(attribute: NSLayoutAttribute, to constant: CGFloat) {
+    func fix(attribute: NSLayoutConstraint.Attribute, to constant: CGFloat) {
         NSLayoutConstraint(item: self, attribute: attribute, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute,
                            multiplier: 1.0, constant: constant).isActive = true
 
@@ -85,7 +85,7 @@ public extension UISwipeActionsConfiguration {
 @available(iOS 11.0, *)
 public extension UIContextualAction {
     convenience init(style: UIContextualAction.Style, title: String?, image: UIImage?,
-                     backgroundColor: UIColor? = nil, handler: @escaping UIContextualActionHandler) {
+                     backgroundColor: UIColor? = nil, handler: @escaping UIContextualAction.Handler) {
         self.init(style: style, title: title, handler: handler)
         self.image = image
         if let backgroundColor = backgroundColor {
@@ -187,10 +187,10 @@ public extension UITabBarItem {
     }
 }
 
-public extension UIActivityType {
-    static var documentUnsuitableTypes: [UIActivityType] {
-        var types: [UIActivityType] = [addToReadingList, assignToContact, saveToCameraRoll, postToFlickr, postToVimeo,
-                                       postToTencentWeibo, postToTwitter, postToFacebook, openInIBooks]
+public extension UIActivity.ActivityType {
+    static var documentUnsuitableTypes: [UIActivity.ActivityType] {
+        var types: [UIActivity.ActivityType] = [.addToReadingList, .assignToContact, .saveToCameraRoll, .postToFlickr, .postToVimeo,
+                                       .postToTencentWeibo, .postToTwitter, .postToFacebook, .openInIBooks]
         if #available(iOS 11.0, *) {
             types.append(.markupAsPDF)
         }
@@ -243,7 +243,7 @@ public extension UITableViewController {
 }
 
 public extension UITableViewRowAction {
-    convenience init(style: UITableViewRowActionStyle, title: String?, color: UIColor, handler: @escaping (UITableViewRowAction, IndexPath) -> Void) {
+    convenience init(style: UITableViewRowAction.Style, title: String?, color: UIColor, handler: @escaping (UITableViewRowAction, IndexPath) -> Void) {
         self.init(style: style, title: title, handler: handler)
         self.backgroundColor = color
     }
@@ -272,7 +272,7 @@ public extension UILabel {
         let labelTextSize = (labelText as NSString).boundingRect(
             with: CGSize(width: frame.size.width, height: .greatestFiniteMagnitude),
             options: .usesLineFragmentOrigin,
-            attributes: [NSAttributedStringKey.font: font],
+            attributes: [.font: font],
             context: nil).size
         return labelTextSize.height > bounds.size.height
     }
@@ -288,7 +288,7 @@ public extension UILabel {
         }
         set {
             guard let newValue = newValue else { return }
-            font = font.scaled(forTextStyle: UIFontTextStyle(rawValue: "UICTFontTextStyle\(newValue)"))
+            font = font.scaled(forTextStyle: UIFont.TextStyle(rawValue: "UICTFontTextStyle\(newValue)"))
         }
     }
 
@@ -312,7 +312,7 @@ public extension UIColor {
 }
 
 public extension UIFont {
-    func scaled(forTextStyle textStyle: UIFontTextStyle) -> UIFont {
+    func scaled(forTextStyle textStyle: UIFont.TextStyle) -> UIFont {
         let fontSize = UIFont.preferredFont(forTextStyle: textStyle).pointSize
         return self.withSize(fontSize)
     }

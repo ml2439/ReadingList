@@ -103,7 +103,7 @@ class EditBookMetadata: FormViewController {
                 $0.title = "Cover Image"
                 $0.cell.height = { return 100 }
                 $0.value = UIImage(optionalData: book.coverImage)
-                $0.onChange { book.coverImage = $0.value == nil ? nil : UIImageJPEGRepresentation($0.value!, 0.7) }
+                $0.onChange { book.coverImage = $0.value == nil ? nil : $0.value!.jpegData(compressionQuality: 0.7) }
             }
             <<< Int64Row(isbnRowKey) {
                 $0.title = "ISBN-13"

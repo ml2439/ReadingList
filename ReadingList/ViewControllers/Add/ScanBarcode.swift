@@ -247,7 +247,7 @@ class ScanBarcode: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
     func presentCameraPermissionsAlert() {
         let alert = UIAlertController(title: "Permission Required", message: "You'll need to change your settings to allow Reading List to use your device's camera.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Settings", style: .default) { _ in
-            if let appSettings = URL(string: UIApplicationOpenSettingsURLString), UIApplication.shared.canOpenURL(appSettings) {
+            if let appSettings = URL(string: UIApplication.openSettingsURLString), UIApplication.shared.canOpenURL(appSettings) {
                 UIApplication.shared.open(appSettings, options: [:])
                 self.dismiss(animated: false)
             }

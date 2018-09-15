@@ -3,13 +3,13 @@ import UIKit
 import ReadingList_Foundation
 
 class StartFinishButton: BorderedButton {
-    enum State {
+    enum ButtonState {
         case start
         case finish
         case none
     }
 
-    func setState(_ state: State) {
+    func setState(_ state: ButtonState) {
         switch state {
         case .start:
             isHidden = false

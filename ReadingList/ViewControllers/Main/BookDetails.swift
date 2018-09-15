@@ -258,7 +258,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         let activityViewController = UIActivityViewController(activityItems: ["\(book.title)\n\(Author.authorDisplay(book.authors))"], applicationActivities: nil)
         activityViewController.popoverPresentationController?.barButtonItem = sender
 
-        var excludedActivityTypes: [UIActivityType] = [.assignToContact, .saveToCameraRoll, .addToReadingList, .postToFlickr, .postToVimeo, .openInIBooks]
+        var excludedActivityTypes: [UIActivity.ActivityType] = [.assignToContact, .saveToCameraRoll, .addToReadingList, .postToFlickr, .postToVimeo, .openInIBooks]
         if #available(iOS 11.0, *) {
             excludedActivityTypes.append(.markupAsPDF)
         }
@@ -274,7 +274,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
             // Changes to the title view are to be animated
             let fadeTextAnimation = CATransition()
             fadeTextAnimation.duration = 0.2
-            fadeTextAnimation.type = kCATransitionFade
+            fadeTextAnimation.type = CATransitionType.fade
 
             navigationItem.titleView!.layer.add(fadeTextAnimation, forKey: nil)
             (navigationItem.titleView as! UILabel).isHidden = didShowNavigationItemTitle

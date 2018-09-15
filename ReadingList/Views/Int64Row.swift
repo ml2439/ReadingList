@@ -9,7 +9,7 @@ extension Int64: InputTypeInitiable {
 
 open class Int64Cell: _FieldCell<Int64>, CellType {
 
-    required public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    required public init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
     }
 

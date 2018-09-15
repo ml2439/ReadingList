@@ -279,7 +279,7 @@ extension UISearchBar {
     func initialise(withTheme theme: Theme) {
         keyboardAppearance = theme.keyboardAppearance
         barStyle = theme.barStyle
-        UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).defaultTextAttributes = [NSAttributedStringKey.foregroundColor.rawValue: theme.titleTextColor]
+        UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).defaultTextAttributes = [.foregroundColor: theme.titleTextColor]
     }
 }
 
