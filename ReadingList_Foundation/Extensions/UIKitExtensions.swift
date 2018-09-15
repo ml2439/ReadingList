@@ -232,7 +232,7 @@ public extension UISearchBar {
 public extension UIBarButtonItem {
     func setHidden(_ hidden: Bool) {
         isEnabled = !hidden
-        tintColor = hidden ? UIColor.clear : nil
+        tintColor = hidden ? .clear : nil
     }
 }
 
@@ -288,7 +288,7 @@ public extension UILabel {
         }
         set {
             guard let newValue = newValue else { return }
-            font = font.scaled(forTextStyle: UIFontTextStyle("UICTFontTextStyle\(newValue)"))
+            font = font.scaled(forTextStyle: UIFontTextStyle(rawValue: "UICTFontTextStyle\(newValue)"))
         }
     }
 
@@ -330,7 +330,7 @@ public extension UIImage {
 
 public extension NSAttributedString {
     @objc convenience init(_ string: String, withFont font: UIFont) {
-        self.init(string: string, attributes: [NSAttributedStringKey.font: font])
+        self.init(string: string, attributes: [.font: font])
     }
 
     static func createFromMarkdown(_ markdown: String, font: UIFont, boldFont: UIFont) -> NSMutableAttributedString {

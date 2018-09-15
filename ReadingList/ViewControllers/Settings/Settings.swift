@@ -59,7 +59,7 @@ class Settings: UITableViewController {
 
         // In split mode, change the cells a little to look more like the standard iOS settings app
         cell.selectedBackgroundView = UIView(backgroundColor: UIColor(fromHex: 5350396))
-        cell.textLabel!.highlightedTextColor = UIColor.white
+        cell.textLabel!.highlightedTextColor = .white
         cell.accessoryType = .none
         return cell
     }

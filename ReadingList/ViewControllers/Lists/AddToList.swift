@@ -30,7 +30,7 @@ class AddToList: UITableViewController {
     static func getAppropriateVcForAddingBooksToList(_ booksToAdd: [Book], completion: (() -> Void)? = nil) -> UIViewController {
         let listCount = NSManagedObject.fetchRequest(List.self, limit: 1)
         if try! PersistentStoreManager.container.viewContext.count(for: listCount) > 0 {
-            let rootAddToList = Storyboard.AddToList.instantiateRoot(withStyle: .formSheet) as! UINavigationController
+            let rootAddToList = UIStoryboard.AddToList.instantiateRoot(withStyle: .formSheet) as! UINavigationController
             let addToList = (rootAddToList.viewControllers[0] as! AddToList)
             addToList.books = booksToAdd
             addToList.onCompletion = completion

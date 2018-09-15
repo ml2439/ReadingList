@@ -25,8 +25,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         completeStoreTransactions()
 
         // Grab any options which we take action on after the persistent store is initialised
-        let quickAction = launchOptions?[UIApplicationLaunchOptionsKey.shortcutItem] as? UIApplicationShortcutItem
-        let csvFileUrl = launchOptions?[UIApplicationLaunchOptionsKey.url] as? URL
+        let quickAction = launchOptions?[.shortcutItem] as? UIApplicationShortcutItem
+        let csvFileUrl = launchOptions?[.url] as? URL
 
         // Initialise the persistent store on a background thread. The main thread will return and the LaunchScreen
         // storyboard will remain in place until this is completed, at which point the Main storyboard will be instantiated.
@@ -166,15 +166,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         switch action {
         case .scanBarcode:
             UserEngagement.logEvent(.scanBarcodeQuickAction)
-            presentFromToRead(Storyboard.ScanBarcode.rootAsFormSheet())
+            presentFromToRead(UIStoryboard.ScanBarcode.rootAsFormSheet())
         case .searchOnline:
             UserEngagement.logEvent(.searchOnlineQuickAction)
-            presentFromToRead(Storyboard.SearchOnline.rootAsFormSheet())
+            presentFromToRead(UIStoryboard.SearchOnline.rootAsFormSheet())
         }
     }
 
     func monitorThemeSetting() {
-        NotificationCenter.default.addObserver(self, selector: #selector(initialiseTheme), name: Notification.Name.ThemeSettingChanged, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(initialiseTheme), name: .ThemeSettingChanged, object: nil)
     }
 
     @objc func initialiseTheme() {

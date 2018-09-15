@@ -1,7 +1,7 @@
 import Foundation
 import UIKit
 
-class Storyboard {
+extension UIStoryboard {
     static var SearchOnline: UIStoryboard {
          return UIStoryboard(name: "SearchOnline", bundle: Bundle.main)
     }

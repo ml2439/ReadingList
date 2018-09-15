@@ -3,7 +3,7 @@ import UIKit
 
 public class UINavigationBarLabel: UILabel {
     public convenience init() {
-        self.init(frame: CGRect.zero)
+        self.init(frame: .zero)
         backgroundColor = .clear
         textAlignment = .center
         textColor = UINavigationBar.appearance().tintColor

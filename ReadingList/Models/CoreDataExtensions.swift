@@ -13,7 +13,7 @@ extension NSManagedObjectContext {
         childContext.parent = self
         childContext.automaticallyMergesChangesFromParent = autoMerge
 
-        NotificationCenter.default.addObserver(self, selector: #selector(mergeAndSave(fromChildContextDidSave:)), name: NSNotification.Name.NSManagedObjectContextDidSave, object: childContext)
+        NotificationCenter.default.addObserver(self, selector: #selector(mergeAndSave(fromChildContextDidSave:)), name: .NSManagedObjectContextDidSave, object: childContext)
 
         return childContext
     }

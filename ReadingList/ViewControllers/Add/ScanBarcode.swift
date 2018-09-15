@@ -210,14 +210,14 @@ class ScanBarcode: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
     func presentNoExactMatchAlert(forIsbn isbn: String) {
         let alert = UIAlertController(title: "No Exact Match",
                                       message: "We couldn't find an exact match. Would you like to do a more general search instead?",
-                                      preferredStyle: UIAlertControllerStyle.alert)
-        alert.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.cancel) { _ in
+                                      preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "No", style: .cancel) { _ in
             self.session?.startRunning()
         })
-        alert.addAction(UIAlertAction(title: "Yes", style: UIAlertActionStyle.default) { _ in
+        alert.addAction(UIAlertAction(title: "Yes", style: .default) { _ in
             let presentingViewController = self.presentingViewController
             self.dismiss(animated: true) {
-                let searchOnlineNav = Storyboard.SearchOnline.rootAsFormSheet() as! UINavigationController
+                let searchOnlineNav = UIStoryboard.SearchOnline.rootAsFormSheet() as! UINavigationController
                 (searchOnlineNav.viewControllers.first as! SearchOnline).initialSearchString = isbn
                 presentingViewController!.present(searchOnlineNav, animated: true, completion: nil)
             }
@@ -237,22 +237,22 @@ class ScanBarcode: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
     }
 
     func presentInfoAlert(title: String, message: String) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.alert)
-        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default) { _ in
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default) { _ in
             self.dismiss(animated: true, completion: nil)
         })
         present(alert, animated: true, completion: nil)
     }
 
     func presentCameraPermissionsAlert() {
-        let alert = UIAlertController(title: "Permission Required", message: "You'll need to change your settings to allow Reading List to use your device's camera.", preferredStyle: UIAlertControllerStyle.alert)
-        alert.addAction(UIAlertAction(title: "Settings", style: UIAlertActionStyle.default) { _ in
+        let alert = UIAlertController(title: "Permission Required", message: "You'll need to change your settings to allow Reading List to use your device's camera.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Settings", style: .default) { _ in
             if let appSettings = URL(string: UIApplicationOpenSettingsURLString), UIApplication.shared.canOpenURL(appSettings) {
                 UIApplication.shared.open(appSettings, options: [:])
                 self.dismiss(animated: false)
             }
         })
-        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel) { _ in
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { _ in
             self.dismiss(animated: true)
         })
         feedbackGenerator.notificationOccurred(.error)

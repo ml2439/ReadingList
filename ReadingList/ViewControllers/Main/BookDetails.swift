@@ -166,7 +166,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         bookNotes.font = UIFont.gillSans(forTextStyle: .subheadline)
 
         // Watch for changes in the managed object context
-        NotificationCenter.default.addObserver(self, selector: #selector(saveOccurred(_:)), name: NSNotification.Name.NSManagedObjectContextDidSave, object: PersistentStoreManager.container.viewContext)
+        NotificationCenter.default.addObserver(self, selector: #selector(saveOccurred(_:)), name: .NSManagedObjectContextDidSave, object: PersistentStoreManager.container.viewContext)
 
         monitorThemeSetting()
     }

@@ -8,7 +8,7 @@ open class BorderedButton: UIButton {
         super.awakeFromNib()
         layer.cornerRadius = 12
         layer.borderWidth = 0
-        setTitleColor(UIColor.white, for: state)
+        setTitleColor(.white, for: state)
         setColor(tintColor)
     }
 

@@ -28,7 +28,7 @@ class EditBookReadState: FormViewController {
         configureNavigationItem()
 
         // Watch the book object for changes and validate the form
-        NotificationCenter.default.addObserver(self, selector: #selector(validate), name: NSNotification.Name.NSManagedObjectContextObjectsDidChange, object: editContext)
+        NotificationCenter.default.addObserver(self, selector: #selector(validate), name: .NSManagedObjectContextObjectsDidChange, object: editContext)
 
         let now = Date()
 

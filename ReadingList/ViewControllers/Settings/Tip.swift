@@ -81,7 +81,7 @@ class Tip: UIViewController, ThemeableViewController {
                 guard error.code != .paymentCancelled else { return }
 
                 let alert = UIAlertController(title: "Tip Failed", message: "Something went wrong - thanks for trying though!", preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default))
+                alert.addAction(UIAlertAction(title: "OK", style: .default))
                 appDelegate.window?.rootViewController?.present(alert, animated: true)
             }
         }

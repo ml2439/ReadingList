@@ -32,7 +32,7 @@ public extension String {
 
     /// Removes all whitespace characters from the beginning and the end of the string.
     func trimming() -> String {
-        return self.trimmingCharacters(in: CharacterSet.whitespaces)
+        return self.trimmingCharacters(in: .whitespaces)
     }
 
     func urlEncoding() -> String {
