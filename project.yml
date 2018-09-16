@@ -57,6 +57,7 @@ targets:
   ReadingList_UnitTests:
     type: bundle.unit-test
     platform: iOS
+    deploymentTarget: 10.3
     sources: [ReadingList_UnitTests]
     dependencies:
       - target: ReadingList
@@ -69,6 +70,7 @@ targets:
   ReadingList_UITests:
     type: bundle.ui-testing
     platform: iOS
+    deploymentTarget: 10.3
     sources: [ReadingList_UITests]
     dependencies:
       - target: ReadingList
