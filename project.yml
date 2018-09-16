@@ -33,6 +33,7 @@ targets:
         CODE_SIGN_ENTITLEMENTS: ReadingList/ReadingList.entitlements
         DEVELOPMENT_TEAM: YPDEV2E775
         PRODUCT_BUNDLE_IDENTIFIER: com.andrewbennet.books
+        SWIFT_VERSION: 4.2
       configs:
         Debug:
           PROVISIONING_PROFILE_SPECIFIER: match Development com.andrewbennet.books
@@ -52,6 +53,7 @@ targets:
     sources: [ReadingList_Foundation]
     settings:
       PRODUCT_BUNDLE_IDENTIFIER: com.andrewbennet.ReadingList-Foundation
+      SWIFT_VERSION: 4.2
   ReadingList_UnitTests:
     type: bundle.unit-test
     platform: iOS
@@ -59,6 +61,7 @@ targets:
     dependencies:
       - target: ReadingList
     settings:
+      SWIFT_VERSION: 4.2
       # These settings are added when Xcode creates a new project with test targets.
       # See https://stackoverflow.com/a/30939244/5513562
       BUNDLE_LOADER: $TEST_HOST
@@ -69,6 +72,8 @@ targets:
     sources: [ReadingList_UITests]
     dependencies:
       - target: ReadingList
+    settings:
+      SWIFT_VERSION: 4.2
   ReadingList_Screenshots:
     type: bundle.ui-testing
     platform: iOS
@@ -77,6 +82,8 @@ targets:
       - path: ReadingList_UITests/ReadingListApplication.swift
     dependencies:
       - target: ReadingList
+    settings:
+      SWIFT_VERSION: 4.2
 schemes:
   Screenshots:
     build:

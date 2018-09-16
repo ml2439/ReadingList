@@ -25,4 +25,24 @@ target 'ReadingList' do
   target 'ReadingList_Screenshots' do
     inherit! :complete
   end
+
+  # Use Swift 4.0 instead of 4.2 for some Pods
+  post_install do |installer|
+  	myTargets = ['Eureka', 'ImageRow']
+  	installer.pods_project.targets.each do |target|
+  			target.build_configurations.each do |config|
+          if myTargets.include? target.name
+  				  config.build_settings['SWIFT_VERSION'] = '4.0'
+  			  end
+  		end
+  	end
+    # See https://github.com/CocoaPods/CocoaPods/issues/8063 and https://github.com/CocoaPods/CocoaPods/issues/4439
+    installer.pods_project.build_configurations.each do |config|
+      if config.name == 'Release'
+        config.build_settings['SWIFT_OPTIMIZATION_LEVEL'] = '-Owholemodule'
+      else
+        config.build_settings['SWIFT_OPTIMIZATION_LEVEL'] = '-Onone'
+      end
+    end
+  end
 end
