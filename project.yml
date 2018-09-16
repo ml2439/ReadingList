@@ -79,6 +79,7 @@ targets:
   ReadingList_Screenshots:
     type: bundle.ui-testing
     platform: iOS
+    deploymentTarget: 10.3
     sources:
       - path: ReadingList_Screenshots
       - path: ReadingList_UITests/ReadingListApplication.swift
