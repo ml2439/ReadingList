@@ -10,6 +10,7 @@
 # update_fastlane
 
 default_platform(:ios)
+xcversion(version: "10.0")
 
 platform :ios do
 
@@ -17,7 +18,8 @@ platform :ios do
   lane :test do
     # run tests synchronously as a bug in xcpretty will hide test results when multiple devices are used
     scan(scheme: "ReadingList", devices: ["iPhone 7 (10.3.1)"])
-    scan(scheme: "ReadingList", devices: ["iPhone 8"], test_without_building: true)
+    scan(scheme: "ReadingList", devices: ["iPhone 8 (11.4)"], test_without_building: true)
+    scan(scheme: "ReadingList", devices: ["iPhone XS"], test_without_building: true)
     scan(scheme: "ReadingList", devices: ["iPad Pro (10.5-inch) (11.4)"], test_without_building: true)
   end
 
