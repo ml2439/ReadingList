@@ -171,6 +171,15 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         monitorThemeSetting()
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        // There is a weird issue with the alpha of the titleView being set to 1, even if viewDidlLoad
+        // sets it to 0. To workaround this, we load the view with isHidden = true, and then only once
+        // the view has appeared, switch to using alpha.
+        navigationItem.titleView?.alpha = 0
+        navigationItem.titleView?.isHidden = false
+    }
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
@@ -271,14 +280,12 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         let titleLabel = titleAuthorHeadings[0]
         let titleMaxYPosition = titleLabel.convert(titleLabel.frame, to: view).maxY
         if didShowNavigationItemTitle != (titleMaxYPosition - scrollView.universalContentInset.top < 0) {
-            // Changes to the title view are to be animated
-            let fadeTextAnimation = CATransition()
-            fadeTextAnimation.duration = 0.2
-            fadeTextAnimation.type = CATransitionType.fade
-
-            navigationItem.titleView!.layer.add(fadeTextAnimation, forKey: nil)
-            (navigationItem.titleView as! UILabel).isHidden = didShowNavigationItemTitle
-            didShowNavigationItemTitle = !didShowNavigationItemTitle
+            // Changes to the title view are to be animated. We can't animate the isHidden property,
+            // so animate the alpha property instead (https://stackoverflow.com/q/52355841/5513562).
+            UIView.animate(withDuration: 0.2, delay: 0, options: .transitionCrossDissolve, animations: {
+                self.navigationItem.titleView?.alpha = self.didShowNavigationItemTitle ? 0 : 1
+            }, completion: nil)
+            didShowNavigationItemTitle.toggle()
         }
     }
 
