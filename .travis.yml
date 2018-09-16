@@ -5,7 +5,7 @@ osx_image: xcode10
 notifications:
   email:
     - feedback@readinglist.app
-before_install:
+before_install: # xcodegen project file generation removed until https://github.com/yonaskolb/XcodeGen/issues/391 is fixed
   - bundle install > /dev/null
   - pod repo update > /dev/null
   - pod install
