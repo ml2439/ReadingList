@@ -8,6 +8,9 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
     var resultsController: CompoundFetchedResultsController<Book>!
     var readStates: [BookReadState]!
     var searchController: UISearchController!
+    private lazy var orderedDefaultPredicates = readStates.map {
+        (readState: $0, predicate: NSPredicate(format: "%K == %ld", #keyPath(Book.readState), $0.rawValue))
+    }
 
     @IBOutlet private weak var tableFooter: UILabel!
 
@@ -80,14 +83,8 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
         return BookReadState(rawValue: sectionAsInt)!.description
     }
 
-    lazy var defaultPredicates: [BookReadState: NSPredicate] = {
-        readStates.reduce(into: [BookReadState: NSPredicate]()) { dict, readState in
-            dict[readState] = NSPredicate(format: "%K == %ld", #keyPath(Book.readState), readState.rawValue)
-        }
-    }()
-
     func buildResultsController() {
-        let controllers = defaultPredicates.map { readState, predicate -> NSFetchedResultsController<Book> in
+        let controllers = orderedDefaultPredicates.map { readState, predicate -> NSFetchedResultsController<Book> in
             let fetchRequest = NSManagedObject.fetchRequest(Book.self, batch: 25)
             fetchRequest.predicate = predicate
             fetchRequest.sortDescriptors = UserSettings.selectedBookSortDescriptors(forReadState: readState)
@@ -431,7 +428,7 @@ extension BookTable: UISearchResultsUpdating {
 
         var anyChangedPredicates = false
         for (index, controller) in resultsController.controllers.enumerated() {
-            let thisSectionPredicate = NSPredicate.and([defaultPredicates[readStates[index]]!, searchTextPredicate])
+            let thisSectionPredicate = NSPredicate.and([orderedDefaultPredicates[index].predicate, searchTextPredicate])
             if controller.fetchRequest.predicate != thisSectionPredicate {
                 controller.fetchRequest.predicate = thisSectionPredicate
                 anyChangedPredicates = true
