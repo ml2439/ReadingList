@@ -1,6 +1,7 @@
 xcuserdata
 *.xcuserstate
 *.xcodeproj/*
+*.xcworkspace/*
 .DS_Store
 Pods/
 screenshots.html

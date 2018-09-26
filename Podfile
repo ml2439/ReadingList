@@ -5,7 +5,7 @@ use_frameworks!
 target 'ReadingList' do
   pod 'DZNEmptyDataSet', '~> 1.8'
   pod 'SwiftyJSON', '~> 4.0'
-  pod 'Eureka', :git => 'https://github.com/xmartlabs/Eureka.git', :commit => 'ec14ae696e' # to use customised UIPickerViews
+  pod 'Eureka', '~> 4.3'
   pod 'ImageRow', '~> 3.0'
   pod 'SVProgressHUD', '~> 2.2'
   pod 'SwiftyStoreKit', '~> 0.13'
@@ -28,7 +28,7 @@ target 'ReadingList' do
 
   # Use Swift 4.0 instead of 4.2 for some Pods
   post_install do |installer|
-  	myTargets = ['Eureka', 'ImageRow']
+  	myTargets = ['ImageRow']
   	installer.pods_project.targets.each do |target|
   			target.build_configurations.each do |config|
           if myTargets.include? target.name
