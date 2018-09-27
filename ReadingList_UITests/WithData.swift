@@ -9,7 +9,7 @@ class WithData: XCTestCase {
         let app = ReadingListApplication()
         app.launchArguments.append("--UITests_PopulateData")
         app.launch()
-        sleep(5)
+        sleep(3)
     }
 
     override func tearDown() {
@@ -23,8 +23,9 @@ class WithData: XCTestCase {
 
         let initialNumberOfCells = Int(app.tables.cells.count)
         app.clickAddButton(addMethod: .enterManually)
-
+        sleep(1)
         app.tables.textFields.element(boundBy: 0).tap()
+        sleep(1)
         app.typeText("The Catcher in the Rye")
 
         app.tables.staticTexts["Add Author"].tap()
@@ -96,8 +97,9 @@ class WithData: XCTestCase {
 
         // Normal mode
         scanBarcode(app: app, mode: .normal)
-        sleep(1)
-        app.navigationBars.element(boundBy: 0).buttons["Cancel"].tap()
+        let cancel = app.navigationBars.element(boundBy: 0).buttons["Cancel"]
+        cancel.waitForExistence(timeout: 3)
+        cancel.tap()
     }
 
     func testBarcodeScannerNoPermissions() {
@@ -105,7 +107,7 @@ class WithData: XCTestCase {
 
         // No permissions
         scanBarcode(app: app, mode: .noCameraPermissions)
-        sleep(1)
+        _ = app.alerts.element(boundBy: 0).waitForExistence(timeout: 2)
         XCTAssertEqual(app.alerts.count, 1)
         let permissionAlert = app.alerts.element(boundBy: 0)
         XCTAssertEqual("Permission Required", permissionAlert.label)
@@ -117,9 +119,9 @@ class WithData: XCTestCase {
 
         // Valid ISBN
         scanBarcode(app: app, mode: .validIsbn)
-        sleep(5)
-        app.navigationBars.element(boundBy: 0).buttons["Done"].tap()
-
+        let done = app.navigationBars.element(boundBy: 0).buttons["Done"]
+        _ = done.waitForExistence(timeout: 10)
+        done.tap()
     }
 
     func testBarcodeScannerNotFoundIsbn() {
@@ -127,7 +129,7 @@ class WithData: XCTestCase {
 
         // Not found ISBN
         scanBarcode(app: app, mode: .unfoundIsbn)
-        sleep(3)
+        _ = app.alerts.element(boundBy: 0).waitForExistence(timeout: 5)
         XCTAssertEqual(app.alerts.count, 1)
         let noMatchAlert = app.alerts.element(boundBy: 0)
         XCTAssertEqual("No Exact Match", noMatchAlert.label)
@@ -141,7 +143,7 @@ class WithData: XCTestCase {
 
         // Existing ISBN
         scanBarcode(app: app, mode: .existingIsbn)
-        sleep(1)
+        _ = app.alerts.element(boundBy: 0).waitForExistence(timeout: 2)
         XCTAssertEqual(app.alerts.count, 1)
         let duplicateAlert = app.alerts.element(boundBy: 0)
         XCTAssertEqual("Book Already Added", duplicateAlert.label)
