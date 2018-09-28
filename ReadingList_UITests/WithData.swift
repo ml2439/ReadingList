@@ -98,7 +98,7 @@ class WithData: XCTestCase {
         // Normal mode
         scanBarcode(app: app, mode: .normal)
         let cancel = app.navigationBars.element(boundBy: 0).buttons["Cancel"]
-        cancel.waitForExistence(timeout: 3)
+        _ = cancel.waitForExistence(timeout: 3)
         cancel.tap()
     }
 
