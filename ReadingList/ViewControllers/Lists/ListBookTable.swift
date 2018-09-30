@@ -24,7 +24,7 @@ class ListBookTable: UITableViewController {
 
     func registerForSaveNotifications() {
         // Watch for changes in the managed object context, in order to update the table
-        NotificationCenter.default.addObserver(self, selector: #selector(changeOccurred(_:)), name: NSNotification.Name.NSManagedObjectContextObjectsDidChange, object: list.managedObjectContext!)
+        NotificationCenter.default.addObserver(self, selector: #selector(changeOccurred(_:)), name: .NSManagedObjectContextObjectsDidChange, object: list.managedObjectContext!)
     }
 
     @objc func changeOccurred(_ notification: Notification) {
@@ -34,7 +34,7 @@ class ListBookTable: UITableViewController {
         let deletedObjects = userInfo[NSDeletedObjectsKey] as? NSSet ?? NSSet()
         guard !deletedObjects.contains(list) else {
             // If the list was deleted, pop back. This can't happen through any normal means at the moment.
-            navigationController!.popViewController(animated: false)
+            navigationController?.popViewController(animated: false)
             return
         }
 

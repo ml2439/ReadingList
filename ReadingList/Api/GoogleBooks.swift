@@ -1,6 +1,7 @@
 import Foundation
 import SwiftyJSON
 import Promises
+import ReadingList_Foundation
 
 class GoogleBooks {
 
@@ -9,8 +10,8 @@ class GoogleBooks {
      */
     static func search(_ text: String) -> Promise<[SearchResult]> {
         return URLSession.shared.json(url: GoogleBooksRequest.searchText(text).url)
-            .then(Parser.assertNoError)
-            .then(Parser.parseSearchResults)
+            .then(GoogleBooksParser.assertNoError)
+            .then(GoogleBooksParser.parseSearchResults)
     }
 
     /**
@@ -18,27 +19,47 @@ class GoogleBooks {
      */
     static func fetch(isbn: String) -> Promise<FetchResult> {
         return URLSession.shared.json(url: GoogleBooksRequest.searchIsbn(isbn).url)
-            .then(Parser.parseSearchResults)
-            .then { searchResults -> String in
-                guard let id = searchResults.first?.id else { throw GoogleError.noResult }
-                return id
+            .then(GoogleBooksParser.parseSearchResults)
+            .then {
+                guard let id = $0.first?.id else { throw GoogleError.noResult }
+                return fetch(googleBooksId: id)
             }
-            .then(fetch(googleBooksId:))
     }
 
     /**
      Fetches the specified book from Google Books. Performs a supplementary request for the
-     book's cover data if necessary.
+     book's cover image data if necessary.
      */
     static func fetch(googleBooksId: String) -> Promise<FetchResult> {
+        return fetch(googleBooksId: googleBooksId, existingSearchResult: nil)
+    }
+
+    /**
+     Fetches the book identified by a search result from Google Books. If the fetch results are not sufficient
+     to create a Book object (sometimes fetch results miss data which is present in a search result), an attempt
+     is made to "mix" the data from the search and fetch results. Performs a supplementary request for the
+     book's cover image data if necessary.
+     */
+    static func fetch(searchResult: SearchResult) -> Promise<FetchResult> {
+        return fetch(googleBooksId: searchResult.id, existingSearchResult: searchResult)
+    }
+
+    /**
+     Fetches the specified book from Google Books. If the results are not sufficient to create a Book object,
+     and a search result was supplied, an attempt is made to "mix" the data from the search and fetch results.
+     Performs a supplementary request for the book's cover image data if necessary.
+     */
+    private static func fetch(googleBooksId: String, existingSearchResult: SearchResult?) -> Promise<FetchResult> {
         let fetchPromise = URLSession.shared.json(url: GoogleBooksRequest.fetch(googleBooksId).url)
-            .then(Parser.parseFetchResults)
-            .then { fetchResult -> FetchResult in
-                if let fetchResult = fetchResult {
+            .then { json -> FetchResult in
+                if let fetchResult = GoogleBooksParser.parseFetchResults(json) {
                     return fetchResult
-                } else {
-                    throw GoogleError.missingEssentialData
                 }
+                if let existingSearchResult = existingSearchResult,
+                    let fetchResult = GoogleBooksParser.parseFetchResults(json, existingSearchResult: existingSearchResult) {
+                    return fetchResult
+                }
+                throw GoogleError.missingEssentialData
             }
 
         let coverPromise = fetchPromise.then { getCover(googleBooksId: $0.id) }
@@ -102,7 +123,7 @@ enum GoogleBooksRequest {
     }
 }
 
-class Parser {
+class GoogleBooksParser {
 
     static func parseError(json: JSON) -> GoogleError? {
         if let code = json["error", "code"].int, let message = json["error", "message"].string {
@@ -112,7 +133,7 @@ class Parser {
     }
 
     static func assertNoError(json: JSON) throws -> JSON {
-        if let error = Parser.parseError(json: json) {
+        if let error = GoogleBooksParser.parseError(json: json) {
             throw error
         } else {
             return json
@@ -121,16 +142,21 @@ class Parser {
 
     static func parseSearchResults(_ searchResults: JSON) -> [SearchResult] {
         return searchResults["items"].compactMap { itemJson in
-            Parser.parseItem(itemJson.1)
+            GoogleBooksParser.parseItem(itemJson.1)
         }
     }
 
     static func parseItem(_ item: JSON) -> SearchResult? {
-        guard let id = item["id"].string,
-            let title = item["volumeInfo", "title"].string,
-            let authors = item["volumeInfo", "authors"].array else { return nil }
+        guard let id = item["id"].string, !id.isEmptyOrWhitespace,
+            let title = item["volumeInfo", "title"].string, !title.isEmptyOrWhitespace,
+            let authorsJson = item["volumeInfo", "authors"].array, !authorsJson.isEmpty else { return nil }
+        let authors: [String] = authorsJson.compactMap {
+            guard let authorString = $0.rawString(), !authorString.isEmptyOrWhitespace else { return nil }
+            return authorString
+        }
+        guard !authors.isEmpty else { return nil }
 
-        let result = SearchResult(id: id, title: title, authors: authors.map { $0.rawString()! })
+        let result = SearchResult(id: id, title: title, authors: authors)
 
         // Convert the thumbnail URL to HTTPS
         if let thumbnailUrlString = item["volumeInfo", "imageLinks", "thumbnail"].string,
@@ -146,10 +172,10 @@ class Parser {
         return result
     }
 
-    static func parseFetchResults(_ fetchResult: JSON) -> FetchResult? {
+    static func parseFetchResults(_ fetchResult: JSON, existingSearchResult: SearchResult? = nil) -> FetchResult? {
 
-        // Defer to the common search parsing initially
-        guard let searchResult = Parser.parseItem(fetchResult) else { return nil }
+        // Defer to the common search parsing initially, or use the provided search result
+        guard let searchResult = existingSearchResult ?? GoogleBooksParser.parseItem(fetchResult) else { return nil }
 
         let result = FetchResult(fromSearchResult: searchResult)
         result.pageCount = fetchResult["volumeInfo", "pageCount"].int
@@ -167,7 +193,7 @@ class Parser {
         var description = fetchResult["volumeInfo", "description"].string
 
         description = description?.components(separatedBy: "<br>")
-            .compactMap { $0.trimming().nilIfWhitespace() }
+            .map { $0.trimming() }
             .joined(separator: "\n")
 
         description = description?.components(separatedBy: "<p>")
@@ -208,7 +234,7 @@ class FetchResult {
     let id: String
     var title: String
     var authors = [String]()
-    var isbn13: String?
+    var isbn13: ISBN13?
     var description: String?
     var subjects = [String]()
     var languageCode: String?
@@ -223,7 +249,7 @@ class FetchResult {
         id = searchResult.id
         title = searchResult.title
         authors = searchResult.authors
-        isbn13 = searchResult.isbn13
+        isbn13 = ISBN13(searchResult.isbn13)
     }
 }
 

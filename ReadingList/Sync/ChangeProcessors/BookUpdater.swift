@@ -25,7 +25,7 @@ class BookUpdater: BookUpstreamChangeProcessor {
 
         remote.upload(booksAndCKRecords.map { $0.ckRecord }) { [unowned self] error in
             self.context.perform {
-                var failures: [AnyHashable: Error]? = nil
+                var failures: [AnyHashable: Error]?
                 if let ckError = error as? CKError {
                     //if ckError.code == CKError.Code.networkFailure
                     failures = ckError.partialErrorsByItemID

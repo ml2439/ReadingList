@@ -21,7 +21,7 @@ class About: UITableViewController {
         case 0: presentThemedSafariViewController(URL(string: "https://www.readinglist.app")!)
         case 1: share(indexPath)
         case 2: contact(indexPath)
-        case 3: joinBeta(indexPath)
+        case 3: About.joinBeta()
         case 4: presentThemedSafariViewController(URL(string: "https://github.com/AndrewBennet/readinglist")!)
         default: return
         }
@@ -56,52 +56,8 @@ class About: UITableViewController {
         present(controller, animated: true)
     }
 
-    private func joinBeta(_ indexPath: IndexPath) {
-        let canSendMail = MFMailComposeViewController.canSendMail()
-
-        var betaTestPopupText = """
-            If you would like to help the development of this app, you can become a Beta Tester. \
-            This will give you early access to app updates in order to test new features.
-            """
-        if !canSendMail {
-            betaTestPopupText += "\n\nTo become a beta tester, please email \(Settings.feedbackEmailAddress) with the subject \"\(Settings.joinBetaEmailSubject)\"."
-        }
-        let controller = UIAlertController(title: "Become a Beta Tester?", message: betaTestPopupText, preferredStyle: .actionSheet)
-        if canSendMail {
-            controller.addAction(UIAlertAction(title: "Join", style: .default) { _ in
-                guard BuildInfo.appConfiguration != .testFlight else {
-                    let controller = UIAlertController(title: "Already a Beta Tester", message: "You're already running a beta version of the app.", preferredStyle: .alert)
-                    controller.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                    self.present(controller, animated: true)
-                    return
-                }
-
-                let betaWindow = About.betaMailComposeWindow()
-                betaWindow.mailComposeDelegate = self
-                self.present(betaWindow, animated: true)
-            })
-            controller.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        } else {
-            controller.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-        }
-        controller.popoverPresentationController?.setSourceCell(atIndexPath: indexPath, inTable: tableView, arrowDirections: [.up, .down])
-        present(controller, animated: true)
-    }
-
-    static func betaMailComposeWindow() -> MFMailComposeViewController {
-        let mailComposer = MFMailComposeViewController()
-        mailComposer.setToRecipients(["Reading List Developer <\(Settings.feedbackEmailAddress)>"])
-        mailComposer.setSubject(Settings.joinBetaEmailSubject)
-        let messageBody = """
-        To enroll in the Reading List beta, please send this from the email address associated with your Apple ID, or type that email address here:
-
-
-        App Version: \(BuildInfo.appConfiguration.userFacingDescription)
-        iOS Version: \(UIDevice.current.systemVersion)
-        Device: \(UIDevice.current.modelName)
-        """
-        mailComposer.setMessageBody(messageBody, isHTML: false)
-        return mailComposer
+    static func joinBeta() {
+        UIApplication.shared.open(URL(string: "https://testflight.apple.com/join/kBS5mVao")!, options: [:], completionHandler: nil)
     }
 
     private func presentContactMailComposeWindow() {
@@ -135,7 +91,7 @@ class Attributions: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.rowHeight = UITableView.automaticDimension
         monitorThemeSetting()
     }
 

@@ -1,13 +1,11 @@
 # Uncomment the next line to define a global platform for your project
-platform :ios, '10.0'
+platform :ios, '10.3'
+use_frameworks!
 
 target 'ReadingList' do
-  use_frameworks!
-
-  # Pods for books
   pod 'DZNEmptyDataSet', '~> 1.8'
   pod 'SwiftyJSON', '~> 4.0'
-  pod 'Eureka', :git => 'https://github.com/xmartlabs/Eureka.git', :commit => 'ec14ae696e' # to use customised UIPickerViews
+  pod 'Eureka', '~> 4.3'
   pod 'ImageRow', '~> 3.0'
   pod 'SVProgressHUD', '~> 2.2'
   pod 'SwiftyStoreKit', '~> 0.13'
@@ -17,17 +15,35 @@ target 'ReadingList' do
   pod 'Fabric'
   pod 'Crashlytics'
   pod 'Firebase/Core'
-  pod 'SwiftLint'
   pod 'ReachabilitySwift'
 
+  target 'ReadingList_UnitTests' do
+    inherit! :search_paths
+  end
   target 'ReadingList_UITests' do
     inherit! :complete
-    # Pods for testing
   end
-
-  target 'ReadingList_UnitTests' do
+  target 'ReadingList_Screenshots' do
     inherit! :complete
-    # Pods for testing
   end
 
+  # Use Swift 4.0 instead of 4.2 for some Pods
+  post_install do |installer|
+  	myTargets = ['ImageRow']
+  	installer.pods_project.targets.each do |target|
+  			target.build_configurations.each do |config|
+          if myTargets.include? target.name
+  				  config.build_settings['SWIFT_VERSION'] = '4.0'
+  			  end
+  		end
+  	end
+    # See https://github.com/CocoaPods/CocoaPods/issues/8063 and https://github.com/CocoaPods/CocoaPods/issues/4439
+    installer.pods_project.build_configurations.each do |config|
+      if config.name == 'Release'
+        config.build_settings['SWIFT_OPTIMIZATION_LEVEL'] = '-Owholemodule'
+      else
+        config.build_settings['SWIFT_OPTIMIZATION_LEVEL'] = '-Onone'
+      end
+    end
+  end
 end

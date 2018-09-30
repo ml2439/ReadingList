@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 import CoreData
+import ReadingList_Foundation
 
 class AddToList: UITableViewController {
 
@@ -16,6 +17,8 @@ class AddToList: UITableViewController {
     }
     var booksSet: NSSet!
 
+    private let addNewListSectionIndex = 0
+
     // When the add-to-list operation is complete, this callback will be called
     var onCompletion: (() -> Void)?
 
@@ -27,7 +30,7 @@ class AddToList: UITableViewController {
     static func getAppropriateVcForAddingBooksToList(_ booksToAdd: [Book], completion: (() -> Void)? = nil) -> UIViewController {
         let listCount = NSManagedObject.fetchRequest(List.self, limit: 1)
         if try! PersistentStoreManager.container.viewContext.count(for: listCount) > 0 {
-            let rootAddToList = Storyboard.AddToList.instantiateRoot(withStyle: .formSheet) as! UINavigationController
+            let rootAddToList = UIStoryboard.AddToList.instantiateRoot(withStyle: .formSheet) as! UINavigationController
             let addToList = (rootAddToList.viewControllers[0] as! AddToList)
             addToList.books = booksToAdd
             addToList.onCompletion = completion
@@ -67,7 +70,7 @@ class AddToList: UITableViewController {
     @IBAction private func cancelWasPressed(_ sender: Any) { navigationController!.dismiss(animated: true) }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 1 { return 1 }
+        if section == addNewListSectionIndex { return 1 }
         return resultsController.fetchedObjects!.count
     }
 
@@ -77,48 +80,51 @@ class AddToList: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if section == 0 { return "Add to an existing list" }
-        return "Or add to a new list"
+        if section == addNewListSectionIndex { return "Add to a new list" }
+        return "Or add to an existing list"
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard indexPath.section == 0 else {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "NewListCell", for: indexPath)
-            cell.defaultInitialise(withTheme: UserSettings.theme.value)
+        let cellIdentifier = indexPath.section == addNewListSectionIndex ? "NewListCell" : "ExistingListCell"
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
+        cell.defaultInitialise(withTheme: UserSettings.theme.value)
+
+        if indexPath.section == addNewListSectionIndex {
             cell.textLabel!.text = "Add New List"
             cell.accessoryType = .disclosureIndicator
-            return cell
-        }
+        } else {
+            let listObj = resultsController.object(at: IndexPath(row: indexPath.row, section: 0))
+            cell.textLabel!.text = listObj.name
+            cell.detailTextLabel!.text = "\(listObj.books.count) book\(listObj.books.count == 1 ? "" : "s")"
+            cell.isEnabled = true
 
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ExistingListCell", for: indexPath)
-        let listObj = resultsController.object(at: indexPath)
-        cell.defaultInitialise(withTheme: UserSettings.theme.value)
-        cell.textLabel!.text = listObj.name
-        cell.detailTextLabel!.text = "\(listObj.books.count) book\(listObj.books.count == 1 ? "" : "s")"
-        cell.isEnabled = true
+            // If any of the books are already in this list:
+            // FUTURE: Check whether this is firing a lot of faults
+            let booksInThisList = listObj.books.set
+            if booksSet.intersects(booksInThisList) {
+                let alreadyAddedText: String
+                if booksSet.isSubset(of: booksInThisList) {
+                    alreadyAddedText = books.count == 1 ? "already added" : "all already added"
+                    cell.isEnabled = false
+                } else {
+                    let overlapSet = booksSet.mutableCopy() as! NSMutableSet
+                    overlapSet.intersect(booksInThisList)
+                    alreadyAddedText = "\(overlapSet.count) already added"
+                }
 
-        // If any of the books are already in this list:
-        // FUTURE: Check whether this is firing a lot of faults
-        let booksInThisList = listObj.books.set
-        if booksSet.intersects(booksInThisList) {
-            let alreadyAddedText: String
-            if booksSet.isSubset(of: booksInThisList) {
-                alreadyAddedText = books.count == 1 ? "already added" : "all already added"
-                cell.isEnabled = false
-            } else {
-                let overlapSet = booksSet.mutableCopy() as! NSMutableSet
-                overlapSet.intersect(booksInThisList)
-                alreadyAddedText = "\(overlapSet.count) already added"
+                cell.detailTextLabel!.text?.append(" (\(alreadyAddedText))")
             }
-
-            cell.detailTextLabel!.text?.append(" (\(alreadyAddedText))")
         }
 
         return cell
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if indexPath.section == 0 {
+        if indexPath.section == addNewListSectionIndex {
+            present(AddToList.newListAlertController(books) {
+                self.navigationController!.dismiss(animated: true, completion: self.onCompletion)
+            }, animated: true)
+        } else {
             // Append the books to the end of the selected list
             let list = resultsController.object(at: IndexPath(row: indexPath.row, section: 0))
             list.managedObjectContext!.performAndSave {
@@ -126,10 +132,6 @@ class AddToList: UITableViewController {
             }
 
             navigationController!.dismiss(animated: true, completion: onCompletion)
-        } else {
-            present(AddToList.newListAlertController(books) {
-                self.navigationController!.dismiss(animated: true, completion: self.onCompletion)
-            }, animated: true)
         }
     }
 }

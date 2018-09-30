@@ -8,7 +8,7 @@ class BookCloudKitRemote {
     private let userRecordNameKey = "CK_UserRecordName"
 
     private(set) var userRecordName: String!
-    private(set) var bookZoneID: CKRecordZoneID!
+    private(set) var bookZoneID: CKRecordZone.ID!
 
     var privateDB: CKDatabase {
         return CKContainer.default().privateCloudDatabase
@@ -35,7 +35,7 @@ class BookCloudKitRemote {
 
     private func createZoneAndSubscription(userRecordName: String, completion: @escaping (Error?) -> Void) {
         self.userRecordName = userRecordName
-        self.bookZoneID = CKRecordZoneID(zoneName: bookZoneName, ownerName: userRecordName)
+        self.bookZoneID = CKRecordZone.ID(zoneName: bookZoneName, ownerName: userRecordName)
 
         // Create the book zone (TODO: Do not create if already exists?)
         let bookZone = CKRecordZone(zoneID: bookZoneID)
@@ -49,7 +49,7 @@ class BookCloudKitRemote {
         // Subscribe to changes
         let subscription = CKRecordZoneSubscription(zoneID: bookZone.zoneID, subscriptionID: "BookChanges")
         subscription.notificationInfo = {
-            let info = CKNotificationInfo()
+            let info = CKSubscription.NotificationInfo()
             info.shouldSendContentAvailable = true
             return info
         }()
@@ -71,9 +71,9 @@ class BookCloudKitRemote {
         print("Fetching record changes")
 
         var changedRecords = [CKRecord]()
-        var deletedRecordIDs = [CKRecordID]()
+        var deletedRecordIDs = [CKRecord.ID]()
 
-        let options = CKFetchRecordZoneChangesOptions()
+        let options = CKFetchRecordZoneChangesOperation.ZoneOptions()
         options.previousServerChangeToken = changeToken
 
         let operation = CKFetchRecordZoneChangesOperation(recordZoneIDs: [bookZoneID], optionsByRecordZoneID: [bookZoneID: options])
@@ -107,7 +107,7 @@ class BookCloudKitRemote {
         CKContainer.default().privateCloudDatabase.add(operation)
     }
 
-    func remove(_ recordIDs: [CKRecordID], completion: @escaping (Error?) -> Void) {
+    func remove(_ recordIDs: [CKRecord.ID], completion: @escaping (Error?) -> Void) {
         let operation = CKModifyRecordsOperation(recordsToSave: nil, recordIDsToDelete: recordIDs)
         operation.qualityOfService = .userInitiated
         operation.modifyRecordsCompletionBlock = { _, _, error in
@@ -119,10 +119,10 @@ class BookCloudKitRemote {
 
 class CKChangeCollection {
     let changedRecords: [CKRecord]
-    let deletedRecordIDs: [CKRecordID]
+    let deletedRecordIDs: [CKRecord.ID]
     let newChangeToken: CKServerChangeToken
 
-    init(changedRecords: [CKRecord], deletedRecordIDs: [CKRecordID], newChangeToken: CKServerChangeToken) {
+    init(changedRecords: [CKRecord], deletedRecordIDs: [CKRecord.ID], newChangeToken: CKServerChangeToken) {
         self.changedRecords = changedRecords
         self.deletedRecordIDs = deletedRecordIDs
         self.newChangeToken = newChangeToken

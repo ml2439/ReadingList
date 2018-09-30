@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 import CoreData
+import ReadingList_Foundation
 
 class BookDetails: UIViewController, UIScrollViewDelegate {
     @IBOutlet private weak var cover: UIImageView!
@@ -9,7 +10,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     @IBOutlet private var titles: [UILabel]!
 
     @IBOutlet private var titleAuthorHeadings: [UILabel]!
-    @IBOutlet private weak var bookDescription: UILabel!
+    @IBOutlet private weak var bookDescription: ExpandableLabel!
 
     @IBOutlet private weak var ratingStarsStackView: UIStackView!
     @IBOutlet private var tableVaules: [UILabel]!
@@ -22,17 +23,20 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     @IBOutlet private weak var listsStack: UIStackView!
     @IBOutlet private weak var listDetailsView: UIView!
     @IBOutlet private weak var noLists: UILabel!
+    @IBOutlet private weak var noNotes: UILabel!
+    @IBOutlet private weak var bookNotes: ExpandableLabel!
 
     var didShowNavigationItemTitle = false
-    var shouldTruncateLongDescriptions = true
 
     var parentSplitViewController: UISplitViewController? {
         return appDelegate.tabBarController.selectedSplitViewController
     }
 
     func setViewEnabled(_ enabled: Bool) {
-        // Show the whole view and nav bar buttons
-        view.isHidden = !enabled
+        // Show or hide the whole view and nav bar buttons. Exit early if nothing to do.
+        if view.isHidden != !enabled {
+            view.isHidden = !enabled
+        }
         navigationItem.rightBarButtonItems?.forEach { $0.setHidden(!enabled) }
     }
 
@@ -63,8 +67,8 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         }
 
         bookDescription.text = book.bookDescription
-        bookDescription.superview!.isHidden = book.bookDescription == nil
-        bookDescription.superview!.nextSibling!.isHidden = book.bookDescription == nil
+        bookDescription.isHidden = book.bookDescription == nil
+        bookDescription.nextSibling!.isHidden = book.bookDescription == nil
 
         func setTextOrHideLine(_ label: UILabel, _ string: String?) {
             // The detail labels are within a view, within a horizonal-stack
@@ -103,19 +107,22 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
 
         setTextOrHideLine(tableVaules[4], pageNumberText)
 
-        ratingStarsStackView.superview!.isHidden = book.rating == nil
+        ratingStarsStackView.superview!.superview!.superview!.isHidden = book.rating == nil
         if let rating = book.rating {
             for (index, star) in ratingStarsStackView.arrangedSubviews[...4].enumerated() {
                 star.isHidden = index + 1 > rating.intValue
             }
         }
 
-        setTextOrHideLine(tableVaules[5], book.notes)
-        setTextOrHideLine(tableVaules[6], book.isbn13)
-        setTextOrHideLine(tableVaules[7], book.pageCount?.intValue.string)
-        setTextOrHideLine(tableVaules[8], book.publicationDate?.toPrettyString(short: false))
-        setTextOrHideLine(tableVaules[9], book.subjects.map { $0.name }.sorted().joined(separator: ", ").nilIfWhitespace())
-        setTextOrHideLine(tableVaules[10], book.languageCode == nil ? nil : Language.byIsoCode[book.languageCode!]?.displayName)
+        bookNotes.isHidden = book.notes == nil
+        bookNotes.text = book.notes
+        noNotes.isHidden = book.notes != nil || book.rating != nil
+
+        setTextOrHideLine(tableVaules[5], book.isbn13?.stringValue)
+        setTextOrHideLine(tableVaules[6], book.pageCount?.intValue.string)
+        setTextOrHideLine(tableVaules[7], book.publicationDate?.toPrettyString(short: false))
+        setTextOrHideLine(tableVaules[8], book.subjects.map { $0.name }.sorted().joined(separator: ", ").nilIfWhitespace())
+        setTextOrHideLine(tableVaules[9], book.languageCode == nil ? nil : Language.byIsoCode[book.languageCode!]?.displayName)
 
         // Show or hide the links, depending on whether we have valid URLs. If both links are hidden, the enclosing stack should be too.
         googleBooks.isHidden = book.googleBooksId == nil
@@ -141,9 +148,6 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         // shown without any books being selected.
         setViewEnabled(false)
 
-        // Listen for taps on the book description, which should remove any truncation
-        bookDescription.superview!.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(seeMoreDescription)))
-
         // Listen for taps on the Google and Amazon labels, which should act like buttons and open the relevant webpage
         amazon.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(amazonButtonPressed)))
         googleBooks.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(googleBooksButtonPressed)))
@@ -158,8 +162,11 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
             titleAuthorHeadings.forEach { $0.scaleFontBy(1.3) }
         }
 
+        bookDescription.font = UIFont.gillSans(forTextStyle: .subheadline)
+        bookNotes.font = UIFont.gillSans(forTextStyle: .subheadline)
+
         // Watch for changes in the managed object context
-        NotificationCenter.default.addObserver(self, selector: #selector(saveOccurred(_:)), name: NSNotification.Name.NSManagedObjectContextDidSave, object: PersistentStoreManager.container.viewContext)
+        NotificationCenter.default.addObserver(self, selector: #selector(saveOccurred(_:)), name: .NSManagedObjectContextDidSave, object: PersistentStoreManager.container.viewContext)
 
         monitorThemeSetting()
     }
@@ -167,18 +174,9 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
-        // If we should not be truncating long descriptions, hide the siblings of the description label (which are the see more
-        // button and a spacer view)
-        let truncationViews = bookDescription.siblings
-        guard shouldTruncateLongDescriptions else { truncationViews.forEach { $0.isHidden = true }; return }
-
         // In "regular" size classed devices, the description text can be less truncated
         if traitCollection.horizontalSizeClass == .regular && traitCollection.verticalSizeClass == .regular {
             bookDescription.numberOfLines = 8
-        }
-
-        if truncationViews.first!.isHidden == bookDescription.isTruncated {
-            truncationViews.forEach { $0.isHidden = !bookDescription.isTruncated }
         }
     }
 
@@ -192,17 +190,9 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         present(EditBookMetadata(bookToEditID: book.objectID).inThemedNavController(), animated: true)
     }
 
-    @objc func seeMoreDescription() {
-        guard shouldTruncateLongDescriptions else { return }
-
-        // We cannot just set isHidden to true here, because we cannot be sure whether the relayout will be called before or after
-        // the description label starts reporting isTruncated = false.
-        // Instead, store the knowledge that the button should be hidden here; when layout is called, if the button is disabled it will be hidden.
-        shouldTruncateLongDescriptions = false
-        bookDescription.numberOfLines = 0
-
-        // Relaying out the parent stackview is required to adjust the space between the separator and the description label
-        (bookDescription.superview!.superview as! UIStackView).layoutIfNeeded()
+    @IBAction private func updateNotesPressed(_ sender: Any) {
+        guard let book = book else { return }
+        present(EditBookNotes(existingBookID: book.objectID).inThemedNavController(), animated: true)
     }
 
     @objc func saveOccurred(_ notification: Notification) {
@@ -220,7 +210,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         let updatedObjects = userInfo[NSUpdatedObjectsKey] as? NSSet ?? NSSet()
         let createdObjects = userInfo[NSInsertedObjectsKey] as? NSSet ?? NSSet()
         func setContainsRelatedList(_ set: NSSet) -> Bool {
-            return set.compactMap { $0 as? List }.any { $0.books.contains(book) }
+            return set.compactMap { $0 as? List }.contains { $0.books.contains(book) }
         }
 
         if updatedObjects.contains(book) || setContainsRelatedList(deletedObjects) || setContainsRelatedList(updatedObjects) || setContainsRelatedList(createdObjects) {
@@ -268,7 +258,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         let activityViewController = UIActivityViewController(activityItems: ["\(book.title)\n\(Author.authorDisplay(book.authors))"], applicationActivities: nil)
         activityViewController.popoverPresentationController?.barButtonItem = sender
 
-        var excludedActivityTypes: [UIActivityType] = [.assignToContact, .saveToCameraRoll, .addToReadingList, .postToFlickr, .postToVimeo, .openInIBooks]
+        var excludedActivityTypes: [UIActivity.ActivityType] = [.assignToContact, .saveToCameraRoll, .addToReadingList, .postToFlickr, .postToVimeo, .openInIBooks]
         if #available(iOS 11.0, *) {
             excludedActivityTypes.append(.markupAsPDF)
         }
@@ -284,7 +274,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
             // Changes to the title view are to be animated
             let fadeTextAnimation = CATransition()
             fadeTextAnimation.duration = 0.2
-            fadeTextAnimation.type = kCATransitionFade
+            fadeTextAnimation.type = CATransitionType.fade
 
             navigationItem.titleView!.layer.add(fadeTextAnimation, forKey: nil)
             (navigationItem.titleView as! UILabel).isHidden = didShowNavigationItemTitle
@@ -322,12 +312,14 @@ extension BookDetails: ThemeableViewController {
         view.backgroundColor = theme.viewBackgroundColor
         navigationController?.view.backgroundColor = theme.viewBackgroundColor
         navigationController?.navigationBar.initialise(withTheme: theme)
-        (navigationItem.titleView as! UINavigationBarLabel).initialise(fromTheme: theme)
+        (navigationItem.titleView as! UINavigationBarLabel).textColor = theme.titleTextColor
         titleAuthorHeadings[0].textColor = theme.titleTextColor
         titleAuthorHeadings[1].textColor = theme.subtitleTextColor
 
-        bookDescription.textColor = theme.subtitleTextColor
-        bookDescription.siblings.compactMap { $0 as? HorizontalGradientView }.first!.color = theme.viewBackgroundColor
+        bookDescription.color = theme.subtitleTextColor
+        bookDescription.gradientColor = theme.viewBackgroundColor
+        bookNotes.color = theme.subtitleTextColor
+        bookNotes.gradientColor = theme.viewBackgroundColor
 
         titles.forEach { $0.textColor = theme.titleTextColor }
         tableSubHeadings.forEach { $0.textColor = theme.subtitleTextColor }

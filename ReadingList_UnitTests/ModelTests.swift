@@ -1,7 +1,7 @@
 import XCTest
 import Foundation
 import CoreData
-@testable import Reading_List
+@testable import ReadingList
 
 class ModelTests: XCTestCase {
 
@@ -22,16 +22,18 @@ class ModelTests: XCTestCase {
         book.manualBookId = UUID().uuidString
         book.setAuthors([Author(lastName: "Lastname", firstNames: "Firstname")])
         try! testContainer.viewContext.save()
-        XCTAssertEqual(maxSort + 1, book.sort!.int32)
-        XCTAssertEqual(Book.maxSort(fromContext: testContainer.viewContext)!, book.sort!.int32)
+        let bookSort = Int32(truncating: book.sort!)
+        XCTAssertEqual(maxSort + 1, bookSort)
+        XCTAssertEqual(Book.maxSort(fromContext: testContainer.viewContext)!, bookSort)
 
         let book2 = Book(context: testContainer.viewContext, readState: .toRead)
         book2.title = "title2"
         book2.manualBookId = UUID().uuidString
         book2.setAuthors([Author(lastName: "Lastname", firstNames: "Firstname")])
         try! testContainer.viewContext.save()
-        XCTAssertEqual(maxSort + 2, book2.sort!.int32)
-        XCTAssertEqual(Book.maxSort(fromContext: testContainer.viewContext)!, book2.sort!.int32)
+        let book2Sort = Int32(truncating: book2.sort!)
+        XCTAssertEqual(maxSort + 2, book2Sort)
+        XCTAssertEqual(Book.maxSort(fromContext: testContainer.viewContext)!, book2Sort)
 
         // Start reading book2; check it has no sort and the maxSort goes down
         book2.startReading()
@@ -56,7 +58,7 @@ class ModelTests: XCTestCase {
         book4.sort = 12
         try! testContainer.viewContext.save()
         XCTAssertEqual(12, book4.sort)
-        XCTAssertEqual(Book.maxSort(fromContext: testContainer.viewContext)!, book4.sort!.int32)
+        XCTAssertEqual(Book.maxSort(fromContext: testContainer.viewContext)!, Int32(truncating: book4.sort!))
     }
 
     func testAuthorCalculatedProperties() {
@@ -78,10 +80,10 @@ class ModelTests: XCTestCase {
         book.manualBookId = UUID().uuidString
 
         book.languageCode = "zz"
-        XCTAssertFalse(book.isValidForUpdate())
+        XCTAssertThrowsError(try book.validateForUpdate(), "Valid language code")
 
         book.languageCode = "en"
-        XCTAssertTrue(book.isValidForUpdate())
+        XCTAssertNoThrow(try book.validateForUpdate(), "Invalid language code")
     }
 
     func testIsbnValidation() {
@@ -90,10 +92,10 @@ class ModelTests: XCTestCase {
         book.setAuthors([Author(lastName: "Test", firstNames: "Author")])
         book.manualBookId = UUID().uuidString
 
-        book.isbn13 = "1234567891234"
-        XCTAssertFalse(book.isValidForUpdate())
+        book.isbn13 = 1234567891234
+        XCTAssertThrowsError(try book.validateForUpdate(), "Valid ISBN")
 
-        book.isbn13 = "9781786070166"
-        XCTAssertTrue(book.isValidForUpdate())
+        book.isbn13 = 9781786070166
+        XCTAssertNoThrow(try book.validateForUpdate(), "Invalid ISBN")
     }
 }

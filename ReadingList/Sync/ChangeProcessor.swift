@@ -3,7 +3,7 @@ import CoreData
 import CloudKit
 
 protocol DownstreamChangeProcessor: CustomDebugStringConvertible {
-    func processRemoteChanges(from zone: CKRecordZoneID, changes: CKChangeCollection, completion: (() -> Void)?)
+    func processRemoteChanges(from zone: CKRecordZone.ID, changes: CKChangeCollection, completion: (() -> Void)?)
 }
 
 protocol UpstreamChangeProcessor: CustomDebugStringConvertible {

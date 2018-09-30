@@ -1,0 +1,96 @@
+name: ReadingList
+targets:
+  ReadingList:
+    type: application
+    platform: iOS
+    deploymentTarget: 10.3
+    sources: [ReadingList]
+    scheme:
+      testTargets:
+        - ReadingList_UnitTests
+        - ReadingList_UITests
+        - ReadingList_Screenshots
+    dependencies:
+      - framework: StoreKit.framework
+        embed: false
+      - target: ReadingList_Foundation
+    prebuildScripts:
+      - name: SwiftLint
+        script: |
+                if [[ -z $CI ]]; then
+                  "/usr/local/bin/swiftlint" --path "${PROJECT_DIR}"
+                fi
+    postbuildScripts:
+      - name: Run Fabric Script
+        script: |
+                if [ "${CONFIGURATION}" = "Release" ]; then
+                  "${PODS_ROOT}/Fabric/run" "$FABRIC_API_KEY" "$FABRIC_BUILD_SECRET"
+                fi
+    settings:
+      base:
+        ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES: $(inherited)
+        CODE_SIGN_STYLE: Manual
+        CODE_SIGN_ENTITLEMENTS: ReadingList/ReadingList.entitlements
+        DEVELOPMENT_TEAM: YPDEV2E775
+        PRODUCT_BUNDLE_IDENTIFIER: com.andrewbennet.books
+        SWIFT_VERSION: 4.2
+      configs:
+        Debug:
+          PROVISIONING_PROFILE_SPECIFIER: match Development com.andrewbennet.books
+        Release:
+          PROVISIONING_PROFILE_SPECIFIER: match AppStore com.andrewbennet.books
+          CODE_SIGN_IDENTITY[sdk=iphoneos*]: "iPhone Distribution: Andrew Bennet (YPDEV2E775)"
+    attributes:
+      SystemCapabilities:
+        com.apple.iCloud:
+          enabled: 1
+        com.apple.InAppPurchase:
+          enabled: 1
+  ReadingList_Foundation:
+    type: framework
+    platform: iOS
+    deploymentTarget: 10.3
+    sources: [ReadingList_Foundation]
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: com.andrewbennet.ReadingList-Foundation
+      SWIFT_VERSION: 4.2
+  ReadingList_UnitTests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: 10.3
+    sources: [ReadingList_UnitTests]
+    dependencies:
+      - target: ReadingList
+    settings:
+      SWIFT_VERSION: 4.2
+      # These settings are added when Xcode creates a new project with test targets.
+      # See https://stackoverflow.com/a/30939244/5513562
+      BUNDLE_LOADER: $TEST_HOST
+      TEST_HOST: $(BUILT_PRODUCTS_DIR)/ReadingList.app/ReadingList
+  ReadingList_UITests:
+    type: bundle.ui-testing
+    platform: iOS
+    deploymentTarget: 10.3
+    sources: [ReadingList_UITests]
+    dependencies:
+      - target: ReadingList
+    settings:
+      SWIFT_VERSION: 4.2
+  ReadingList_Screenshots:
+    type: bundle.ui-testing
+    platform: iOS
+    deploymentTarget: 10.3
+    sources:
+      - path: ReadingList_Screenshots
+      - path: ReadingList_UITests/ReadingListApplication.swift
+    dependencies:
+      - target: ReadingList
+    settings:
+      SWIFT_VERSION: 4.2
+schemes:
+  Screenshots:
+    build:
+      targets:
+        ReadingList_Screenshots: [test, run]
+options:
+  groupSortPosition: top

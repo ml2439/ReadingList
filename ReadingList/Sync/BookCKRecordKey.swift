@@ -73,7 +73,7 @@ enum BookCKRecordKey: String { //swiftlint:disable redundant_string_enum_value
         switch self {
         case .title: return book.title as NSString
         case .googleBooksId: return book.googleBooksId as NSString?
-        case .isbn13: return book.isbn13 as NSString?
+        case .isbn13: return book.isbn13 as NSNumber?
         case .pageCount: return book.pageCount
         case .publicationDate: return book.publicationDate as NSDate?
         case .bookDescription: return book.bookDescription as NSString?
@@ -101,7 +101,7 @@ enum BookCKRecordKey: String { //swiftlint:disable redundant_string_enum_value
         switch self {
         case .title: book.title = value as! String
         case .googleBooksId: book.googleBooksId = value as? String
-        case .isbn13: book.isbn13 = value as? String
+        case .isbn13: book.isbn13 = value as? NSNumber
         case .pageCount: book.pageCount = value as? NSNumber
         case .publicationDate: book.publicationDate = value as? Date
         case .bookDescription: book.bookDescription = value as? String

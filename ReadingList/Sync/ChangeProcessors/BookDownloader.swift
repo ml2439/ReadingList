@@ -11,7 +11,7 @@ class BookDownloader: DownstreamChangeProcessor {
     let debugDescription = String(describing: BookDownloader.self)
     let context: NSManagedObjectContext
 
-    func processRemoteChanges(from zone: CKRecordZoneID, changes: CKChangeCollection, completion: (() -> Void)?) {
+    func processRemoteChanges(from zone: CKRecordZone.ID, changes: CKChangeCollection, completion: (() -> Void)?) {
         context.perform {
             self.downloadBooks(changes.changedRecords)
             self.deleteBooks(with: changes.deletedRecordIDs)
@@ -26,7 +26,7 @@ class BookDownloader: DownstreamChangeProcessor {
         }
     }
 
-    private func deleteBooks(with ids: [CKRecordID]) {
+    private func deleteBooks(with ids: [CKRecord.ID]) {
         guard !ids.isEmpty else { return }
         print("\(debugDescription) processing \(ids.count) remote deletions")
 
@@ -71,7 +71,7 @@ class BookDownloader: DownstreamChangeProcessor {
         return nil
     }
 
-    private func locallyPresentBooks(withRemoteIDs remoteIDs: [CKRecordID]) -> [Book] {
+    private func locallyPresentBooks(withRemoteIDs remoteIDs: [CKRecord.ID]) -> [Book] {
         let fetchRequest = NSManagedObject.fetchRequest(Book.self)
         fetchRequest.predicate = Book.withRemoteIdentifiers(remoteIDs.map { $0.recordName })
         return try! context.fetch(fetchRequest)

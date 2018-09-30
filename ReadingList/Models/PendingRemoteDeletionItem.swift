@@ -9,14 +9,14 @@ class PendingRemoteDeletionItem: NSManagedObject {
     @NSManaged private var recordName: String
 
     @discardableResult
-    convenience init(context: NSManagedObjectContext, ckRecordID: CKRecordID) {
+    convenience init(context: NSManagedObjectContext, ckRecordID: CKRecord.ID) {
         self.init(context: context)
         ownerName = ckRecordID.zoneID.ownerName
         zoneName = ckRecordID.zoneID.zoneName
         recordName = ckRecordID.recordName
     }
 
-    var recordID: CKRecordID {
-        return CKRecordID(recordName: recordName, zoneID: CKRecordZoneID(zoneName: zoneName, ownerName: ownerName))
+    var recordID: CKRecord.ID {
+        return CKRecord.ID(recordName: recordName, zoneID: CKRecordZone.ID(zoneName: zoneName, ownerName: ownerName))
     }
 }

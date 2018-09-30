@@ -1,21 +1,28 @@
 import UIKit
 import MessageUI
+import ReadingList_Foundation
 
 class Settings: UITableViewController {
 
-    @IBOutlet private weak var header: XibView!
     static let appStoreAddress = "itunes.apple.com/gb/app/reading-list-book-tracker/id1217139955"
     static let feedbackEmailAddress = "feedback@readinglist.app"
-    static let joinBetaEmailSubject = "Join Reading List Beta"
     private let dataIndexPath = IndexPath(row: 2, section: 1)
+
+    @IBOutlet private var headerLabels: [UILabel]!
+    @IBOutlet private weak var versionLabel: UILabel!
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        versionLabel.text = "v\(BuildInfo.appConfiguration.userFacingDescription)"
 
         if #available(iOS 11.0, *) {
             monitorLargeTitleSetting()
         }
         monitorThemeSetting()
+
+        #if DEBUG
+        tableView.tableHeaderView!.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(onLongPressHeader(_:))))
+        #endif
 
         DispatchQueue.main.async {
             // isSplit does not work correctly before the view is loaded; run this later
@@ -24,6 +31,13 @@ class Settings: UITableViewController {
             }
         }
     }
+
+    #if DEBUG
+    @objc func onLongPressHeader(_ recognizer: UILongPressGestureRecognizer) {
+        guard recognizer.state == .began else { return }
+        present(Debug().inThemedNavController(), animated: true, completion: nil)
+    }
+    #endif
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -34,7 +48,7 @@ class Settings: UITableViewController {
 
     override func initialise(withTheme theme: Theme) {
         super.initialise(withTheme: theme)
-        (header.contentView as! SettingsHeader).initialise(withTheme: theme)
+        headerLabels.forEach { $0.textColor = theme.titleTextColor }
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -44,7 +58,7 @@ class Settings: UITableViewController {
 
         // In split mode, change the cells a little to look more like the standard iOS settings app
         cell.selectedBackgroundView = UIView(backgroundColor: UIColor(fromHex: 5350396))
-        cell.textLabel!.highlightedTextColor = UIColor.white
+        cell.textLabel!.highlightedTextColor = .white
         cell.accessoryType = .none
         return cell
     }
@@ -57,16 +71,6 @@ class Settings: UITableViewController {
             return
         }
         tableView.deselectRow(at: indexPath, animated: true)
-    }
-
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        #if DEBUG
-            return super.tableView(tableView, numberOfRowsInSection: section)
-        #else
-            // Hide the Debug cell
-            let realCount = super.tableView(tableView, numberOfRowsInSection: section)
-            return section == 1 ? realCount - 1 : realCount
-        #endif
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

@@ -3,6 +3,7 @@ import Foundation
 import Eureka
 import ImageRow
 import SafariServices
+import ReadingList_Foundation
 
 @objc enum Theme: Int {
     case normal = 1
@@ -53,8 +54,8 @@ extension Theme {
     var placeholderTextColor: UIColor {
         switch self {
         case .normal: return UIColor.hex(0xCDCDD3)
-        case .dark: return UIColor.hex(0x303030)
-        case .black: return UIColor.hex(0x262626)
+        case .dark: return UIColor.hex(0x404040)
+        case .black: return UIColor.hex(0x363636)
         }
     }
 
@@ -141,6 +142,12 @@ extension UIViewController {
         }
         present(safariVC, animated: true, completion: nil)
     }
+
+    func inThemedNavController(modalPresentationStyle: UIModalPresentationStyle = .formSheet) -> UINavigationController {
+        let nav = ThemedNavigationController(rootViewController: self)
+        nav.modalPresentationStyle = modalPresentationStyle
+        return nav
+    }
 }
 
 extension UITabBarController: ThemeableViewController {
@@ -219,6 +226,12 @@ class ThemedSplitViewController: UISplitViewController, UISplitViewControllerDel
         (detailNavigationController as? ThemedNavigationController)?.initialise(withTheme: theme)
         (tabBarController as! TabBarController).initialise(withTheme: theme)
     }
+
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        // This override is placed on the base view controller type - the SplitViewController - so that
+        // it only needs to be implemented once.
+        return UserSettings.theme.value.statusBarStyle
+    }
 }
 
 class ThemedNavigationController: UINavigationController, ThemeableViewController {
@@ -272,7 +285,7 @@ extension UISearchBar {
     func initialise(withTheme theme: Theme) {
         keyboardAppearance = theme.keyboardAppearance
         barStyle = theme.barStyle
-        UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).defaultTextAttributes = [NSAttributedStringKey.foregroundColor.rawValue: theme.titleTextColor]
+        UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).defaultTextAttributes = [.foregroundColor: theme.titleTextColor]
     }
 }
 
@@ -336,6 +349,11 @@ extension Theme {
             cell.pickerTextAttributes = [.foregroundColor: self.titleTextColor]
         }
         IntRow.defaultCellUpdate = { cell, _ in
+            initialiseCell(cell)
+            cell.textField.textColor = self.titleTextColor
+            cell.textField.keyboardAppearance = self.keyboardAppearance
+        }
+        Int64Row.defaultCellUpdate = { cell, _ in
             initialiseCell(cell)
             cell.textField.textColor = self.titleTextColor
             cell.textField.keyboardAppearance = self.keyboardAppearance

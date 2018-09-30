@@ -1,5 +1,7 @@
 xcuserdata
 *.xcuserstate
+*.xcodeproj/*
+*.xcworkspace/*
 .DS_Store
 Pods/
 screenshots.html
@@ -7,6 +9,7 @@ fastlane/report.xml
 fastlane/test_output
 fastlane/metadata
 fastlane/screenshots/*/*.png
+fastlane/Preview.html
 *.ipa
 *.dSYM.zip
 .idea

@@ -28,13 +28,13 @@ class TabBarController: UITabBarController {
     func initialise() {
         // The first two tabs of the tab bar controller are to the same storyboard. We cannot have different tab bar icons
         // if they are set up in storyboards, so we do them in code here, instead.
-        let toRead = Storyboard.BookTable.instantiateRoot() as! UISplitViewController
+        let toRead = UIStoryboard.BookTable.instantiateRoot() as! UISplitViewController
         (toRead.masterNavigationRoot as! BookTable).readStates = [.reading, .toRead]
 
-        let finished = Storyboard.BookTable.instantiateRoot() as! UISplitViewController
+        let finished = UIStoryboard.BookTable.instantiateRoot() as! UISplitViewController
         (finished.masterNavigationRoot as! BookTable).readStates = [.finished]
 
-        viewControllers = [toRead, finished, Storyboard.Organise.instantiateRoot(), Storyboard.Settings.instantiateRoot()]
+        viewControllers = [toRead, finished, UIStoryboard.Organise.instantiateRoot(), UIStoryboard.Settings.instantiateRoot()]
 
         // Tabs 3 and 4 are already configured by the Organise and Settings storyboards
         tabBar.items![0].configure(tag: TabOption.toRead.rawValue, title: "To Read", image: #imageLiteral(resourceName: "courses"), selectedImage: #imageLiteral(resourceName: "courses-filled"))

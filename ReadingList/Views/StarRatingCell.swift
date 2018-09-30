@@ -9,7 +9,7 @@ public class StarRatingCell: Cell<Int>, CellType {
 
     public override func setup() {
         super.setup()
-        height = { return 50 }
+        height = { 50 }
         selectionStyle = .none
         for button in stackView.arrangedSubviews.map({ $0 as! UIButton }) {
             button.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)

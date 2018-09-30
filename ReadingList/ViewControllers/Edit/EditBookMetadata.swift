@@ -4,6 +4,7 @@ import ImageRow
 import UIKit
 import CoreData
 import SVProgressHUD
+import ReadingList_Foundation
 
 class EditBookMetadata: FormViewController {
 
@@ -14,7 +15,7 @@ class EditBookMetadata: FormViewController {
     convenience init(bookToEditID: NSManagedObjectID) {
         self.init()
         self.isAddingNewBook = false
-        self.book = editBookContext.object(with: bookToEditID) as! Book
+        self.book = (editBookContext.object(with: bookToEditID) as! Book)
     }
 
     convenience init(bookToCreateReadState: BookReadState) {
@@ -45,7 +46,7 @@ class EditBookMetadata: FormViewController {
         configureNavigationItem()
 
         // Watch the book object for changes and validate the form
-        NotificationCenter.default.addObserver(self, selector: #selector(validate), name: NSNotification.Name.NSManagedObjectContextObjectsDidChange, object: editBookContext)
+        NotificationCenter.default.addObserver(self, selector: #selector(validate), name: .NSManagedObjectContextObjectsDidChange, object: editBookContext)
 
         // Just to prevent having to reference `self` in the onChange handlers...
         let book = self.book!
@@ -60,13 +61,7 @@ class EditBookMetadata: FormViewController {
 
             +++ AuthorSection(book: book, navigationController: navigationController!)
 
-            +++ Section(header: "Additional Information", footer: "")
-            <<< TextRow(isbnRowKey) {
-                $0.title = "ISBN"
-                $0.value = book.isbn13
-                $0.disabled = Condition(booleanLiteral: true)
-                $0.hidden = Condition(booleanLiteral: isAddingNewBook || book.isbn13 == nil)
-            }
+            +++ Section(header: "Additional Information", footer: "Note: if provided, ISBN-13 must be a valid, 13 digit ISBN.")
             <<< IntRow {
                 $0.title = "Page Count"
                 $0.value = book.pageCount?.intValue
@@ -106,9 +101,17 @@ class EditBookMetadata: FormViewController {
             }
             <<< ImageRow {
                 $0.title = "Cover Image"
-                $0.cell.height = { return 100 }
+                $0.cell.height = { 100 }
                 $0.value = UIImage(optionalData: book.coverImage)
-                $0.onChange { book.coverImage = $0.value == nil ? nil : UIImageJPEGRepresentation($0.value!, 0.7) }
+                $0.onChange { book.coverImage = $0.value == nil ? nil : $0.value!.jpegData(compressionQuality: 0.7) }
+            }
+            <<< Int64Row(isbnRowKey) {
+                $0.title = "ISBN-13"
+                $0.value = book.isbn13?.int64Value
+                $0.formatter = nil
+                $0.onChange {
+                    book.isbn13 = $0.value?.nsNumber
+                }
             }
 
             +++ Section(header: "Description", footer: "")
@@ -130,7 +133,7 @@ class EditBookMetadata: FormViewController {
             }
             <<< ButtonRow(deleteRowKey) {
                 $0.title = "Delete"
-                $0.cellSetup { cell, _ in cell.tintColor = UIColor.red }
+                $0.cellSetup { cell, _ in cell.tintColor = .red }
                 $0.onCellSelection { [unowned self] _, _ in
                     self.deletePressed()
                 }
@@ -244,12 +247,12 @@ class AuthorSection: MultivaluedSection {
     weak var navigationController: UINavigationController!
 
     required init(book: Book, navigationController: UINavigationController) {
-        super.init(multivaluedOptions: [.Insert, .Delete, .Reorder], header: "Authors", footer: "") {
+        super.init(multivaluedOptions: [.Insert, .Delete, .Reorder], header: "Authors", footer: "Note: at least one author is required") {
             for author in book.authors {
                 $0 <<< AuthorRow(author: author)
             }
             $0.addButtonProvider = { _ in
-                return ButtonRow {
+                ButtonRow {
                     $0.title = "Add Author"
                     $0.cellUpdate { cell, _ in
                         cell.textLabel!.textAlignment = .left
@@ -365,7 +368,8 @@ class AddAuthorForm: FormViewController {
         // is called when a right-swipe is started - the user could reverse and bring this view back
         let lastName = (form.rowBy(tag: lastNameRow) as! _TextRow).value
         if lastName?.isEmptyOrWhitespace != false {
-            presentingRow.removeSelf()
+            guard let index = presentingRow.indexPath?.row else { return }
+            presentingRow.section!.remove(at: index)
         }
     }
 
@@ -400,7 +404,7 @@ class EditBookSubjectsForm: FormViewController {
 
         form +++ MultivaluedSection(multivaluedOptions: [.Insert, .Delete], header: "Subjects", footer: "Add subjects to categorise this book") {
             $0.addButtonProvider = { _ in
-                return ButtonRow {
+                ButtonRow {
                     $0.title = "Add New Subject"
                     $0.cellUpdate { cell, _ in
                         cell.textLabel?.textAlignment = .left
@@ -408,7 +412,7 @@ class EditBookSubjectsForm: FormViewController {
                 }
             }
             $0.multivaluedRowToInsertAt = { _ in
-                return TextRow {
+                TextRow {
                     $0.placeholder = "Subject"
                     $0.cell.textField.autocapitalizationType = .words
                 }

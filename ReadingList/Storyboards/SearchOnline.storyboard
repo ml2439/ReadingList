@@ -12,7 +12,7 @@
         <!--Themed Navigation Controller-->
         <scene sceneID="LYU-Tg-nSL">
             <objects>
-                <navigationController id="u1U-1R-a4c" customClass="ThemedNavigationController" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
+                <navigationController id="u1U-1R-a4c" customClass="ThemedNavigationController" customModule="ReadingList" customModuleProvider="target" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="csC-qd-88Z">
                         <rect key="frame" x="0.0" y="20" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -28,7 +28,7 @@
         <!--Search Online-->
         <scene sceneID="c1f-eY-hAM">
             <objects>
-                <tableViewController definesPresentationContext="YES" id="jSD-sd-NlC" customClass="SearchOnline" customModule="Reading_List" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController definesPresentationContext="YES" id="jSD-sd-NlC" customClass="SearchOnline" customModule="ReadingList" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="onDrag" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelectionDuringEditing="YES" allowsMultipleSelectionDuringEditing="YES" rowHeight="92" sectionHeaderHeight="18" sectionFooterHeight="18" id="0JO-Vg-SkQ">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

@@ -4,6 +4,7 @@ import SVProgressHUD
 import Crashlytics
 import CoreData
 import Promises
+import ReadingList_Foundation
 
 class SearchOnline: UITableViewController {
 
@@ -142,7 +143,10 @@ class SearchOnline: UITableViewController {
 
     func performSearch(searchText: String) {
         // Don't bother searching for empty text
-        guard !searchText.isEmptyOrWhitespace else { emptyDatasetView.setEmptyDatasetReason(.noSearch); return }
+        guard !searchText.isEmptyOrWhitespace else {
+            displaySearchResults(nil)
+            return
+        }
 
         SVProgressHUD.show(withStatus: "Searching...")
         feedbackGenerator.prepare()
@@ -155,17 +159,25 @@ class SearchOnline: UITableViewController {
             .then(on: .main, displaySearchResults)
     }
 
-    func displaySearchResults(_ results: [SearchResult]) {
-        if results.isEmpty {
-            feedbackGenerator.notificationOccurred(.warning)
-            emptyDatasetView.setEmptyDatasetReason(.noResults)
+    /// - Parameter results: Provide nil to indicate that a search was not performed
+    func displaySearchResults(_ results: [SearchResult]?) {
+        if let results = results {
+            if results.isEmpty {
+                feedbackGenerator.notificationOccurred(.warning)
+                emptyDatasetView.setEmptyDatasetReason(.noResults)
+            } else {
+                feedbackGenerator.notificationOccurred(.success)
+            }
         } else {
-            feedbackGenerator.notificationOccurred(.success)
+            emptyDatasetView.setEmptyDatasetReason(.noSearch)
         }
 
-        tableItems = results
+        tableItems = results ?? []
         tableView.backgroundView = tableItems.isEmpty ? emptyDatasetView : nil
         tableView.reloadData()
+        if !tableItems.isEmpty {
+            tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
+        }
 
         // No results should hide the toolbar. Unselecting previously selected results should disable the Add All button
         navigationController!.setToolbarHidden(tableItems.isEmpty, animated: true)
@@ -186,8 +198,7 @@ class SearchOnline: UITableViewController {
     }
 
     func createBook(inContext context: NSManagedObjectContext, from searchResult: SearchResult) -> Promise<Book> {
-        let book = Book(context: context, readState: .toRead)
-        return GoogleBooks.fetch(googleBooksId: searchResult.id)
+        return GoogleBooks.fetch(searchResult: searchResult)
             .recover { error -> FetchResult in
                 switch error {
                 case GoogleError.noResult: return FetchResult(fromSearchResult: searchResult)
@@ -195,6 +206,7 @@ class SearchOnline: UITableViewController {
                 }
             }
             .then(on: .main) { fetchResult -> Book in
+                let book = Book(context: context, readState: .toRead)
                 book.populate(fromFetchResult: fetchResult)
                 return book
             }
@@ -256,11 +268,17 @@ class SearchOnline: UITableViewController {
             .catch(on: .main) { _ in
                 SVProgressHUD.showError(withStatus: "An error occurred. Please try again.")
             }
-            .then(on: .main) { _ in
+            .then(on: .main) { results in
+                let newBookCount = results.compactMap { $0.value }.count
                 editContext.saveAndLogIfErrored()
                 self.searchController.isActive = false
                 self.presentingViewController!.dismiss(animated: true) {
-                    SVProgressHUD.showInfo(withStatus: "\(selectedRows.count) \("book".pluralising(selectedRows.count)) added")
+                    var status = "\(newBookCount) \("book".pluralising(newBookCount)) added"
+                    if newBookCount != selectedRows.count {
+                        let erroredCount = selectedRows.count - newBookCount
+                        status += ". \(erroredCount) \("book".pluralising(erroredCount)) could not be added due to an error."
+                    }
+                    SVProgressHUD.showInfo(withStatus: status)
                 }
             }
     }
@@ -274,7 +292,7 @@ extension SearchOnline: UISearchBarDelegate {
 
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if searchText.isEmpty {
-            displaySearchResults([SearchResult]())
+            displaySearchResults(nil)
         }
     }
 }

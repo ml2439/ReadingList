@@ -1,12 +1,16 @@
 import UIKit
 import DZNEmptyDataSet
 import CoreData
+import ReadingList_Foundation
 
 class BookTable: UITableViewController { //swiftlint:disable:this type_body_length
 
     var resultsController: CompoundFetchedResultsController<Book>!
     var readStates: [BookReadState]!
     var searchController: UISearchController!
+    private lazy var orderedDefaultPredicates = readStates.map {
+        (readState: $0, predicate: NSPredicate(format: "%K == %ld", #keyPath(Book.readState), $0.rawValue))
+    }
 
     @IBOutlet private weak var tableFooter: UILabel!
 
@@ -41,8 +45,8 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
         tableView.emptyDataSetDelegate = self
 
         // Watch for changes
-        NotificationCenter.default.addObserver(self, selector: #selector(bookSortChanged), name: NSNotification.Name.BookSortOrderChanged, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(refetch), name: NSNotification.Name.PersistentStoreBatchOperationOccurred, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(bookSortChanged), name: .BookSortOrderChanged, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(refetch), name: .PersistentStoreBatchOperationOccurred, object: nil)
 
         if #available(iOS 11.0, *) {
             monitorLargeTitleSetting()
@@ -79,14 +83,8 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
         return BookReadState(rawValue: sectionAsInt)!.description
     }
 
-    lazy var defaultPredicates: [BookReadState: NSPredicate] = {
-        readStates.reduce(into: [BookReadState: NSPredicate]()) { dict, readState in
-            dict[readState] = NSPredicate(format: "%K == %ld", #keyPath(Book.readState), readState.rawValue)
-        }
-    }()
-
     func buildResultsController() {
-        let controllers = defaultPredicates.map { readState, predicate -> NSFetchedResultsController<Book> in
+        let controllers = orderedDefaultPredicates.map { readState, predicate -> NSFetchedResultsController<Book> in
             let fetchRequest = NSManagedObject.fetchRequest(Book.self, batch: 25)
             fetchRequest.predicate = predicate
             fetchRequest.sortDescriptors = UserSettings.selectedBookSortDescriptors(forReadState: readState)
@@ -310,8 +308,8 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
         }
 
         let optionsAlert = UIAlertController(title: "Add New Book", message: nil, preferredStyle: .actionSheet)
-        optionsAlert.addAction(storyboardAction(title: "Scan Barcode", storyboard: Storyboard.ScanBarcode))
-        optionsAlert.addAction(storyboardAction(title: "Search Online", storyboard: Storyboard.SearchOnline))
+        optionsAlert.addAction(storyboardAction(title: "Scan Barcode", storyboard: .ScanBarcode))
+        optionsAlert.addAction(storyboardAction(title: "Search Online", storyboard: .SearchOnline))
         optionsAlert.addAction(UIAlertAction(title: "Add Manually", style: .default) { _ in
             self.present(EditBookMetadata(bookToCreateReadState: .toRead).inThemedNavController(), animated: true, completion: nil)
         })
@@ -332,7 +330,7 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
 
         // Add the other state change actions where appropriate
         if indexPath.section == sectionIndexByReadState[.toRead] {
-            let startAction = UITableViewRowAction(style: .normal, title: "Start", color: UIColor.buttonBlue) { _, indexPath in
+            let startAction = UITableViewRowAction(style: .normal, title: "Start", color: .buttonBlue) { _, indexPath in
                 self.resultsController.object(at: indexPath).startReading()
                 PersistentStoreManager.container.viewContext.saveAndLogIfErrored()
             }
@@ -340,7 +338,7 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
         } else if indexPath.section == sectionIndexByReadState[.reading] {
             let readingBook = self.resultsController.object(at: indexPath)
             if readingBook.startedReading! < Date() {
-                let finishAction = UITableViewRowAction(style: .normal, title: "Finish", color: UIColor.flatGreen) { _, _ in
+                let finishAction = UITableViewRowAction(style: .normal, title: "Finish", color: .flatGreen) { _, _ in
                     readingBook.finishReading()
                     PersistentStoreManager.container.viewContext.saveAndLogIfErrored()
                 }
@@ -394,7 +392,7 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
             UserEngagement.logEvent(.transitionReadState)
             callback(true)
         }
-        leadingSwipeAction.backgroundColor = readStateOfSection == .toRead ? UIColor.buttonBlue : UIColor.flatGreen
+        leadingSwipeAction.backgroundColor = readStateOfSection == .toRead ? .buttonBlue : .flatGreen
         leadingSwipeAction.image = readStateOfSection == .toRead ? #imageLiteral(resourceName: "Play") : #imageLiteral(resourceName: "Complete")
         actions.insert(leadingSwipeAction, at: 0)
 
@@ -430,7 +428,7 @@ extension BookTable: UISearchResultsUpdating {
 
         var anyChangedPredicates = false
         for (index, controller) in resultsController.controllers.enumerated() {
-            let thisSectionPredicate = NSPredicate.and([defaultPredicates[readStates[index]]!, searchTextPredicate])
+            let thisSectionPredicate = NSPredicate.and([orderedDefaultPredicates[index].predicate, searchTextPredicate])
             if controller.fetchRequest.predicate != thisSectionPredicate {
                 controller.fetchRequest.predicate = thisSectionPredicate
                 anyChangedPredicates = true
@@ -541,7 +539,7 @@ extension BookTable: UIViewControllerPreviewingDelegate {
         }
 
         previewingContext.sourceRect = cell.frame
-        let bookDetails = Storyboard.BookDetails.instantiateViewController(withIdentifier: "BookDetails") as! BookDetails
+        let bookDetails = UIStoryboard.BookDetails.instantiateViewController(withIdentifier: "BookDetails") as! BookDetails
         bookDetails.book = resultsController.object(at: indexPath)
         return bookDetails
     }

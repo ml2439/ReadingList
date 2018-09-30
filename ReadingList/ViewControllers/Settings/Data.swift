@@ -3,6 +3,7 @@ import UIKit
 import SVProgressHUD
 import CoreData
 import Crashlytics
+import ReadingList_Foundation
 
 class DataVC: UITableViewController {
 
@@ -96,7 +97,12 @@ class DataVC: UITableViewController {
 
         let listNames = List.names(fromContext: PersistentStoreManager.container.viewContext)
 
-        let temporaryFilePath = URL.temporary(fileWithName: "Reading List - \(UIDevice.current.name) - \(Date().string(withDateFormat: "yyyy-MM-dd hh-mm")).csv")
+        // Although CharacterSet.urlPathAllowed exists, it seems that the set of allowed characters in a
+        // filename is much less retrictive than .urlPathAllowed suggests. The URL is escaping the disallowed
+        // characters, which are then unescaped when the file is created. The only character which is definitely
+        // not allowed is a forward slash, since it is the directory separator.
+        let sanitisedDeviceName = UIDevice.current.name.replacingOccurrences(of: "/", with: "")
+        let temporaryFilePath = URL.temporary(fileWithName: "Reading List - \((sanitisedDeviceName)) - \(Date().string(withDateFormat: "yyyy-MM-dd hh-mm")).csv")
         let exporter = CsvExporter(filePath: temporaryFilePath, csvExport: BookCSVExport.build(withLists: listNames))
 
         let exportAll = NSManagedObject.fetchRequest(Book.self)
@@ -122,7 +128,7 @@ class DataVC: UITableViewController {
     func serveCsvExport(filePath: URL, presentingIndexPath: IndexPath) {
         // Present a dialog with the resulting file
         let activityViewController = UIActivityViewController(activityItems: [filePath], applicationActivities: [])
-        activityViewController.excludedActivityTypes = UIActivityType.documentUnsuitableTypes
+        activityViewController.excludedActivityTypes = UIActivity.ActivityType.documentUnsuitableTypes
         activityViewController.popoverPresentationController?.setSourceCell(atIndexPath: presentingIndexPath, inTable: self.tableView)
 
         SVProgressHUD.dismiss()

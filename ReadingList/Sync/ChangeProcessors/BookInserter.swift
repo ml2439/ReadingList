@@ -13,7 +13,7 @@ class BookInserter: BookUpstreamChangeProcessor {
     let context: NSManagedObjectContext
     let remote: BookCloudKitRemote
 
-    func handleError(_ books: [CKRecordID: Book], _ ckError: CKError) {
+    func handleError(_ books: [CKRecord.ID: Book], _ ckError: CKError) {
         switch ckError.code {
         case .partialFailure:
             let errors = ckError.userInfo[CKPartialErrorsByItemIDKey] as! NSDictionary
@@ -34,7 +34,7 @@ class BookInserter: BookUpstreamChangeProcessor {
         }
 
         // Store the remote ID to book pairing which has now been generated
-        let booksByRemoteID = booksAndCKRecords.reduce(into: [CKRecordID: Book]()) { $0[$1.ckRecord.recordID] = $1.book }
+        let booksByRemoteID = booksAndCKRecords.reduce(into: [CKRecord.ID: Book]()) { $0[$1.ckRecord.recordID] = $1.book }
 
         // Start the upload
         remote.upload(booksAndCKRecords.map { $0.ckRecord }) { [unowned self] error in

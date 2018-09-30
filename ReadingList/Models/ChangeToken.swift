@@ -13,13 +13,13 @@ public class ChangeToken: NSManagedObject {
         set { changeTokenData = NSKeyedArchiver.archivedData(withRootObject: newValue) }
     }
 
-    convenience init(context: NSManagedObjectContext, zoneID: CKRecordZoneID) {
+    convenience init(context: NSManagedObjectContext, zoneID: CKRecordZone.ID) {
         self.init(context: context)
         self.ownerName = zoneID.ownerName
         self.zoneName = zoneID.zoneName
     }
 
-    static func get(fromContext context: NSManagedObjectContext, for zoneID: CKRecordZoneID) -> ChangeToken? {
+    static func get(fromContext context: NSManagedObjectContext, for zoneID: CKRecordZone.ID) -> ChangeToken? {
         let fetchRequest = NSManagedObject.fetchRequest(ChangeToken.self, limit: 1, batch: 1)
         fetchRequest.predicate = NSPredicate(format: "%K == %@ AND %K == %@",
                                              #keyPath(ChangeToken.zoneName), zoneID.zoneName,

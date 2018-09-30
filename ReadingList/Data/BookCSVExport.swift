@@ -1,9 +1,10 @@
 import Foundation
+import ReadingList_Foundation
 
 class BookCSVExport {
     static func build(withLists lists: [String]) -> CsvExport<Book> {
         var columns = [
-            CsvColumn<Book>(header: "ISBN-13") { $0.isbn13 },
+            CsvColumn<Book>(header: "ISBN-13") { $0.isbn13?.stringValue },
             CsvColumn<Book>(header: "Google Books ID") { $0.googleBooksId },
             CsvColumn<Book>(header: "Title") { $0.title },
             CsvColumn<Book>(header: "Authors") { $0.authors.map { $0.displayLastCommaFirst }.joined(separator: "; ") },

@@ -2,6 +2,7 @@ import UIKit
 import SVProgressHUD
 import SwiftyStoreKit
 import CoreData
+import ReadingList_Foundation
 import Reachability
 
 var appDelegate: AppDelegate {
@@ -24,19 +25,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return window!.rootViewController as! TabBarController
     }
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // Remote notifications are required for iCloud sync.
-        application.registerForRemoteNotifications()
-
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         UserEngagement.initialiseUserAnalytics()
 
         setupSvProgressHud()
         completeStoreTransactions()
         monitorNetworkReachability()
 
+        // Remote notifications are required for iCloud sync.
+        application.registerForRemoteNotifications()
+
         // Grab any options which we take action on after the persistent store is initialised
-        let quickAction = launchOptions?[UIApplicationLaunchOptionsKey.shortcutItem] as? UIApplicationShortcutItem
-        let csvFileUrl = launchOptions?[UIApplicationLaunchOptionsKey.url] as? URL
+        let quickAction = launchOptions?[.shortcutItem] as? UIApplicationShortcutItem
+        let csvFileUrl = launchOptions?[.url] as? URL
 
         // Initialise the persistent store on a background thread. The main thread will return and the LaunchScreen
         // storyboard will remain in place until this is completed, at which point the Main storyboard will be instantiated.
@@ -53,7 +54,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         // Initialise app-level theme, and monitor the set theme
                         self.initialiseTheme()
                         self.monitorThemeSetting()
-                        UserSettings.mostRecentWorkingVersion.value = BuildInfo.appVersion
+                        UserSettings.mostRecentWorkingVersion.value = BuildInfo.appConfiguration.userFacingDescription
 
                         // Initialise the Sync Coordinator which will maintain iCloud synchronisation
                         self.syncCoordinator = SyncCoordinator(container: PersistentStoreManager.container)
@@ -93,14 +94,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         #if RELEASE
         // This is a common error during development, but shouldn't occur in production
-        guard mostRecentWorkingVersion != BuildInfo.appVersion else { fatalError("Migration error thrown for store of same version.") }
+        guard mostRecentWorkingVersion != BuildInfo.appConfiguration.userFacingDescription else { fatalError("Migration error thrown for store of same version.") }
         #endif
 
         guard window!.rootViewController!.presentedViewController == nil else { return }
         let alert = UIAlertController(title: "Incompatible Data", message: """
             The data on this device is not compatible with this version of Reading List.
 
-            You previously had version \(mostRecentWorkingVersion), but now have version \(BuildInfo.appVersion). \
+            You previously had version \(mostRecentWorkingVersion), but now have version \(BuildInfo.appConfiguration.userFacingDescription). \
             You will need to install \(mostRecentWorkingVersion) again to be able to access your data.
             """, preferredStyle: .alert)
 
@@ -154,7 +155,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         completionHandler(true)
     }
 
-    func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey: Any] = [:]) -> Bool {
+    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
         openCsvImport(url: url)
         return true
     }
@@ -212,20 +213,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         switch action {
         case .scanBarcode:
             UserEngagement.logEvent(.scanBarcodeQuickAction)
-            presentFromToRead(Storyboard.ScanBarcode.rootAsFormSheet())
+            presentFromToRead(UIStoryboard.ScanBarcode.rootAsFormSheet())
         case .searchOnline:
             UserEngagement.logEvent(.searchOnlineQuickAction)
-            presentFromToRead(Storyboard.SearchOnline.rootAsFormSheet())
+            presentFromToRead(UIStoryboard.SearchOnline.rootAsFormSheet())
         }
     }
 
     func monitorThemeSetting() {
-        NotificationCenter.default.addObserver(self, selector: #selector(initialiseTheme), name: Notification.Name.ThemeSettingChanged, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(initialiseTheme), name: .ThemeSettingChanged, object: nil)
     }
 
     @objc func initialiseTheme() {
         let theme = UserSettings.theme.value
-        UIApplication.shared.statusBarStyle = theme.statusBarStyle
         theme.configureForms()
     }
 }
