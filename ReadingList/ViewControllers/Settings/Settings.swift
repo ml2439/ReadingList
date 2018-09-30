@@ -13,7 +13,7 @@ class Settings: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        versionLabel.text = "v\(BuildInfo.appVersion)"
+        versionLabel.text = "v\(BuildInfo.appConfiguration.userFacingDescription)"
 
         if #available(iOS 11.0, *) {
             monitorLargeTitleSetting()
