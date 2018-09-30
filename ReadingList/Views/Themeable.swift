@@ -226,6 +226,12 @@ class ThemedSplitViewController: UISplitViewController, UISplitViewControllerDel
         (detailNavigationController as? ThemedNavigationController)?.initialise(withTheme: theme)
         (tabBarController as! TabBarController).initialise(withTheme: theme)
     }
+
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        // This override is placed on the base view controller type - the SplitViewController - so that
+        // it only needs to be implemented once.
+        return UserSettings.theme.value.statusBarStyle
+    }
 }
 
 class ThemedNavigationController: UINavigationController, ThemeableViewController {
