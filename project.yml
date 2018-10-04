@@ -22,6 +22,7 @@ targets:
                 fi
     postbuildScripts:
       - name: Run Fabric Script
+        inputFiles: [$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)]
         script: |
                 if [ "${CONFIGURATION}" = "Release" ]; then
                   "${PODS_ROOT}/Fabric/run" "$FABRIC_API_KEY" "$FABRIC_BUILD_SECRET"
