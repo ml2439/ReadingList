@@ -7,7 +7,7 @@ import CloudKit
  holds a Bitmask struct which is able to form Int32 bitmask values based on a collection
  of these BookCKRecordKey values, for use in storing keys which are pending remote updates.
  */
-enum BookCKRecordKey: String { //swiftlint:disable redundant_string_enum_value
+enum BookCKRecordKey: String, CaseIterable { //swiftlint:disable redundant_string_enum_value
     // Note: the ordering of these cases matters. The position determines the value used when forming a bitmask
     case title = "title"
     case authors = "authors"
@@ -24,10 +24,6 @@ enum BookCKRecordKey: String { //swiftlint:disable redundant_string_enum_value
     case sort = "sort"
     case readDates = "readDates" //swiftlint:enable redundant_string_enum_value
 
-    static let all: [BookCKRecordKey] = [.title, .authors, .googleBooksId, .isbn13, .pageCount, .publicationDate,
-                                         .bookDescription, .coverImage, .notes, .currentPage, .languageCode, .rating,
-                                         .sort, .readDates]
-
     struct Bitmask: OptionSet {
         let rawValue: Int32
 
@@ -41,11 +37,11 @@ enum BookCKRecordKey: String { //swiftlint:disable redundant_string_enum_value
     }
 
     var bitmask: Bitmask {
-        return Bitmask(rawValue: 1 << BookCKRecordKey.all.index(of: self)!)
+        return Bitmask(rawValue: 1 << BookCKRecordKey.allCases.index(of: self)!)
     }
 
     static func from(ckRecordKey key: String) -> BookCKRecordKey? {
-        return BookCKRecordKey.all.first { $0.rawValue == key }
+        return BookCKRecordKey.allCases.first { $0.rawValue == key }
     }
 
     static func from(coreDataKey: String) -> BookCKRecordKey? { //swiftlint:disable:this cyclomatic_complexity

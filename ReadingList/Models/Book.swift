@@ -308,7 +308,7 @@ extension Book {
         guard remoteIdentifier == nil && ckRecordEncodedSystemFields == nil else { fatalError("Unexpected attempt to insert a record which already exists.") }
         let recordName = googleBooksId ?? manualBookId!
         let ckRecord = CKRecord(recordType: "Book", recordID: CKRecord.ID(recordName: recordName, zoneID: zoneID))
-        for key in BookCKRecordKey.all {
+        for key in BookCKRecordKey.allCases {
             ckRecord[key] = key.value(from: self)
         }
         return ckRecord
@@ -317,7 +317,7 @@ extension Book {
     func CKRecordForDifferentialUpdate() -> CKRecord {
         guard let ckRecord = storedCKRecordSystemFields() else { fatalError("No stored CKRecord to use for differential update") }
         let changedKeys = BookCKRecordKey.Bitmask(rawValue: keysPendingRemoteUpdate)
-        for key in BookCKRecordKey.all.filter({ changedKeys.contains($0.bitmask) }) {
+        for key in BookCKRecordKey.allCases.filter({ changedKeys.contains($0.bitmask) }) {
             ckRecord[key] = key.value(from: self)
         }
         return ckRecord
@@ -336,7 +336,7 @@ extension Book {
 
         storeCKRecordSystemFields(serverRecord)
 
-        for key in BookCKRecordKey.all {
+        for key in BookCKRecordKey.allCases {
             key.setValue(serverRecord[key], for: self)
         }
     }
