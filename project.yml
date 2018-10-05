@@ -21,6 +21,8 @@ targets:
                   "/usr/local/bin/swiftlint" --path "${PROJECT_DIR}"
                 fi
     postbuildScripts:
+      - name: "[CP] Embed Pods Frameworks"
+        script:
       - name: Run Fabric Script
         inputFiles: [$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)]
         script: |
