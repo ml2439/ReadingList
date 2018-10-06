@@ -37,9 +37,11 @@ targets:
       configs:
         Debug:
           PROVISIONING_PROFILE_SPECIFIER: match Development com.andrewbennet.books
+          OTHER_SWIFT_FLAGS: $(inherited) "-D" "DEBUG"
         Release:
           PROVISIONING_PROFILE_SPECIFIER: match AppStore com.andrewbennet.books
           CODE_SIGN_IDENTITY[sdk=iphoneos*]: "iPhone Distribution: Andrew Bennet (YPDEV2E775)"
+          OTHER_SWIFT_FLAGS: $(inherited) "-D" "RELEASE"
     attributes:
       SystemCapabilities:
         com.apple.iCloud:
