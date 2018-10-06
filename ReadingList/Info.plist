@@ -38,11 +38,11 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>3</string>
+	<string>4</string>
 	<key>Fabric</key>
 	<dict>
 		<key>APIKey</key>
-		<string>0000000000000000000000000000000000000000</string>
+		<string>79c3e18382aa560c2928a7c7b0371646f7828880</string>
 		<key>Kits</key>
 		<array>
 			<dict>
