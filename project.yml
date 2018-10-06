@@ -25,10 +25,7 @@ targets:
         script:
       - name: Run Fabric Script
         inputFiles: [$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)]
-        script: |
-                if [ "${CONFIGURATION}" = "Release" ]; then
-                  "${PODS_ROOT}/Fabric/run" 79c3e18382aa560c2928a7c7b0371646f7828880 07b39f6a9f0f00382671716df2f61d6977e85c1119a676a593530ae35684fb3a
-                fi
+        path: fastlane/fabric.sh
     settings:
       base:
         ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES: $(inherited)
