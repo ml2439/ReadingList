@@ -1,6 +1,5 @@
 import Foundation
 import CoreData
-import Fabric
 import Crashlytics
 
 extension NSManagedObjectContext {

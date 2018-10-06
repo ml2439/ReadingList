@@ -1,6 +1,7 @@
 import UIKit
 import MessageUI
 import ReadingList_Foundation
+import Crashlytics
 
 class Settings: UITableViewController {
 
@@ -20,10 +21,6 @@ class Settings: UITableViewController {
         }
         monitorThemeSetting()
 
-        #if DEBUG
-        tableView.tableHeaderView!.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(onLongPressHeader(_:))))
-        #endif
-
         DispatchQueue.main.async {
             // isSplit does not work correctly before the view is loaded; run this later
             if self.splitViewController!.isSplit {
@@ -32,12 +29,25 @@ class Settings: UITableViewController {
         }
     }
 
-    #if DEBUG
-    @objc func onLongPressHeader(_ recognizer: UILongPressGestureRecognizer) {
-        guard recognizer.state == .began else { return }
+    override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
+        guard motion == .motionShake else { return }
+        #if DEBUG
         present(Debug().inThemedNavController(), animated: true, completion: nil)
+        #else
+        guard BuildInfo.appConfiguration == .testFlight else { return }
+        let alert = UIAlertController(title: "Perform Test Crash?", message: """
+            For testing purposes, you can trigger a crash. This can be used to verify \
+            that the crash reporting tools are working correctly.
+
+            Note: you are only seeing this because you are running a beta version of this app.
+            """, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Crash", style: .destructive) { _ in
+            Crashlytics.sharedInstance().crash()
+        })
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        present(alert, animated: true)
+        #endif
     }
-    #endif
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)

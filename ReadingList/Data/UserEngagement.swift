@@ -1,6 +1,5 @@
 import Foundation
 import StoreKit
-import Crashlytics
 import Firebase
 
 class UserEngagement {

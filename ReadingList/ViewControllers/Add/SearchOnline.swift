@@ -1,7 +1,6 @@
 import Foundation
 import UIKit
 import SVProgressHUD
-import Crashlytics
 import CoreData
 import Promises
 import ReadingList_Foundation

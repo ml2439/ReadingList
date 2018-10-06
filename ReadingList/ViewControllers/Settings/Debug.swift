@@ -3,6 +3,7 @@
 import Foundation
 import Eureka
 import SVProgressHUD
+import Crashlytics
 
 class Debug: FormViewController {
 
@@ -61,6 +62,17 @@ class Debug: FormViewController {
                 $0.value = DebugSettings.showSortNumber
                 $0.onChange {
                     DebugSettings.showSortNumber = $0.value ?? false
+                }
+            }
+
+        +++ Section("Error reporting")
+            <<< ButtonRow {
+                $0.title = "Crash"
+                $0.cellUpdate { cell, _ in
+                    cell.textLabel?.textColor = .red
+                }
+                $0.onCellSelection { _, _ in
+                    Crashlytics.sharedInstance().crash()
                 }
             }
 
