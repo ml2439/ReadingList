@@ -21,6 +21,10 @@ class Settings: UITableViewController {
         }
         monitorThemeSetting()
 
+        #if DEBUG
+        tableView.tableHeaderView!.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(onLongPressHeader(_:))))
+        #endif
+
         DispatchQueue.main.async {
             // isSplit does not work correctly before the view is loaded; run this later
             if self.splitViewController!.isSplit {
@@ -29,12 +33,15 @@ class Settings: UITableViewController {
         }
     }
 
+    #if DEBUG
+    @objc func onLongPressHeader(_ recognizer: UILongPressGestureRecognizer) {
+        present(Debug().inThemedNavController(), animated: true, completion: nil)
+    }
+    #endif
+
     override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
         guard motion == .motionShake else { return }
-        #if DEBUG
-        present(Debug().inThemedNavController(), animated: true, completion: nil)
-        #else
-        guard BuildInfo.appConfiguration == .testFlight else { return }
+        guard BuildInfo.appConfiguration != .appStore else { return }
         let alert = UIAlertController(title: "Perform Test Crash?", message: """
             For testing purposes, you can trigger a crash. This can be used to verify \
             that the crash reporting tools are working correctly.
@@ -46,7 +53,6 @@ class Settings: UITableViewController {
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         present(alert, animated: true)
-        #endif
     }
 
     override func viewDidAppear(_ animated: Bool) {
