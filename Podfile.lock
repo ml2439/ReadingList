@@ -1,15 +1,15 @@
 PODS:
   - CHCSVParser (2.1.0)
-  - Crashlytics (3.10.8):
-    - Fabric (~> 1.7.12)
+  - Crashlytics (3.10.9):
+    - Fabric (~> 1.7.13)
   - DZNEmptyDataSet (1.8.1)
   - Eureka (4.3.0)
-  - Fabric (1.7.12)
-  - Firebase/Core (5.9.0):
+  - Fabric (1.7.13)
+  - Firebase/Core (5.10.0):
     - Firebase/CoreOnly
     - FirebaseAnalytics (= 5.2.0)
-  - Firebase/CoreOnly (5.9.0):
-    - FirebaseCore (= 5.1.4)
+  - Firebase/CoreOnly (5.10.0):
+    - FirebaseCore (= 5.1.5)
   - FirebaseAnalytics (5.2.0):
     - FirebaseCore (~> 5.1)
     - FirebaseInstanceID (~> 3.2)
@@ -19,7 +19,7 @@ PODS:
     - GoogleUtilities/Network (~> 5.2)
     - "GoogleUtilities/NSData+zlib (~> 5.2)"
     - nanopb (~> 0.3)
-  - FirebaseCore (5.1.4):
+  - FirebaseCore (5.1.5):
     - GoogleUtilities/Logger (~> 5.2)
   - FirebaseInstanceID (3.2.2):
     - FirebaseCore (~> 5.1)
@@ -31,23 +31,23 @@ PODS:
     - GoogleUtilities/Network (~> 5.2)
     - "GoogleUtilities/NSData+zlib (~> 5.2)"
     - nanopb (~> 0.3)
-  - GoogleUtilities/AppDelegateSwizzler (5.3.0):
+  - GoogleUtilities/AppDelegateSwizzler (5.3.2):
     - GoogleUtilities/Environment
     - GoogleUtilities/Logger
     - GoogleUtilities/Network
-  - GoogleUtilities/Environment (5.3.0)
-  - GoogleUtilities/Logger (5.3.0):
+  - GoogleUtilities/Environment (5.3.2)
+  - GoogleUtilities/Logger (5.3.2):
     - GoogleUtilities/Environment
-  - GoogleUtilities/MethodSwizzler (5.3.0):
+  - GoogleUtilities/MethodSwizzler (5.3.2):
     - GoogleUtilities/Logger
-  - GoogleUtilities/Network (5.3.0):
+  - GoogleUtilities/Network (5.3.2):
     - GoogleUtilities/Logger
     - "GoogleUtilities/NSData+zlib"
     - GoogleUtilities/Reachability
-  - "GoogleUtilities/NSData+zlib (5.3.0)"
-  - GoogleUtilities/Reachability (5.3.0):
+  - "GoogleUtilities/NSData+zlib (5.3.2)"
+  - GoogleUtilities/Reachability (5.3.2):
     - GoogleUtilities/Logger
-  - GoogleUtilities/UserDefaults (5.3.0):
+  - GoogleUtilities/UserDefaults (5.3.2):
     - GoogleUtilities/Logger
   - ImageRow (3.1.0):
     - Eureka (~> 4.0)
@@ -59,10 +59,10 @@ PODS:
   - PromisesObjC (1.2.3)
   - PromisesSwift (1.2.3):
     - PromisesObjC (= 1.2.3)
-  - ReachabilitySwift (4.2.1)
-  - SimulatorStatusMagic (2.2)
+  - ReachabilitySwift (4.3.0)
+  - SimulatorStatusMagic (2.3)
   - SVProgressHUD (2.2.5)
-  - SwiftyJSON (4.1.0)
+  - SwiftyJSON (4.2.0)
   - SwiftyStoreKit (0.13.3)
 
 DEPENDENCIES:
@@ -113,24 +113,24 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   CHCSVParser: 64da26e2b4ddbf7527f7f03120bf91d83d28f354
-  Crashlytics: 058dc1ba579f6c100bc60a6878703779bff383c4
+  Crashlytics: 55e24fc23989680285a21cb1146578d9d18e432c
   DZNEmptyDataSet: 9525833b9e68ac21c30253e1d3d7076cc828eaa7
   Eureka: 6d711cb30ca333b4bc893110285a722ae3840114
-  Fabric: d7387db9a31aadff63b147a4b91d982c53afaa4f
-  Firebase: 383fa29aca93e371cab776b48a5c66544d3c2003
+  Fabric: 25d0963b691fc97be566392243ff0ecef5a68338
+  Firebase: 6691d47562a780c26281ce8464518faafc90c610
   FirebaseAnalytics: 831f1f127f4a75698e9875a87bf7e2668730d953
-  FirebaseCore: 2a84b6b325792a4319ef71ee18819dcba08d2fd7
+  FirebaseCore: c6079de64c1a87000e52e9b408dddcadc901177f
   FirebaseInstanceID: 78ba376fcd5b94c001f9999b2cbd3d1f1e56e78d
   GoogleAppMeasurement: 2b3a023a61239c8d002e6e4fcf4abce8eddce0e0
-  GoogleUtilities: 760ccb53b7c7f40f9c02d8c241f76f841a7a6162
+  GoogleUtilities: 82f04aeff8426309dbdbc75f6c8accd1e584a5da
   ImageRow: 1ea483078bfa3d880a7fc76fdfcddfd5f29a9e6b
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
   PromisesObjC: a3a4263d8a9260214267e0b3788d0f83466ad449
   PromisesSwift: f7f45c21986419e85f7c5b645ed8c6a2c10c04b4
-  ReachabilitySwift: 35720ffea59c1c76d15f885be77fd33e33985427
-  SimulatorStatusMagic: 0389a805fa8bd001e2977c4046730bdbd6642861
+  ReachabilitySwift: 408477d1b6ed9779dba301953171e017c31241f3
+  SimulatorStatusMagic: 631fe6e4195a8a8d587ad8744af9015126526cc2
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
-  SwiftyJSON: c29297daf073d2aa016295d5809cdd68045c39b3
+  SwiftyJSON: c4bcba26dd9ec7a027fc8eade48e2c911f229e96
   SwiftyStoreKit: 9ebd15971e28aa2989825fe8bc092eb5f75dd0b2
 
 PODFILE CHECKSUM: d8c399c18f38c62f91e8983576a7e34050a9debd
