@@ -21,11 +21,11 @@ targets:
                   "/usr/local/bin/swiftlint" --path "${PROJECT_DIR}"
                 fi
     postbuildScripts:
+      - name: "[CP] Embed Pods Frameworks"
+        script:
       - name: Run Fabric Script
-        script: |
-                if [ "${CONFIGURATION}" = "Release" ]; then
-                  "${PODS_ROOT}/Fabric/run" "$FABRIC_API_KEY" "$FABRIC_BUILD_SECRET"
-                fi
+        inputFiles: [$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)]
+        path: fastlane/fabric.sh
     settings:
       base:
         ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES: $(inherited)
@@ -37,9 +37,11 @@ targets:
       configs:
         Debug:
           PROVISIONING_PROFILE_SPECIFIER: match Development com.andrewbennet.books
+          OTHER_SWIFT_FLAGS: $(inherited) "-D" "DEBUG"
         Release:
           PROVISIONING_PROFILE_SPECIFIER: match AppStore com.andrewbennet.books
           CODE_SIGN_IDENTITY[sdk=iphoneos*]: "iPhone Distribution: Andrew Bennet (YPDEV2E775)"
+          OTHER_SWIFT_FLAGS: $(inherited) "-D" "RELEASE"
     attributes:
       SystemCapabilities:
         com.apple.iCloud:

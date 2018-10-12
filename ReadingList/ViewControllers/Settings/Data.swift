@@ -2,7 +2,6 @@ import Foundation
 import UIKit
 import SVProgressHUD
 import CoreData
-import Crashlytics
 import ReadingList_Foundation
 
 class DataVC: UITableViewController {

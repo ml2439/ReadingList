@@ -7,6 +7,8 @@ notifications:
     - feedback@readinglist.app
 before_install:
   - bundle install > /dev/null
+  - /usr/libexec/PlistBuddy -c "Set :Fabric:APIKey $FABRIC_API_KEY" "ReadingList/Info.plist"
+  - echo "\"\${PODS_ROOT}/Fabric/run\" $FABRIC_API_KEY $FABRIC_BUILD_SECRET" > fastlane/fabric.sh
   - brew install mint
   - mint run yonaskolb/xcodegen
   - pod repo update > /dev/null

@@ -37,7 +37,6 @@ platform :ios do
     if is_ci
       configure_keychain
     end
-    sh("/usr/libexec/PlistBuddy -c \"Set :Fabric:APIKey $FABRIC_API_KEY\" \"../ReadingList/Info.plist\"")
     archive
     upload_to_testflight(skip_submission: true, skip_waiting_for_build_processing: true)
   end
