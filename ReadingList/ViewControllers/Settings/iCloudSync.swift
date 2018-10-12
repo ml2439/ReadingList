@@ -49,15 +49,14 @@ class CloudSync: UITableViewController {
         SVProgressHUD.show(withStatus: "Enabling iCloud")
         syncCoordinator.remote.initialise { error in
             DispatchQueue.main.async {
+                SVProgressHUD.dismiss()
                 if let error = error {
-                    SVProgressHUD.dismiss()
                     self.handleRemoteInitialiseError(error: error)
                     self.enabledSwitch.setOn(false, animated: true)
-                    return
-                }
-                if self.nonRemoteBooksExistLocally() {
-                    SVProgressHUD.dismiss()
+                } else if self.nonRemoteBooksExistLocally() {
                     self.requestSyncMergeAction()
+                } else {
+                    UserSettings.iCloudSyncEnabled.value = true
                 }
             }
         }
