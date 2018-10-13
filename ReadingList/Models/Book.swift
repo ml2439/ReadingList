@@ -88,7 +88,7 @@ class Book: NSManagedObject {
         // Update the modified keys record for Books which have a remote identifier, but only
         // on the viewContext.
         if managedObjectContext == PersistentStoreManager.container.viewContext && remoteIdentifier != nil {
-            let keysPendingRemoteUpdate = changedValues().keys.compactMap { BookCKRecordKey.from(coreDataKey: $0) }.distinct()
+            let keysPendingRemoteUpdate = changedValues().keys.compactMap(BookCKRecordKey.from(coreDataKey:)).distinct()
             addPendingRemoteUpdateKeys(keysPendingRemoteUpdate)
             print("Updated bitmask: \(keysPendingRemoteUpdate.map { $0.rawValue }.joined(separator: ", "))")
         }

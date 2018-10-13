@@ -39,6 +39,7 @@ public extension CKRecord {
         }
         if left is CKAsset && right is CKAsset {
             // TODO: We don't have a way to compare CKAsset values unfortunately
+            // TODO: The consequence of this is that a change to a photo could be timed such that the change is not pushed.
             return true
         }
 

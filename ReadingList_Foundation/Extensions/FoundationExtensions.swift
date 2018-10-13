@@ -1,5 +1,4 @@
 import Foundation
-import CloudKit
 
 public extension UserDefaults {
     func incrementCounter(withKey key: String) {

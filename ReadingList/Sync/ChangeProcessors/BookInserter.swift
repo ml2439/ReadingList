@@ -47,6 +47,7 @@ class BookInserter: BookUpstreamChangeProcessor {
 
                     // If the book was locally deleted in the meantime, we enqueue a remote deletion
                     guard !localBook.isDeleted else {
+                        // TODO: Is this necessary? Won't this already have been enqueued?
                         PendingRemoteDeletionItem(context: self.context, ckRecordID: ckRecord.recordID)
                         continue
                     }
