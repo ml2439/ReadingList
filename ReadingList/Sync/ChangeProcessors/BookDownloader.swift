@@ -41,10 +41,10 @@ class BookDownloader: DownstreamChangeProcessor {
 
         for remoteBook in remoteBooks {
             if let localBook = lookupLocalBook(for: remoteBook) {
-                localBook.updateFrom(serverRecord: remoteBook)
+                localBook.update(from: remoteBook)
             } else {
                 let book = Book(context: context, readState: .toRead)
-                book.updateFrom(serverRecord: remoteBook)
+                book.update(from: remoteBook)
             }
         }
     }
@@ -57,15 +57,8 @@ class BookDownloader: DownstreamChangeProcessor {
 
         let localIdLookup = NSManagedObject.fetchRequest(Book.self)
         localIdLookup.fetchLimit = 1
-        let remoteRecordName = remoteBook.recordID.recordName
-        // TODO: Strip off leading string ("gbid:" or "mid:")
-        localIdLookup.predicate = NSPredicate.or([
-            NSPredicate(format: "%K == %@", #keyPath(Book.googleBooksId), remoteBook.recordID.recordName),
-            // TODO: Add index to manual book id. Check validation on remote ID vs local IDs.
-            NSPredicate(format: "%K == %@", #keyPath(Book.manualBookId), remoteBook.recordID.recordName)
-        ])
+        localIdLookup.predicate = Book.candidateBookForRemoteIdentifier(remoteBook.recordID)
         if let book = (try! context.fetch(localIdLookup)).first { return book }
-
         return nil
     }
 

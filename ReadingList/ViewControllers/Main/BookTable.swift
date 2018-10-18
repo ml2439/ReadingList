@@ -523,9 +523,10 @@ extension BookTable: NSFetchedResultsControllerDelegate {
     }
 
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-        if type == .update, let indexPath = indexPath, let cell = tableView.cellForRow(at: indexPath) {
-            guard (cell as! BookTableViewCell).requiresUpdate(anObject as! Book) else { return }
-        }
+        // TODO: See whether .none animation type is any better than .automatic...
+        //if type == .update, let indexPath = indexPath, let cell = tableView.cellForRow(at: indexPath) {
+            //guard (cell as! BookTableViewCell).requiresUpdate(anObject as! Book) else { return }
+        //}
         tableView.controller(controller, didChange: anObject, at: indexPath, for: type, newIndexPath: newIndexPath)
     }
 

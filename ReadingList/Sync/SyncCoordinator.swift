@@ -8,6 +8,27 @@ import CloudKit
 */
 class SyncCoordinator {
 
+    /*
+     The SyncCoordinator is in charge of ensuring all local changes are pushed to CloudKit, and all
+     remote CloudKit changes are downloaded and integrated with the local store. The strategy is
+     inspired by the chapter "Syncing with Web-Services" in the objc book "Core Data". It is roughly
+     as follows:
+     
+        - A background NSManagedObjectContext is created from the viewContext, named the "syncContext"
+        - Core Data change notifications trigger merges between the two contexts
+        - There are a sequence of "ChangeProcessors": either upstream or downstream
+        - Each upstream change processor has an NSPredicate which determines whether any object has a "pending change"
+        - Any object modification merged into the sync context will be checked against each change processor
+        - Objects which do have a pending change are used to push that change to CloudKit
+        - Upon confirmation of the change being received, some modification is made to the object; this should prevent
+            the object from being seen as having pending changes. (These modifications will be merged back to the viewContext).
+        - Meanwhile, the syncCoordinator registers for notifications of remote changes
+        - Anytime a remote change notification comes in, the syncCoordinator fetches changes from CloudKit using a stored
+            change token object.
+        - The downloaded remote records are used to update objects in Core Data
+        - The new change token is also updated in Core Data (and the books and change token are saved together, atomically).
+    */
+
     private let viewContext: NSManagedObjectContext
     private let syncContext: NSManagedObjectContext
 
@@ -136,8 +157,8 @@ class SyncCoordinator {
         }
 
         // TODO: Re-process the objects which are still eligible for processing after this operation?
-        // TODO: This could be due to local edits which occurred while the remote update operation
-        // TODO: was pending.
+        // This could be due to local edits which occurred while the remote update operation was pending.
+        // Alternatively, capture the objects which came in again but were rejected, and reprocess those ones?
     }
 
     private func processPendingRemoteChanges(applicationCallback: ((UIBackgroundFetchResult) -> Void)? = nil) {

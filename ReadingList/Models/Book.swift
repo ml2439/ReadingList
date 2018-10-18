@@ -34,24 +34,22 @@ class Book: NSManagedObject {
     // not uploaded to a remote store.
     @NSManaged private var keysPendingRemoteUpdate: Int32
 
-    func keysPendingRemoveUpdate() -> [BookCKRecordKey] {
-        return BookCKRecordKey.Bitmask(rawValue: keysPendingRemoteUpdate).keys()
+    private(set) var pendingRemoteUpdateBitmask: CKRecordKey.Bitmask {
+        get { return CKRecordKey.Bitmask(rawValue: keysPendingRemoteUpdate) }
+        set { keysPendingRemoteUpdate = newValue.rawValue }
     }
 
-    func addPendingRemoteUpdateKeys(_ keys: [BookCKRecordKey]) {
-        let newKeysPendingRemoteUpdate = BookCKRecordKey.Bitmask(keys.map { $0.bitmask })
-        let newValue = BookCKRecordKey.Bitmask(rawValue: keysPendingRemoteUpdate).union(newKeysPendingRemoteUpdate).rawValue
-        if keysPendingRemoteUpdate != newValue {
-            keysPendingRemoteUpdate = newValue
+    func addKeysPendingRemoteUpdate(_ keys: [CKRecordKey]) {
+        let newValue = pendingRemoteUpdateBitmask.union(CKRecordKey.Bitmask(keys.map { $0.bitmask }))
+        if pendingRemoteUpdateBitmask != newValue {
+            pendingRemoteUpdateBitmask = newValue
         }
     }
 
-    func removePendingRemoteUpdateKeys(_ keys: [BookCKRecordKey]) {
-        let newKeysNotPendingRemoteUpdate = BookCKRecordKey.Bitmask(keys.map { $0.bitmask })
-        var newValue = BookCKRecordKey.Bitmask(rawValue: keysPendingRemoteUpdate)
-        newValue.remove(newKeysNotPendingRemoteUpdate)
-        if keysPendingRemoteUpdate != newValue.rawValue {
-            keysPendingRemoteUpdate = newValue.rawValue
+    func subtractKeysPendingRemoteUpdate(_ keys: [CKRecordKey]) {
+        let newValue = pendingRemoteUpdateBitmask.subtracting(CKRecordKey.Bitmask(keys.map { $0.bitmask }))
+        if pendingRemoteUpdateBitmask != newValue {
+            pendingRemoteUpdateBitmask = newValue
         }
     }
 
@@ -92,9 +90,9 @@ class Book: NSManagedObject {
         // Update the modified keys record for Books which have a remote identifier, but only
         // on the viewContext.
         if managedObjectContext == PersistentStoreManager.container.viewContext && remoteIdentifier != nil {
-            let keysPendingRemoteUpdate = changedValues().keys.compactMap(BookCKRecordKey.from(coreDataKey:)).distinct()
-            addPendingRemoteUpdateKeys(keysPendingRemoteUpdate)
-            print("Updated bitmask: \(keysPendingRemoteUpdate.map { $0.rawValue }.joined(separator: ", "))")
+            let changedKeys = changedValues().keys.compactMap(Book.CKRecordKey.from(coreDataKey:)).distinct()
+            pendingRemoteUpdateBitmask = pendingRemoteUpdateBitmask.union(Book.CKRecordKey.Bitmask(changedKeys.map { $0.bitmask }))
+            print("Updated bitmask: \(pendingRemoteUpdateBitmask.keys().map { $0.rawValue }.joined(separator: ", "))")
         }
     }
 
@@ -105,13 +103,22 @@ class Book: NSManagedObject {
         }
 
         if managedObjectContext == PersistentStoreManager.container.viewContext,
-            let existingRemoteRecord = self.storedCKRecordSystemFields() {
+            let existingRemoteRecord = self.getSystemFieldsRecord() {
             PendingRemoteDeletionItem(context: managedObjectContext!, ckRecordID: existingRemoteRecord.recordID)
         }
     }
 }
 
 extension Book {
+
+    func getSystemFieldsRecord() -> CKRecord? {
+        guard let systemFieldsData = ckRecordEncodedSystemFields else { return nil }
+        return CKRecord(systemFieldsData: systemFieldsData)!
+    }
+
+    func setSystemFields(_ ckRecord: CKRecord?) {
+        ckRecordEncodedSystemFields = ckRecord?.encodedSystemFields()
+    }
 
     func setAuthors(_ authors: [Author]) {
         self.authors = authors
@@ -294,73 +301,6 @@ extension Book {
         } else {
             readState = .finished
         }
-    }
-}
-
-extension Book {
-
-    func storedCKRecordSystemFields() -> CKRecord? {
-        guard let systemFieldsData = ckRecordEncodedSystemFields else { return nil }
-        return CKRecord(systemFieldsData: systemFieldsData)!
-    }
-
-    func storeCKRecordSystemFields(_ ckRecord: CKRecord?) {
-        ckRecordEncodedSystemFields = ckRecord?.encodedSystemFields()
-    }
-
-    /**
-     Returns a CKRecord with every BookCKRecordKey set to the CKValue corresponding to the value in this book.
-     The CKRecord has ID set to either the GoogleBooksId or the manual book ID.
-    */
-    func CKRecordForInsert(zoneID: CKRecordZone.ID) -> CKRecord {
-        guard remoteIdentifier == nil && ckRecordEncodedSystemFields == nil else { fatalError("Unexpected attempt to insert a record which already exists.") }
-        let recordName = googleBooksId != nil ? "gbid:\(googleBooksId!)" : "mid:\(manualBookId!)"
-        let ckRecord = CKRecord(recordType: "Book", recordID: CKRecord.ID(recordName: recordName, zoneID: zoneID))
-        for key in BookCKRecordKey.allCases {
-            ckRecord[key] = key.value(from: self)
-        }
-        return ckRecord
-    }
-
-    func CKRecordForDifferentialUpdate() -> CKRecord {
-        guard let ckRecord = storedCKRecordSystemFields() else { fatalError("No stored CKRecord to use for differential update") }
-        let changedKeys = BookCKRecordKey.Bitmask(rawValue: keysPendingRemoteUpdate)
-        for key in BookCKRecordKey.allCases.filter({ changedKeys.contains($0.bitmask) }) {
-            ckRecord[key] = key.value(from: self)
-        }
-        return ckRecord
-    }
-
-    func updateFrom(serverRecord: CKRecord) {
-        if let existingCKRecordSystemFields = storedCKRecordSystemFields(), existingCKRecordSystemFields.recordChangeTag == serverRecord.recordChangeTag {
-            print("CKRecord \(serverRecord.recordID.recordName) has same change tag as local book; skipping update")
-            return
-        }
-
-        if remoteIdentifier != serverRecord.recordID.recordName {
-            print("Updating remoteIdentifier from \(remoteIdentifier ?? "nil") to \(serverRecord.recordID.recordName)")
-            remoteIdentifier = serverRecord.recordID.recordName
-        }
-
-        storeCKRecordSystemFields(serverRecord)
-
-        // This book may have local changes which we don't want to overwrite with the values on the server.
-        let keysPendingRemoveUpdate = self.keysPendingRemoveUpdate()
-        for key in BookCKRecordKey.allCases {
-            if keysPendingRemoveUpdate.contains(key) {
-                print("Remote value for \(key.rawValue) ignored, due to presence of a pending upstream update")
-                continue
-            }
-            key.setValue(serverRecord[key], for: self)
-        }
-    }
-
-    static func withRemoteIdentifier(_ id: String) -> NSPredicate {
-        return NSPredicate(format: "%K == %@", #keyPath(Book.remoteIdentifier), id)
-    }
-
-    static func withRemoteIdentifiers(_ ids: [String]) -> NSPredicate {
-        return NSPredicate(format: "%K in %@", #keyPath(Book.remoteIdentifier), ids)
     }
 }
 

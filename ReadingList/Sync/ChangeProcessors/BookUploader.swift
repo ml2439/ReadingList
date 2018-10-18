@@ -22,15 +22,15 @@ class BookUploader: BookUpstreamChangeProcessor {
 
         // Map the local Books to CKRecords. These are either records for insertion, or records for differential updates.
         // The changed keys should be stored now, since we lose that information after the upload has occurred.
-        let booksAndCKRecords = books.map { book -> (book: Book, uploadType: UploadType, ckRecord: CKRecord, delta: [BookCKRecordKey]) in
+        let booksAndCKRecords = books.map { book -> (book: Book, uploadType: UploadType, ckRecord: CKRecord, delta: [Book.CKRecordKey]) in
             let ckRecord: CKRecord
             let uploadType: UploadType
             if book.remoteIdentifier == nil {
                 uploadType = .insert
-                ckRecord = book.CKRecordForInsert(zoneID: remote.bookZoneID)
+                ckRecord = book.recordForInsert(into: remote.bookZoneID)
             } else {
                 uploadType = .update
-                ckRecord = book.CKRecordForDifferentialUpdate()
+                ckRecord = book.recordForUpdate()
             }
             return (book, uploadType, ckRecord, ckRecord.changedBookKeys())
         }
@@ -41,14 +41,14 @@ class BookUploader: BookUpstreamChangeProcessor {
         remote.upload(booksAndCKRecords.map { $0.ckRecord }) { [unowned self] error in
             self.context.perform {
                 print("Upload complete. Processing results...")
-                
+
                 var innerErrors: [CKRecord.ID: CKError]?
                 if let ckError = error as? CKError {
                     print("Remote upload resulted in an error with code \(ckError.code.rawValue)")
                     switch ckError.strategy {
                     case let .handleInnerErrors(errors):
                         innerErrors = errors
-                    case .retryLater(_),
+                    case .retryLater,
                          .retrySmallerBatch:
                         return
                     default:
@@ -73,7 +73,7 @@ class BookUploader: BookUpstreamChangeProcessor {
                     }
 
                     // Assign the system fields and remote identifier.
-                    localBook.storeCKRecordSystemFields(ckRecord)
+                    localBook.setSystemFields(ckRecord)
 
                     // If this was an insertion, then the changed-field bitmask will not have been updated
                     // to account for any changes since the upload was initiated. We should check that all in the book
@@ -87,22 +87,22 @@ class BookUploader: BookUpstreamChangeProcessor {
                     switch uploadType {
                     case .insert:
                         localBook.remoteIdentifier = ckRecord.recordID.recordName
-                        let differingKeys = BookCKRecordKey.allCases.filter {
-                            !CKRecord.valuesAreEqual(left: $0.value(from: localBook), right: ckRecord[$0])
+                        let differingKeys = Book.CKRecordKey.allCases.filter {
+                            !CKRecord.valuesAreEqual(left: localBook.getValue(for: $0), right: ckRecord[$0])
                         }
                         if !differingKeys.isEmpty {
                             print("Inserted book record \(ckRecord.recordID.recordName) is now different to local book; adding bitmask.")
-                            localBook.addPendingRemoteUpdateKeys(differingKeys)
+                            localBook.addKeysPendingRemoteUpdate(differingKeys)
                         }
                     case .update:
                         let updatedKeys = delta.filter {
-                            CKRecord.valuesAreEqual(left: $0.value(from: localBook), right: ckRecord[$0])
+                            CKRecord.valuesAreEqual(left: localBook.getValue(for: $0), right: ckRecord[$0])
                         }
-                        localBook.removePendingRemoteUpdateKeys(updatedKeys)
                         if updatedKeys.count != delta.count {
                             print("\(delta.count - updatedKeys.count) of \(delta.count) updated book fields now differ " +
                                 "from the uploaded record; not removing bitmask for these fields.")
                         }
+                        localBook.subtractKeysPendingRemoteUpdate(updatedKeys)
                     }
                 }
 
