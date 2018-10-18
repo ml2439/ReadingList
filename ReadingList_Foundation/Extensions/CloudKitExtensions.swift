@@ -18,6 +18,10 @@ public extension CKRecord {
         return data as Data
     }
 
+    /**
+     Note that if a CKAsset is provided, and the asset's file URL does not exist on this device, will return false
+     (unless they both don't exist).
+    */
     static func valuesAreEqual(left: CKRecordValue?, right: CKRecordValue?) -> Bool {
         if left == nil && right == nil { return true }
         guard let left = left, let right = right else { return false }
@@ -37,41 +41,13 @@ public extension CKRecord {
         if let leftArray = left as? NSArray {
             return leftArray == right as? NSArray
         }
-        if left is CKAsset && right is CKAsset {
-            // TODO: We don't have a way to compare CKAsset values unfortunately
-            // TODO: The consequence of this is that a change to a photo could be timed such that the change is not pushed.
-            return true
+        if let leftAsset = left as? CKAsset {
+            guard let rightAsset = right as? CKAsset else { return false }
+            guard FileManager.default.fileExists(atPath: leftAsset.fileURL.path)
+                && FileManager.default.fileExists(atPath: rightAsset.fileURL.path) else { return false }
+            return FileManager.default.contentsEqual(atPath: leftAsset.fileURL.path, andPath: rightAsset.fileURL.path)
         }
 
         fatalError("Unexpected data type in CKRecordValue comparison.")
-    }
-}
-
-extension CKError {
-    /*
-    enum ErrorHandleType {
-        case retryAfter(TimeInterval)
-        case applicationError
-        case serverError
-        case userIssue
-    }
-    
-    var handleType: ErrorHandleType {
-        switch self.code {
-            case CKError.Code.alreadyShared
-            case CKError.Code.constraintViolation
-            case CKError.Code.invalidArguments
-            case CKError.Code.missingEntitlement
-        }
-    }*/
-
-    // TODO: Complete
-    var isFatal: Bool {
-        switch code {
-        case .invalidArguments:
-            return true
-        default:
-            return false
-        }
     }
 }

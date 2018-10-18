@@ -34,8 +34,12 @@ class Book: NSManagedObject {
     // not uploaded to a remote store.
     @NSManaged private var keysPendingRemoteUpdate: Int32
 
+    func keysPendingRemoveUpdate() -> [BookCKRecordKey] {
+        return BookCKRecordKey.Bitmask(rawValue: keysPendingRemoteUpdate).keys()
+    }
+
     func addPendingRemoteUpdateKeys(_ keys: [BookCKRecordKey]) {
-        let newKeysPendingRemoteUpdate = BookCKRecordKey.Bitmask.unionAll(keys.map { $0.bitmask })
+        let newKeysPendingRemoteUpdate = BookCKRecordKey.Bitmask(keys.map { $0.bitmask })
         let newValue = BookCKRecordKey.Bitmask(rawValue: keysPendingRemoteUpdate).union(newKeysPendingRemoteUpdate).rawValue
         if keysPendingRemoteUpdate != newValue {
             keysPendingRemoteUpdate = newValue
@@ -43,7 +47,7 @@ class Book: NSManagedObject {
     }
 
     func removePendingRemoteUpdateKeys(_ keys: [BookCKRecordKey]) {
-        let newKeysNotPendingRemoteUpdate = BookCKRecordKey.Bitmask.unionAll(keys.map { $0.bitmask })
+        let newKeysNotPendingRemoteUpdate = BookCKRecordKey.Bitmask(keys.map { $0.bitmask })
         var newValue = BookCKRecordKey.Bitmask(rawValue: keysPendingRemoteUpdate)
         newValue.remove(newKeysNotPendingRemoteUpdate)
         if keysPendingRemoteUpdate != newValue.rawValue {
@@ -51,7 +55,7 @@ class Book: NSManagedObject {
         }
     }
 
-    static let pendingRemoteUpdatesPredicate = NSPredicate(format: "%K != 0", #keyPath(Book.keysPendingRemoteUpdate))
+    static let pendingRemoteUpdatesPredicate = NSPredicate(format: "%K != %d", #keyPath(Book.keysPendingRemoteUpdate), 0)
 
     @NSManaged var remoteIdentifier: String?
     @NSManaged private var ckRecordEncodedSystemFields: Data?
@@ -254,7 +258,7 @@ extension Book {
 
         if keysPendingRemoteUpdate != 0 && remoteIdentifier == nil {
             throw BookValidationError.bitmaskPresentWithoutRemoteIdentifier.NSError()
-	      }
+        }
     }
 
     func startReading() {
@@ -304,9 +308,13 @@ extension Book {
         ckRecordEncodedSystemFields = ckRecord?.encodedSystemFields()
     }
 
+    /**
+     Returns a CKRecord with every BookCKRecordKey set to the CKValue corresponding to the value in this book.
+     The CKRecord has ID set to either the GoogleBooksId or the manual book ID.
+    */
     func CKRecordForInsert(zoneID: CKRecordZone.ID) -> CKRecord {
         guard remoteIdentifier == nil && ckRecordEncodedSystemFields == nil else { fatalError("Unexpected attempt to insert a record which already exists.") }
-        let recordName = googleBooksId ?? manualBookId!
+        let recordName = googleBooksId != nil ? "gbid:\(googleBooksId!)" : "mid:\(manualBookId!)"
         let ckRecord = CKRecord(recordType: "Book", recordID: CKRecord.ID(recordName: recordName, zoneID: zoneID))
         for key in BookCKRecordKey.allCases {
             ckRecord[key] = key.value(from: self)
@@ -325,18 +333,24 @@ extension Book {
 
     func updateFrom(serverRecord: CKRecord) {
         if let existingCKRecordSystemFields = storedCKRecordSystemFields(), existingCKRecordSystemFields.recordChangeTag == serverRecord.recordChangeTag {
-            print("CKRecord has same change tag; skipping update")
+            print("CKRecord \(serverRecord.recordID.recordName) has same change tag as local book; skipping update")
             return
         }
 
         if remoteIdentifier != serverRecord.recordID.recordName {
-            print("Updating remoteIdentifier for book")
+            print("Updating remoteIdentifier from \(remoteIdentifier ?? "nil") to \(serverRecord.recordID.recordName)")
             remoteIdentifier = serverRecord.recordID.recordName
         }
 
         storeCKRecordSystemFields(serverRecord)
 
+        // This book may have local changes which we don't want to overwrite with the values on the server.
+        let keysPendingRemoveUpdate = self.keysPendingRemoveUpdate()
         for key in BookCKRecordKey.allCases {
+            if keysPendingRemoveUpdate.contains(key) {
+                print("Remote value for \(key.rawValue) ignored, due to presence of a pending upstream update")
+                continue
+            }
             key.setValue(serverRecord[key], for: self)
         }
     }

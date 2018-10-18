@@ -7,7 +7,7 @@ extension CKError {
         case retrySmallerBatch
         case resetChangeToken
         case manualMerge
-        case handleInnerErrors
+        case handleInnerErrors([CKRecord.ID: CKError]?)
         case disableSync
         case none
     }
@@ -47,7 +47,8 @@ extension CKError {
 
         // Process items one-by-one
         case .partialFailure:
-            return .handleInnerErrors
+            let innerErrors = self.userInfo[CKPartialErrorsByItemIDKey] as! [CKRecord.ID: CKError]
+            return .handleInnerErrors(innerErrors)
 
         // Not sure yet
         case .batchRequestFailed:

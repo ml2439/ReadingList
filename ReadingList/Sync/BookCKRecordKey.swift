@@ -7,8 +7,14 @@ import CloudKit
  holds a Bitmask struct which is able to form Int32 bitmask values based on a collection
  of these BookCKRecordKey values, for use in storing keys which are pending remote updates.
  */
+// TODO: Relocate to an inner enum withint an extension of Book?
 enum BookCKRecordKey: String, CaseIterable { //swiftlint:disable redundant_string_enum_value
-    // Note: the ordering of these cases matters. The position determines the value used when forming a bitmask
+
+    // ----------------------------------------------------------------------- //
+    //   Note: the ordering of these cases matters!                            //
+    //   The position determines the value used when forming a bitmask, which  //
+    //   is persisted in the database. Don't reorder without a lot of thought. //
+    // ----------------------------------------------------------------------- //
     case title = "title"
     case authors = "authors"
     case googleBooksId = "googleBooksId"
@@ -27,12 +33,8 @@ enum BookCKRecordKey: String, CaseIterable { //swiftlint:disable redundant_strin
     struct Bitmask: OptionSet {
         let rawValue: Int32
 
-        static func unionAll(_ values: [Bitmask]) -> Bitmask {
-            var result = Bitmask(rawValue: 0)
-            for value in values {
-                result.formUnion(value)
-            }
-            return result
+        func keys() -> [BookCKRecordKey] {
+            return BookCKRecordKey.allCases.filter { self.contains($0.bitmask) }
         }
     }
 
@@ -65,6 +67,7 @@ enum BookCKRecordKey: String, CaseIterable { //swiftlint:disable redundant_strin
         }
     }
 
+    // TODO: Relocate the following two methods to a Book extension?
     func value(from book: Book) -> CKRecordValue? { //swiftlint:disable:this cyclomatic_complexity
         switch self {
         case .title: return book.title as NSString
@@ -114,9 +117,11 @@ enum BookCKRecordKey: String, CaseIterable { //swiftlint:disable redundant_strin
         case .authors:
             book.setAuthors(NSKeyedUnarchiver.unarchiveObject(with: value as! Data) as! [Author])
         case .coverImage:
-            guard let imageAsset = value as? CKAsset else { book.coverImage = nil; return }
+            guard let imageAsset = value as? CKAsset, FileManager.default.fileExists(atPath: imageAsset.fileURL.path) else {
+                book.coverImage = nil
+                return
+            }
             book.coverImage = FileManager.default.contents(atPath: imageAsset.fileURL.path)
-            // TODO: this doesn't work if using serverRecord during a merge
         }
     }
 }
@@ -129,5 +134,9 @@ extension CKRecord {
 
     func changedBookKeys() -> [BookCKRecordKey] {
         return changedKeys().compactMap { BookCKRecordKey(rawValue: $0) }
+    }
+
+    func presentBookKeys() -> [BookCKRecordKey] {
+        return allKeys().compactMap { BookCKRecordKey(rawValue: $0) }
     }
 }

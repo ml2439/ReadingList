@@ -67,8 +67,8 @@ class BookCloudKitRemote {
         privateDB.add(modifySubscriptionOperation)
     }
 
-    func fetchRecordChanges(changeToken: CKServerChangeToken?, completion: @escaping (CKChangeCollection) -> Void) {
-        print("Fetching record changes")
+    func fetchRecordChanges(changeToken: CKServerChangeToken?, completion: @escaping (Error?, CKChangeCollection?) -> Void) {
+        print("Fetching record changes since change token \(String(describing: changeToken))")
 
         var changedRecords = [CKRecord]()
         var deletedRecordIDs = [CKRecord.ID]()
@@ -83,16 +83,17 @@ class BookCloudKitRemote {
             deletedRecordIDs.append(recordID)
         }
         operation.recordZoneChangeTokensUpdatedBlock = { _, changeToken, _ in
-            print("change token block ran \(changeToken)")
+            print("Change token reported updated to \(String(describing: changeToken))")
         }
         operation.recordZoneFetchCompletionBlock = { _, changeToken, _, _, error in
-            guard error == nil else {
-                print("Error: \(error!)")
+            print("Record change fetch batch operation complete")
+            if let error = error {
+                completion(error, nil)
                 return
             }
             guard let changeToken = changeToken else { fatalError("Unexpectedly missing change token") }
             let changes = CKChangeCollection(changedRecords: changedRecords, deletedRecordIDs: deletedRecordIDs, newChangeToken: changeToken)
-            completion(changes)
+            completion(nil, changes)
         }
         privateDB.add(operation)
     }

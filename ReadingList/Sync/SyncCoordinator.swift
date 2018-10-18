@@ -27,8 +27,7 @@ class SyncCoordinator {
         syncContext.mergePolicy = NSMergePolicy.mergeByPropertyStoreTrump // FUTURE: Add a custom merge policy
 
         self.downstreamChangeProcessors = [BookDownloader(syncContext)]
-        self.upstreamChangeProcessors = [BookInserter(syncContext, remote),
-                                         BookUpdater(syncContext, remote),
+        self.upstreamChangeProcessors = [BookUploader(syncContext, remote),
                                          BookDeleter(syncContext, remote)]
     }
 
@@ -77,7 +76,10 @@ class SyncCoordinator {
                     // We unpack the notification here, to make sure it is retained until this point.
                     let updates = note.updatedObjects?.map { $0.inContext(coordinator.syncContext) } ?? []
                     let inserts = note.insertedObjects?.map { $0.inContext(coordinator.syncContext) } ?? []
-                    coordinator.processPendingLocalChanges(objects: updates + inserts)
+                    let localChanges = updates + inserts
+                    if !localChanges.isEmpty {
+                        coordinator.processPendingLocalChanges(objects: localChanges)
+                    }
                 }
             }
             contextSaveNotificationObservers.append(observer)
@@ -113,29 +115,40 @@ class SyncCoordinator {
 
     private func processPendingLocalChanges(objects: [NSManagedObject]? = nil) {
         for changeProcessor in upstreamChangeProcessors {
-            let pendingObjects: [NSManagedObject]
+            // If we were passed some pending objects, select the ones which are pending a change process.
+            // Otherwise, select all pending objects. We always exclude objects which are already being processed.
+            let objectToProcess: [NSManagedObject]
             if let objects = objects {
-                pendingObjects = objects.filter { object($0, isPendingFor: changeProcessor) && !objectsBeingProcessed.contains($0) }
+                objectToProcess = objects.filter { object($0, isPendingFor: changeProcessor) && !objectsBeingProcessed.contains($0) }
             } else {
-                pendingObjects = self.pendingObjects(for: changeProcessor).filter { !objectsBeingProcessed.contains($0) }
+                objectToProcess = self.pendingObjects(for: changeProcessor).filter { !objectsBeingProcessed.contains($0) }
             }
 
             // Quick exit if there are no pending objects
-            guard !pendingObjects.isEmpty else { continue }
+            guard !objectToProcess.isEmpty else { continue }
 
             // Track which objects are passed to the change processor. They will not be passed to any other
             // change processor until this one has run its completion block.
-            objectsBeingProcessed.formUnion(pendingObjects)
-            changeProcessor.processLocalChanges(pendingObjects) { [weak self] in
-                self?.objectsBeingProcessed.subtract(pendingObjects)
+            objectsBeingProcessed.formUnion(objectToProcess)
+            changeProcessor.processLocalChanges(objectToProcess) { [weak self] in
+                self?.objectsBeingProcessed.subtract(objectToProcess)
             }
         }
+
+        // TODO: Re-process the objects which are still eligible for processing after this operation?
+        // TODO: This could be due to local edits which occurred while the remote update operation
+        // TODO: was pending.
     }
 
     private func processPendingRemoteChanges(applicationCallback: ((UIBackgroundFetchResult) -> Void)? = nil) {
-        let changeToken = ChangeToken.get(fromContext: self.syncContext, for: self.remote.bookZoneID)?.changeToken
+        let storedChangeToken = ChangeToken.get(fromContext: self.syncContext, for: self.remote.bookZoneID)
 
-        remote.fetchRecordChanges(changeToken: changeToken) { changes in
+        remote.fetchRecordChanges(changeToken: storedChangeToken?.changeToken) { error, changes in
+            guard let changes = changes else {
+                self.handleFetchChangesError(error: error!, changeToken: storedChangeToken)
+                return
+            }
+
             guard !changes.isEmpty else {
                 applicationCallback?(UIBackgroundFetchResult.noData)
                 return
@@ -146,6 +159,21 @@ class SyncCoordinator {
                     applicationCallback?(UIBackgroundFetchResult.newData)
                 }
             }
+        }
+    }
+
+    private func handleFetchChangesError(error: Error, changeToken: ChangeToken?) {
+        if let ckError = error as? CKError {
+            switch ckError.strategy {
+            case .resetChangeToken:
+                self.syncContext.perform {
+                    changeToken!.deleteAndSave()
+                }
+            case .disableSync, .retryLater, .manualMerge, .retrySmallerBatch, .none, .handleInnerErrors:
+                fatalError("Unexpected strategy for failing change fetch: \(ckError.strategy), or error code \(ckError.code)")
+            }
+        } else {
+            print("Unexpected error")
         }
     }
 

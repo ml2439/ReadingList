@@ -47,16 +47,19 @@ class CloudSync: UITableViewController {
         guard let syncCoordinator = appDelegate.syncCoordinator else { fatalError("Unexpected nil sync coordinator") }
 
         SVProgressHUD.show(withStatus: "Enabling iCloud")
-        syncCoordinator.remote.initialise { error in
-            DispatchQueue.main.async {
-                SVProgressHUD.dismiss()
-                if let error = error {
-                    self.handleRemoteInitialiseError(error: error)
-                    self.enabledSwitch.setOn(false, animated: true)
-                } else if self.nonRemoteBooksExistLocally() {
-                    self.requestSyncMergeAction()
-                } else {
-                    UserSettings.iCloudSyncEnabled.value = true
+        DispatchQueue.main.async {
+            syncCoordinator.remote.initialise { error in
+                DispatchQueue.main.async {
+                    SVProgressHUD.dismiss()
+                    if let error = error {
+                        self.handleRemoteInitialiseError(error: error)
+                        self.enabledSwitch.setOn(false, animated: true)
+                    } else if self.nonRemoteBooksExistLocally() {
+                        self.requestSyncMergeAction()
+                    } else {
+                        UserSettings.iCloudSyncEnabled.value = true
+                        appDelegate.syncCoordinator!.start()
+                    }
                 }
             }
         }
@@ -64,11 +67,12 @@ class CloudSync: UITableViewController {
 
     private func nonRemoteBooksExistLocally() -> Bool {
         let fetch = NSManagedObject.fetchRequest(Book.self)
-        fetch.predicate = NSPredicate(format: "%K == NULL", #keyPath(Book.remoteIdentifier))
+        fetch.predicate = NSPredicate(format: "%K = nil", #keyPath(Book.remoteIdentifier))
         return try! PersistentStoreManager.container.viewContext.count(for: fetch) != 0
     }
 
     private func requestSyncMergeAction() {
+        // TODO: This is a misleading and incorrect message. Check whether there are books in iCloud already
         let alert = UIAlertController(title: "Data Already Exists", message: """
             iCloud sync has been enabled previously, so there may be books in iCloud already.
 
@@ -127,18 +131,20 @@ class CloudSync: UITableViewController {
     }
 
     private func handleRemoteInitialiseError(error: Error) {
-        guard let ckError = error as? CKError else { fatalError("Unexpected error type") }
-
         let alert: UIAlertController
-        switch ckError.code {
-        case .networkFailure,
-             .networkUnavailable,
-             .serviceUnavailable:
-            alert = UIAlertController(title: "Could not connect", message: "Could not connect to iCloud. Please try again later.", preferredStyle: .alert)
-        case .notAuthenticated:
-            alert = UIAlertController(title: "Not Signed In", message: "iCloud sync could not be enabled because you are not signed in to iCloud.", preferredStyle: .alert)
-        default:
-            alert = UIAlertController(title: "Could not enable iCloud sync", message: "An error occurred enabling iCloud sync.", preferredStyle: .alert)
+        if let ckError = error as? CKError {
+            switch ckError.code {
+            case .networkFailure,
+                 .networkUnavailable,
+                 .serviceUnavailable:
+                alert = UIAlertController(title: "Could not connect", message: "Could not connect to iCloud. Please try again later.", preferredStyle: .alert)
+            case .notAuthenticated:
+                alert = UIAlertController(title: "Not Signed In", message: "iCloud sync could not be enabled because you are not signed in to iCloud.", preferredStyle: .alert)
+            default:
+                alert = UIAlertController(title: "Could not enable iCloud sync", message: "An error occurred enabling iCloud sync.", preferredStyle: .alert)
+            }
+        } else {
+            alert = UIAlertController(title: "Could not enable iCloud sync", message: "An unexpected error occurred enabling iCloud sync. Please try again later.", preferredStyle: .alert)
         }
 
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))

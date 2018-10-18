@@ -16,12 +16,20 @@ class BookDeleter: UpstreamChangeProcessor {
     func processLocalChanges(_ pendingRemoteDeletes: [NSManagedObject], completion: @escaping () -> Void) {
         let pendingRemoteDeletes = pendingRemoteDeletes as! [PendingRemoteDeletionItem]
 
+        print("Beginning push of \(pendingRemoteDeletes.count) delete instructions.")
         remote.remove(pendingRemoteDeletes.map { $0.recordID }) { error in
             self.context.perform {
-                guard error == nil else { print(error!); return }
-                pendingRemoteDeletes.forEach { $0.delete() }
-                self.context.saveAndLogIfErrored()
+                print("Remote delete complete. Processing results...")
+                if let error = error {
+                    print(error)
+                    // TODO: grab inner errors if present, use them to delete the deletion token of any already remotely-deleted book
+                    return
+                }
 
+                for pendingDelete in pendingRemoteDeletes {
+                    pendingDelete.delete()
+                }
+                self.context.saveAndLogIfErrored()
                 completion()
             }
         }

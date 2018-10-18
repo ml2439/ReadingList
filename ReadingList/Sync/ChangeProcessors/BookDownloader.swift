@@ -13,13 +13,14 @@ class BookDownloader: DownstreamChangeProcessor {
 
     func processRemoteChanges(from zone: CKRecordZone.ID, changes: CKChangeCollection, completion: (() -> Void)?) {
         context.perform {
+            print("\(changes.changedRecords.count + changes.deletedRecordIDs.count) remote changes received")
             self.downloadBooks(changes.changedRecords)
             self.deleteBooks(with: changes.deletedRecordIDs)
 
             // Store the updated change token
             let changeToken = ChangeToken.get(fromContext: self.context, for: zone) ?? ChangeToken(context: self.context, zoneID: zone)
             changeToken.changeToken = changes.newChangeToken
-            print("Updated change token")
+            print("Updated change token to \(changes.newChangeToken)")
 
             self.context.saveAndLogIfErrored()
             completion?()
@@ -28,15 +29,15 @@ class BookDownloader: DownstreamChangeProcessor {
 
     private func deleteBooks(with ids: [CKRecord.ID]) {
         guard !ids.isEmpty else { return }
-        print("\(debugDescription) processing \(ids.count) remote deletions")
-
         let booksToDelete = locallyPresentBooks(withRemoteIDs: ids)
+        print("\(debugDescription) processing \(ids.count) remote deletions (\(booksToDelete.count) present)")
+
         booksToDelete.forEach { $0.delete() }
     }
 
     private func downloadBooks(_ remoteBooks: [CKRecord]) {
         guard !remoteBooks.isEmpty else { return }
-        print("\(debugDescription) processing \(remoteBooks.count) remote insertions")
+        print("\(debugDescription) processing \(remoteBooks.count) remote modification")
 
         for remoteBook in remoteBooks {
             if let localBook = lookupLocalBook(for: remoteBook) {
@@ -54,19 +55,16 @@ class BookDownloader: DownstreamChangeProcessor {
         remoteIdLookup.fetchLimit = 1
         if let book = (try! context.fetch(remoteIdLookup)).first { return book }
 
-        if let remoteGoogleBooksId = remoteBook[BookCKRecordKey.googleBooksId] as? String {
-            let googleIdLookup = NSManagedObject.fetchRequest(Book.self)
-            googleIdLookup.predicate = NSPredicate(format: "%K == %@", #keyPath(Book.googleBooksId), remoteGoogleBooksId)
-            googleIdLookup.fetchLimit = 1
-            if let book = (try! context.fetch(googleIdLookup)).first { return book }
-        }
-
-        if let remoteIsbn = remoteBook[BookCKRecordKey.isbn13] as? String {
-            let isbnLookup = NSManagedObject.fetchRequest(Book.self)
-            isbnLookup.predicate = NSPredicate(format: "%K == %@", #keyPath(Book.isbn13), remoteIsbn)
-            isbnLookup.fetchLimit = 1
-            if let book = (try! context.fetch(isbnLookup)).first { return book }
-        }
+        let localIdLookup = NSManagedObject.fetchRequest(Book.self)
+        localIdLookup.fetchLimit = 1
+        let remoteRecordName = remoteBook.recordID.recordName
+        // TODO: Strip off leading string ("gbid:" or "mid:")
+        localIdLookup.predicate = NSPredicate.or([
+            NSPredicate(format: "%K == %@", #keyPath(Book.googleBooksId), remoteBook.recordID.recordName),
+            // TODO: Add index to manual book id. Check validation on remote ID vs local IDs.
+            NSPredicate(format: "%K == %@", #keyPath(Book.manualBookId), remoteBook.recordID.recordName)
+        ])
+        if let book = (try! context.fetch(localIdLookup)).first { return book }
 
         return nil
     }
