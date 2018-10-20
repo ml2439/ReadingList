@@ -91,8 +91,7 @@ class Book: NSManagedObject {
         // on the viewContext.
         if managedObjectContext == PersistentStoreManager.container.viewContext && remoteIdentifier != nil {
             let changedKeys = changedValues().keys.compactMap(Book.CKRecordKey.from(coreDataKey:)).distinct()
-            pendingRemoteUpdateBitmask = pendingRemoteUpdateBitmask.union(Book.CKRecordKey.Bitmask(changedKeys.map { $0.bitmask }))
-            print("Updated bitmask: \(pendingRemoteUpdateBitmask.keys().map { $0.rawValue }.joined(separator: ", "))")
+            addKeysPendingRemoteUpdate(changedKeys)
         }
     }
 
