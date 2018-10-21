@@ -1,5 +1,6 @@
 import Foundation
 import CoreData
+import os.log
 
 class BookMapping_12_13: NSEntityMigrationPolicy { //swiftlint:disable:this type_name
 
@@ -20,7 +21,10 @@ class BookMapping_12_13: NSEntityMigrationPolicy { //swiftlint:disable:this type
         existingGoogleBooksIdRequest.predicate = NSPredicate(format: "googleBooksId == %@", googleBooksId)
         existingGoogleBooksIdRequest.fetchLimit = 1
         let existingGoogleBooksIdCount = try! manager.destinationContext.count(for: existingGoogleBooksIdRequest)
-        guard existingGoogleBooksIdCount == 0 else { print("*** Duplicate Google Books ID found ***"); return nil }
+        guard existingGoogleBooksIdCount == 0 else {
+            os_log("Duplicate Google Books ID found during model 12 -> 13 migration: %{public}s", type: .error, googleBooksId)
+            return nil
+        }
         return googleBooksId
     }
 
@@ -30,6 +34,7 @@ class BookMapping_12_13: NSEntityMigrationPolicy { //swiftlint:disable:this type
         if readState == 1 /* BookReadState.reading = 1 */ {
             return currentPage
         } else {
+            os_log("Removing currentPage value for book in readState %d", readState)
             return nil
         }
     }

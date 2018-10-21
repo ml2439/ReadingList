@@ -1,5 +1,6 @@
 import Foundation
 import CoreData
+import os.log
 
 public protocol ModelVersion: Equatable, CaseIterable {
     var modelName: String { get }
@@ -38,12 +39,13 @@ public extension ModelVersion {
             }
         #endif
 
-        // Small optimisation: reverse the model versions so the most recent is first; if the store is already
+        // Reverse the model versions so the most recent is first; if the store is already
         // at the latest version, only one managed object model will need to be loaded.
         let version = Self.allCases.reversed().first {
             $0.managedObjectModel().isConfiguration(withName: nil, compatibleWithStoreMetadata: metadata)
         }
         guard let result = version else {
+            os_log("No managed object model compatible with store at %{public}s was found", type: .error)
             throw MigrationError.incompatibleStore
         }
         self = result
@@ -59,12 +61,12 @@ public extension ModelVersion {
 
     func mappingModelToSuccessor() -> NSMappingModel? {
         guard let nextVersion = successor else { return nil }
+        os_log("Loading specified mapping model used for step %{public}s to %{public}s", type: .info, modelName, nextVersion.modelName)
         guard let mapping = NSMappingModel(from: [Self.modelBundle], forSourceModel: managedObjectModel(), destinationModel: nextVersion.managedObjectModel()) else {
             // If there is no mapping model, build an inferred one
-            print("Loading inferred mapping used for step \(self.modelName) to \(nextVersion.modelName).")
+            os_log("No specified mapping model exists; creating inferred mapping model", type: .info)
             return try! NSMappingModel.inferredMappingModel(forSourceModel: managedObjectModel(), destinationModel: successor!.managedObjectModel())
         }
-        print("Loaded specified mapping model for step \(self.modelName) to \(nextVersion.modelName).")
         return mapping
     }
 

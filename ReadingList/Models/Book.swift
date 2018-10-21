@@ -1,6 +1,7 @@
 import Foundation
 import CoreData
 import ReadingList_Foundation
+import os.log
 import CloudKit
 
 @objc(Book)
@@ -269,11 +270,8 @@ extension Book {
 
     func startReading() {
         guard readState == .toRead else {
-            #if DEBUG
-            fatalError("Attempted to start a book in state \(readState)")
-            #else
+            os_log("Attempted to start a book in state %{public}s; was ignored.", type: .error, readState.description)
             return
-            #endif
         }
         readState = .reading
         startedReading = Date()
@@ -281,11 +279,8 @@ extension Book {
 
     func finishReading() {
         guard readState == .reading else {
-            #if DEBUG
-            fatalError("Attempted to finish a book in state \(readState)")
-            #else
+            os_log("Attempted to finish a book in state %{public}s; was ignored.", type: .error, readState.description)
             return
-            #endif
         }
         readState = .finished
         currentPage = nil

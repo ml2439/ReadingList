@@ -1,4 +1,5 @@
 import Foundation
+import os.log
 
 public extension UserDefaults {
     func incrementCounter(withKey key: String) {
@@ -134,16 +135,17 @@ public extension FileManager {
             tmpFiles = try FileManager.default.contentsOfDirectory(at: URL(string: NSTemporaryDirectory())!,
                                                                    includingPropertiesForKeys: nil, options: .skipsHiddenFiles)
         } catch {
-            print("Error enumerating temporary directory: \(error)")
+            os_log("Error enumerating temporary directory: %{public}s", type: .error, error.localizedDescription)
             return
         }
 
+        os_log("Deleting %d temporary files", type: .info, tmpFiles.count)
         for url in tmpFiles {
             do {
                 try FileManager.default.removeItem(at: url)
-                print("Removed temporary file: \(url.path)")
+                os_log("Removed temporary file %{public}s", type: .info, url.path)
             } catch {
-                print("Unable to remove temporary file: \(url.path)")
+                os_log("Unable to remove temporary file %{public}s: %{public}s", type: .error, url.path, error.localizedDescription)
             }
         }
     }

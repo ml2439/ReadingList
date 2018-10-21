@@ -3,6 +3,7 @@ import SVProgressHUD
 import SwiftyStoreKit
 import CoreData
 import ReadingList_Foundation
+import os.log
 import Reachability
 
 var appDelegate: AppDelegate {
@@ -39,14 +40,34 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let quickAction = launchOptions?[.shortcutItem] as? UIApplicationShortcutItem
         let csvFileUrl = launchOptions?[.url] as? URL
 
-        // Initialise the persistent store on a background thread. The main thread will return and the LaunchScreen
-        // storyboard will remain in place until this is completed, at which point the Main storyboard will be instantiated.
+        initialisePersistentStore {
+            // Once the store is loaded and the main storyboard instantiated, perform the quick action
+            // or open the CSV file, is specified. This is done here rather than in application:open,
+            // for example, in the case where the app is not yet launched.
+            if let quickAction = quickAction {
+                self.performQuickAction(QuickAction(rawValue: quickAction.type)!)
+            } else if let csvFileUrl = csvFileUrl {
+                self.openCsvImport(url: csvFileUrl)
+            }
+        }
+
+        // If there was a QuickAction or URL-open, it is handled here, so prevent another handler from being called
+        return quickAction == nil && csvFileUrl == nil
+    }
+
+    /**
+     Initialises the persistent store on a background thread. If successfully completed, the main thread
+     will instantiate the root view controller, perform some other app-startup work, and call the callback.
+     If the persistent store fails to initialise, then an error alert is presented to the user.
+    */
+    private func initialisePersistentStore(onSuccess: (() -> Void)? = nil) {
         DispatchQueue.global(qos: .userInteractive).async {
             do {
                 try PersistentStoreManager.initalisePersistentStore {
+                    os_log("Persistent store loaded", type: .info)
                     DispatchQueue.main.async {
                         #if DEBUG
-                            DebugSettings.initialiseFromCommandLine()
+                        DebugSettings.initialiseFromCommandLine()
                         #endif
 
                         self.window!.rootViewController = TabBarController()
@@ -65,14 +86,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                             }
                         }
 
-                        // Once the store is loaded and the main storyboard instantiated, perform the quick action
-                        // or open the CSV file, is specified. This is done here rather than in application:open, for example,
-                        // in the case where the app is not yet launched.
-                        if let quickAction = quickAction {
-                            self.performQuickAction(QuickAction(rawValue: quickAction.type)!)
-                        } else if let csvFileUrl = csvFileUrl {
-                            self.openCsvImport(url: csvFileUrl)
-                        }
+                        onSuccess?()
                     }
                 }
             } catch MigrationError.incompatibleStore {
@@ -84,9 +98,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 fatalError(error.localizedDescription)
             }
         }
-
-        // If there was a QuickAction or URL-open, it is handled here, so prevent another handler from being called
-        return quickAction == nil && csvFileUrl == nil
     }
 
     func presentIncompatibleDataAlert() {
@@ -108,7 +119,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         #if DEBUG
         alert.addAction(UIAlertAction(title: "Delete Store", style: .destructive) { _ in
             NSPersistentStoreCoordinator().destroyAndDeleteStore(at: URL.applicationSupport.appendingPathComponent(PersistentStoreManager.storeFileName))
-            fatalError("Store destroyed; app restart required.")
+            self.initialisePersistentStore()
         })
         #endif
 
@@ -229,8 +240,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     @objc func initialiseTheme() {
-        let theme = UserSettings.theme.value
-        theme.configureForms()
+        UserSettings.theme.value.configureForms()
     }
 }
 

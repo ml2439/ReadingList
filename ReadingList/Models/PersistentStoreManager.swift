@@ -1,5 +1,6 @@
 import CoreData
 import CoreSpotlight
+import os.log
 
 class PersistentStoreManager {
 
@@ -12,7 +13,9 @@ class PersistentStoreManager {
      Creates the NSPersistentContainer, migrating if necessary.
     */
     static func initalisePersistentStore(completion: @escaping () -> Void) throws {
-        guard container == nil else { fatalError("Attempting to reinitialise the PersistentStoreManager") }
+        if container != nil {
+            os_log("Reinitialising persistent container")
+        }
         let storeLocation = URL.applicationSupport.appendingPathComponent(storeFileName)
 
         // Default location of NSPersistentContainer is in the ApplicationSupport directory;
@@ -35,7 +38,7 @@ class PersistentStoreManager {
     private static func moveStoreFromLegacyLocationIfNecessary(toNewLocation newLocation: URL) {
         let legacyStoreLocation = URL.documents.appendingPathComponent(storeFileName)
         if FileManager.default.fileExists(atPath: legacyStoreLocation.path) && !FileManager.default.fileExists(atPath: newLocation.path) {
-            print("Store located in Documents directory; migrating to Application Support directory")
+            os_log("Store located in Documents directory; migrating to Application Support directory")
             let tempStoreCoordinator = NSPersistentStoreCoordinator()
             try! tempStoreCoordinator.replacePersistentStore(
                 at: newLocation,
@@ -49,6 +52,7 @@ class PersistentStoreManager {
 
             // The same version (1.7.1) also removed support for spotlight indexing, so deindex everything
             if CSSearchableIndex.isIndexingAvailable() {
+                os_log("Deleting all searchable spotlight items")
                 CSSearchableIndex.default().deleteAllSearchableItems()
             }
         }
@@ -58,7 +62,7 @@ class PersistentStoreManager {
      Deletes all objects of the given type
     */
     static func delete<T>(type: T.Type) where T: NSManagedObject {
-        print("Deleting all \(String(describing: type)) objects")
+        os_log("Deleting all %{public}s objects", String(describing: type))
         let batchDelete = NSBatchDeleteRequest(fetchRequest: type.fetchRequest())
         try! PersistentStoreManager.container.persistentStoreCoordinator.execute(batchDelete, with: container.viewContext)
     }
