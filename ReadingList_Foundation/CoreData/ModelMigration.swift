@@ -1,5 +1,6 @@
 import Foundation
 import CoreData
+import os.log
 
 public extension NSPersistentContainer {
 
@@ -41,13 +42,13 @@ public extension NSPersistentContainer {
     */
     func migrateStoreIfRequired<Version: ModelVersion>(_ version: Version.Type) throws {
         guard let sourceVersion = try Version(storeURL: storeURL) else {
-            print("No current store.")
+            os_log("No current store: no migration required", type: .info)
             return
         }
 
         let migrationSteps = sourceVersion.migrationSteps(to: Version.latest)
         guard !migrationSteps.isEmpty else { return }
-        print("Migrating store \(storeURL.lastPathComponent): \(migrationSteps.count) migration steps detected")
+        os_log("Migrating store at %{public}s: %d migration steps detected", storeURL.path, migrationSteps.count)
 
         // For each migration step, migrate to a temporary URL and destroy the previous one (except for the sourceURL)
         var currentMigrationStepURL = storeURL
@@ -58,12 +59,12 @@ public extension NSPersistentContainer {
             try! manager.migrateStore(from: currentMigrationStepURL, sourceType: NSSQLiteStoreType, options: nil, with: step.mapping, toDestinationURL: temporaryURL, destinationType: NSSQLiteStoreType, destinationOptions: nil)
 
             currentMigrationStepURL = temporaryURL
-            print("Migration step \(stepNumber + 1) complete")
+            os_log("Migration step %d complete", stepNumber)
         }
 
         // Once all migrations are done, place the current temporary store at the original location
         try! persistentStoreCoordinator.replacePersistentStore(at: storeURL, destinationOptions: nil, withPersistentStoreFrom: currentMigrationStepURL, sourceOptions: nil, ofType: NSSQLiteStoreType)
-        print("Persistent store replaced")
+        os_log("Migration complete; persistent store replaced")
 
         // Remove any temporary store files once the migration is complete
         FileManager.default.removeTemporaryFiles()

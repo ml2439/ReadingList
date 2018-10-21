@@ -1,5 +1,6 @@
 import Foundation
 import CoreData
+import os.log
 
 public extension NSManagedObject {
     func delete() {
@@ -48,8 +49,8 @@ public extension NSPersistentStoreCoordinator {
             try FileManager.default.removeItem(at: url)
             try FileManager.default.removeItem(at: URL(fileURLWithPath: url.path.appending("-shm")))
             try FileManager.default.removeItem(at: URL(fileURLWithPath: url.path.appending("-wal")))
-        } catch let error { //swiftlint:disable:this untyped_error_in_catch
-            print("failed to destroy or delete persistent store at \(url)", error)
+        } catch {
+            os_log("Failed to destroy or delete persistent store at %{public}s: %{public}s", type: .error, url.path, error.localizedDescription)
         }
     }
 }

@@ -1,4 +1,5 @@
 import Foundation
+import os.log
 
 public class CsvColumn<TData> {
     public let header: String
@@ -45,7 +46,7 @@ public class CsvExporter<TData> {
         flush()
 
         // Remove existing file if present
-        print("Moving temporary file to destination")
+        os_log("Moving temporary file at %{public}s to %{public}s", type: .info, temporaryFilePath.path, filePath.path)
         try? FileManager.default.removeItem(at: filePath)
         try! FileManager.default.moveItem(at: temporaryFilePath, to: filePath)
     }
@@ -59,7 +60,7 @@ public class CsvExporter<TData> {
     }
 
     private func flush() {
-        print("Flushing export from memory to temporary file")
+        os_log("Flushing export from memory to temporary file", type: .debug)
         try! fileBuffer.append(toFile: temporaryFilePath, encoding: .utf8)
         fileBuffer = ""
     }

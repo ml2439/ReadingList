@@ -2,6 +2,7 @@ import Foundation
 import CoreData
 import Promises
 import ReadingList_Foundation
+import os.log
 
 class BookCSVImporter {
     private let parserDelegate: BookCSVParserDelegate //swiftlint:disable:this weak_delegate
@@ -19,6 +20,7 @@ class BookCSVImporter {
         - results: otherwise, this summary of the results of the import will be non-nil
     */
     func startImport(fromFileAt fileLocation: URL, _ completion: @escaping (CSVImportError?, BookCSVImportResults?) -> Void) {
+        os_log("Beginning import from CSV file")
         parserDelegate.onCompletion = completion
 
         parser = CSVParser(csvFileUrl: fileLocation)
@@ -123,7 +125,7 @@ private class BookCSVParserDelegate: CSVParserDelegate {
         context.performAndWait { [unowned self] in
             // Check for duplicates
             guard Book.get(fromContext: self.context, googleBooksId: values["Google Books ID"], isbn: values["ISBN-13"]) == nil else {
-                print("Duplicate book skipped")
+                os_log("Skipping duplicate book", type: .info)
                 duplicateCount += 1; return
             }
 
@@ -146,7 +148,7 @@ private class BookCSVParserDelegate: CSVParserDelegate {
             // If the book is not valid, delete it
             guard newBook.isValidForUpdate() else {
                 invalidCount += 1
-                print("Invalid book; deleting")
+                os_log("Deleting invalid book", type: .info)
                 newBook.delete()
                 return
             }
