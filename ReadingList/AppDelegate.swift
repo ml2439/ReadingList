@@ -172,11 +172,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        print("Registered for remote notifications")
+        os_log("Successfully registered for remote notifications", type: .info)
     }
 
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
-        print("Failed to register for remote notifications")
+        os_log("Failed to register for remote notifications: %{public}s", type: .error, error.localizedDescription)
     }
 
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any],
@@ -191,7 +191,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             try reachability.startNotifier()
             NotificationCenter.default.addObserver(self, selector: #selector(networkConnectivityDidChange), name: .reachabilityChanged, object: nil)
         } catch {
-            print("Error starting reachability notifier")
+            os_log("Error starting reachability notifier: %{public}s", type: .error, error.localizedDescription)
         }
     }
 

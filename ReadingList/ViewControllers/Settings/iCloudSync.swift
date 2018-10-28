@@ -37,13 +37,13 @@ class CloudSync: UITableViewController {
 
     @IBAction private func iCloudSyncSwitchChanged(_ sender: UISwitch) {
         if sender.isOn {
-            turnOnSync()
+            syncSwitchTurnedOn()
         } else {
-            turnOffSync()
+            syncSwitchTurnedOff()
         }
     }
 
-    private func turnOnSync() {
+    private func syncSwitchTurnedOn() {
         guard let syncCoordinator = appDelegate.syncCoordinator else { fatalError("Unexpected nil sync coordinator") }
 
         SVProgressHUD.show(withStatus: "Enabling iCloud")
@@ -112,7 +112,7 @@ class CloudSync: UITableViewController {
         present(alert, animated: true)
     }
 
-    private func turnOffSync() {
+    private func syncSwitchTurnedOff() {
         guard let syncCoordinator = appDelegate.syncCoordinator else { fatalError("Unexpected nil sync coordinator") }
 
         let alert = UIAlertController(title: "Disable Sync?", message: """

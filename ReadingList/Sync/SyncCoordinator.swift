@@ -2,6 +2,7 @@ import Foundation
 import CoreData
 import UIKit
 import CloudKit
+import os.log
 
 /**
  Coordinates synchronisation of a local CoreData store with a CloudKit remote store.
@@ -57,6 +58,7 @@ class SyncCoordinator {
      */
     func start() {
         syncContext.perform {
+            os_log("SyncCoordinator starting...")
             self.syncContext.refreshAllObjects()
             self.startContextNotificationObserving()
             self.processPendingChanges()
@@ -71,6 +73,7 @@ class SyncCoordinator {
      Stops the monitoring of CoreData changes.
     */
     func stop() {
+        os_log("SyncCoordinator stopping...")
         contextSaveNotificationObservers.forEach { NotificationCenter.default.removeObserver($0) }
         contextSaveNotificationObservers.removeAll()
     }
@@ -80,13 +83,16 @@ class SyncCoordinator {
      one context to the other, and also calling `processPendingLocalChanges(objects:)` on the updated or inserted objects.
     */
     private func startContextNotificationObserving() {
-        guard contextSaveNotificationObservers.isEmpty else { print("Observers already registered"); return }
+        guard contextSaveNotificationObservers.isEmpty else {
+            os_log("Context obervers are already registered", type: .error)
+            return
+        }
 
         func registerForMergeOnSave(from sourceContext: NSManagedObjectContext, to destinationContext: NSManagedObjectContext) {
             let observer = NotificationCenter.default.addObserver(forName: .NSManagedObjectContextDidSave, object: sourceContext, queue: nil) { [weak self] note in
 
                 // Merge the changes into the destination context, on the appropriate thread
-                print("Merging save from \(String(sourceContext.name!)) to \(String(destinationContext.name!))")
+                os_log("Merging save from %{public}s to %{public}s", type: .debug, sourceContext.name!, destinationContext.name!)
                 destinationContext.performMergeChanges(from: note)
 
                 // Take the new or modified objects, mapped to the syncContext, and process them as local changes.

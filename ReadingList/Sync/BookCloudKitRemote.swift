@@ -1,6 +1,7 @@
 import Foundation
 import CoreData
 import CloudKit
+import os.log
 
 class BookCloudKitRemote {
     let bookZoneName = "BookZone"
@@ -37,30 +38,33 @@ class BookCloudKitRemote {
         self.userRecordName = userRecordName
         self.bookZoneID = CKRecordZone.ID(zoneName: bookZoneName, ownerName: userRecordName)
 
-        // Create the book zone (TODO: Do not create if already exists?)
+        // Ensure the book zone exists. We're not calling the error callback here, since the subsequent operation is
+        // not cancelled if this one fails. If the zone fails to get created, then the second operation will fail too.
         let bookZone = CKRecordZone(zoneID: bookZoneID)
         let createZoneOperation = CKModifyRecordZonesOperation(recordZonesToSave: [bookZone], recordZoneIDsToDelete: nil)
-        createZoneOperation.modifyRecordZonesCompletionBlock = { zone, zoneID, error in
-            if let error = error { completion(error) }
+        createZoneOperation.modifyRecordZonesCompletionBlock = { _, _, error in
+            if let error = error {
+                os_log("Book record zone creation failed: %{public}s", type: .error, error.localizedDescription)
+            } else {
+                os_log("Record zone created", type: .info)
+            }
         }
         createZoneOperation.qualityOfService = .userInitiated
         privateDB.add(createZoneOperation)
 
-        // Subscribe to changes
+        // Create a subscribe and to it
         let subscription = CKRecordZoneSubscription(zoneID: bookZone.zoneID, subscriptionID: "BookChanges")
-        subscription.notificationInfo = {
-            let info = CKSubscription.NotificationInfo()
-            info.shouldSendContentAvailable = true
-            return info
-        }()
+        subscription.notificationInfo = CKSubscription.NotificationInfo(shouldSendContentAvailable: true)
+
         let modifySubscriptionOperation = CKModifySubscriptionsOperation(subscriptionsToSave: [subscription], subscriptionIDsToDelete: nil)
         modifySubscriptionOperation.addDependency(createZoneOperation)
         modifySubscriptionOperation.qualityOfService = .userInitiated
         modifySubscriptionOperation.modifySubscriptionsCompletionBlock = { _, _, error in
             if let error = error {
+                os_log("Book record zone subscription creation failed: %{public}s", type: .error, error.localizedDescription)
                 completion(error)
             } else {
-                print("Subscription modified")
+                os_log("Record zone subscription created", type: .info)
                 completion(nil)
             }
         }
@@ -68,7 +72,11 @@ class BookCloudKitRemote {
     }
 
     func fetchRecordChanges(changeToken: CKServerChangeToken?, completion: @escaping (Error?, CKChangeCollection?) -> Void) {
-        print("Fetching record changes since change token \(String(describing: changeToken))")
+        if changeToken == nil {
+            os_log("Fetching all records", type: .info)
+        } else {
+            os_log("Fetching record changes using change token", type: .info)
+        }
 
         var changedRecords = [CKRecord]()
         var deletedRecordIDs = [CKRecord.ID]()
@@ -83,10 +91,10 @@ class BookCloudKitRemote {
             deletedRecordIDs.append(recordID)
         }
         operation.recordZoneChangeTokensUpdatedBlock = { _, changeToken, _ in
-            print("Change token reported updated to \(String(describing: changeToken))")
+            os_log("Change token reported updated", type: .debug)
         }
         operation.recordZoneFetchCompletionBlock = { _, changeToken, _, _, error in
-            print("Record change fetch batch operation complete")
+            os_log("Record fetch batch operation complete", type: .info)
             if let error = error {
                 completion(error, nil)
                 return
@@ -95,12 +103,14 @@ class BookCloudKitRemote {
             let changes = CKChangeCollection(changedRecords: changedRecords, deletedRecordIDs: deletedRecordIDs, newChangeToken: changeToken)
             completion(nil, changes)
         }
+        operation.completionBlock = {
+            os_log("Record fetch operation complete", type: .info)
+        }
         privateDB.add(operation)
     }
 
     func upload(_ records: [CKRecord], completion: @escaping (Error?) -> Void) {
         let operation = CKModifyRecordsOperation(recordsToSave: records, recordIDsToDelete: nil)
-        operation.savePolicy = .ifServerRecordUnchanged
         operation.qualityOfService = .userInitiated
         operation.modifyRecordsCompletionBlock = { _, _, error in
             completion(error)

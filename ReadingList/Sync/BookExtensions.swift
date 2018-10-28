@@ -1,4 +1,5 @@
 import CloudKit
+import os.log
 
 extension Book {
     func newRecordID(in zoneID: CKRecordZone.ID) -> CKRecord.ID {
@@ -13,7 +14,7 @@ extension Book {
         if recordID.recordName.starts(with: "mid:") {
             return NSPredicate(format: "%K == %@", #keyPath(Book.manualBookId), String(recordID.recordName.dropFirst(4)))
         }
-        print("Unexpected format of remote record ID: \(recordID.recordName)")
+        os_log("Unexpected format of remote record ID: %{public}s", type: .error, recordID.recordName)
         return NSPredicate(boolean: false)
     }
 
@@ -99,12 +100,12 @@ extension Book {
     */
     func update(from ckRecord: CKRecord) {
         if let existingCKRecordSystemFields = getSystemFieldsRecord(), existingCKRecordSystemFields.recordChangeTag == ckRecord.recordChangeTag {
-            print("CKRecord \(ckRecord.recordID.recordName) has same change tag as local book; skipping update")
+            os_log("CKRecord %{public}s has same change tag as local book; skipping update", type: .debug, ckRecord.recordID.recordName)
             return
         }
 
         if remoteIdentifier != ckRecord.recordID.recordName {
-            print("Updating remoteIdentifier from \(remoteIdentifier ?? "nil") to \(ckRecord.recordID.recordName)")
+            os_log("Updating remoteIdentifier from %{public}s to %{public}s", type: .debug, remoteIdentifier ?? "nil", ckRecord.recordID.recordName)
             remoteIdentifier = ckRecord.recordID.recordName
         }
 
@@ -114,7 +115,7 @@ extension Book {
         let pendingRemoteUpdate = pendingRemoteUpdateBitmask.keys()
         for key in CKRecordKey.allCases {
             if pendingRemoteUpdate.contains(key) {
-                print("Remote value for \(key.rawValue) ignored, due to presence of a pending upstream update")
+                os_log("Remote value for key %{public}s in record %{public}s ignored, due to presence of a pending upstream update", type: .debug, key.rawValue, remoteIdentifier!)
                 continue
             }
             setValue(ckRecord[key], for: key)
