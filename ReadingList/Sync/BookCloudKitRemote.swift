@@ -90,9 +90,6 @@ class BookCloudKitRemote {
         operation.recordWithIDWasDeletedBlock = { recordID, _ in
             deletedRecordIDs.append(recordID)
         }
-        operation.recordZoneChangeTokensUpdatedBlock = { _, changeToken, _ in
-            os_log("Change token reported updated", type: .debug)
-        }
         operation.recordZoneFetchCompletionBlock = { _, changeToken, _, _, error in
             os_log("Record fetch batch operation complete", type: .info)
             if let error = error {

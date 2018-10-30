@@ -38,7 +38,8 @@ class SyncCoordinator {
 
     let remote = BookCloudKitRemote()
 
-    private var contextSaveNotificationObservers = [NSObjectProtocol]()
+    private var notificationObservers = [NSObjectProtocol]()
+    private(set) var isStarted = false
 
     init(container: NSPersistentContainer) {
         viewContext = container.viewContext
@@ -58,36 +59,39 @@ class SyncCoordinator {
      */
     func start() {
         syncContext.perform {
-            os_log("SyncCoordinator starting...")
-            self.syncContext.refreshAllObjects()
-            self.startContextNotificationObserving()
-            self.processPendingChanges()
+            if self.isStarted {
+                os_log("SyncCoordinator instructed to start but it is already started", type: .error)
+            } else {
+                os_log("SyncCoordinator starting...")
+                self.isStarted = true
+                self.syncContext.refreshAllObjects()
+                self.startNotificationObserving()
+                self.processPendingChanges()
+            }
         }
-    }
-
-    var isStarted: Bool {
-        return !contextSaveNotificationObservers.isEmpty
     }
 
     /**
      Stops the monitoring of CoreData changes.
     */
     func stop() {
-        os_log("SyncCoordinator stopping...")
-        contextSaveNotificationObservers.forEach { NotificationCenter.default.removeObserver($0) }
-        contextSaveNotificationObservers.removeAll()
+        syncContext.perform {
+            if !self.isStarted {
+                os_log("SyncCoordinator instructed to stop but it is already stopped", type: .error)
+            } else {
+                os_log("SyncCoordinator stopping...")
+                self.isStarted = false
+                self.notificationObservers.forEach { NotificationCenter.default.removeObserver($0) }
+                self.notificationObservers.removeAll()
+            }
+        }
     }
 
     /**
      Registers Save observers on both the viewContext and the syncContext, handling them by merging the save from
      one context to the other, and also calling `processPendingLocalChanges(objects:)` on the updated or inserted objects.
     */
-    private func startContextNotificationObserving() {
-        guard contextSaveNotificationObservers.isEmpty else {
-            os_log("Context obervers are already registered", type: .error)
-            return
-        }
-
+    private func startNotificationObserving() {
         func registerForMergeOnSave(from sourceContext: NSManagedObjectContext, to destinationContext: NSManagedObjectContext) {
             let observer = NotificationCenter.default.addObserver(forName: .NSManagedObjectContextDidSave, object: sourceContext, queue: nil) { [weak self] note in
 
@@ -109,11 +113,22 @@ class SyncCoordinator {
                     }
                 }
             }
-            contextSaveNotificationObservers.append(observer)
+            notificationObservers.append(observer)
         }
 
         registerForMergeOnSave(from: syncContext, to: viewContext)
         registerForMergeOnSave(from: viewContext, to: syncContext)
+
+        let stopObserver = NotificationCenter.default.addObserver(forName: .DisableCloudSync, object: nil, queue: nil) { _ in
+            self.stop()
+        }
+        notificationObservers.append(stopObserver)
+
+        let pauseObserver = NotificationCenter.default.addObserver(forName: .PauseCloudSync, object: nil, queue: nil) { _ in
+            self.stop()
+            // TODO: Start the sync coordinator up again!
+        }
+        notificationObservers.append(pauseObserver)
     }
 
     /**
@@ -196,7 +211,7 @@ class SyncCoordinator {
                 self.syncContext.perform {
                     changeToken!.deleteAndSave()
                 }
-            case .disableSync, .retryLater, .manualMerge, .retrySmallerBatch, .none, .handleInnerErrors:
+            case .disableSync, .retryLater, .retrySmallerBatch, .handleInnerErrors, .disableSyncUnexpectedError, .handleConcurrencyErrors:
                 fatalError("Unexpected strategy for failing change fetch: \(ckError.strategy), or error code \(ckError.code)")
             }
         } else {

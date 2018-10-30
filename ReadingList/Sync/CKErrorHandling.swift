@@ -2,30 +2,34 @@ import Foundation
 import CloudKit
 
 extension CKError {
+    /**
+     If the code is batchRequestFailed, then returns the partial errors dictionary from the error userInfo.
+     Otherwise returns nil.
+    */
     var innerErrors: [CKRecord.ID: CKError]? {
-        return self.userInfo[CKPartialErrorsByItemIDKey] as? [CKRecord.ID: CKError]
+        return code != .batchRequestFailed ? nil : userInfo[CKPartialErrorsByItemIDKey] as? [CKRecord.ID: CKError]
     }
 
     enum Strategy {
-        case retryLater(TimeInterval?)
+        case retryLater
         case retrySmallerBatch
         case resetChangeToken
-        case manualMerge
-        case handleInnerErrors([CKRecord.ID: CKError]?)
         case disableSync
-        case none
+        case disableSyncUnexpectedError
+        case handleInnerErrors
+        case handleConcurrencyErrors
     }
 
     var strategy: Strategy {
         switch self.code {
         // User did something
-        case .managedAccountRestricted, .notAuthenticated, .quotaExceeded, .userDeletedZone, .zoneNotFound:
+        case .managedAccountRestricted, .notAuthenticated, .quotaExceeded, .userDeletedZone, .zoneNotFound, .incompatibleVersion:
             return .disableSync
 
         // Try again later
-        case .networkFailure, .networkUnavailable, .serviceUnavailable, .serverResponseLost,
-             .internalError, .operationCancelled, .zoneBusy, .requestRateLimited:
-            return .retryLater(self.userInfo[CKErrorRetryAfterKey] as? TimeInterval)
+        case .networkFailure, .networkUnavailable, .serviceUnavailable, .serverResponseLost, .internalError, .operationCancelled,
+             .zoneBusy, .requestRateLimited, .assetFileNotFound, .assetNotAvailable, .assetFileModified:
+            return .retryLater
 
         // Try again with smalled batch size
         case .limitExceeded:
@@ -33,30 +37,21 @@ extension CKError {
 
         // Unexpected codes
         case .alreadyShared, .participantMayNeedVerification, .tooManyParticipants, .badContainer, .badDatabase,
-             .constraintViolation, .incompatibleVersion, .invalidArguments, .missingEntitlement, .referenceViolation,
+             .constraintViolation, .invalidArguments, .missingEntitlement, .referenceViolation,
              .serverRejectedRequest, .resultsTruncated, .permissionFailure:
-            return .none
-
-        // Asset modification
-        case .assetFileModified, .assetFileNotFound, .assetNotAvailable:
-            return .none
+            return .disableSyncUnexpectedError
 
         // Delete change token
         case .changeTokenExpired:
             return .resetChangeToken
 
-        // Data modification
+        // Batch failure
+        case .batchRequestFailed, .partialFailure:
+            return .handleInnerErrors
+
+        // Handle on case-by-case basis
         case .unknownItem, .serverRecordChanged:
-            return .manualMerge
-
-        // Process items one-by-one
-        case .partialFailure:
-            return .handleInnerErrors(innerErrors!)
-
-        // Not sure yet
-        case .batchRequestFailed:
-            return .none
-
+            return .handleConcurrencyErrors
         }
     }
 }
@@ -104,5 +99,9 @@ extension CKError.Code {
         case .partialFailure: return "partialFailure"
         }
     }
+}
 
+extension NSNotification.Name {
+    static let DisableCloudSync = Notification.Name("disable-cloud-sync")
+    static let PauseCloudSync = Notification.Name("pause-cloud-sync")
 }
