@@ -79,7 +79,7 @@ extension Book {
      Returns a CKRecord with every CKRecordKey set to the CKValue corresponding to the value in this book.
      */
     func recordForInsert(into zone: CKRecordZone.ID) -> CKRecord {
-        let ckRecord = CKRecord(recordType: "Book", recordID: newRecordID(in: zone))
+        let ckRecord = CKRecord(recordType: Book.ckRecordType, recordID: newRecordID(in: zone))
         for key in Book.CKRecordKey.allCases {
             ckRecord[key] = getValue(for: key)
         }

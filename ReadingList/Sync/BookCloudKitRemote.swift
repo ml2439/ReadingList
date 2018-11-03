@@ -71,37 +71,39 @@ class BookCloudKitRemote {
         privateDB.add(modifySubscriptionOperation)
     }
 
-    func fetchRecordChanges(changeToken: CKServerChangeToken?, completion: @escaping (Error?, CKChangeCollection?) -> Void) {
+    func fetchRecordChanges(changeToken: CKServerChangeToken?, recordDeletion: @escaping (CKRecord.ID) -> Void,
+                            recordChange: @escaping (CKRecord) -> Void, changeTokenUpdate: @escaping (CKServerChangeToken) -> Void,
+                            completion: @escaping (CKServerChangeToken?, Error?, Bool) -> Void) {
         if changeToken == nil {
-            os_log("Fetching all records", type: .info)
+            os_log("Fetching record changes without change token", type: .info)
         } else {
-            os_log("Fetching record changes using change token", type: .info)
+            os_log("Fetching record changes with change token", type: .info)
         }
 
-        var changedRecords = [CKRecord]()
-        var deletedRecordIDs = [CKRecord.ID]()
-
         let options = CKFetchRecordZoneChangesOperation.ZoneOptions()
-        options.previousServerChangeToken = changeToken
+        if let changeToken = changeToken {
+            options.previousServerChangeToken = changeToken
+        }
 
+        var hasChanges = false
         let operation = CKFetchRecordZoneChangesOperation(recordZoneIDs: [bookZoneID], optionsByRecordZoneID: [bookZoneID: options])
         operation.qualityOfService = .userInitiated
-        operation.recordChangedBlock = { changedRecords.append($0) }
+        operation.recordChangedBlock = { record in
+            recordChange(record)
+            hasChanges = true
+        }
         operation.recordWithIDWasDeletedBlock = { recordID, _ in
-            deletedRecordIDs.append(recordID)
+            recordDeletion(recordID)
+            hasChanges = true
+        }
+        operation.recordZoneChangeTokensUpdatedBlock = { _, changeToken, _ in
+            os_log("Record fetch change token updated", type: .info)
+            if let changeToken = changeToken { changeTokenUpdate(changeToken) }
+            hasChanges = true
         }
         operation.recordZoneFetchCompletionBlock = { _, changeToken, _, _, error in
             os_log("Record fetch batch operation complete", type: .info)
-            if let error = error {
-                completion(error, nil)
-                return
-            }
-            guard let changeToken = changeToken else { fatalError("Unexpectedly missing change token") }
-            let changes = CKChangeCollection(changedRecords: changedRecords, deletedRecordIDs: deletedRecordIDs, newChangeToken: changeToken)
-            completion(nil, changes)
-        }
-        operation.completionBlock = {
-            os_log("Record fetch operation complete", type: .info)
+            completion(changeToken, error, hasChanges)
         }
         privateDB.add(operation)
     }
@@ -122,21 +124,5 @@ class BookCloudKitRemote {
             completion(error)
         }
         CKContainer.default().privateCloudDatabase.add(operation)
-    }
-}
-
-class CKChangeCollection {
-    let changedRecords: [CKRecord]
-    let deletedRecordIDs: [CKRecord.ID]
-    let newChangeToken: CKServerChangeToken
-
-    init(changedRecords: [CKRecord], deletedRecordIDs: [CKRecord.ID], newChangeToken: CKServerChangeToken) {
-        self.changedRecords = changedRecords
-        self.deletedRecordIDs = deletedRecordIDs
-        self.newChangeToken = newChangeToken
-    }
-
-    var isEmpty: Bool {
-        return changedRecords.isEmpty && deletedRecordIDs.isEmpty
     }
 }

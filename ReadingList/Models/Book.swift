@@ -34,6 +34,7 @@ class Book: NSManagedObject {
     // Raw value of a BookKey option set. Represents the keys which have been modified locally but
     // not uploaded to a remote store.
     @NSManaged private var keysPendingRemoteUpdate: Int32
+    static let ckRecordType = "Book"
 
     private(set) var pendingRemoteUpdateBitmask: CKRecordKey.Bitmask {
         get { return CKRecordKey.Bitmask(rawValue: keysPendingRemoteUpdate) }

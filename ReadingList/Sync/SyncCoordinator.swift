@@ -34,7 +34,7 @@ class SyncCoordinator {
     private let syncContext: NSManagedObjectContext
 
     private let upstreamChangeProcessors: [UpstreamChangeProcessor]
-    private let downstreamChangeProcessors: [DownstreamChangeProcessor]
+    private let downstreamChangeProcessor: BookDownloader
 
     let remote = BookCloudKitRemote()
 
@@ -47,9 +47,9 @@ class SyncCoordinator {
 
         syncContext = container.newBackgroundContext()
         syncContext.name = "syncContext"
-        syncContext.mergePolicy = NSMergePolicy.mergeByPropertyStoreTrump // FUTURE: Add a custom merge policy
+        syncContext.mergePolicy = NSMergePolicy.mergeByPropertyStoreTrump // FUTURE: Add a custom merge policy?
 
-        self.downstreamChangeProcessors = [BookDownloader(syncContext)]
+        self.downstreamChangeProcessor = BookDownloader(syncContext, remote)
         self.upstreamChangeProcessors = [BookUploader(syncContext, remote),
                                          BookDeleter(syncContext, remote)]
     }
@@ -59,15 +59,16 @@ class SyncCoordinator {
      */
     func start() {
         syncContext.perform {
-            if self.isStarted {
+            guard !self.isStarted else {
                 os_log("SyncCoordinator instructed to start but it is already started", type: .error)
-            } else {
-                os_log("SyncCoordinator starting...")
-                self.isStarted = true
-                self.syncContext.refreshAllObjects()
-                self.startNotificationObserving()
-                self.processPendingChanges()
+                return
             }
+
+            os_log("SyncCoordinator starting...")
+            self.isStarted = true
+            self.syncContext.refreshAllObjects()
+            self.startNotificationObserving()
+            self.processPendingChanges()
         }
     }
 
@@ -76,14 +77,15 @@ class SyncCoordinator {
     */
     func stop() {
         syncContext.perform {
-            if !self.isStarted {
+            guard self.isStarted else {
                 os_log("SyncCoordinator instructed to stop but it is already stopped", type: .error)
-            } else {
-                os_log("SyncCoordinator stopping...")
-                self.isStarted = false
-                self.notificationObservers.forEach { NotificationCenter.default.removeObserver($0) }
-                self.notificationObservers.removeAll()
+                return
             }
+
+            os_log("SyncCoordinator stopping...")
+            self.isStarted = false
+            self.notificationObservers.forEach { NotificationCenter.default.removeObserver($0) }
+            self.notificationObservers.removeAll()
         }
     }
 
@@ -126,7 +128,7 @@ class SyncCoordinator {
 
         let pauseObserver = NotificationCenter.default.addObserver(forName: .PauseCloudSync, object: nil, queue: nil) { _ in
             self.stop()
-            // TODO: Start the sync coordinator up again!
+            // TODO: Start the sync coordinator up again after a period of time
         }
         notificationObservers.append(pauseObserver)
     }
@@ -183,40 +185,7 @@ class SyncCoordinator {
     }
 
     private func processPendingRemoteChanges(applicationCallback: ((UIBackgroundFetchResult) -> Void)? = nil) {
-        let storedChangeToken = ChangeToken.get(fromContext: self.syncContext, for: self.remote.bookZoneID)
-
-        remote.fetchRecordChanges(changeToken: storedChangeToken?.changeToken) { error, changes in
-            guard let changes = changes else {
-                self.handleFetchChangesError(error: error!, changeToken: storedChangeToken)
-                return
-            }
-
-            guard !changes.isEmpty else {
-                applicationCallback?(UIBackgroundFetchResult.noData)
-                return
-            }
-
-            for changeProcessor in self.downstreamChangeProcessors {
-                changeProcessor.processRemoteChanges(from: self.remote.bookZoneID, changes: changes) {
-                    applicationCallback?(UIBackgroundFetchResult.newData)
-                }
-            }
-        }
-    }
-
-    private func handleFetchChangesError(error: Error, changeToken: ChangeToken?) {
-        if let ckError = error as? CKError {
-            switch ckError.strategy {
-            case .resetChangeToken:
-                self.syncContext.perform {
-                    changeToken!.deleteAndSave()
-                }
-            case .disableSync, .retryLater, .retrySmallerBatch, .handleInnerErrors, .disableSyncUnexpectedError, .handleConcurrencyErrors:
-                fatalError("Unexpected strategy for failing change fetch: \(ckError.strategy), or error code \(ckError.code)")
-            }
-        } else {
-            print("Unexpected error")
-        }
+        downstreamChangeProcessor.processRemoteChanges(callback: applicationCallback)
     }
 
     private func pendingObjects(for changeProcessor: UpstreamChangeProcessor) -> [NSManagedObject] {
