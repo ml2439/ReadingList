@@ -58,17 +58,37 @@ class SyncCoordinator {
      Starts monitoring for changes in CoreData, and immediately process any outstanding pending changes.
      */
     func start() {
+
+        func postRemoteInitialisation() {
+            syncContext.refreshAllObjects()
+            startNotificationObserving()
+            downstreamChangeProcessor.processRemoteChanges()
+            processPendingLocalChanges()
+        }
+
         syncContext.perform {
             guard !self.isStarted else {
-                os_log("SyncCoordinator instructed to start but it is already started", type: .error)
+                os_log("SyncCoordinator instructed to start but it is already started", type: .info)
                 return
             }
 
             os_log("SyncCoordinator starting...")
             self.isStarted = true
-            self.syncContext.refreshAllObjects()
-            self.startNotificationObserving()
-            self.processPendingChanges()
+
+            if !self.remote.isInitialised {
+                self.remote.initialise { error in
+                    self.syncContext.perform {
+                        if let error = error {
+                            os_log("Error initialising CloudKit remote connectivity: %{public}s", type: .error, error.localizedDescription)
+                            self.isStarted = false
+                        } else {
+                            postRemoteInitialisation()
+                        }
+                    }
+                }
+            } else {
+                postRemoteInitialisation()
+            }
         }
     }
 
@@ -78,7 +98,7 @@ class SyncCoordinator {
     func stop() {
         syncContext.perform {
             guard self.isStarted else {
-                os_log("SyncCoordinator instructed to stop but it is already stopped", type: .error)
+                os_log("SyncCoordinator instructed to stop but it is already stopped", type: .info)
                 return
             }
 
@@ -126,21 +146,21 @@ class SyncCoordinator {
         }
         notificationObservers.append(stopObserver)
 
-        let pauseObserver = NotificationCenter.default.addObserver(forName: .PauseCloudSync, object: nil, queue: nil) { _ in
+        let pauseObserver = NotificationCenter.default.addObserver(forName: .PauseCloudSync, object: nil, queue: nil) { notification in
+            let retryAfterSeconds: Double
+            if let postedRetryTime = notification.object as? Double {
+                retryAfterSeconds = postedRetryTime
+            } else {
+                retryAfterSeconds = 10.0
+            }
+            os_log("Pause sync notification received: stopping SyncCoordinator for %d seconds", retryAfterSeconds)
+            
             self.stop()
-            // TODO: Start the sync coordinator up again after a period of time
+            DispatchQueue.main.asyncAfter(deadline: .now() + retryAfterSeconds) {
+                self.start()
+            }
         }
         notificationObservers.append(pauseObserver)
-    }
-
-    /**
-     Processes all pending changes: remote changes are retrieved and then local changes are uploaded.
-    */
-    func processPendingChanges() {
-        syncContext.perform {
-            self.processPendingRemoteChanges()
-            self.processPendingLocalChanges()
-        }
     }
 
     /**
@@ -148,7 +168,8 @@ class SyncCoordinator {
     */
     func remoteNotificationReceived(applicationCallback: ((UIBackgroundFetchResult) -> Void)? = nil) {
         syncContext.perform {
-            self.processPendingRemoteChanges(applicationCallback: applicationCallback)
+            os_log("Processing changes in response to a remote notification", type: .info)
+            self.downstreamChangeProcessor.processRemoteChanges(callback: applicationCallback)
         }
     }
 
@@ -182,10 +203,6 @@ class SyncCoordinator {
         // TODO: Re-process the objects which are still eligible for processing after this operation?
         // This could be due to local edits which occurred while the remote update operation was pending.
         // Alternatively, capture the objects which came in again but were rejected, and reprocess those ones?
-    }
-
-    private func processPendingRemoteChanges(applicationCallback: ((UIBackgroundFetchResult) -> Void)? = nil) {
-        downstreamChangeProcessor.processRemoteChanges(callback: applicationCallback)
     }
 
     private func pendingObjects(for changeProcessor: UpstreamChangeProcessor) -> [NSManagedObject] {

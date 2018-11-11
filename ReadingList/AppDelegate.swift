@@ -80,10 +80,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         // Initialise the Sync Coordinator which will maintain iCloud synchronisation
                         self.syncCoordinator = SyncCoordinator(container: PersistentStoreManager.container)
                         if UserSettings.iCloudSyncEnabled.value {
-                            self.syncCoordinator!.remote.initialise { error in
-                                guard error == nil else { return }
-                                self.syncCoordinator!.start()
-                            }
+                            self.syncCoordinator!.start()
                         }
 
                         onSuccess?()
@@ -196,8 +193,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     @objc func networkConnectivityDidChange() {
-        if reachability.connection != .none, let syncCoordinator = syncCoordinator, syncCoordinator.isStarted {
-            syncCoordinator.processPendingChanges()
+        guard let syncCoordinator = syncCoordinator else { return }
+        let currentConnection = reachability.connection
+        os_log("Network connectivity changed to %{public}s", type: .info, currentConnection.description)
+        if currentConnection == .none {
+            syncCoordinator.stop()
+        } else {
+            syncCoordinator.start()
         }
     }
 

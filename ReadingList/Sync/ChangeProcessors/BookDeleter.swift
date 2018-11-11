@@ -3,21 +3,20 @@ import CoreData
 import CloudKit
 import os.log
 
-class BookDeleter: UpstreamChangeProcessor {
+class BookDeleter: ErrorHandlingChangeProcessor<PendingRemoteDeletionItem>, UpstreamChangeProcessor {
 
     init(_ context: NSManagedObjectContext, _ remote: BookCloudKitRemote) {
         self.context = context
         self.remote = remote
+        super.init()
+        self.batchSize = 400
     }
 
     let debugDescription = String(describing: BookDeleter.self)
     let context: NSManagedObjectContext
     let remote: BookCloudKitRemote
-    var batchSize = 400
 
-    func processLocalChanges(_ pendingRemoteDeletes: [NSManagedObject], completion: @escaping () -> Void) {
-        let pendingRemoteDeletes = pendingRemoteDeletes as! [PendingRemoteDeletionItem]
-
+    override func processLocalChanges(_ pendingRemoteDeletes: [PendingRemoteDeletionItem], completion: @escaping () -> Void) {
         os_log("Beginning push of %d delete instructions", type: .info, pendingRemoteDeletes.count)
         remote.remove(pendingRemoteDeletes.map { $0.recordID }) { error in
             self.context.perform {
@@ -29,22 +28,20 @@ class BookDeleter: UpstreamChangeProcessor {
     }
 
     private func processDeletionResults(_ deletionInstructions: [PendingRemoteDeletionItem], error: Error?) {
-        var innerErrors: [CKRecord.ID: CKError]?
-        if let ckError = error as? CKError {
-            os_log("CKError with code %s received", type: .info, ckError.code.name)
-            innerErrors = handleBatchLevelError(ckError, forItems: deletionInstructions)
+        var innerErrors: [AnyHashable: Error]?
+        if let error = error {
+            innerErrors = handleBatchLevelError(error, uploads: deletionInstructions)
             if innerErrors == nil {
+                os_log("Batch-level error did not produce any item-level errors")
                 return
             }
-        } else if let error = error {
-            os_log("Unexpected error (non CK) occurred pushing delete instructions: %{public}s", type: .error, error.localizedDescription)
-            NotificationCenter.default.post(name: NSNotification.Name.DisableCloudSync, object: error)
-            return
+        } else {
+            innerErrors = nil
         }
 
         for deletionInstruction in deletionInstructions {
-            if let ckError = innerErrors?[deletionInstruction.recordID] {
-                handleConcurrencyError(ckError, forItem: deletionInstruction)
+            if let ckError = innerErrors?[deletionInstruction.recordID] as? CKError {
+                handleItemLevelError(ckError, forItem: deletionInstruction)
             } else {
                 deletionInstruction.delete()
             }
@@ -57,35 +54,7 @@ class BookDeleter: UpstreamChangeProcessor {
         }
     }
 
-    /// Returns non-nil if the caller should resume and process inner errors
-    private func handleBatchLevelError(_ ckError: CKError, forItems items: [PendingRemoteDeletionItem]) -> [CKRecord.ID: CKError]? {
-        switch ckError.strategy {
-        case .disableSync:
-            NotificationCenter.default.post(name: NSNotification.Name.DisableCloudSync, object: ckError)
-        case .retryLater:
-            NotificationCenter.default.post(name: NSNotification.Name.PauseCloudSync, object: ckError)
-        case .retrySmallerBatch:
-            let newBatchSize = self.batchSize / 2
-            os_log("Reducing deletion batch size from %d to %d", self.batchSize, newBatchSize)
-            self.batchSize = newBatchSize
-        case .handleInnerErrors:
-            return ckError.innerErrors
-        case .handleConcurrencyErrors:
-            // This should only happen if there is 1 deletion instruction; otherwise, the batch should have failed
-            if items.count == 1 {
-                handleConcurrencyError(ckError, forItem: items[0])
-            } else {
-                os_log("Unexpected error code %s occurred when pushing %d delete instructions", type: .error, ckError.code.name, items.count)
-                NotificationCenter.default.post(name: NSNotification.Name.DisableCloudSync, object: ckError)
-            }
-        case .disableSyncUnexpectedError, .resetChangeToken:
-            os_log("Unexpected code returned in error response to deletion instruction: %s", type: .fault, ckError.code.name)
-            NotificationCenter.default.post(name: NSNotification.Name.DisableCloudSync, object: ckError)
-        }
-        return nil
-    }
-
-    private func handleConcurrencyError(_ ckError: CKError, forItem item: PendingRemoteDeletionItem) {
+    override func handleItemLevelError(_ ckError: CKError, forItem item: PendingRemoteDeletionItem) {
         switch ckError.code {
         case .unknownItem:
             os_log("Remote deletion of record %{public}s failed - the item could not be found. Deleting instruction.", item.recordID.recordName)
@@ -97,7 +66,7 @@ class BookDeleter: UpstreamChangeProcessor {
         }
     }
 
-    var unprocessedChangedObjectsRequest: NSFetchRequest<NSFetchRequestResult> {
-        return NSManagedObject.fetchRequest(PendingRemoteDeletionItem.self, limit: batchSize) as! NSFetchRequest<NSFetchRequestResult>
+    override var unprocessedChangedLocalObjectsRequest: NSFetchRequest<PendingRemoteDeletionItem> {
+        return NSManagedObject.fetchRequest(PendingRemoteDeletionItem.self, limit: batchSize)
     }
 }

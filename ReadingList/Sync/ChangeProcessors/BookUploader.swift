@@ -3,19 +3,20 @@ import CoreData
 import CloudKit
 import os.log
 
-class BookUploader: BookUpstreamChangeProcessor {
+class BookUploader: ErrorHandlingChangeProcessor<Book>, UpstreamChangeProcessor {
 
     init(_ context: NSManagedObjectContext, _ remote: BookCloudKitRemote) {
         self.context = context
         self.remote = remote
+        super.init()
+        self.batchSize = 100
     }
 
     let debugDescription = String(describing: BookUploader.self)
     let context: NSManagedObjectContext
     let remote: BookCloudKitRemote
-    var batchSize = 100
 
-    func processLocalChanges(_ books: [Book], completion: @escaping () -> Void) {
+    override func processLocalChanges(_ books: [Book], completion: @escaping () -> Void) {
         // Map the local Books to upload instructions
         let uploadInstructions = getUploadInstructions(from: books)
         let insertionCount = uploadInstructions.filter { $0.uploadType == .insert }.count
@@ -32,36 +33,15 @@ class BookUploader: BookUpstreamChangeProcessor {
     }
 
     private func processUploadResults(_ uploadInstructions: [BookUploadInstruction], error: Error?) {
-        var innerErrors: [CKRecord.ID: CKError]?
-        if let ckError = error as? CKError {
-            os_log("CKError with code %s received", type: .info, ckError.code.name)
-
-            switch ckError.strategy {
-            case .disableSync:
-                NotificationCenter.default.post(name: NSNotification.Name.DisableCloudSync, object: ckError)
-            case .disableSyncUnexpectedError, .resetChangeToken:
-                os_log("Unexpected code returned in error response to upload instruction: %s", type: .fault, ckError.code.name)
-                NotificationCenter.default.post(name: NSNotification.Name.DisableCloudSync, object: ckError)
-            case .retryLater:
-                NotificationCenter.default.post(name: NSNotification.Name.PauseCloudSync, object: ckError)
-            case .retrySmallerBatch:
-                let newBatchSize = self.batchSize / 2
-                os_log("Reducing upload batch size from %d to %d", self.batchSize, newBatchSize)
-                self.batchSize = newBatchSize
-            case .handleInnerErrors:
-                innerErrors = ckError.innerErrors
-            case .handleConcurrencyErrors:
-                // This should only happen if there is 1 upload instruction; otherwise, the batch should have failed
-                if uploadInstructions.count == 1 {
-                    handleConcurrencyError(ckError, forItem: uploadInstructions[0])
-                } else {
-                    os_log("Unexpected error code %s occurred when pushing %d upload instructions", type: .error, ckError.code.name, uploadInstructions.count)
-                    NotificationCenter.default.post(name: NSNotification.Name.DisableCloudSync, object: ckError)
-                }
+        let innerErrors: [AnyHashable: Error]?
+        if let error = error {
+            innerErrors = handleBatchLevelError(error, uploads: uploadInstructions.map { $0.book })
+            if innerErrors == nil {
+                os_log("Batch-level error did not produce any item-level errors")
+                return
             }
-        } else if let error = error {
-            os_log("Unexpected error (non CK) occurred pushing upload instructions: %{public}s", type: .error, error.localizedDescription)
-            NotificationCenter.default.post(name: NSNotification.Name.DisableCloudSync, object: error)
+        } else {
+            innerErrors = nil
         }
 
         for instruction in uploadInstructions {
@@ -72,7 +52,7 @@ class BookUploader: BookUpstreamChangeProcessor {
             }
 
             if let error = innerErrors?[instruction.ckRecord.recordID] {
-                handleConcurrencyError(error, forItem: instruction)
+                handleItemLevelError(error, forItem: instruction.book)
                 continue
             }
 
@@ -112,8 +92,8 @@ class BookUploader: BookUpstreamChangeProcessor {
         self.context.saveAndLogIfErrored()
     }
 
-    private func handleConcurrencyError(_ ckError: CKError, forItem item: BookUploadInstruction) {
-        switch ckError.code {
+    override func handleItemLevelError(_ error: CKError, forItem book: Book) {
+        switch error.code {
         case .batchRequestFailed:
             // No special handling required.
             break
@@ -122,12 +102,12 @@ class BookUploader: BookUpstreamChangeProcessor {
             // This indicates that there has been some other push to the server which this device has not
             // yet fetched. Our strategy is to wait until we have fetched the latest remove change before
             // pushing this change back. TODO: Consider whether we should persist some delay on this item
-            os_log("Update of record %{public}s failed as the server record has changed", type: .error, item.ckRecord.recordID.recordName)
+            os_log("Update of record %{public}s failed as the server record has changed", type: .error, book.remoteIdentifier ?? "?")
         case .unknownItem:
             // TODO: Find out whether this occurs when pushing to a deleted item?
-            os_log("Remote update of record %{public}s failed - the item could not be found.", item.ckRecord.recordID.recordName)
+            os_log("Remote update of record %{public}s failed - the item could not be found.", book.remoteIdentifier ?? "?")
         default:
-            os_log("Unexpected record-level error for record %{public}s during upload: %s", type: .error, item.ckRecord.recordID.recordName, ckError.code.name)
+            os_log("Unexpected record-level error for record %{public}s during upload: %s", type: .error, book.remoteIdentifier ?? "?", error.code.name)
         }
     }
 
@@ -146,7 +126,7 @@ class BookUploader: BookUpstreamChangeProcessor {
         }
     }
 
-    var unprocessedChangedBooksRequest: NSFetchRequest<Book> {
+    override var unprocessedChangedLocalObjectsRequest: NSFetchRequest<Book> {
         let fetchRequest = NSManagedObject.fetchRequest(Book.self, limit: self.batchSize)
         fetchRequest.predicate = NSPredicate.or([
             Book.pendingRemoteUpdatesPredicate,

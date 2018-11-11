@@ -1,15 +1,8 @@
 import Foundation
 import CloudKit
+import os.log
 
 extension CKError {
-    /**
-     If the code is batchRequestFailed, then returns the partial errors dictionary from the error userInfo.
-     Otherwise returns nil.
-    */
-    var innerErrors: [CKRecord.ID: CKError]? {
-        return code != .batchRequestFailed ? nil : userInfo[CKPartialErrorsByItemIDKey] as? [CKRecord.ID: CKError]
-    }
-
     enum Strategy {
         case retryLater
         case retrySmallerBatch
@@ -104,4 +97,17 @@ extension CKError.Code {
 extension NSNotification.Name {
     static let DisableCloudSync = Notification.Name("disable-cloud-sync")
     static let PauseCloudSync = Notification.Name("pause-cloud-sync")
+}
+
+extension NotificationCenter {
+    func postCloudSyncPauseNotification(restartAfter: Double?) {
+        let postRestartAfter = restartAfter ?? 10.0
+        os_log("Posting SyncCoordinator pause notification, to restart after %d seconds", postRestartAfter)
+        NotificationCenter.default.post(name: .PauseCloudSync, object: postRestartAfter)
+    }
+
+    func postCloudSyncDisableNotification() {
+        os_log("Posting SyncCoordinator stop notification")
+        NotificationCenter.default.post(name: .DisableCloudSync, object: nil)
+    }
 }

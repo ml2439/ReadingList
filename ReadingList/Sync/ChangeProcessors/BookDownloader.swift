@@ -48,6 +48,7 @@ class BookDownloader {
         if let ckError = error as? CKError {
             switch ckError.strategy {
             case .resetChangeToken:
+                os_log("resetChangeToken error received: deleting change token...", type: .error)
                 self.context.perform {
                     changeToken!.deleteAndSave()
                 }
@@ -57,7 +58,7 @@ class BookDownloader {
                 os_log("Unexpected code returned in error response to deletion instruction: %s", type: .fault, ckError.code.name)
                 NotificationCenter.default.post(name: NSNotification.Name.DisableCloudSync, object: ckError)
             case .retryLater:
-                NotificationCenter.default.post(name: NSNotification.Name.PauseCloudSync, object: ckError)
+                NotificationCenter.default.post(name: NSNotification.Name.PauseCloudSync, object: ckError.retryAfterSeconds)
             case .retrySmallerBatch, .handleInnerErrors, .handleConcurrencyErrors:
                 fatalError("Unexpected strategy for failing change fetch: \(ckError.strategy), for error code \(ckError.code)")
             }
