@@ -318,9 +318,12 @@ extension BookDetails: ThemeableViewController {
 
         bookDescription.color = theme.subtitleTextColor
         bookDescription.gradientColor = theme.viewBackgroundColor
+        bookDescription.buttonColor = theme.tint
         bookNotes.color = theme.subtitleTextColor
         bookNotes.gradientColor = theme.viewBackgroundColor
 
+        amazon.textColor = theme.tint
+        googleBooks.textColor = theme.tint
         titles.forEach { $0.textColor = theme.titleTextColor }
         tableSubHeadings.forEach { $0.textColor = theme.subtitleTextColor }
         tableVaules.forEach { $0.textColor = theme.titleTextColor }

@@ -189,7 +189,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     @objc func initialiseTheme() {
-        UserSettings.theme.value.configureForms()
+        let theme = UserSettings.theme.value
+        theme.configureForms()
+        window!.tintColor = theme.tint
     }
 }
 

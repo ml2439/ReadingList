@@ -27,6 +27,11 @@ extension Theme {
         return self == .dark || self == .black
     }
 
+    var tint: UIColor {
+        // The default iOS 7+ tint is 0x007AFF, or rgb(21, 126, 251).
+        return UIColor.hex(0x007aff)
+    }
+
     var keyboardAppearance: UIKeyboardAppearance {
         return isDark ? .dark : .default
     }
