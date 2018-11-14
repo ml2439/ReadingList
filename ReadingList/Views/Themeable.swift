@@ -28,8 +28,11 @@ extension Theme {
     }
 
     var tint: UIColor {
-        // The default iOS 7+ tint is 0x007AFF, or rgb(21, 126, 251).
-        return UIColor.hex(0x007aff)
+        return isDark ? UIColor.hex(0x136cd6) : .buttonBlue
+    }
+
+    var greenButtonColor: UIColor {
+        return isDark ? UIColor.hex(0x2ca55d) : .flatGreen
     }
 
     var keyboardAppearance: UIKeyboardAppearance {
@@ -318,6 +321,13 @@ extension UITabBar {
     func setTranslucency(_ translucent: Bool, colorIfNotTranslucent: UIColor) {
         isTranslucent = translucent
         barTintColor = translucent ? nil : colorIfNotTranslucent
+    }
+}
+
+extension StartFinishButton {
+    func initialise(withTheme theme: Theme) {
+        startColor = theme.tint
+        finishColor = theme.greenButtonColor
     }
 }
 

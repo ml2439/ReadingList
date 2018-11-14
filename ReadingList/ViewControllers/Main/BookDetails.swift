@@ -315,6 +315,7 @@ extension BookDetails: ThemeableViewController {
         (navigationItem.titleView as! UINavigationBarLabel).textColor = theme.titleTextColor
         titleAuthorHeadings[0].textColor = theme.titleTextColor
         titleAuthorHeadings[1].textColor = theme.subtitleTextColor
+        changeReadStateButton.initialise(withTheme: theme)
 
         bookDescription.color = theme.subtitleTextColor
         bookDescription.gradientColor = theme.viewBackgroundColor
