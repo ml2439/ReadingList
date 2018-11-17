@@ -15,7 +15,7 @@
 </a>
 
 ## Requirements
- - Xcode 10
+ - Xcode 10.1
 
 ## Dependencies
 
@@ -51,3 +51,4 @@ Reading List mostly uses [storyboards](https://developer.apple.com/library/conte
 Reading List uses [Core Data](https://developer.apple.com/documentation/coredata) for data persistence. There are three entities used in Reading List: `Book`, `Subject` and `List`. The attributes and relations between then are illustrated below:
 
 <img src="./media/coredata_entities.png" width="400px;" alt="Core data entities"/>
+

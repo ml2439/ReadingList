@@ -9,15 +9,18 @@ class StartFinishButton: BorderedButton {
         case none
     }
 
+    var startColor = UIColor.buttonBlue
+    var finishColor = UIColor.flatGreen
+
     func setState(_ state: ButtonState) {
         switch state {
         case .start:
             isHidden = false
-            setColor(.buttonBlue)
+            setColor(startColor)
             setTitle("START", for: .normal)
         case .finish:
             isHidden = false
-            setColor(.flatGreen)
+            setColor(finishColor)
             setTitle("FINISH", for: .normal)
         case .none:
             isHidden = true

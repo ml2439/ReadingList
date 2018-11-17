@@ -307,7 +307,7 @@ public extension UIColor {
         )
     }
 
-    static let flatGreen = UIColor(fromHex: 0x2ecc71)
+    static let flatGreen = UIColor(fromHex: 0x2ECC71)
     static let buttonBlue = UIColor(red: 0, green: 0.478431, blue: 1, alpha: 1)
 }
 

@@ -40,6 +40,10 @@ public class ExpandableLabel: UIView {
         }
     }
 
+    public var buttonColor: UIColor = .buttonBlue {
+        didSet { seeMore.textColor = buttonColor }
+    }
+
     func setupGradient() {
         let opaque = gradientColor.withAlphaComponent(1.0)
         let clear = gradientColor.withAlphaComponent(0.0)
