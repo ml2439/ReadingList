@@ -28,7 +28,7 @@ target 'ReadingList' do
 
   # Use Swift 4.0 instead of 4.2 for some Pods
   post_install do |installer|
-  	myTargets = ['ImageRow']
+  	myTargets = []
   	installer.pods_project.targets.each do |target|
   			target.build_configurations.each do |config|
           if myTargets.include? target.name
