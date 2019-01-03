@@ -261,16 +261,18 @@ class SearchOnline: UITableViewController {
 
         // Queue up the fetches
         let editContext = PersistentStoreManager.container.viewContext.childContext()
-        let bookCreations = selectedRows.map { createBook(inContext: editContext, from: tableItems[$0.row]) }
+        let searchResults = selectedRows.map { tableItems[$0.row] }
+        let bookCreations = searchResults.map { createBook(inContext: editContext, from: $0) }
 
         any(bookCreations)
             .always(on: .main, SVProgressHUD.dismiss)
             .catch(on: .main) { _ in
+                // 'any' is rejected if all of the book creation promises were rejected.
                 SVProgressHUD.showError(withStatus: "An error occurred. Please try again.")
             }
             .then(on: .main) { results in
                 let newBookCount = results.compactMap { $0.value }.count
-                editContext.saveAndLogIfErrored()
+                editContext.saveAndLogIfErrored(additionalInfo: searchResults.map { $0.id }.joined(separator: ","))
                 self.searchController.isActive = false
                 self.presentingViewController!.dismiss(animated: true) {
                     var status = "\(newBookCount) \("book".pluralising(newBookCount)) added"
