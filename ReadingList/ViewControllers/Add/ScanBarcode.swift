@@ -185,8 +185,8 @@ class ScanBarcode: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
                 }
             }
             .then(on: .main) { fetchResult in
-                // self is weak since the barcode callback is on another thread, and it is possible (with careful timing)
-                // to get the view controller to dismiss after the barcode has been detected but before the callback runs.
+                guard let navigationController = self.navigationController else { return }
+
                 if let existingBook = Book.get(fromContext: PersistentStoreManager.container.viewContext, googleBooksId: fetchResult.id) {
                     self.feedbackGenerator.notificationOccurred(.warning)
                     self.presentDuplicateAlert(existingBook)
@@ -200,7 +200,7 @@ class ScanBarcode: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
                     let context = PersistentStoreManager.container.viewContext.childContext()
                     let book = Book(context: context, readState: .toRead)
                     book.populate(fromFetchResult: fetchResult)
-                    self.navigationController!.pushViewController(
+                    navigationController.pushViewController(
                         EditBookReadState(newUnsavedBook: book, scratchpadContext: context),
                         animated: true)
                 }

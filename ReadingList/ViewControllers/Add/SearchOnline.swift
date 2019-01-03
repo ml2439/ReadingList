@@ -222,8 +222,9 @@ class SearchOnline: UITableViewController {
                 SVProgressHUD.showError(withStatus: "An error occurred. Please try again.")
             }
             .then(on: .main) { book in
+                guard let navigationController = self.navigationController else { return }
                 let editPage = EditBookReadState(newUnsavedBook: book, scratchpadContext: editContext)
-                self.navigationController!.pushViewController(editPage, animated: true)
+                navigationController.pushViewController(editPage, animated: true)
             }
     }
 
