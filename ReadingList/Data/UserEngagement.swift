@@ -93,6 +93,11 @@ class UserEngagement {
         Analytics.logEvent(event.rawValue, parameters: nil)
     }
 
+    static func logError(_ error: String) {
+        guard sendCrashReports else { return }
+        CLSLogv("%@", getVaList([error]))
+    }
+
     private static func shouldTryRequestReview() -> Bool {
         let appStartCountMinRequirement = 3
         let userEngagementModulo = 10
