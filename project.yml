@@ -89,10 +89,8 @@ targets:
       - target: ReadingList
     settings:
       SWIFT_VERSION: 4.2
-schemes:
-  Screenshots:
-    build:
-      targets:
-        ReadingList_Screenshots: [test, run]
+    scheme:
+      testTargets:
+        - ReadingList_Screenshots
 options:
   groupSortPosition: top
