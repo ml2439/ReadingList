@@ -48,9 +48,6 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
         NotificationCenter.default.addObserver(self, selector: #selector(bookSortChanged), name: .BookSortOrderChanged, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(refetch), name: .PersistentStoreBatchOperationOccurred, object: nil)
 
-        if #available(iOS 11.0, *) {
-            monitorLargeTitleSetting()
-        }
         monitorThemeSetting()
 
         super.viewDidLoad()

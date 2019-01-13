@@ -6,19 +6,6 @@ class General: FormViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        if #available(iOS 11.0, *) {
-            form +++ Section(header: "Appearance", footer: "Whether to use large fonts for section titles.")
-                <<< SwitchRow {
-                    $0.title = "Use Large Titles"
-                    $0.value = UserSettings.useLargeTitles.value
-                    $0.onChange { row in
-                        UserSettings.useLargeTitles.value = row.value!
-                        UserEngagement.logEvent(.changeLargeTitles)
-                        NotificationCenter.default.post(name: NSNotification.Name.LargeTitleSettingChanged, object: nil)
-                    }
-                }
-        }
-
         form +++ SelectableSection<ListCheckRow<Theme>>(header: "Theme", footer: "Change the appearance of Reading List.",
                                                         selectionType: .singleSelection(enableDeselection: false)) {
             $0.onSelectSelectableRow = { _, row in
@@ -124,20 +111,5 @@ class General: FormViewController {
 }
 
 extension Notification.Name {
-    static let LargeTitleSettingChanged = Notification.Name("large-title-setting-changed")
     static let ThemeSettingChanged = Notification.Name("theme-setting-changed")
-}
-
-extension UIViewController {
-    @available(iOS 11.0, *)
-    func monitorLargeTitleSetting() {
-        updateLargeTitleFromSetting()
-        NotificationCenter.default.addObserver(self, selector: #selector(updateLargeTitleFromSetting), name: NSNotification.Name.LargeTitleSettingChanged, object: nil)
-    }
-
-    @available(iOS 11.0, *)
-    @objc private func updateLargeTitleFromSetting() {
-        guard let navController = navigationController else { return }
-        navController.navigationBar.prefersLargeTitles = UserSettings.useLargeTitles.value
-    }
 }

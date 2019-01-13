@@ -1,4 +1,4 @@
-git_url("https://andrew_bennet@bitbucket.org/andrew_bennet/certificates.git")
+git_url("https://AndrewBennet@github.com/AndrewBennet/certificates.git")
 
 type("development") # The default type, can be: appstore, adhoc, enterprise or development
 
