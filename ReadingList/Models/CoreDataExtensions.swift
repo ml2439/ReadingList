@@ -20,14 +20,11 @@ extension NSManagedObjectContext {
     /**
      Tries to save the managed object context and logs an event and raises a fatal error if failure occurs.
      */
-    func saveAndLogIfErrored(additionalInfo: String? = nil) {
+    func saveAndLogIfErrored() {
         do {
             try self.save()
         } catch let error as NSError {
-            UserEngagement.logError(error.getCoreDataSaveErrorDescription())
-            if let additionalInfo = additionalInfo {
-                UserEngagement.logError(additionalInfo)
-            }
+            UserEngagement.logError(error.debugDescription)
             fatalError(error.localizedDescription)
         }
     }

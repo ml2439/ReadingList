@@ -55,40 +55,6 @@ public extension NSPersistentStoreCoordinator {
     }
 }
 
-public extension NSError {
-    var descriptiveCode: String {
-        switch code {
-        case NSManagedObjectValidationError: return "NSManagedObjectValidationError"
-        case NSValidationMissingMandatoryPropertyError: return "NSValidationMissingMandatoryPropertyError"
-        case NSValidationRelationshipLacksMinimumCountError: return "NSValidationRelationshipLacksMinimumCountError"
-        case NSValidationRelationshipExceedsMaximumCountError: return "NSValidationRelationshipExceedsMaximumCountError"
-        case NSValidationRelationshipDeniedDeleteError: return "NSValidationRelationshipDeniedDeleteError"
-        case NSValidationNumberTooLargeError: return "NSValidationNumberTooLargeError"
-        case NSValidationNumberTooSmallError: return "NSValidationNumberTooSmallError"
-        case NSValidationDateTooLateError: return "NSValidationDateTooLateError"
-        case NSValidationDateTooSoonError: return "NSValidationDateTooSoonError"
-        case NSValidationInvalidDateError: return "NSValidationInvalidDateError"
-        case NSValidationStringTooLongError: return "NSValidationStringTooLongError"
-        case NSValidationStringTooShortError: return "NSValidationStringTooShortError"
-        case NSValidationStringPatternMatchingError: return "NSValidationStringPatternMatchingError"
-        default: return String(code)
-        }
-    }
-
-    func getCoreDataSaveErrorDescription() -> String {
-        if code == NSValidationMultipleErrorsError {
-            guard let errors = userInfo[NSDetailedErrorsKey] as? [NSError] else { return "\"Multiple errors\" error without detail" }
-            return errors.compactMap { $0.getCoreDataSaveErrorDescription() }.joined(separator: "; ")
-        }
-
-        guard let entityName = (userInfo["NSValidationErrorObject"] as? NSManagedObject)?.entity.name,
-            let attributeName = userInfo["NSValidationErrorKey"] as? String else {
-                return "Save error with code \(descriptiveCode), domain \(domain): \(localizedDescription)"
-        }
-        return "Save error for entity \"\(entityName)\", attribute \"\(attributeName)\": \(descriptiveCode)"
-    }
-}
-
 public extension NSEntityMigrationPolicy {
 
     func copyValue(oldObject: NSManagedObject, newObject: NSManagedObject, key: String) {
