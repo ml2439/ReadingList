@@ -97,6 +97,11 @@ class UserEngagement {
         CLSLogv("%@", getVaList([error]))
     }
 
+    static func logError(_ error: Error) {
+        guard sendCrashReports else { return }
+        Crashlytics.sharedInstance().recordError(error)
+    }
+
     private static func shouldTryRequestReview() -> Bool {
         let appStartCountMinRequirement = 3
         let userEngagementModulo = 10

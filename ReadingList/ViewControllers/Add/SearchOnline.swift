@@ -57,9 +57,8 @@ class SearchOnline: UITableViewController {
         if let navigationController = navigationController {
             navigationController.toolbar.barStyle = theme.barStyle
         } else {
-            #if DEBUG
-            fatalError("navigationController was nil")
-            #endif
+            UserEngagement.logError(NSError(code: ReadingListError.Code.missingNavigationController, userInfo: nil))
+            assertionFailure("NavigationController was unexpectedly nil")
         }
     }
 
