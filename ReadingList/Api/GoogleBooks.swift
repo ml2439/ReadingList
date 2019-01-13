@@ -141,8 +141,10 @@ class GoogleBooksParser {
     }
 
     static func parseSearchResults(_ searchResults: JSON) -> [SearchResult] {
-        return searchResults["items"].compactMap { itemJson in
-            GoogleBooksParser.parseItem(itemJson.1)
+        return searchResults["items"].map { $0.1 }.reduce([SearchResult]()) { result, element in
+            guard let item = GoogleBooksParser.parseItem(element) else { return result }
+            guard !result.contains(where: { $0.id == item.id }) else { return result }
+            return result + [item]
         }
     }
 
