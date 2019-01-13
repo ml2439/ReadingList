@@ -6,6 +6,8 @@ class BookTableViewCell: UITableViewCell {
     @IBOutlet private weak var authorsLabel: UILabel!
     @IBOutlet private weak var bookCover: UIImageView!
     @IBOutlet private weak var readTimeLabel: UILabel!
+    @IBOutlet private weak var readingProgress: UIProgressView!
+    @IBOutlet private weak var readingProgressValue: UILabel!
 
     private var coverImageRequest: URLSessionDataTask?
 
@@ -14,6 +16,8 @@ class BookTableViewCell: UITableViewCell {
         authorsLabel.text = nil
         readTimeLabel.text = nil
         bookCover.image = nil
+        readingProgress.progress = 0
+        readingProgressValue.text = nil
     }
 
     override func awakeFromNib() {
@@ -58,9 +62,20 @@ class BookTableViewCell: UITableViewCell {
         #endif
     }
 
+    func configureReadingProgress(text: String?, progress: Float) {
+        readingProgressValue.text = text
+        readingProgress.progress = progress
+    }
+
+    func showReadingProgress(_ state: Bool) {
+        readingProgress.isHidden = !state
+        readingProgressValue.isHidden = !state
+    }
+
     func configureFrom(_ searchResult: SearchResult) {
         titleLabel.text = searchResult.title
         authorsLabel.text = searchResult.authors.joined(separator: ", ")
+        showReadingProgress(false)
 
         guard let coverURL = searchResult.thumbnailCoverUrl else { bookCover.image = #imageLiteral(resourceName: "CoverPlaceholder"); return }
         coverImageRequest = URLSession.shared.startedDataTask(with: coverURL) { [weak self] data, _, _ in
