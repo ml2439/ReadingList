@@ -119,7 +119,12 @@ class SearchOnline: UITableViewController {
 
     override func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
         guard tableView.isEditing else { return }
-        if tableView.indexPathsForSelectedRows == nil || tableView.indexPathsForSelectedRows!.isEmpty {
+
+        if let selectedRows = tableView.indexPathsForSelectedRows, !selectedRows.isEmpty {
+            addAllButton.title = "Add \(selectedRows.count) Book\(selectedRows.count == 1 ? "" : "s")"
+            addAllButton.isEnabled = true
+        } else {
+            addAllButton.title = "Add Books"
             addAllButton.isEnabled = false
         }
     }
@@ -134,7 +139,9 @@ class SearchOnline: UITableViewController {
 
         // If we are in multiple selection mode (i.e. Edit mode), switch the Add All button on; otherwise, fetch and segue
         if tableView.isEditing {
-           addAllButton.isEnabled = true
+            let count = tableView.indexPathsForSelectedRows?.count ?? 0
+            addAllButton.title = "Add \(count) Book\(count == 1 ? "" : "s")"
+            addAllButton.isEnabled = true
         } else {
             fetchAndSegue(searchResult: searchResult)
         }
@@ -237,6 +244,7 @@ class SearchOnline: UITableViewController {
         tableView.setEditing(!tableView.isEditing, animated: true)
         selectModeButton.title = tableView.isEditing ? "Select Single" : "Select Many"
         if !tableView.isEditing {
+            addAllButton.title = "Add Books"
             addAllButton.isEnabled = false
         }
     }
@@ -247,7 +255,7 @@ class SearchOnline: UITableViewController {
         // If there is only 1 cell selected, we might as well proceed as we would in single selection mode
         guard selectedRows.count > 1 else { fetchAndSegue(searchResult: tableItems[selectedRows.first!.row]); return }
 
-        let alert = UIAlertController(title: "Add \(selectedRows.count) books", message: "Are you sure you want to add all \(selectedRows.count) selected books? They will be added to the 'To Read' section.", preferredStyle: .actionSheet)
+        let alert = UIAlertController(title: "Add \(selectedRows.count) Books", message: "Are you sure you want to add all \(selectedRows.count) selected books? They will be added to the 'To Read' section.", preferredStyle: .actionSheet)
         alert.addAction(UIAlertAction(title: "Add All", style: .default) { _ in
             self.addMultiple(selectedRows: selectedRows)
         })
