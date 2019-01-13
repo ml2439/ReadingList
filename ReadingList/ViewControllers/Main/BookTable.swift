@@ -466,8 +466,8 @@ extension BookTable: UISearchResultsUpdating {
         guard sourceIndexPath.row != destinationIndexPath.row else { return }
 
         // Get the range of objects that the move affects
-        let topRow = [sourceIndexPath.row, destinationIndexPath.row].min()!
-        let bottomRow = [sourceIndexPath.row, destinationIndexPath.row].max()!
+        let topRow = sourceIndexPath.row < destinationIndexPath.row ? sourceIndexPath.row : destinationIndexPath.row
+        let bottomRow = sourceIndexPath.row < destinationIndexPath.row ? destinationIndexPath.row : sourceIndexPath.row
         var booksInMovementRange = (topRow...bottomRow).map { IndexPath(row: $0, section: toReadSectionIndex) }.map(resultsController.object)
 
         // Move the objects array to reflect the desired order
@@ -489,8 +489,13 @@ extension BookTable: UISearchResultsUpdating {
         if topRow == 0 {
             sortIndex = 0
         } else {
-            let indexPath = IndexPath(row: topRow - 1, section: toReadSectionIndex)
-            sortIndex = resultsController.object(at: indexPath).sort!.int32 + 1
+            let indexPathAboveTop = IndexPath(row: topRow - 1, section: toReadSectionIndex)
+            if let sortIndexAboveTop = resultsController.object(at: indexPathAboveTop).sort?.int32 {
+                sortIndex = sortIndexAboveTop + 1
+            } else {
+                assertionFailure("Book at index \(indexPathAboveTop.section),\(indexPathAboveTop.row) has nil sort")
+                sortIndex = 0
+            }
         }
 
         for book in booksInMovementRange {
