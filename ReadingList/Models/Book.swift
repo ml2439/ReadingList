@@ -50,13 +50,13 @@ class Book: NSManagedObject {
 
         // The sort manipulation should be in a method which allows setting of dates
         if readState == .toRead && sort == nil {
+            var maximalSort = Book.maximalSort(getMaximum: !UserSettings.addBooksToTopOfCustom.value, fromContext: managedObjectContext!) ?? 0
             if UserSettings.addBooksToTopOfCustom.value {
-                let minSort = Book.minSort(fromContext: managedObjectContext!) ?? 1
-                sort = (minSort - 1).nsNumber
+                maximalSort -= 1
             } else {
-                let maxSort = Book.maxSort(fromContext: managedObjectContext!) ?? 0
-                sort = (maxSort + 1).nsNumber
+                maximalSort += 1
             }
+            sort = maximalSort.nsNumber
         }
 
         // Sort is not supported for non To Read books
@@ -145,21 +145,30 @@ extension Book {
         return nil
     }
 
-    private static func getSort(max: Bool, fromContext context: NSManagedObjectContext) -> Int32? {
-        // FUTURE: Could use a fetch expression to just return the max or min value
-        let fetchRequest = NSManagedObject.fetchRequest(Book.self, limit: 1)
-        fetchRequest.predicate = NSPredicate(format: "%K == %ld", #keyPath(Book.readState), BookReadState.toRead.rawValue)
-        fetchRequest.sortDescriptors = [NSSortDescriptor(\Book.sort, ascending: !max)]
-        fetchRequest.returnsObjectsAsFaults = false
-        return (try! context.fetch(fetchRequest)).first?.sort?.int32
+    /**
+     Gets the "maximal" sort value of any book - i.e. either the maximum or minimum value.
+    */
+    static func maximalSort(getMaximum: Bool, fromContext context: NSManagedObjectContext) -> Int32? {
+        let request = NSManagedObject.fetchRequest(Book.self) as! NSFetchRequest<NSFetchRequestResult>
+        request.resultType = .dictionaryResultType
+
+        let key = "sort"
+        let expressionDescription = NSExpressionDescription()
+        expressionDescription.name = key
+        expressionDescription.expression = NSExpression(forFunction: getMaximum ? "max:" : "min:", arguments: [NSExpression(forKeyPath: \Book.sort)])
+        expressionDescription.expressionResultType = .integer32AttributeType
+        request.propertiesToFetch = [expressionDescription]
+
+        let result = try! context.fetch(request) as! [[String: Int32]]
+        return result.first?[key]
     }
 
     static func maxSort(fromContext context: NSManagedObjectContext) -> Int32? {
-        return getSort(max: true, fromContext: context)
+        return maximalSort(getMaximum: true, fromContext: context)
     }
 
     static func minSort(fromContext context: NSManagedObjectContext) -> Int32? {
-        return getSort(max: false, fromContext: context)
+        return maximalSort(getMaximum: false, fromContext: context)
     }
 
     @objc func validateAuthors(_ value: AutoreleasingUnsafeMutablePointer<AnyObject?>) throws {
