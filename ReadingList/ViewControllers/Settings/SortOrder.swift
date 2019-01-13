@@ -39,15 +39,15 @@ class SortOrder: FormViewController {
         +++ SelectableSection<ListCheckRow<TableSortOrder>>(header: "To Read", footer: """
                 Title sorts the books alphabetically; Author sorts the books alphabetically by \
                 the first author's surname; Custom allows the books to be sorted manually: tap \
-                Edit and drag to reorder the books. New books can be set to be added to either \
-                the top or the bottom of the list.
+                Edit and drag to reorder the books. New books can be added to either the top or \
+                the bottom of the list.
                 """, selectionType: .singleSelection(enableDeselection: false))
             <<< tableSortRow(forReadState: .toRead, .byTitle)
             <<< tableSortRow(forReadState: .toRead, .byAuthor)
             <<< tableSortRow(forReadState: .toRead, .customOrder)
             <<< SwitchRow {
                 $0.tag = self.customBooksToTopTag
-                $0.title = "Add books to top"
+                $0.title = "Add Books to Top"
                 $0.value = UserSettings.addBooksToTopOfCustom.value
                 $0.hidden = Condition.function([]) { _ in
                     UserSettings.toReadSortOrder.value != .customOrder
