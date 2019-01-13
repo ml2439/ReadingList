@@ -152,8 +152,8 @@ class GoogleBooksParser {
         guard let id = item["id"].string, !id.isEmptyOrWhitespace,
             let title = item["volumeInfo", "title"].string, !title.isEmptyOrWhitespace,
             let authorsJson = item["volumeInfo", "authors"].array, !authorsJson.isEmpty else { return nil }
-        let authors: [String] = authorsJson.compactMap {
-            guard let authorString = $0.rawString(), !authorString.isEmptyOrWhitespace else { return nil }
+        let authors = authorsJson.compactMap { json -> String? in
+            guard let authorString = json.rawString(), !authorString.isEmptyOrWhitespace else { return nil }
             return authorString
         }
         guard !authors.isEmpty else { return nil }

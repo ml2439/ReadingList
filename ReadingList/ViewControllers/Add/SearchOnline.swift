@@ -280,7 +280,7 @@ class SearchOnline: UITableViewController {
             }
             .then(on: .main) { results in
                 let newBookCount = results.compactMap { $0.value }.count
-                editContext.saveAndLogIfErrored(additionalInfo: searchResults.map { $0.id }.joined(separator: ","))
+                editContext.saveAndLogIfErrored()
                 self.searchController.isActive = false
                 self.presentingViewController!.dismiss(animated: true) {
                     var status = "\(newBookCount) \("book".pluralising(newBookCount)) added"
