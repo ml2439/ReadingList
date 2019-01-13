@@ -122,7 +122,9 @@ fileprivate extension UIViewController {
     @objc func transitionThemeChange() {
         // This function is defined as an extension of UIViewController rather than in ThemableViewController
         // since it must be @objc, and that is not possible in protocol extensions.
-        guard let themable = self as? ThemeableViewController else { fatalError("transitionThemeChange called on a non-themable controller") }
+        guard let themable = self as? ThemeableViewController else {
+            assertionFailure("transitionThemeChange called on a non-themable controller"); return
+        }
         UIView.transition(with: self.view, duration: 0.3, options: [.beginFromCurrentState, .transitionCrossDissolve], animations: {
             themable.initialise(withTheme: UserSettings.theme.value)
             themable.themeSettingDidChange?()

@@ -4,7 +4,9 @@ import os.log
 
 public extension NSManagedObject {
     func delete() {
-        guard let context = managedObjectContext else { fatalError("Attempted to delete a book which was not in a context") }
+        guard let context = managedObjectContext else {
+            assertionFailure("Attempted to delete a book which was not in a context"); return
+        }
         context.delete(self)
     }
 

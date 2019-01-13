@@ -35,7 +35,7 @@ public extension ModelVersion {
             }
             if matchingModels.count > 1 {
                 let modelNames = matchingModels.map { $0.modelName }.joined(separator: ",")
-                fatalError("\(matchingModels.count) model versions matched the current store (\(modelNames)). Cannot guarantee that migrations will be performed correctly")
+                assertionFailure("\(matchingModels.count) model versions matched the current store (\(modelNames)). Cannot guarantee that migrations will be performed correctly")
             }
         #endif
 
@@ -45,7 +45,7 @@ public extension ModelVersion {
             $0.managedObjectModel().isConfiguration(withName: nil, compatibleWithStoreMetadata: metadata)
         }
         guard let result = version else {
-            os_log("No managed object model compatible with store at %{public}s was found", type: .error)
+            os_log("No managed object model compatible with store at %{public}s was found", type: .error, storeURL.absoluteString)
             throw MigrationError.incompatibleStore
         }
         self = result
@@ -53,9 +53,9 @@ public extension ModelVersion {
 
     func managedObjectModel() -> NSManagedObjectModel {
         guard let momURL = Self.modelBundle.url(forResource: modelName, withExtension: "mom", subdirectory: Self.modelDirectoryName) else {
-            fatalError("model version \(self) not found")
+            preconditionFailure("model version \(self) not found")
         }
-        guard let model = NSManagedObjectModel(contentsOf: momURL) else { fatalError("cannot open model at \(momURL)") }
+        guard let model = NSManagedObjectModel(contentsOf: momURL) else { preconditionFailure("cannot open model at \(momURL)") }
         return model
     }
 
@@ -72,7 +72,7 @@ public extension ModelVersion {
 
     func migrationSteps(to version: Self) -> [MigrationStep] {
         guard self != version else { return [] }
-        guard let mapping = mappingModelToSuccessor(), let nextVersion = successor else { fatalError("couldn't find mapping models") }
+        guard let mapping = mappingModelToSuccessor(), let nextVersion = successor else { preconditionFailure("Couldn't find mapping models") }
         let step = MigrationStep(source: managedObjectModel(), destination: nextVersion.managedObjectModel(), mapping: mapping)
         return [step] + nextVersion.migrationSteps(to: version)
     }
