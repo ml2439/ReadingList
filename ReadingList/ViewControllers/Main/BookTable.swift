@@ -247,9 +247,12 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
     }
 
     var sectionIndexByReadState: [BookReadState: Int] {
-        return resultsController.sections!.enumerated().reduce(into: [BookReadState: Int]()) { dict, section in
-            let readState = BookReadState(rawValue: Int16(section.element.name)!)!
-            dict[readState] = section.offset
+        guard let sections = resultsController.sections else { preconditionFailure("Cannot get section indexes before fetch") }
+        return sections.enumerated().reduce(into: [BookReadState: Int]()) { result, section in
+            guard let sectionNameInt = Int16(section.element.name), let readState = BookReadState(rawValue: sectionNameInt) else {
+                preconditionFailure("Unexpected section name \"\(section.element.name)\"")
+            }
+            result[readState] = section.offset
         }
     }
 
@@ -265,18 +268,19 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
         }
 
         // allowTableObscuring determines whether the book details page should actually be shown, if showing it will obscure this table
-        if allowTableObscuring || splitViewController!.isSplit {
-            if let indexPathOfSelectedBook = indexPathOfSelectedBook {
-                tableView.selectRow(at: indexPathOfSelectedBook, animated: true, scrollPosition: .none)
-            }
+        guard let splitViewController = splitViewController else { preconditionFailure("Missing SplitViewController") }
+        guard allowTableObscuring || splitViewController.isSplit else { return }
 
-            // If there is a detail view presented, update the book
-            if splitViewController!.detailIsPresented {
-                (splitViewController!.displayedDetailViewController as? BookDetails)?.book = book
-            } else {
-                // Segue to the details view, with the cell corresponding to the book as the sender.
-                performSegue(withIdentifier: "showDetail", sender: book)
-            }
+        if let indexPathOfSelectedBook = indexPathOfSelectedBook {
+            tableView.selectRow(at: indexPathOfSelectedBook, animated: true, scrollPosition: .none)
+        }
+
+        // If there is a detail view presented, update the book
+        if splitViewController.detailIsPresented {
+            (splitViewController.displayedDetailViewController as? BookDetails)?.book = book
+        } else {
+            // Segue to the details view, with the cell corresponding to the book as the sender.
+            performSegue(withIdentifier: "showDetail", sender: book)
         }
     }
 
@@ -295,9 +299,11 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
 
         if let cell = sender as? UITableViewCell, let selectedIndex = self.tableView.indexPath(for: cell) {
             detailsViewController.book = self.resultsController.object(at: selectedIndex)
-        } else {
+        } else if let book = sender as? Book {
             // When a simulated selection triggers a segue, the sender is the Book
-            detailsViewController.book = (sender as! Book)
+            detailsViewController.book = book
+        } else {
+            assertionFailure("Unexpected sender type of segue to book details page")
         }
     }
 
