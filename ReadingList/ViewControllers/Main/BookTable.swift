@@ -204,11 +204,11 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
             }, animated: true)
         })
 
-        if let readState = selectedReadStates.first, readState != .finished, selectedReadStates.count == 1 {
-            let title = (readState == .toRead ? "Start" : "Finish") + (selectedRows.count > 1 ? " All" : "")
+        if let initialSelectionReadState = selectedReadStates.first, initialSelectionReadState != .finished, selectedReadStates.count == 1 {
+            let title = (initialSelectionReadState == .toRead ? "Start" : "Finish") + (selectedRows.count > 1 ? " All" : "")
             optionsAlert.addAction(UIAlertAction(title: title, style: .default) { _ in
                 for book in selectedRows.map(self.resultsController.object) {
-                    if readState == .toRead {
+                    if initialSelectionReadState == .toRead {
                         book.startReading()
                     } else if book.startedReading! < Date() {
                         // It is not "invalid" to have a book with a started date in the future; but it is invalid
@@ -219,7 +219,12 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
                 PersistentStoreManager.container.viewContext.saveIfChanged()
                 self.setEditing(false, animated: true)
                 UserEngagement.logEvent(.bulkEditReadState)
-                UserEngagement.onReviewTrigger()
+                
+                // Only request a review if this was a Start tap: there have been a bunch of reviews
+                // on the app store which are for books, not for the app!
+                if initialSelectionReadState == .toRead {
+                    UserEngagement.onReviewTrigger()
+                }
             })
         }
 

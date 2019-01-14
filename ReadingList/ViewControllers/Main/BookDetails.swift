@@ -230,7 +230,12 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         book.managedObjectContext!.saveAndLogIfErrored()
 
         UserEngagement.logEvent(.transitionReadState)
-        UserEngagement.onReviewTrigger()
+        
+        // Only request a review if this was a Start tap: there have been a bunch of reviews
+        // on the app store which are for books, not for the app.
+        if book.readState == .reading {
+            UserEngagement.onReviewTrigger()
+        }
     }
 
     @objc func amazonButtonPressed() {
