@@ -23,10 +23,12 @@ Reading List uses a couple of package managers:
 
 - [Mint](https://github.com/yonaskolb/Mint), to manage Swift command line tool packages
 - [Bundler](https://github.com/bundler/bundler), to manage Ruby tools
+- [SwiftLint](https://github.com/realm/SwiftLint), to enforce Swift style and conventions
 
-Mint can be installed using [Homebrew](https://brew.sh/) (among [other methods](https://github.com/yonaskolb/Mint#installing)); Bundler can be installed with [RubyGems](https://rubygems.org/):
+Mint and SwiftLint can be installed using [Homebrew](https://brew.sh/) (among [other methods](https://github.com/yonaskolb/Mint#installing)); Bundler can be installed with [RubyGems](https://rubygems.org/):
 
     brew install mint
+    brew install swiftlint
     gem install bundler
 
 ### XcodeGen
