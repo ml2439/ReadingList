@@ -195,11 +195,11 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         present(EditBookNotes(existingBookID: book.objectID).inThemedNavController(), animated: true)
     }
 
-    @objc func saveOccurred(_ notification: Notification) {
-        guard let book = book, let userInfo = (notification as NSNotification).userInfo else { return }
+    @objc func saveOccurred(_ notification: NSNotification) {
+        guard let book = book, let userInfo = notification.userInfo else { return }
 
-        let deletedObjects = userInfo[NSDeletedObjectsKey] as? NSSet ?? NSSet()
-        guard deletedObjects.contains(book) != true else {
+        let deletedObjects = userInfo[NSDeletedObjectsKey] as? NSSet
+        guard deletedObjects?.contains(book) != true else {
             // If the book was deleted, set our book to nil and update this page. Pop back to the book table if necessary
             self.book = nil
             parentSplitViewController?.masterNavigationController.popToRootViewController(animated: false)
@@ -207,20 +207,23 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         }
 
         // FUTURE: Consider whether it is worth inspecting the changes to see if they affect this book; perhaps we should just always reload?
-        let updatedObjects = userInfo[NSUpdatedObjectsKey] as? NSSet ?? NSSet()
-        let createdObjects = userInfo[NSInsertedObjectsKey] as? NSSet ?? NSSet()
-        func setContainsRelatedList(_ set: NSSet) -> Bool {
+        let updatedObjects = userInfo[NSUpdatedObjectsKey] as? NSSet
+        let createdObjects = userInfo[NSInsertedObjectsKey] as? NSSet
+        func setContainsRelatedList(_ set: NSSet?) -> Bool {
+            guard let set = set else { return false }
             return set.compactMap { $0 as? List }.contains { $0.books.contains(book) }
         }
 
-        if updatedObjects.contains(book) || setContainsRelatedList(deletedObjects) || setContainsRelatedList(updatedObjects) || setContainsRelatedList(createdObjects) {
+        if updatedObjects?.contains(book) == true || setContainsRelatedList(deletedObjects) || setContainsRelatedList(updatedObjects) || setContainsRelatedList(createdObjects) {
             // If the book was updated, update this page.
             setupViewFromBook()
         }
     }
 
     @IBAction private func changeReadStateButtonWasPressed(_ sender: BorderedButton) {
-        guard let book = book, book.readState == .toRead || book.readState == .reading else { return }
+        guard let book = book, book.readState == .toRead || book.readState == .reading else {
+            assertionFailure("Change read state button pressed when not valid"); return
+        }
 
         if book.readState == .toRead {
             book.startReading()
@@ -230,7 +233,12 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         book.managedObjectContext!.saveAndLogIfErrored()
 
         UserEngagement.logEvent(.transitionReadState)
-        UserEngagement.onReviewTrigger()
+
+        // Only request a review if this was a Start tap: there have been a bunch of reviews
+        // on the app store which are for books, not for the app!
+        if book.readState == .reading {
+            UserEngagement.onReviewTrigger()
+        }
     }
 
     @objc func amazonButtonPressed() {
