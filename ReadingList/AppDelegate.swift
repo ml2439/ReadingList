@@ -74,25 +74,38 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     self.presentIncompatibleDataAlert()
                 }
             } catch {
+                UserEngagement.logError(error)
                 fatalError(error.localizedDescription)
             }
         }
     }
 
     func presentIncompatibleDataAlert() {
-        guard let mostRecentWorkingVersion = UserSettings.mostRecentWorkingVersion.value else { fatalError("No recorded previously working version") }
-
         #if RELEASE
         // This is a common error during development, but shouldn't occur in production
-        guard mostRecentWorkingVersion != BuildInfo.appConfiguration.userFacingDescription else { fatalError("Migration error thrown for store of same version.") }
+        guard mostRecentWorkingVersion != BuildInfo.appConfiguration.userFacingDescription else {
+            UserEngagement.logError(NSError(code: .invalidMigration, userInfo: ["mostRecentWorkingVersion": mostRecentWorkingVersion]))
+            preconditionFailure("Migration error thrown for store of same version.")
+        }
         #endif
 
-        guard window!.rootViewController!.presentedViewController == nil else { return }
-        let alert = UIAlertController(title: "Incompatible Data", message: """
-            The data on this device is not compatible with this version of Reading List.
+        guard window!.rootViewController?.presentedViewController == nil else { return }
 
-            You previously had version \(mostRecentWorkingVersion), but now have version \(BuildInfo.appConfiguration.userFacingDescription). \
-            You will need to install \(mostRecentWorkingVersion) again to be able to access your data.
+        let compatibilityVersionMessage: String?
+        if let mostRecentWorkingVersion = UserSettings.mostRecentWorkingVersion.value {
+            compatibilityVersionMessage = """
+                \n\nYou previously had version \(mostRecentWorkingVersion), but now have version \
+                \(BuildInfo.appConfiguration.userFacingDescription). You will need to install \
+                \(mostRecentWorkingVersion) again to be able to access your data.
+                """
+        } else {
+            UserEngagement.logError(NSError(code: .noPreviousStoreVersionRecorded))
+            compatibilityVersionMessage = nil
+            assertionFailure("No recorded previously working version")
+        }
+
+        let alert = UIAlertController(title: "Incompatible Data", message: """
+            The data on this device is not compatible with this version of Reading List.\(compatibilityVersionMessage ?? "")
             """, preferredStyle: .alert)
 
         #if DEBUG

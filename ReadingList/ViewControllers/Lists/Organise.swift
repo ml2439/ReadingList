@@ -27,9 +27,6 @@ class Organise: UITableViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(refetch), name: NSNotification.Name.PersistentStoreBatchOperationOccurred, object: nil)
 
         monitorThemeSetting()
-        if #available(iOS 11.0, *) {
-            monitorLargeTitleSetting()
-        }
     }
 
     @objc func refetch() {
@@ -126,7 +123,11 @@ extension Organise: DZNEmptyDataSetSource {
     }
 
     func description(forEmptyDataSet scrollView: UIScrollView!) -> NSAttributedString! {
-        return StandardEmptyDataset.description(withMarkdownText: "Create your own lists to organise your books.  To create a new list, tap **Add To List** when viewing a book.")
+        return StandardEmptyDataset.description(withMarkdownText: """
+            Create your own lists to organise your books.
+
+            To create a new list, tap **Add To List** when viewing a book.
+            """)
     }
 
     func verticalOffset(forEmptyDataSet scrollView: UIScrollView!) -> CGFloat {

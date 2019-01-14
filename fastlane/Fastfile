@@ -76,7 +76,7 @@ platform :ios do
       add_to_search_list: true
     )
     sh("git config --global credential.helper osxkeychain")
-    sh("git clone https://andrew_bennet:$GIT_CERTS_PASSWORD@bitbucket.org/andrew_bennet/certificates.git")
+    sh("git clone https://AndrewBennet:$GITHUB_TOKEN@github.com/AndrewBennet/certificates.git")
     sh("rm -rf certificates")
     match(
       type: "appstore",
