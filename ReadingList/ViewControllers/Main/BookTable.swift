@@ -2,6 +2,7 @@ import UIKit
 import DZNEmptyDataSet
 import CoreData
 import ReadingList_Foundation
+import os.log
 
 class BookTable: UITableViewController { //swiftlint:disable:this type_body_length
 
@@ -477,12 +478,12 @@ extension BookTable: UISearchResultsUpdating {
         guard sourceIndexPath.row != destinationIndexPath.row else { return }
 
         // Get the range of objects that the move affects
-        let topRow = sourceIndexPath.row < destinationIndexPath.row ? sourceIndexPath.row : destinationIndexPath.row
-        let bottomRow = sourceIndexPath.row < destinationIndexPath.row ? destinationIndexPath.row : sourceIndexPath.row
-        var booksInMovementRange = (topRow...bottomRow).map { IndexPath(row: $0, section: toReadSectionIndex) }.map(resultsController.object)
+        let topRowIndex = sourceIndexPath.row < destinationIndexPath.row ? sourceIndexPath.row : destinationIndexPath.row
+        let bottomRowIndex = sourceIndexPath.row < destinationIndexPath.row ? destinationIndexPath.row : sourceIndexPath.row
+        var booksInMovementRange = (topRowIndex...bottomRowIndex).map { IndexPath(row: $0, section: toReadSectionIndex) }.map(resultsController.object)
 
         // Move the objects array to reflect the desired order
-        let wasDownwardsMovement = destinationIndexPath.row == bottomRow
+        let wasDownwardsMovement = destinationIndexPath.row == bottomRowIndex
         if wasDownwardsMovement {
             let first = booksInMovementRange.removeFirst()
             booksInMovementRange.append(first)
@@ -494,31 +495,53 @@ extension BookTable: UISearchResultsUpdating {
         // Turn off updates while we manipulate the object context
         resultsController.delegate = nil
 
-        // Update the model sort indexes. The lowest sort number should be the sort of the book immediately
-        // above the range, plus 1, or (if the range starts at the top) 0.
-        var sortIndex: Int32
-        if topRow == 0 {
-            sortIndex = 0
-        } else {
-            let indexPathAboveTop = IndexPath(row: topRow - 1, section: toReadSectionIndex)
-            if let sortIndexAboveTop = resultsController.object(at: indexPathAboveTop).sort?.int32 {
-                sortIndex = sortIndexAboveTop + 1
-            } else {
-                assertionFailure("Book at index \(indexPathAboveTop.section),\(indexPathAboveTop.row) has nil sort")
-                sortIndex = 0
-            }
+        // Update the model sort indexes.
+        let topRowSort = getDesiredSortIndexForRow(at: topRowIndex, inSection: toReadSectionIndex)
+        for (index, book) in booksInMovementRange.enumerated() {
+            book.sort = NSNumber(value: topRowSort + index)
         }
 
-        for book in booksInMovementRange {
-            book.sort = sortIndex.nsNumber
-            sortIndex += 1
-        }
+        // The following operation does not strictly follow from this reorder operation: we want
+        // to ensure that we haven't ended up with overlapping sort indices anywhere. This shoudn't
+        // happen in normal usage of the app, but distinct values are not enforced in the data model,
+        // so we should take advantage of this time to clean up any mess.
+        let nextRowIndex = IndexPath(row: bottomRowIndex + 1, section: toReadSectionIndex)
+        cleanupClashingSortIndices(from: nextRowIndex, sortFrom: topRowSort + booksInMovementRange.count)
 
         PersistentStoreManager.container.viewContext.saveAndLogIfErrored()
         try! resultsController.performFetch()
 
         // Enable updates again
         resultsController.delegate = self
+    }
+
+    private func getDesiredSortIndexForRow(at index: Int, inSection section: Int) -> Int {
+        // The desired sort index should be the sort of the book immediately above the specified cell plus 1,
+        // or - if the cell is at the top - 0.
+        if index == 0 { return 0 }
+        let indexPathAboveCell = IndexPath(row: index - 1, section: section)
+        if let sortIndexAboveCell = resultsController.object(at: indexPathAboveCell).sort?.intValue {
+            return sortIndexAboveCell + 1
+        } else {
+            assertionFailure("Book at index (\(indexPathAboveCell.section), \(indexPathAboveCell.row)) has nil sort")
+            return 0
+        }
+    }
+
+    private func cleanupClashingSortIndices(from topIndex: IndexPath, sortFrom: Int) {
+        var cleanupIndex = topIndex
+        while cleanupIndex.row < tableView.numberOfRows(inSection: cleanupIndex.section) {
+            let cleanupBook = resultsController.object(at: cleanupIndex)
+            let cleanupSort = cleanupIndex.row - topIndex.row + sortFrom
+
+            // No need to proceed if the sort index is large enough
+            if let currentSort = cleanupBook.sort, currentSort.intValue >= cleanupSort { break }
+
+            os_log("Adjusting sort index of book at index %d from %{public}s to %d.", type: .debug, cleanupIndex.row, cleanupBook.sort?.stringValue ?? "nil", cleanupSort)
+
+            cleanupBook.sort = NSNumber(value: cleanupSort)
+            cleanupIndex = IndexPath(row: cleanupIndex.row + 1, section: cleanupIndex.section)
+        }
     }
 }
 
