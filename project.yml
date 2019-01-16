@@ -25,7 +25,7 @@ targets:
         script:
       - name: Run Fabric Script
         inputFiles: [$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)]
-        path: fastlane/fabric.sh
+        path: build/fabric.sh
     settings:
       base:
         ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES: $(inherited)
