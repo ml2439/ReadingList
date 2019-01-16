@@ -215,6 +215,16 @@ public extension Date {
     }
 }
 
+public extension IndexPath {
+    func next() -> IndexPath {
+        return IndexPath(row: row + 1, section: section)
+    }
+
+    func previous() -> IndexPath {
+        return IndexPath(row: row - 1, section: section)
+    }
+}
+
 public extension NSPredicate {
 
     convenience init(boolean: Bool) {
