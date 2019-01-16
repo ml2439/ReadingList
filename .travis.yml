@@ -6,13 +6,7 @@ notifications:
   email:
     - feedback@readinglist.app
 before_install:
-  - bundle install > /dev/null
-  - /usr/libexec/PlistBuddy -c "Set :Fabric:APIKey $FABRIC_API_KEY" "ReadingList/Info.plist"
-  - echo "\"\${PODS_ROOT}/Fabric/run\" $FABRIC_API_KEY $FABRIC_BUILD_SECRET" > fastlane/fabric.sh
-  - brew install mint
-  - mint run yonaskolb/xcodegen
-  - pod repo update > /dev/null
-  - pod install
+  - ./build/before_install.sh
 script:
   - set -e
   - if [[ ! $TRAVIS_COMMIT_MESSAGE =~ '[SKIP-TESTS]' ]]; then bundle exec fastlane test; fi

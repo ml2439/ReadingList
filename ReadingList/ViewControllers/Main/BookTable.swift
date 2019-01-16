@@ -48,9 +48,6 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
         NotificationCenter.default.addObserver(self, selector: #selector(bookSortChanged), name: .BookSortOrderChanged, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(refetch), name: .PersistentStoreBatchOperationOccurred, object: nil)
 
-        if #available(iOS 11.0, *) {
-            monitorLargeTitleSetting()
-        }
         monitorThemeSetting()
 
         super.viewDidLoad()
@@ -222,11 +219,11 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
             }, animated: true)
         })
 
-        if let readState = selectedReadStates.first, readState != .finished, selectedReadStates.count == 1 {
-            let title = (readState == .toRead ? "Start" : "Finish") + (selectedRows.count > 1 ? " All" : "")
+        if let initialSelectionReadState = selectedReadStates.first, initialSelectionReadState != .finished, selectedReadStates.count == 1 {
+            let title = (initialSelectionReadState == .toRead ? "Start" : "Finish") + (selectedRows.count > 1 ? " All" : "")
             optionsAlert.addAction(UIAlertAction(title: title, style: .default) { _ in
                 for book in selectedRows.map(self.resultsController.object) {
-                    if readState == .toRead {
+                    if initialSelectionReadState == .toRead {
                         book.startReading()
                     } else if book.startedReading! < Date() {
                         // It is not "invalid" to have a book with a started date in the future; but it is invalid
@@ -237,7 +234,12 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
                 PersistentStoreManager.container.viewContext.saveIfChanged()
                 self.setEditing(false, animated: true)
                 UserEngagement.logEvent(.bulkEditReadState)
-                UserEngagement.onReviewTrigger()
+                
+                // Only request a review if this was a Start tap: there have been a bunch of reviews
+                // on the app store which are for books, not for the app!
+                if initialSelectionReadState == .toRead {
+                    UserEngagement.onReviewTrigger()
+                }
             })
         }
 
@@ -260,9 +262,12 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
     }
 
     var sectionIndexByReadState: [BookReadState: Int] {
-        return resultsController.sections!.enumerated().reduce(into: [BookReadState: Int]()) { dict, section in
-            let readState = BookReadState(rawValue: Int16(section.element.name)!)!
-            dict[readState] = section.offset
+        guard let sections = resultsController.sections else { preconditionFailure("Cannot get section indexes before fetch") }
+        return sections.enumerated().reduce(into: [BookReadState: Int]()) { result, section in
+            guard let sectionNameInt = Int16(section.element.name), let readState = BookReadState(rawValue: sectionNameInt) else {
+                preconditionFailure("Unexpected section name \"\(section.element.name)\"")
+            }
+            result[readState] = section.offset
         }
     }
 
@@ -278,18 +283,19 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
         }
 
         // allowTableObscuring determines whether the book details page should actually be shown, if showing it will obscure this table
-        if allowTableObscuring || splitViewController!.isSplit {
-            if let indexPathOfSelectedBook = indexPathOfSelectedBook {
-                tableView.selectRow(at: indexPathOfSelectedBook, animated: true, scrollPosition: .none)
-            }
+        guard let splitViewController = splitViewController else { preconditionFailure("Missing SplitViewController") }
+        guard allowTableObscuring || splitViewController.isSplit else { return }
 
-            // If there is a detail view presented, update the book
-            if splitViewController!.detailIsPresented {
-                (splitViewController!.displayedDetailViewController as? BookDetails)?.book = book
-            } else {
-                // Segue to the details view, with the cell corresponding to the book as the sender.
-                performSegue(withIdentifier: "showDetail", sender: book)
-            }
+        if let indexPathOfSelectedBook = indexPathOfSelectedBook {
+            tableView.selectRow(at: indexPathOfSelectedBook, animated: true, scrollPosition: .none)
+        }
+
+        // If there is a detail view presented, update the book
+        if splitViewController.detailIsPresented {
+            (splitViewController.displayedDetailViewController as? BookDetails)?.book = book
+        } else {
+            // Segue to the details view, with the cell corresponding to the book as the sender.
+            performSegue(withIdentifier: "showDetail", sender: book)
         }
     }
 
@@ -308,9 +314,11 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
 
         if let cell = sender as? UITableViewCell, let selectedIndex = self.tableView.indexPath(for: cell) {
             detailsViewController.book = self.resultsController.object(at: selectedIndex)
-        } else {
+        } else if let book = sender as? Book {
             // When a simulated selection triggers a segue, the sender is the Book
-            detailsViewController.book = (sender as! Book)
+            detailsViewController.book = book
+        } else {
+            assertionFailure("Unexpected sender type of segue to book details page")
         }
     }
 

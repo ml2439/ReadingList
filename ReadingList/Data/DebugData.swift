@@ -8,7 +8,7 @@ extension DebugSettings {
 
         let csvPath = Bundle.main.url(forResource: "examplebooks", withExtension: "csv")!
         BookCSVImporter(includeImages: includeImages).startImport(fromFileAt: csvPath) { error, _ in
-            guard error == nil else { fatalError("Error in CSV file") }
+            guard error == nil else { preconditionFailure("Error in CSV file") }
             DispatchQueue.main.async {
                 completion?()
             }

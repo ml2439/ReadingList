@@ -81,7 +81,6 @@ class UserEngagement {
         case enableCrashReports = "Enable_Crash_Reports"
         case changeTheme = "Change_Theme"
         case changeSortOrder = "Change_Sort"
-        case changeLargeTitles = "Change_Large_Titles"
 
         // Other
         case viewOnAmazon = "View_On_Amazon"
@@ -96,6 +95,11 @@ class UserEngagement {
     static func logError(_ error: String) {
         guard sendCrashReports else { return }
         CLSLogv("%@", getVaList([error]))
+    }
+
+    static func logError(_ error: Error) {
+        guard sendCrashReports else { return }
+        Crashlytics.sharedInstance().recordError(error)
     }
 
     private static func shouldTryRequestReview() -> Bool {

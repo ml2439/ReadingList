@@ -66,7 +66,7 @@ class DataVC: UITableViewController {
                     self.presentCsvErrorAlert(error)
                     return
                 }
-                guard let results = results else { fatalError("error and results were nil") }
+                guard let results = results else { preconditionFailure("error and results were nil") }
                 var statusMessagePieces = ["\(results.success) books imported"]
 
                 if results.duplicate != 0 { statusMessagePieces.append("\(results.duplicate) rows ignored due pre-existing data") }
