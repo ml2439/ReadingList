@@ -1,0 +1,119 @@
+{
+ "kind": "books#volume",
+ "id": "gCtazG4ZXlQC",
+ "etag": "GYjZzxdso5E",
+ "selfLink": "https://www.googleapis.com/books/v1/volumes/gCtazG4ZXlQC",
+ "volumeInfo": {
+  "title": "Harry Potter and the Deathly Hallows",
+  "authors": [
+   "J.K. Rowling"
+  ],
+  "publisher": "Pottermore Publishing",
+  "publishedDate": "2015-12-08",
+  "description": "\u003cp\u003e\"'Give me Harry Potter,' said Voldemort's voice, 'and none shall be harmed. Give me Harry Potter, and I shall leave the school untouched. Give me Harry Potter, and you will be rewarded.'\"\u003cbr\u003e\u003cbr\u003eAs he climbs into the sidecar of Hagrid's motorbike and takes to the skies, leaving Privet Drive for the last time, Harry Potter knows that Lord Voldemort and the Death Eaters are not far behind. The protective charm that has kept Harry safe until now is broken, but he cannot keep hiding. The Dark Lord is breathing fear into everything Harry loves and to stop him Harry will have to find and destroy the remaining Horcruxes. The final battle must begin - Harry must stand and face his enemy...\u003c/p\u003e",
+  "industryIdentifiers": [
+   {
+    "type": "ISBN_10",
+    "identifier": "1781100268"
+   },
+   {
+    "type": "ISBN_13",
+    "identifier": "9781781100264"
+   }
+  ],
+  "readingModes": {
+   "text": true,
+   "image": true
+  },
+  "pageCount": 784,
+  "printedPageCount": 706,
+  "printType": "BOOK",
+  "categories": [
+   "Juvenile Fiction / Action & Adventure / General",
+   "Fiction / Fantasy / Contemporary",
+   "Young Adult Fiction / Fantasy / Wizards & Witches",
+   "Young Adult Fiction / Action & Adventure / General",
+   "Young Adult Fiction / School & Education / Boarding School & Prep School",
+   "Fiction / Action & Adventure",
+   "Juvenile Fiction / Fantasy & Magic",
+   "Juvenile Fiction / School & Education",
+   "Fiction / Fantasy / General",
+   "Juvenile Fiction / General"
+  ],
+  "averageRating": 4.5,
+  "ratingsCount": 3455,
+  "maturityRating": "NOT_MATURE",
+  "allowAnonLogging": true,
+  "contentVersion": "2.11.13.0.preview.3",
+  "panelizationSummary": {
+   "containsEpubBubbles": false,
+   "containsImageBubbles": false
+  },
+  "imageLinks": {
+   "smallThumbnail": "http://books.google.com/books/content?id=gCtazG4ZXlQC&printsec=frontcover&img=1&zoom=5&edge=curl&imgtk=AFLRE71PIBR4xeOrxidNY0mmUS6kAiNp5MvTvq-ImFcLIDPyfm-emCyrVAhxiPSFrhBtRq-3ALCy70MDk2HnWGFGwU5jPWdrisKxL8DSIVcfG6zVnBynVaSRLNG4oNL7OR_2phErlRoG&source=gbs_api",
+   "thumbnail": "http://books.google.com/books/content?id=gCtazG4ZXlQC&printsec=frontcover&img=1&zoom=1&edge=curl&imgtk=AFLRE70ztVgLL0m09R7R7nsV_2SUpskIYmhNWzfXCZHOE9TM2bJkM_ydQVwrIbvHsYuYCac-lH8Nl8yVPdPsfmrlZs0-ENCH8FHI28YOc229KxwAnbf_E8wz3I-7SfrK-SffWErgLa7Y&source=gbs_api",
+   "small": "http://books.google.com/books/content?id=gCtazG4ZXlQC&printsec=frontcover&img=1&zoom=2&edge=curl&imgtk=AFLRE71bo9xzGoP9C88zNftH5JQkxQuHFBi22I98TYWpB0Ag-K9Bnp3En5haxXyc1dSmZqusuftI-w3Eq4RUbElOEdKA87-Xic1DPM46IRu21BJYrK2ATDfojxQad0i-IH8pt3RFkXWU&source=gbs_api",
+   "medium": "http://books.google.com/books/content?id=gCtazG4ZXlQC&printsec=frontcover&img=1&zoom=3&edge=curl&imgtk=AFLRE72OFuAEmPIxcSiclx-noxhGiRv51_bXQr4vg-tIWUoAdS3mwUaV3Dn1nq0MWp9_P0BSaBOaNAXW02ZigETFSEVCLJ8DSpTwWOZP1l2EMWzUq2VHdD3-Kxx_E6g_5ITTEKTqP2Jh&source=gbs_api",
+   "large": "http://books.google.com/books/content?id=gCtazG4ZXlQC&printsec=frontcover&img=1&zoom=4&edge=curl&imgtk=AFLRE73YOeDuzMOMtSiIdTPmeIBATEkEWl4sBC14ch7Lbfdl3RAMjrOqdKbwOT8ajg7CWVi024YvpdJQia968qiIF-Rukzh8f-PRn3IkxSq4ek6HJTfg2Tex4lhablnGBpOOi9IAPgQm&source=gbs_api",
+   "extraLarge": "http://books.google.com/books/content?id=gCtazG4ZXlQC&printsec=frontcover&img=1&zoom=6&edge=curl&imgtk=AFLRE72f6Rfr-1V8gZBswduQGcF8AxLk9mSgCU11NX3VB-KnP9iSfqKzYBplkna_sF81sACaQI_YbNY3loOYTMYwn1etA6HnJVwV8C_iubD7zyMtw90o2IwRXVwkc10X9xXt3XA_ghws&source=gbs_api"
+  },
+  "language": "en",
+  "previewLink": "http://books.google.co.uk/books?id=gCtazG4ZXlQC&hl=&source=gbs_api",
+  "infoLink": "https://play.google.com/store/books/details?id=gCtazG4ZXlQC&source=gbs_api",
+  "canonicalVolumeLink": "https://market.android.com/details?id=book-gCtazG4ZXlQC"
+ },
+ "layerInfo": {
+  "layers": [
+   {
+    "layerId": "geo",
+    "volumeAnnotationsVersion": "18"
+   }
+  ]
+ },
+ "saleInfo": {
+  "country": "GB",
+  "saleability": "FOR_SALE",
+  "isEbook": true,
+  "listPrice": {
+   "amount": 5.99,
+   "currencyCode": "GBP"
+  },
+  "retailPrice": {
+   "amount": 5.99,
+   "currencyCode": "GBP"
+  },
+  "buyLink": "https://play.google.com/store/books/details?id=gCtazG4ZXlQC&rdid=book-gCtazG4ZXlQC&rdot=1&source=gbs_api",
+  "offers": [
+   {
+    "finskyOfferType": 1,
+    "listPrice": {
+     "amountInMicros": 5990000.0,
+     "currencyCode": "GBP"
+    },
+    "retailPrice": {
+     "amountInMicros": 5990000.0,
+     "currencyCode": "GBP"
+    },
+    "giftable": true
+   }
+  ]
+ },
+ "accessInfo": {
+  "country": "GB",
+  "viewability": "PARTIAL",
+  "embeddable": true,
+  "publicDomain": false,
+  "textToSpeechPermission": "ALLOWED",
+  "epub": {
+   "isAvailable": true,
+   "acsTokenLink": "http://books.google.co.uk/books/download/Harry_Potter_and_the_Deathly_Hallows-sample-epub.acsm?id=gCtazG4ZXlQC&format=epub&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+  },
+  "pdf": {
+   "isAvailable": true,
+   "acsTokenLink": "http://books.google.co.uk/books/download/Harry_Potter_and_the_Deathly_Hallows-sample-pdf.acsm?id=gCtazG4ZXlQC&format=pdf&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+  },
+  "webReaderLink": "http://play.google.com/books/reader?id=gCtazG4ZXlQC&hl=&printsec=frontcover&source=gbs_api",
+  "accessViewStatus": "SAMPLE",
+  "quoteSharingAllowed": false
+ }
+}
