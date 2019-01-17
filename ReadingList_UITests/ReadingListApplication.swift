@@ -2,6 +2,7 @@ import Foundation
 import XCTest
 
 class ReadingListApplication: XCUIApplication {
+
     enum Tab: Int {
         case toRead = 0
         case finished = 1

@@ -10,6 +10,7 @@ class Lists: XCTestCase {
         let app = ReadingListApplication()
         app.launchArguments.append("--UITests_PopulateData")
         app.launchArguments.append("--UITests_DeleteLists")
+        app.launchArguments.append("--UITests_MockHttpCalls")
         app.launch()
         sleep(4)
     }

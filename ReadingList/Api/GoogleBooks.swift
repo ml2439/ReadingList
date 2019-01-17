@@ -2,6 +2,7 @@ import Foundation
 import SwiftyJSON
 import Promises
 import ReadingList_Foundation
+import os.log
 
 class GoogleBooks {
 
@@ -9,6 +10,7 @@ class GoogleBooks {
      Searches on Google Books for the given search string
      */
     static func search(_ text: String) -> Promise<[SearchResult]> {
+        os_log("Searching for Google Books with query", type: .debug)
         return URLSession.shared.json(url: GoogleBooksRequest.searchText(text).url)
             .then(GoogleBooksParser.assertNoError)
             .then(GoogleBooksParser.parseSearchResults)
@@ -18,6 +20,7 @@ class GoogleBooks {
      Searches on Google Books for the given ISBN
      */
     static func fetch(isbn: String) -> Promise<FetchResult> {
+        os_log("Searching for Google Book with ISBN %{public}s", type: .debug, isbn)
         return URLSession.shared.json(url: GoogleBooksRequest.searchIsbn(isbn).url)
             .then(GoogleBooksParser.parseSearchResults)
             .then {
@@ -50,6 +53,7 @@ class GoogleBooks {
      Performs a supplementary request for the book's cover image data if necessary.
      */
     private static func fetch(googleBooksId: String, existingSearchResult: SearchResult?) -> Promise<FetchResult> {
+        os_log("Fetching Google Book with ID %{public}s", type: .debug, googleBooksId)
         let fetchPromise = URLSession.shared.json(url: GoogleBooksRequest.fetch(googleBooksId).url)
             .then { json -> FetchResult in
                 if let fetchResult = GoogleBooksParser.parseFetchResults(json) {
@@ -82,44 +86,6 @@ class GoogleBooks {
      */
     static func getCover(googleBooksId: String) -> Promise<Data> {
         return URLSession.shared.data(url: GoogleBooksRequest.coverImage(googleBooksId, .thumbnail).url)
-    }
-}
-
-enum GoogleBooksRequest {
-
-    case searchText(String)
-    case searchIsbn(String)
-    case fetch(String)
-    case coverImage(String, CoverType)
-    case webpage(String)
-
-    enum CoverType: Int {
-        case thumbnail = 1
-        case small = 2
-    }
-
-    // The base URL for GoogleBooks API v1 requests
-    private static let apiBaseUrl = URL(string: "https://www.googleapis.com/")!
-    private static let googleBooksBaseUrl = URL(string: "https://books.google.com/")!
-
-    private static let searchResultFields = "items(id,volumeInfo(title,authors,industryIdentifiers,categories,imageLinks/thumbnail))"
-
-    var url: URL {
-        switch self {
-        case let .searchText(searchString):
-            let encodedQuery = searchString.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!
-            let relativeUrl = "books/v1/volumes?q=\(encodedQuery)&maxResults=40&fields=\(GoogleBooksRequest.searchResultFields)"
-            return URL(string: relativeUrl, relativeTo: GoogleBooksRequest.apiBaseUrl)!
-        case let .searchIsbn(isbn):
-            let relativeUrl = "books/v1/volumes?q=isbn:\(isbn)&maxResults=40&fields=\(GoogleBooksRequest.searchResultFields)"
-            return URL(string: relativeUrl, relativeTo: GoogleBooksRequest.apiBaseUrl)!
-        case let .fetch(id):
-            return URL(string: "books/v1/volumes/\(id)", relativeTo: GoogleBooksRequest.apiBaseUrl)!
-        case let .coverImage(googleBooksId, coverType):
-            return URL(string: "books/content?id=\(googleBooksId)&printsec=frontcover&img=1&zoom=\(coverType.rawValue)", relativeTo: GoogleBooksRequest.googleBooksBaseUrl)!
-        case let .webpage(googleBooksId):
-            return URL(string: "books?id=\(googleBooksId)", relativeTo: GoogleBooksRequest.googleBooksBaseUrl)!
-        }
     }
 }
 

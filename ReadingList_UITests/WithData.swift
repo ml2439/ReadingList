@@ -2,18 +2,24 @@ import XCTest
 
 class WithData: XCTestCase {
 
+    let mockServer = MockServer()
+
     override func setUp() {
         super.setUp()
         continueAfterFailure = false
 
         let app = ReadingListApplication()
         app.launchArguments.append("--UITests_PopulateData")
+        app.launchArguments.append("--UITests_MockHttpCalls")
         app.launch()
-        sleep(3)
+
+        try! mockServer.server.start()
+        sleep(1)
     }
 
     override func tearDown() {
         super.tearDown()
+        mockServer.server.stop()
     }
 
     func testAddManualBook() {
@@ -98,7 +104,7 @@ class WithData: XCTestCase {
         // Normal mode
         scanBarcode(app: app, mode: .normal)
         let cancel = app.navigationBars.element(boundBy: 0).buttons["Cancel"]
-        _ = cancel.waitForExistence(timeout: 3)
+        _ = cancel.waitForExistence(timeout: 1)
         cancel.tap()
     }
 
@@ -120,7 +126,7 @@ class WithData: XCTestCase {
         // Valid ISBN
         scanBarcode(app: app, mode: .validIsbn)
         let done = app.navigationBars.element(boundBy: 0).buttons["Done"]
-        _ = done.waitForExistence(timeout: 10)
+        _ = done.waitForExistence(timeout: 1)
         done.tap()
     }
 

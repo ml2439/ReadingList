@@ -73,7 +73,9 @@ targets:
     type: bundle.ui-testing
     platform: iOS
     deploymentTarget: 10.3
-    sources: [ReadingList_UITests]
+    sources:
+      - path: ReadingList_UITests
+      - path: ReadingList/Api/GoogleBooksRequest.swift
     dependencies:
       - target: ReadingList
     settings:
