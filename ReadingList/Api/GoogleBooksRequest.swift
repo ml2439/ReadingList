@@ -31,8 +31,10 @@ enum GoogleBooksRequest {
 
     var baseUrl: URL {
         switch self {
-        case .webpage: return GoogleBooksRequest.googleBooksBaseUrl
-        default: return GoogleBooksRequest.apiBaseUrl
+        case .coverImage, .webpage:
+            return GoogleBooksRequest.googleBooksBaseUrl
+        default:
+            return GoogleBooksRequest.apiBaseUrl
         }
     }
 

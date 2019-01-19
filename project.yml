@@ -9,7 +9,6 @@ targets:
       testTargets:
         - ReadingList_UnitTests
         - ReadingList_UITests
-        - ReadingList_Screenshots
     dependencies:
       - framework: StoreKit.framework
         embed: false
