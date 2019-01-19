@@ -12,6 +12,7 @@ target 'ReadingList' do
   pod 'CHCSVParser', :git => 'https://github.com/davedelong/CHCSVParser.git'
   pod 'PromisesSwift', '~> 1.2'
   pod 'SimulatorStatusMagic', :configurations => ['Debug']
+  pod 'Swifter', '~> 1.4.5', :configurations => ['Debug']
   pod 'Fabric'
   pod 'Crashlytics'
   pod 'Firebase/Core'

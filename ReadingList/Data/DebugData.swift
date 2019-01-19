@@ -17,7 +17,6 @@ extension DebugSettings {
 
     static func initialiseFromCommandLine() {
         let screenshots = CommandLine.arguments.contains("--UITests_Screenshots")
-        DebugSettings.useFixedBarcodeScanImage = screenshots
         if screenshots {
             SDStatusBarManager.sharedInstance().enableOverrides()
         }
