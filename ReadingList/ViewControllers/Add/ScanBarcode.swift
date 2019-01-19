@@ -56,29 +56,20 @@ class ScanBarcode: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
 
     private func setupAvSession() {
         #if DEBUG
-        if DebugSettings.useFixedBarcodeScanImage {
-            useExampleBarcodeImage()
-        }
-        switch DebugSettings.barcodeScanSimulation {
-        case .none:
-            break
-        case .normal:
-            // In "normal" mode we want to ignore any actual errors, like not having a camera
-            return
-        case .validIsbn:
-            respondToCapturedIsbn("9781781100264")
-            return
-        case .unfoundIsbn:
-            // Use a string which isn't an ISBN
-            respondToCapturedIsbn("9781111111111")
-            return
-        case .existingIsbn:
-            respondToCapturedIsbn(DebugSettings.existingIsbn)
-            return
-        case .noCameraPermissions:
-            presentCameraPermissionsAlert()
+        if CommandLine.arguments.contains("--UITests_Screenshots") {
+            let imageView = UIImageView(frame: view.frame)
+            imageView.contentMode = .scaleAspectFill
+            imageView.image = #imageLiteral(resourceName: "example_barcode.jpg")
+            view.addSubview(imageView)
+            imageView.addSubview(previewOverlay)
             return
         }
+        if let isbnToSimulate = UserDefaults.standard.string(forKey: "barcode-isbn-simulation") {
+            respondToCapturedIsbn(isbnToSimulate)
+            return
+        }
+        // We want to ignore any actual errors, like not having a camera, so return if UITesting
+        if CommandLine.arguments.contains("--UITests") { return }
         #endif
 
         guard let camera = AVCaptureDevice.default(for: AVMediaType.video), let input = try? AVCaptureDeviceInput(device: camera) else {
@@ -256,16 +247,4 @@ class ScanBarcode: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
         feedbackGenerator.notificationOccurred(.error)
         present(alert, animated: true, completion: nil)
     }
-
-    #if DEBUG
-
-    func useExampleBarcodeImage() {
-        let imageView = UIImageView(frame: view.frame)
-        imageView.contentMode = .scaleAspectFill
-        imageView.image = #imageLiteral(resourceName: "example_barcode.jpg")
-        view.addSubview(imageView)
-        imageView.addSubview(previewOverlay)
-    }
-
-    #endif
 }

@@ -6,21 +6,13 @@ class Lists: XCTestCase {
     override func setUp() {
         super.setUp()
         continueAfterFailure = false
-
-        let app = ReadingListApplication()
-        app.launchArguments.append("--UITests_PopulateData")
-        app.launchArguments.append("--UITests_DeleteLists")
-        app.launchArguments.append("--UITests_MockHttpCalls")
-        app.launch()
-        sleep(4)
-    }
-
-    override func tearDown() {
-        super.tearDown()
     }
 
     func testFirstListPresentsAlertAndSecondListPresentsModal() {
-        let app = ReadingListApplication()
+        let app = ReadingListApp()
+        app.launchArguments = ["--UITests_PopulateData", "--UITests_DeleteLists"]
+        app.launch()
+
         app.tables.cells.element(boundBy: 0).tap()
         app.scrollViews.otherElements.buttons["Add to List"].tap()
 

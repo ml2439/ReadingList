@@ -6,19 +6,18 @@ class Screenshots: XCTestCase {
         super.setUp()
         continueAfterFailure = false
 
-        let app = ReadingListApplication()
+        let app = ReadingListApp()
         setupSnapshot(app)
-        app.launchArguments.append(contentsOf: ["--UITests_PopulateData", "--UITests_Screenshots", "-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryXL"])
+        app.launchArguments = ["--UITests_PopulateData", "--UITests_Screenshots", "-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryXL"]
         app.launch()
         sleep(5)
-        app.setBarcodeSimulation(.normal)
     }
 
     func testSnapshot() {
         // Screenshot is designed for iOS 11 only
         guard #available(iOS 11.0, *) else { return }
 
-        let app = ReadingListApplication()
+        let app = ReadingListApp()
         app.clickTab(.toRead)
 
         let isIpad = app.navigationBars.count == 2

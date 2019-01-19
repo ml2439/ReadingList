@@ -28,20 +28,6 @@ class Debug: FormViewController {
                 }
             }
 
-        +++ SelectableSection<ListCheckRow<BarcodeScanSimulation>>("Barcode scan behaviour", selectionType: .singleSelection(enableDeselection: false)) {
-            let currentValue = DebugSettings.barcodeScanSimulation
-            for option: BarcodeScanSimulation in [.none, .normal, .noCameraPermissions, .validIsbn, .unfoundIsbn, .existingIsbn] {
-                $0 <<< ListCheckRow<BarcodeScanSimulation> {
-                    $0.title = option.titleText
-                    $0.selectableValue = option
-                    $0.value = (option == currentValue ? option : nil)
-                    $0.onChange {
-                        DebugSettings.barcodeScanSimulation = $0.value ?? .none
-                    }
-                }
-            }
-        }
-
         +++ SelectableSection<ListCheckRow<QuickActionSimulation>>("Quick Action Simulation", selectionType: .singleSelection(enableDeselection: false)) {
             let currentQuickActionValue = DebugSettings.quickActionSimulation
             for quickActionOption: QuickActionSimulation in [.none, .barcodeScan, .searchOnline] {
