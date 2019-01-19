@@ -28,20 +28,6 @@ class Debug: FormViewController {
                 }
             }
 
-        +++ SelectableSection<ListCheckRow<QuickActionSimulation>>("Quick Action Simulation", selectionType: .singleSelection(enableDeselection: false)) {
-            let currentQuickActionValue = DebugSettings.quickActionSimulation
-            for quickActionOption: QuickActionSimulation in [.none, .barcodeScan, .searchOnline] {
-                $0 <<< ListCheckRow<QuickActionSimulation> {
-                    $0.title = quickActionOption.titleText
-                    $0.selectableValue = quickActionOption
-                    $0.value = (quickActionOption == currentQuickActionValue ? quickActionOption : nil)
-                    $0.onChange {
-                        DebugSettings.quickActionSimulation = $0.value ?? .none
-                    }
-                }
-            }
-        }
-
         +++ Section("Debug Controls")
             <<< SwitchRow {
                 $0.title = "Show sort number"
