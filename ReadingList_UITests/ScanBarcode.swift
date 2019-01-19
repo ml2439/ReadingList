@@ -3,7 +3,7 @@ import XCTest
 class ScanBarcode: XCTestCase {
 
     let mockServer = MockServer()
-    private let defaultLaunchArguments = ["--UITests", "--UITests_MockHttpCalls"]
+    private let defaultLaunchArguments = ["--reset", "--UITests", "--UITests_MockHttpCalls"]
     private let barcodeSimulationArgument = "-barcode-isbn-simulation"
 
     override func setUp() {
@@ -66,7 +66,7 @@ class ScanBarcode: XCTestCase {
     func testBarcodeScannerExistingIsbn() {
         let app = ReadingListApp()
         // The ISBN below is contained in the test data
-        app.launchArguments = defaultLaunchArguments + [barcodeSimulationArgument, "9780547345666"]
+        app.launchArguments = defaultLaunchArguments + ["--UITests_PopulateData", barcodeSimulationArgument, "9780547345666"]
         app.launch()
 
         // Existing ISBN

@@ -29,6 +29,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let shortcutItem = launchOptions?[.shortcutItem] as? UIApplicationShortcutItem
         let csvFileUrl = launchOptions?[.url] as? URL
 
+        #if DEBUG
+        if CommandLine.arguments.contains("--reset") {
+            UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
+            NSPersistentStoreCoordinator().destroyAndDeleteStore(at: URL.applicationSupport.appendingPathComponent(PersistentStoreManager.storeFileName))
+        }
+        #endif
+
         initialisePersistentStore {
             // Once the store is loaded and the main storyboard instantiated, perform the shortcut action
             // or open the CSV file, is specified. This is done here rather than in application:open,

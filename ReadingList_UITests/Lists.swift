@@ -10,7 +10,7 @@ class Lists: XCTestCase {
 
     func testFirstListPresentsAlertAndSecondListPresentsModal() {
         let app = ReadingListApp()
-        app.launchArguments = ["--UITests_PopulateData", "--UITests_DeleteLists"]
+        app.launchArguments = ["--reset", "--UITests_PopulateData", "--UITests_DeleteLists"]
         app.launch()
 
         app.tables.cells.element(boundBy: 0).tap()

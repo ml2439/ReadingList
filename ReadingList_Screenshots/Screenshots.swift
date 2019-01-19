@@ -8,7 +8,7 @@ class Screenshots: XCTestCase {
 
         let app = ReadingListApp()
         setupSnapshot(app)
-        app.launchArguments = ["--UITests_PopulateData", "--UITests_Screenshots", "-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryXL"]
+        app.launchArguments = ["--reset", "--UITests", "--UITests_PopulateData", "--UITests_Screenshots", "-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryXL"]
         app.launch()
         sleep(5)
     }

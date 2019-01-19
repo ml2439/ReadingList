@@ -2,6 +2,8 @@ import XCTest
 
 class ManualEntry: XCTestCase {
 
+    private let defaultLaunchArguments = ["--reset", "--UITests", "--UITests_PopulateData"]
+
     override func setUp() {
         super.setUp()
         continueAfterFailure = false
@@ -9,6 +11,7 @@ class ManualEntry: XCTestCase {
 
     func testAddManualBook() {
         let app = ReadingListApp()
+        app.launchArguments = defaultLaunchArguments
         app.launch()
         app.clickTab(.toRead)
 
@@ -35,6 +38,7 @@ class ManualEntry: XCTestCase {
 
     func testEditBook() {
         let app = ReadingListApp()
+        app.launchArguments = defaultLaunchArguments
         app.launch()
 
         app.clickTab(.toRead)
@@ -48,6 +52,7 @@ class ManualEntry: XCTestCase {
 
     func testDeleteBook() {
         let app = ReadingListApp()
+        app.launchArguments = defaultLaunchArguments
         app.launch()
 
         app.clickTab(.toRead)
@@ -65,6 +70,7 @@ class ManualEntry: XCTestCase {
 
     func testExportBook() {
         let app = ReadingListApp()
+        app.launchArguments = defaultLaunchArguments
         app.launch()
 
         app.clickTab(.settings)
