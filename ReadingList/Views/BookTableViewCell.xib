@@ -64,16 +64,19 @@
                         </userDefinedRuntimeAttributes>
                     </label>
                     <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="wt1-NF-e6J" userLabel="Reading Progress">
-                        <rect key="frame" x="67" y="83.5" width="300" height="2"/>
+                        <rect key="frame" x="67" y="79" width="300" height="2"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="2" id="e9T-QP-wi9"/>
                         </constraints>
                     </progressView>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="50%" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0DL-Pw-yOn" userLabel="Reading Progress Value">
-                        <rect key="frame" x="341" y="65.5" width="26" height="18"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="50%" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0DL-Pw-yOn" userLabel="Reading Progress Label">
+                        <rect key="frame" x="341" y="59" width="26" height="18"/>
                         <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="15"/>
                         <color key="textColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <nil key="highlightedColor"/>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Footnote"/>
+                        </userDefinedRuntimeAttributes>
                     </label>
                 </subviews>
                 <constraints>
@@ -88,8 +91,8 @@
                     <constraint firstItem="c52-WV-ht9" firstAttribute="leading" secondItem="5oX-n2-F6T" secondAttribute="trailing" id="KaR-Zq-geX"/>
                     <constraint firstItem="c52-WV-ht9" firstAttribute="trailing" secondItem="1OS-m5-Lp3" secondAttribute="trailing" id="QF3-NZ-Rk6"/>
                     <constraint firstItem="1OS-m5-Lp3" firstAttribute="leading" secondItem="5oX-n2-F6T" secondAttribute="leading" id="Ux2-nh-UI1"/>
-                    <constraint firstItem="wt1-NF-e6J" firstAttribute="top" secondItem="0DL-Pw-yOn" secondAttribute="bottom" id="hIb-wT-27Q"/>
-                    <constraint firstAttribute="bottom" secondItem="wt1-NF-e6J" secondAttribute="bottom" constant="6" id="t1c-Iu-JE5"/>
+                    <constraint firstItem="wt1-NF-e6J" firstAttribute="top" secondItem="0DL-Pw-yOn" secondAttribute="bottom" constant="2" id="hIb-wT-27Q"/>
+                    <constraint firstAttribute="bottomMargin" secondItem="wt1-NF-e6J" secondAttribute="bottom" id="t1c-Iu-JE5"/>
                     <constraint firstItem="PWo-fS-Oux" firstAttribute="top" secondItem="K3N-Ot-mPL" secondAttribute="top" constant="6" id="udA-il-zw3"/>
                     <constraint firstItem="PWo-fS-Oux" firstAttribute="leading" secondItem="K3N-Ot-mPL" secondAttribute="leading" constant="6" id="vTD-Kv-m0i"/>
                     <constraint firstItem="5oX-n2-F6T" firstAttribute="leading" secondItem="PWo-fS-Oux" secondAttribute="trailing" constant="8" id="yrt-bq-eFo"/>
@@ -100,7 +103,7 @@
                 <outlet property="bookCover" destination="PWo-fS-Oux" id="rtL-0j-dS8"/>
                 <outlet property="readTimeLabel" destination="c52-WV-ht9" id="7LR-OY-WPy"/>
                 <outlet property="readingProgress" destination="wt1-NF-e6J" id="lst-0z-Cty"/>
-                <outlet property="readingProgressValue" destination="0DL-Pw-yOn" id="4bE-fH-M5m"/>
+                <outlet property="readingProgressLabel" destination="0DL-Pw-yOn" id="4bE-fH-M5m"/>
                 <outlet property="titleLabel" destination="5oX-n2-F6T" id="Etj-ZU-2XF"/>
             </connections>
         </tableViewCell>

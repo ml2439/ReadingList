@@ -7,7 +7,7 @@ class BookTableViewCell: UITableViewCell {
     @IBOutlet private weak var bookCover: UIImageView!
     @IBOutlet private weak var readTimeLabel: UILabel!
     @IBOutlet private weak var readingProgress: UIProgressView!
-    @IBOutlet private weak var readingProgressValue: UILabel!
+    @IBOutlet private weak var readingProgressLabel: UILabel!
 
     private var coverImageRequest: URLSessionDataTask?
 
@@ -17,7 +17,7 @@ class BookTableViewCell: UITableViewCell {
         readTimeLabel.text = nil
         bookCover.image = nil
         readingProgress.progress = 0
-        readingProgressValue.text = nil
+        readingProgressLabel.text = nil
     }
 
     override func awakeFromNib() {
@@ -31,6 +31,7 @@ class BookTableViewCell: UITableViewCell {
         titleLabel.textColor = theme.titleTextColor
         authorsLabel.textColor = theme.subtitleTextColor
         readTimeLabel?.textColor = theme.subtitleTextColor
+        readingProgressLabel.textColor = theme.subtitleTextColor
     }
 
     override func prepareForReuse() {
@@ -53,6 +54,16 @@ class BookTableViewCell: UITableViewCell {
             case .finished: readTimeLabel.text = book.finishedReading!.toPrettyString()
             default: readTimeLabel.text = nil
             }
+
+            // Configure the reading progress display
+            if let currentPage = book.currentPage?.intValue, let pageCount = book.pageCount?.intValue, currentPage > 0 {
+                showReadingProgress(true)
+                let progress = Float(currentPage) / Float(pageCount)
+                let progressText = currentPage > pageCount ? "100%" : "\(100 * currentPage / pageCount)%"
+                configureReadingProgress(text: progressText, progress: progress)
+            } else {
+                showReadingProgress(false)
+            }
         }
 
         #if DEBUG
@@ -62,14 +73,14 @@ class BookTableViewCell: UITableViewCell {
         #endif
     }
 
-    func configureReadingProgress(text: String?, progress: Float) {
-        readingProgressValue.text = text
+    private func configureReadingProgress(text: String?, progress: Float) {
+        readingProgressLabel.text = text
         readingProgress.progress = progress
     }
 
-    func showReadingProgress(_ state: Bool) {
+    private func showReadingProgress(_ state: Bool) {
         readingProgress.isHidden = !state
-        readingProgressValue.isHidden = !state
+        readingProgressLabel.isHidden = !state
     }
 
     func configureFrom(_ searchResult: SearchResult) {
