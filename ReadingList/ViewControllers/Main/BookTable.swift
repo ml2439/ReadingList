@@ -219,7 +219,7 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
                 PersistentStoreManager.container.viewContext.saveIfChanged()
                 self.setEditing(false, animated: true)
                 UserEngagement.logEvent(.bulkEditReadState)
-                
+
                 // Only request a review if this was a Start tap: there have been a bunch of reviews
                 // on the app store which are for books, not for the app!
                 if initialSelectionReadState == .toRead {

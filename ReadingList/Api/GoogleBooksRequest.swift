@@ -1,18 +1,18 @@
 import Foundation
 
 enum GoogleBooksRequest {
-    
+
     case searchText(String)
     case searchIsbn(String)
     case fetch(String)
     case coverImage(String, CoverType)
     case webpage(String)
-    
+
     enum CoverType: Int {
         case thumbnail = 1
         case small = 2
     }
-    
+
     // The base URL for GoogleBooks API v1 requests
     private static let apiBaseUrl = URL(string: { //swiftlint:disable:this trailing_closure
         #if DEBUG
@@ -26,33 +26,54 @@ enum GoogleBooksRequest {
         #endif
     }())!
     private static let googleBooksBaseUrl = URL(string: "https://books.google.com/")!
-    
+
     private static let searchResultFields = "items(id,volumeInfo(title,authors,industryIdentifiers,categories,imageLinks/thumbnail))"
-    
+
     var baseUrl: URL {
         switch self {
         case .webpage: return GoogleBooksRequest.googleBooksBaseUrl
         default: return GoogleBooksRequest.apiBaseUrl
         }
     }
-    
-    var relativePath: String {
+
+    var path: String {
+        switch self {
+        case .searchIsbn, .searchText:
+            return "books/v1/volumes"
+        case let .fetch(id):
+            return "books/v1/volumes/\(id)"
+        case .coverImage:
+            return "books/content"
+        case .webpage:
+            return "books"
+        }
+    }
+
+    var queryString: String? {
         switch self {
         case let .searchText(searchString):
             let encodedQuery = searchString.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!
-            return "books/v1/volumes?q=\(encodedQuery)&maxResults=40&fields=\(GoogleBooksRequest.searchResultFields)"
+            return "q=\(encodedQuery)&maxResults=40&fields=\(GoogleBooksRequest.searchResultFields)"
         case let .searchIsbn(isbn):
-            return "books/v1/volumes?q=isbn:\(isbn)&maxResults=40&fields=\(GoogleBooksRequest.searchResultFields)"
-        case let .fetch(id):
-            return "books/v1/volumes/\(id)"
+            return "q=isbn:\(isbn)&maxResults=40&fields=\(GoogleBooksRequest.searchResultFields)"
+        case .fetch:
+            return nil
         case let .coverImage(googleBooksId, coverType):
-            return "books/content?id=\(googleBooksId)&printsec=frontcover&img=1&zoom=\(coverType.rawValue)"
+            return "id=\(googleBooksId)&printsec=frontcover&img=1&zoom=\(coverType.rawValue)"
         case let .webpage(googleBooksId):
-            return "books?id=\(googleBooksId)"
+            return "id=\(googleBooksId)"
         }
     }
-    
+
+    var pathAndQuery: String {
+        if let queryString = queryString {
+            return "\(path)?\(queryString)"
+        } else {
+            return path
+        }
+    }
+
     var url: URL {
-        return URL(string: relativePath, relativeTo: baseUrl)!
+        return URL(string: pathAndQuery, relativeTo: baseUrl)!
     }
 }

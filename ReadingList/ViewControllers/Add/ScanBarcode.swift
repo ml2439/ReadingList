@@ -134,7 +134,6 @@ class ScanBarcode: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
     }
 
     func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
-
         guard let avMetadata = metadataObjects.first as? AVMetadataMachineReadableCodeObject,
             let isbn = ISBN13(avMetadata.stringValue) else { return }
         DispatchQueue.main.sync {
@@ -171,7 +170,6 @@ class ScanBarcode: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
     }
 
     func searchForFoundIsbn(isbn: String) {
-
         // We're going to be doing a search online, so bring up a spinner
         SVProgressHUD.show(withStatus: "Searching...")
 
