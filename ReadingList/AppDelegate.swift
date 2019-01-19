@@ -26,22 +26,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         completeStoreTransactions()
 
         // Grab any options which we take action on after the persistent store is initialised
-        let quickAction = launchOptions?[.shortcutItem] as? UIApplicationShortcutItem
+        let shortcutItem = launchOptions?[.shortcutItem] as? UIApplicationShortcutItem
         let csvFileUrl = launchOptions?[.url] as? URL
 
+        #if DEBUG
+        if CommandLine.arguments.contains("--reset") {
+            UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
+            NSPersistentStoreCoordinator().destroyAndDeleteStore(at: URL.applicationSupport.appendingPathComponent(PersistentStoreManager.storeFileName))
+        }
+        #endif
+
         initialisePersistentStore {
-            // Once the store is loaded and the main storyboard instantiated, perform the quick action
+            // Once the store is loaded and the main storyboard instantiated, perform the shortcut action
             // or open the CSV file, is specified. This is done here rather than in application:open,
             // for example, in the case where the app is not yet launched.
-            if let quickAction = quickAction {
-                self.performQuickAction(QuickAction(rawValue: quickAction.type)!)
+            if let shortcutItem = shortcutItem {
+                self.performShortcut(shortcutItem.type)
             } else if let csvFileUrl = csvFileUrl {
                 self.openCsvImport(url: csvFileUrl)
             }
         }
 
         // If there was a QuickAction or URL-open, it is handled here, so prevent another handler from being called
-        return quickAction == nil && csvFileUrl == nil
+        return shortcutItem == nil && csvFileUrl == nil
     }
 
     /**
@@ -140,11 +147,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         #if DEBUG
-            if DebugSettings.quickActionSimulation == .barcodeScan {
-                performQuickAction(.scanBarcode)
-            } else if DebugSettings.quickActionSimulation == .searchOnline {
-                performQuickAction(.searchOnline)
-            }
+        if let shortcutType = UserDefaults.standard.string(forKey: "shortcut-type-simulation") {
+            performShortcut(shortcutType)
+        }
         #endif
         UserEngagement.onAppOpen()
 
@@ -154,7 +159,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
-        performQuickAction(QuickAction(rawValue: shortcutItem.type)!)
+        performShortcut(shortcutItem.type)
         completionHandler(true)
     }
 
@@ -176,7 +181,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         navController.viewControllers.first!.performSegue(withIdentifier: "settingsData", sender: url)
     }
 
-    func performQuickAction(_ action: QuickAction) {
+    func performShortcut(_ type: String) {
         func presentFromToRead(_ viewController: UIViewController) {
             // All quick actions are presented from the To Read tab
             tabBarController.selectedTab = .toRead
@@ -187,13 +192,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             navController.viewControllers.first!.present(viewController, animated: true, completion: nil)
         }
 
-        switch action {
-        case .scanBarcode:
+        switch type {
+        case ShortcutType.scanBarcode.rawValue:
             UserEngagement.logEvent(.scanBarcodeQuickAction)
             presentFromToRead(UIStoryboard.ScanBarcode.rootAsFormSheet())
-        case .searchOnline:
+        case ShortcutType.searchOnline.rawValue:
             UserEngagement.logEvent(.searchOnlineQuickAction)
             presentFromToRead(UIStoryboard.SearchOnline.rootAsFormSheet())
+        default:
+            assertionFailure("Unexpected shortcut type: \(type)")
         }
     }
 
@@ -208,7 +215,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 }
 
-enum QuickAction: String {
+enum ShortcutType: String {
     case scanBarcode = "com.andrewbennet.books.ScanBarcode"
     case searchOnline = "com.andrewbennet.books.SearchBooks"
 }

@@ -9,7 +9,6 @@ targets:
       testTargets:
         - ReadingList_UnitTests
         - ReadingList_UITests
-        - ReadingList_Screenshots
     dependencies:
       - framework: StoreKit.framework
         embed: false
@@ -70,7 +69,9 @@ targets:
     type: bundle.ui-testing
     platform: iOS
     deploymentTarget: 10.3
-    sources: [ReadingList_UITests]
+    sources:
+      - path: ReadingList_UITests
+      - path: ReadingList/Api/GoogleBooksRequest.swift
     dependencies:
       - target: ReadingList
   ReadingList_Screenshots:
@@ -79,7 +80,7 @@ targets:
     deploymentTarget: 10.3
     sources:
       - path: ReadingList_Screenshots
-      - path: ReadingList_UITests/ReadingListApplication.swift
+      - path: ReadingList_UITests/ReadingListApp.swift
     dependencies:
       - target: ReadingList
     scheme:
