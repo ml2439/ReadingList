@@ -157,6 +157,21 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
         let book = resultsController.object(at: indexPath)
         cell.configureFrom(book)
         cell.initialise(withTheme: UserSettings.theme.value)
+
+        if let currentPage = book.currentPage?.intValue {
+          var progress: Float = 0
+          var progressText: String?
+
+          if let pageCount = book.pageCount?.intValue, currentPage > 0 {
+            progress = Float(currentPage) / Float(pageCount)
+            progressText = "\(100 * currentPage / pageCount)%"
+            cell.configureReadingProgress(text: progressText, progress: progress)
+            cell.showReadingProgress(true)
+          }
+        } else {
+          cell.showReadingProgress(false)
+      }
+
         return cell
     }
 
