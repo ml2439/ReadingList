@@ -81,7 +81,7 @@ targets:
     deploymentTarget: 10.3
     sources:
       - path: ReadingList_Screenshots
-      - path: ReadingList_UITests/ReadingListApplication.swift
+      - path: ReadingList_UITests/ReadingListApp.swift
     dependencies:
       - target: ReadingList
     scheme:
