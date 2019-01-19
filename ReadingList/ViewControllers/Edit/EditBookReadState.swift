@@ -99,6 +99,15 @@ class EditBookReadState: FormViewController {
         monitorThemeSetting()
     }
 
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    if self.book.readState == .reading {
+      let currentPageRow = self.form.rowBy(tag: "currentPage") as! IntRow
+      currentPageRow.cell.textField.selectAll(nil)
+      currentPageRow.cell.textField.becomeFirstResponder()
+    }
+  }
+
     func configureNavigationItem() {
         if navigationItem.leftBarButtonItem == nil && navigationController!.viewControllers.first == self {
             navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelPressed))
