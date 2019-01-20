@@ -90,8 +90,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func presentIncompatibleDataAlert() {
         #if RELEASE
         // This is a common error during development, but shouldn't occur in production
-        guard mostRecentWorkingVersion != BuildInfo.appConfiguration.userFacingDescription else {
-            UserEngagement.logError(NSError(code: .invalidMigration, userInfo: ["mostRecentWorkingVersion": mostRecentWorkingVersion]))
+        guard UserSettings.mostRecentWorkingVersion.value != BuildInfo.appConfiguration.fullDescription else {
+            UserEngagement.logError(NSError(code: .invalidMigration, userInfo: ["mostRecentWorkingVersion": UserSettings.mostRecentWorkingVersion.value ?? "unknown"]))
             preconditionFailure("Migration error thrown for store of same version.")
         }
         #endif
