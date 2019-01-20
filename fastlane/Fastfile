@@ -23,26 +23,13 @@ platform :ios do
     scan(scheme: "ReadingList", devices: ["iPad Pro (10.5-inch) (11.4)"], test_without_building: true)
   end
 
-  desc "Increments the build number, commits with a special commit message to trigger CI deploy"
-  lane :beta do
-    ensure_git_status_clean
-    build_number = increment_build_number
-    message = "[DEPLOY] Increment to build " + build_number
-    sh("git commit -a -m '" + message + "'")
-    sh("git push")
-  end
-
   desc "Push a new beta build to TestFlight (not externally released)"
   lane :deploy do
     if is_ci
       configure_keychain
     end
-    archive
-    upload_to_testflight(skip_submission: true, skip_waiting_for_build_processing: true)
-  end
-
-  lane :archive do
     build_app(workspace: "ReadingList.xcworkspace", scheme: "ReadingList")
+    upload_to_testflight(skip_submission: true, skip_waiting_for_build_processing: true)
   end
 
   lane :publish do
@@ -90,40 +77,22 @@ platform :ios do
     increment_build_number(build_number: "1")
   end
 
-  private_lane :commit_detailed_version_bump do
-    version_number = get_version_number(target: "ReadingList")
-    message = "Increment to version " + version_number
-    sh("git commit -a -m '" + message + "'")
-    sh("git push")
-  end
-
-  desc "Increments the build number"
-  lane :build_number do
-    increment_build_number
-  end
-
   desc "Create a commit incrementing the patch number"
   lane :patch do
-    ensure_git_status_clean
     reset_build_number
     increment_version_number(bump_type: "patch")
-    commit_detailed_version_bump
   end
 
   desc "Create a commit incrementing the minor version number"
   lane :minor do
-    ensure_git_status_clean
     reset_build_number
     increment_version_number(bump_type: "minor")
-    commit_detailed_version_bump
   end
 
   desc "Create a commit incrementing the major version number"
   lane :major do
-    ensure_git_status_clean
     reset_build_number
     increment_version_number(bump_type: "major")
-    commit_detailed_version_bump
   end
 
 end

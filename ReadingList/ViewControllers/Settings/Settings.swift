@@ -14,7 +14,7 @@ class Settings: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        versionLabel.text = "v\(BuildInfo.appConfiguration.userFacingDescription)"
+        versionLabel.text = "v\(BuildInfo.appConfiguration.versionAndConfiguration)"
         monitorThemeSetting()
 
         #if DEBUG
