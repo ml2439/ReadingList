@@ -70,7 +70,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         // Initialise app-level theme, and monitor the set theme
                         self.initialiseTheme()
                         self.monitorThemeSetting()
-                        UserSettings.mostRecentWorkingVersion.value = BuildInfo.appConfiguration.userFacingDescription
+                        UserSettings.mostRecentWorkingVersion.value = BuildInfo.appConfiguration.fullDescription
 
                         onSuccess?()
                     }
@@ -102,7 +102,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if let mostRecentWorkingVersion = UserSettings.mostRecentWorkingVersion.value {
             compatibilityVersionMessage = """
                 \n\nYou previously had version \(mostRecentWorkingVersion), but now have version \
-                \(BuildInfo.appConfiguration.userFacingDescription). You will need to install \
+                \(BuildInfo.appConfiguration.fullDescription). You will need to install \
                 \(mostRecentWorkingVersion) again to be able to access your data.
                 """
         } else {
