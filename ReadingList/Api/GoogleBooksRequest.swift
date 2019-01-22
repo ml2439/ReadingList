@@ -16,14 +16,11 @@ enum GoogleBooksRequest {
     // The base URL for GoogleBooks API v1 requests
     private static let apiBaseUrl = URL(string: { //swiftlint:disable:this trailing_closure
         #if DEBUG
-        if CommandLine.arguments.contains("--UITests_MockHttpCalls") {
-            return "http://localhost:8080/"
-        } else {
-            return "https://www.googleapis.com/"
+        if let mockApiUrl = UserDefaults.standard.string(forKey: "google-api-url-simulation") {
+            return mockApiUrl
         }
-        #else
-        return "https://www.googleapis.com/"
         #endif
+        return "https://www.googleapis.com/"
     }())!
     private static let googleBooksBaseUrl = URL(string: "https://books.google.com/")!
 

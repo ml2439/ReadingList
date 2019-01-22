@@ -12,8 +12,7 @@ cache:
     - /usr/local/lib/mint/
 install: ./build/install.sh
 before_script: ./build/preprocess.sh
-script:
-  - bundle exec fastlane test
+script: ./build/test.sh
 deploy:
   skip_cleanup: true
   provider: script

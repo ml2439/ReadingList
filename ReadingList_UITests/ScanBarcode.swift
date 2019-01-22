@@ -3,13 +3,33 @@ import XCTest
 class ScanBarcode: XCTestCase {
 
     let mockServer = MockServer()
-    private let defaultLaunchArguments = ["--reset", "--UITests", "--UITests_MockHttpCalls"]
     private let barcodeSimulationArgument = "-barcode-isbn-simulation"
+    private lazy var port: UInt16 = {
+        // Generate a port from the matrix of iOS versions and iPhone / iPad
+        let basePort: UInt16
+        if #available(iOS 12.0, *) {
+            basePort = 8090
+        } else if #available(iOS 11.0, *) {
+            basePort = 8080
+        } else {
+            basePort = 8070
+        }
+
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            return basePort + 1
+        } else {
+            return basePort
+        }
+    }()
+    private lazy var defaultLaunchArguments: [String] = {
+        ["--reset", "--UITests", "-google-api-url-simulation", "http://localhost:\(self.port)"]
+    }()
 
     override func setUp() {
         super.setUp()
         continueAfterFailure = false
-        try! mockServer.server.start()
+        try! mockServer.server.start(port)
+        print("Running mock Google API on port \(self.port)")
     }
 
     override func tearDown() {
@@ -31,7 +51,7 @@ class ScanBarcode: XCTestCase {
         // Normal mode
         scanBarcode(app: app)
         let cancel = app.navigationBars.element(boundBy: 0).buttons["Cancel"]
-        _ = cancel.waitForExistence(timeout: 1)
+        _ = cancel.waitForExistence(timeout: 5)
         cancel.tap()
     }
 
@@ -43,7 +63,7 @@ class ScanBarcode: XCTestCase {
         // Valid ISBN
         scanBarcode(app: app)
         let done = app.navigationBars.element(boundBy: 0).buttons["Done"]
-        _ = done.waitForExistence(timeout: 1)
+        _ = done.waitForExistence(timeout: 5)
         done.tap()
     }
 
@@ -71,7 +91,7 @@ class ScanBarcode: XCTestCase {
 
         // Existing ISBN
         scanBarcode(app: app)
-        _ = app.alerts.element(boundBy: 0).waitForExistence(timeout: 2)
+        _ = app.alerts.element(boundBy: 0).waitForExistence(timeout: 5)
         XCTAssertEqual(app.alerts.count, 1)
         let duplicateAlert = app.alerts.element(boundBy: 0)
         XCTAssertEqual("Book Already Added", duplicateAlert.label)
