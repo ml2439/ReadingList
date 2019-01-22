@@ -149,7 +149,9 @@ extension Book {
      Gets the "maximal" sort value of any book - i.e. either the maximum or minimum value.
     */
     static func maximalSort(getMaximum: Bool, fromContext context: NSManagedObjectContext) -> Int32? {
-        let request = NSManagedObject.fetchRequest(Book.self) as! NSFetchRequest<NSFetchRequestResult>
+        // FUTURE: The following code works in the application, but crashes in tests.
+
+        /*let request = NSManagedObject.fetchRequest(Book.self) as! NSFetchRequest<NSFetchRequestResult>
         request.resultType = .dictionaryResultType
 
         let key = "sort"
@@ -160,7 +162,13 @@ extension Book {
         request.propertiesToFetch = [expressionDescription]
 
         let result = try! context.fetch(request) as! [[String: Int32]]
-        return result.first?[key]
+        return result.first?[key]*/
+
+        let fetchRequest = NSManagedObject.fetchRequest(Book.self, limit: 1)
+        fetchRequest.predicate = NSPredicate(format: "%K == %ld", #keyPath(Book.readState), BookReadState.toRead.rawValue)
+        fetchRequest.sortDescriptors = [NSSortDescriptor(\Book.sort, ascending: !getMaximum)]
+        fetchRequest.returnsObjectsAsFaults = false
+        return (try! context.fetch(fetchRequest)).first?.sort?.int32
     }
 
     static func maxSort(fromContext context: NSManagedObjectContext) -> Int32? {
