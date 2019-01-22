@@ -150,6 +150,14 @@ class EditBookMetadata: FormViewController {
                     book.sort = NSNumber(value: sort)
                 }
             }
+            <<< LabelRow {
+                $0.title = "Manual Book ID"
+                $0.value = book.manualBookId
+            }
+            <<< LabelRow {
+                $0.title = "Google Books ID"
+                $0.value = book.googleBooksId
+            }
         #endif
 
         // Validate on start

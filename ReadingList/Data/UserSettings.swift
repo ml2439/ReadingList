@@ -32,7 +32,7 @@ class UserSettings {
         case .byFinishDate:
             return [NSSortDescriptor(\Book.finishedReading, ascending: false), NSSortDescriptor(\Book.startedReading, ascending: false)]
         case .customOrder:
-            return [NSSortDescriptor(\Book.sort)]
+            return [NSSortDescriptor(\Book.sort), NSSortDescriptor(\Book.googleBooksId), NSSortDescriptor(\Book.manualBookId)]
         }
     }
 

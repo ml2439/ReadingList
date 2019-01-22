@@ -47,21 +47,21 @@ class Book: NSManagedObject {
 
         // FUTURE: willSave() is called after property validation, so if we add sort/readState validation
         // then this removal of the sort property will need to be done earlier.
+        setSort()
+    }
 
-        // The sort manipulation should be in a method which allows setting of dates
-        if readState == .toRead && sort == nil {
-            var maximalSort = Book.maximalSort(getMaximum: !UserSettings.addBooksToTopOfCustom.value, fromContext: managedObjectContext!) ?? 0
-            if UserSettings.addBooksToTopOfCustom.value {
-                maximalSort -= 1
-            } else {
-                maximalSort += 1
-            }
-            sort = maximalSort.nsNumber
+    private func setSort() {
+        guard readState == .toRead else {
+            if sort != nil { sort = nil }
+            return
         }
+        guard sort == nil else { return }
 
-        // Sort is not supported for non To Read books
-        if readState != .toRead && sort != nil {
-            sort = nil
+        if let maximalSort = Book.maximalSort(getMaximum: !UserSettings.addBooksToTopOfCustom.value, fromContext: managedObjectContext!) {
+            let plusMinusOne: Int32 = UserSettings.addBooksToTopOfCustom.value ? -1 : 1
+            sort = NSNumber(value: maximalSort + plusMinusOne)
+        } else {
+            sort = 0
         }
     }
 
@@ -165,7 +165,9 @@ extension Book {
         return result.first?[key]*/
 
         let fetchRequest = NSManagedObject.fetchRequest(Book.self, limit: 1)
-        fetchRequest.predicate = NSPredicate(format: "%K == %ld", #keyPath(Book.readState), BookReadState.toRead.rawValue)
+        fetchRequest.predicate = NSPredicate.and([
+            NSPredicate(format: "%K == %ld", #keyPath(Book.readState), BookReadState.toRead.rawValue),
+            NSPredicate(format: "%K != nil", #keyPath(Book.sort))])
         fetchRequest.sortDescriptors = [NSSortDescriptor(\Book.sort, ascending: !getMaximum)]
         fetchRequest.returnsObjectsAsFaults = false
         return (try! context.fetch(fetchRequest)).first?.sort?.int32
