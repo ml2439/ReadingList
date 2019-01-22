@@ -15,7 +15,7 @@ before_script: ./build/preprocess.sh
 script:
   - bundle exec fastlane test
 deploy:
-  #skip_cleanup: true
+  skip_cleanup: true
   provider: script
   script:
     - bundle exec fastlane deploy
