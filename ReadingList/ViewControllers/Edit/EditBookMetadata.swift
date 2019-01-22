@@ -140,6 +140,26 @@ class EditBookMetadata: FormViewController {
                 $0.hidden = Condition(booleanLiteral: isAddingNewBook)
             }
 
+        #if DEBUG
+        form +++ Section("Debug")
+            <<< IntRow {
+                $0.title = "Sort"
+                $0.value = book.sort?.intValue
+                $0.onChange {
+                    guard let sort = $0.value else { return }
+                    book.sort = NSNumber(value: sort)
+                }
+            }
+            <<< LabelRow {
+                $0.title = "Manual Book ID"
+                $0.value = book.manualBookId
+            }
+            <<< LabelRow {
+                $0.title = "Google Books ID"
+                $0.value = book.googleBooksId
+            }
+        #endif
+
         // Validate on start
         validate()
 

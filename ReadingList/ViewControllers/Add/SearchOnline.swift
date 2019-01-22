@@ -278,7 +278,20 @@ class SearchOnline: UITableViewController {
                 SVProgressHUD.showError(withStatus: "An error occurred. Please try again.")
             }
             .then(on: .main) { results in
-                let newBookCount = results.compactMap { $0.value }.count
+                let newBooks = results.compactMap { $0.value }
+                let newBookCount = newBooks.count
+
+                // Apply sorting
+                var maximalSort = Book.maximalSort(getMaximum: !UserSettings.addBooksToTopOfCustom.value, fromContext: editContext) ?? 0
+                for book in newBooks {
+                    if UserSettings.addBooksToTopOfCustom.value {
+                        maximalSort -= 1
+                    } else {
+                        maximalSort += 1
+                    }
+                    book.sort = maximalSort.nsNumber
+                }
+
                 editContext.saveAndLogIfErrored()
                 self.searchController.isActive = false
                 self.presentingViewController!.dismiss(animated: true) {
