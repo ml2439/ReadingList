@@ -16,7 +16,7 @@ class BookTableViewCell: UITableViewCell {
         authorsLabel.text = nil
         readTimeLabel.text = nil
         bookCover.image = nil
-        readingProgress.progress = 0
+        readingProgress.isHidden = true
         readingProgressLabel.text = nil
     }
 
@@ -57,12 +57,9 @@ class BookTableViewCell: UITableViewCell {
 
             // Configure the reading progress display
             if let currentPage = book.currentPage?.intValue, let pageCount = book.pageCount?.intValue, currentPage > 0 {
-                showReadingProgress(true)
                 let progress = Float(currentPage) / Float(pageCount)
                 let progressText = currentPage > pageCount ? "100%" : "\(100 * currentPage / pageCount)%"
                 configureReadingProgress(text: progressText, progress: progress)
-            } else {
-                showReadingProgress(false)
             }
         }
 
@@ -75,18 +72,13 @@ class BookTableViewCell: UITableViewCell {
 
     private func configureReadingProgress(text: String?, progress: Float) {
         readingProgressLabel.text = text
+        readingProgress.isHidden = false
         readingProgress.progress = progress
-    }
-
-    private func showReadingProgress(_ state: Bool) {
-        readingProgress.isHidden = !state
-        readingProgressLabel.isHidden = !state
     }
 
     func configureFrom(_ searchResult: SearchResult) {
         titleLabel.text = searchResult.title
         authorsLabel.text = searchResult.authors.joined(separator: ", ")
-        showReadingProgress(false)
 
         guard let coverURL = searchResult.thumbnailCoverUrl else { bookCover.image = #imageLiteral(resourceName: "CoverPlaceholder"); return }
         coverImageRequest = URLSession.shared.startedDataTask(with: coverURL) { [weak self] data, _, _ in
