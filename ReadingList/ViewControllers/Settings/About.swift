@@ -20,7 +20,7 @@ class About: UITableViewController {
         guard let textLabel = footer.textLabel else { assertionFailure("Missing text label"); return }
         textLabel.textAlignment = .center
         textLabel.font = .systemFont(ofSize: 11.0)
-        textLabel.text = "\(BuildInfo.appVersion) - BUILD \(BuildInfo.appBuildNumber)"
+        textLabel.text = "v\(BuildInfo.appVersion) - BUILD \(BuildInfo.appBuildNumber)"
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
