@@ -1,13 +1,23 @@
 language: swift
-cache:
-  - bundler
 osx_image: xcode10.1
-notifications:
-  email:
-    - feedback@readinglist.app
-before_install:
-  - ./build/before_install.sh
+# To enable build numbering from commit count
+git:
+  depth: false
+before_cache: brew cleanup
+cache:
+  bundler: true
+  cocoapods: true
+  directories:
+    - $HOME/Library/Caches/Homebrew/
+    - /usr/local/lib/mint/
+install: ./build/install.sh
+before_script: ./build/preprocess.sh
 script:
-  - set -e
-  - if [[ ! $TRAVIS_COMMIT_MESSAGE =~ '[SKIP-TESTS]' ]]; then bundle exec fastlane test; fi
-  - if [[ $TRAVIS_COMMIT_MESSAGE =~ '[DEPLOY]' ]]; then bundle exec fastlane deploy; fi
+  - bundle exec fastlane test
+deploy:
+  skip_cleanup: true
+  provider: script
+  script:
+    - bundle exec fastlane deploy
+  on:
+    branch: master

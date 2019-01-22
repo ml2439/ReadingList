@@ -70,7 +70,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         // Initialise app-level theme, and monitor the set theme
                         self.initialiseTheme()
                         self.monitorThemeSetting()
-                        UserSettings.mostRecentWorkingVersion.value = BuildInfo.appConfiguration.userFacingDescription
+                        UserSettings.mostRecentWorkingVersion.value = BuildInfo.appConfiguration.fullDescription
 
                         onSuccess?()
                     }
@@ -90,8 +90,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func presentIncompatibleDataAlert() {
         #if RELEASE
         // This is a common error during development, but shouldn't occur in production
-        guard mostRecentWorkingVersion != BuildInfo.appConfiguration.userFacingDescription else {
-            UserEngagement.logError(NSError(code: .invalidMigration, userInfo: ["mostRecentWorkingVersion": mostRecentWorkingVersion]))
+        guard UserSettings.mostRecentWorkingVersion.value != BuildInfo.appConfiguration.fullDescription else {
+            UserEngagement.logError(NSError(code: .invalidMigration, userInfo: ["mostRecentWorkingVersion": UserSettings.mostRecentWorkingVersion.value ?? "unknown"]))
             preconditionFailure("Migration error thrown for store of same version.")
         }
         #endif
@@ -102,7 +102,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if let mostRecentWorkingVersion = UserSettings.mostRecentWorkingVersion.value {
             compatibilityVersionMessage = """
                 \n\nYou previously had version \(mostRecentWorkingVersion), but now have version \
-                \(BuildInfo.appConfiguration.userFacingDescription). You will need to install \
+                \(BuildInfo.appConfiguration.fullDescription). You will need to install \
                 \(mostRecentWorkingVersion) again to be able to access your data.
                 """
         } else {

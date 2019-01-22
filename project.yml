@@ -1,4 +1,11 @@
 name: ReadingList
+
+options:
+  groupSortPosition: top
+  usesTabs: false
+  indentWith: 4
+  bundleIdPrefix: com.andrewbennet
+
 targets:
   ReadingList:
     type: application
@@ -10,8 +17,7 @@ targets:
         - ReadingList_UnitTests
         - ReadingList_UITests
     dependencies:
-      - framework: StoreKit.framework
-        embed: false
+      - sdk: StoreKit.framework
       - target: ReadingList_Foundation
     preBuildScripts:
       - name: SwiftLint
@@ -46,13 +52,13 @@ targets:
           enabled: 1
         com.apple.InAppPurchase:
           enabled: 1
+
   ReadingList_Foundation:
     type: framework
     platform: iOS
     deploymentTarget: 10.3
     sources: [ReadingList_Foundation]
-    settings:
-      PRODUCT_BUNDLE_IDENTIFIER: com.andrewbennet.ReadingList-Foundation
+
   ReadingList_UnitTests:
     type: bundle.unit-test
     platform: iOS
@@ -65,6 +71,7 @@ targets:
       # See https://stackoverflow.com/a/30939244/5513562
       BUNDLE_LOADER: $TEST_HOST
       TEST_HOST: $(BUILT_PRODUCTS_DIR)/ReadingList.app/ReadingList
+
   ReadingList_UITests:
     type: bundle.ui-testing
     platform: iOS
@@ -74,6 +81,7 @@ targets:
       - path: ReadingList/Api/GoogleBooksRequest.swift
     dependencies:
       - target: ReadingList
+
   ReadingList_Screenshots:
     type: bundle.ui-testing
     platform: iOS
@@ -86,5 +94,3 @@ targets:
     scheme:
       testTargets:
         - ReadingList_Screenshots
-options:
-  groupSortPosition: top

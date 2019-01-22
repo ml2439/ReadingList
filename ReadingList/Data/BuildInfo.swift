@@ -37,11 +37,19 @@ class BuildInfo {
 }
 
 extension BuildInfo.BuildType {
-    var userFacingDescription: String {
+    var fullDescription: String {
         switch BuildInfo.appConfiguration {
         case .appStore: return "\(BuildInfo.appVersion)"
-        case .testFlight: return "\(BuildInfo.appVersion) beta \(BuildInfo.appBuildNumber)"
-        case .debug: return "\(BuildInfo.appVersion) debug"
+        case .testFlight: return "\(BuildInfo.appVersion) (Build \(BuildInfo.appBuildNumber))"
+        case .debug: return "\(BuildInfo.appVersion) Debug"
+        }
+    }
+
+    var versionAndConfiguration: String {
+        switch BuildInfo.appConfiguration {
+        case .appStore: return BuildInfo.appVersion
+        case .testFlight: return "\(BuildInfo.appVersion) (Beta)"
+        case .debug: return "\(BuildInfo.appVersion) (Debug)"
         }
     }
 }
