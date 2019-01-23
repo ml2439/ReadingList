@@ -11,10 +11,7 @@ cache:
     - $HOME/Library/Caches/Homebrew/
     - /usr/local/lib/mint/
 before_install:
-  - xcrun simctl boot 839D5DB2-32BD-4484-AC84-A75180CF8FB4 && \ # iPhone 7 (10.3.1)
-    xcrun simctl boot D6E41B94-1BD3-45F8-B478-530FDE38E6B0 && \ # iPhone 8 (11.4)
-    xcrun simctl boot B40F7090-26EE-4D2E-A7A2-C13E10EDA669 && \ # iPhone XS (12.1)
-    xcrun simctl boot C339A636-603E-425D-82B2-6FD8A064D2E6 & # iPad Pro (10.5-inch) (11.4)
+  - xcrun simctl boot 839D5DB2-32BD-4484-AC84-A75180CF8FB4 && xcrun simctl boot D6E41B94-1BD3-45F8-B478-530FDE38E6B0 && xcrun simctl boot B40F7090-26EE-4D2E-A7A2-C13E10EDA669 && xcrun simctl boot C339A636-603E-425D-82B2-6FD8A064D2E6 & # iPad Pro (10.5-inch) (11.4)
 install: ./build/install.sh
 before_script: ./build/preprocess.sh
 script: ./build/test.sh
