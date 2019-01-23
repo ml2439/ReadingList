@@ -19,7 +19,7 @@ platform :ios do
     scan(
       scheme: "ReadingList",
       devices: ["iPhone 7 (10.3.1)", "iPad Pro (10.5-inch) (11.4)"],
-      disable_concurrent_testing: true
+      output_style: 'raw'
     )
   end
 
