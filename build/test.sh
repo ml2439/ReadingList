@@ -1,6 +1,6 @@
 #! /bin/bash
 set -e
-bundle exec fastlane test | mint run thii/xcbeautify
+bundle exec fastlane test
 #env NSUnbufferedIO=YES \
 # xcodebuild \
 #  -workspace ReadingList.xcworkspace \
