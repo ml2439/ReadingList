@@ -102,7 +102,7 @@ class EditBookReadState: FormViewController {
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
     if self.book.readState == .reading {
-      let currentPageRow = self.form.rowBy(tag: "currentPage") as! IntRow
+      let currentPageRow = self.form.rowBy(tag: currentPageKey) as! IntRow
       currentPageRow.cell.textField.becomeFirstResponder()
     }
   }
