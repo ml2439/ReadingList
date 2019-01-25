@@ -103,7 +103,6 @@ class EditBookReadState: FormViewController {
     super.viewDidAppear(animated)
     if self.book.readState == .reading {
       let currentPageRow = self.form.rowBy(tag: "currentPage") as! IntRow
-      currentPageRow.cell.textField.selectAll(nil)
       currentPageRow.cell.textField.becomeFirstResponder()
     }
   }
