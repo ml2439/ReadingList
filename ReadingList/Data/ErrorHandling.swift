@@ -11,7 +11,7 @@ class ReadingListError {
 }
 
 extension NSError {
-    convenience init(code: ReadingListError.Code, userInfo: [String : Any]? = nil) {
+    convenience init(code: ReadingListError.Code, userInfo: [String: Any]? = nil) {
         self.init(domain: ReadingListError.Domain, code: code.rawValue, userInfo: userInfo)
     }
 }

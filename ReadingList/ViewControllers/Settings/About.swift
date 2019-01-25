@@ -15,6 +15,14 @@ class About: UITableViewController {
         return cell
     }
 
+    override func tableView(_ tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
+        guard let footer = view as? UITableViewHeaderFooterView else { assertionFailure("Unexpected footer view type"); return }
+        guard let textLabel = footer.textLabel else { assertionFailure("Missing text label"); return }
+        textLabel.textAlignment = .center
+        textLabel.font = .systemFont(ofSize: 11.0)
+        textLabel.text = "v\(BuildInfo.appVersion) - BUILD \(BuildInfo.appBuildNumber)"
+    }
+
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard indexPath.section == 0 else { return }
         switch indexPath.row {
@@ -72,7 +80,7 @@ class About: UITableViewController {
 
 
         Extra Info:
-        App Version: \(BuildInfo.appConfiguration.userFacingDescription)
+        App Version: \(BuildInfo.appConfiguration.fullDescription)
         iOS Version: \(UIDevice.current.systemVersion)
         Device: \(UIDevice.current.modelName)
         """

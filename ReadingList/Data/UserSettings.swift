@@ -32,7 +32,7 @@ class UserSettings {
         case .byFinishDate:
             return [NSSortDescriptor(\Book.finishedReading, ascending: false), NSSortDescriptor(\Book.startedReading, ascending: false)]
         case .customOrder:
-            return [NSSortDescriptor(\Book.sort)]
+            return [NSSortDescriptor(\Book.sort), NSSortDescriptor(\Book.googleBooksId), NSSortDescriptor(\Book.manualBookId)]
         }
     }
 
@@ -70,6 +70,8 @@ class UserSettings {
     static var toReadSortOrder = WrappedUserSetting<TableSortOrder>(key: "toReadSortOrder", defaultValue: defaultSortOrder(forReadState: .toRead))
     static var readingSortOrder = WrappedUserSetting<TableSortOrder>(key: "readingSortOrder", defaultValue: defaultSortOrder(forReadState: .reading))
     static var finishedSortOrder = WrappedUserSetting<TableSortOrder>(key: "finishedSortOrder", defaultValue: defaultSortOrder(forReadState: .finished))
+
+    static var addBooksToTopOfCustom = UserSetting<Bool>(key: "addCustomBooksToTopOfCustom", defaultValue: false)
 }
 
 extension Notification.Name {

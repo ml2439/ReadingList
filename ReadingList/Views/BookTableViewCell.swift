@@ -6,6 +6,8 @@ class BookTableViewCell: UITableViewCell {
     @IBOutlet private weak var authorsLabel: UILabel!
     @IBOutlet private weak var bookCover: UIImageView!
     @IBOutlet private weak var readTimeLabel: UILabel!
+    @IBOutlet private weak var readingProgress: UIProgressView!
+    @IBOutlet private weak var readingProgressLabel: UILabel!
 
     private var coverImageRequest: URLSessionDataTask?
 
@@ -14,6 +16,8 @@ class BookTableViewCell: UITableViewCell {
         authorsLabel.text = nil
         readTimeLabel.text = nil
         bookCover.image = nil
+        readingProgress.isHidden = true
+        readingProgressLabel.text = nil
     }
 
     override func awakeFromNib() {
@@ -27,6 +31,7 @@ class BookTableViewCell: UITableViewCell {
         titleLabel.textColor = theme.titleTextColor
         authorsLabel.textColor = theme.subtitleTextColor
         readTimeLabel?.textColor = theme.subtitleTextColor
+        readingProgressLabel.textColor = theme.subtitleTextColor
     }
 
     override func prepareForReuse() {
@@ -49,6 +54,13 @@ class BookTableViewCell: UITableViewCell {
             case .finished: readTimeLabel.text = book.finishedReading!.toPrettyString()
             default: readTimeLabel.text = nil
             }
+
+            // Configure the reading progress display
+            if let currentPage = book.currentPage?.intValue, let pageCount = book.pageCount?.intValue, currentPage > 0 {
+                let progress = Float(currentPage) / Float(pageCount)
+                let progressText = currentPage > pageCount ? "100%" : "\(100 * currentPage / pageCount)%"
+                configureReadingProgress(text: progressText, progress: progress)
+            }
         }
 
         #if DEBUG
@@ -56,6 +68,12 @@ class BookTableViewCell: UITableViewCell {
                 titleLabel.text =  "(\(book.sort?.intValue.string ?? "none")) \(book.title)"
             }
         #endif
+    }
+
+    private func configureReadingProgress(text: String?, progress: Float) {
+        readingProgressLabel.text = text
+        readingProgress.isHidden = false
+        readingProgress.progress = progress
     }
 
     func configureFrom(_ searchResult: SearchResult) {
