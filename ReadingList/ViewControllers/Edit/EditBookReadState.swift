@@ -101,7 +101,8 @@ class EditBookReadState: FormViewController {
 
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
-    if self.book.readState == .reading {
+    // If we are editing a book (not adding one), pre-select the current page field
+    if self.book.readState == .reading && self.book.changedValues().isEmpty {
       let currentPageRow = self.form.rowBy(tag: currentPageKey) as! IntRow
       currentPageRow.cell.textField.becomeFirstResponder()
     }
