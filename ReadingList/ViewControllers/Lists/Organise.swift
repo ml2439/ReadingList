@@ -47,7 +47,7 @@ class Organise: UITableViewController {
         let list = resultsController.object(at: indexPath)
         cell.textLabel!.text = list.name
         cell.detailTextLabel!.text = "\(list.books.count) book\(list.books.count == 1 ? "" : "s")"
-        cell.defaultInitialise(withTheme: UserSettings.theme.value)
+        cell.defaultInitialise(withTheme: UserDefaults.standard[.theme])
         return cell
     }
 
@@ -61,7 +61,7 @@ class Organise: UITableViewController {
                 let list = self.resultsController.object(at: indexPath)
 
                 let existingListNames = List.names(fromContext: PersistentStoreManager.container.viewContext)
-                let renameListAlert = TextBoxAlertController(title: "Rename List", message: "Choose a new name for this list", initialValue: list.name, placeholder: "New list name", keyboardAppearance: UserSettings.theme.value.keyboardAppearance, textValidator: { listName in
+                let renameListAlert = TextBoxAlertController(title: "Rename List", message: "Choose a new name for this list", initialValue: list.name, placeholder: "New list name", keyboardAppearance: UserDefaults.standard[.theme].keyboardAppearance, textValidator: { listName in
                         guard let listName = listName, !listName.isEmptyOrWhitespace else { return false }
                         return listName == list.name || !existingListNames.contains(listName)
                     }, onOK: {

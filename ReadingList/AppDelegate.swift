@@ -24,6 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         setupSvProgressHud()
         completeStoreTransactions()
+        UpgradeActionApplier().performUpgrade()
 
         // Grab any options which we take action on after the persistent store is initialised
         let shortcutItem = launchOptions?[.shortcutItem] as? UIApplicationShortcutItem
@@ -70,7 +71,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         // Initialise app-level theme, and monitor the set theme
                         self.initialiseTheme()
                         self.monitorThemeSetting()
-                        UserSettings.mostRecentWorkingVersion.value = BuildInfo.appConfiguration.fullDescription
+                        UserDefaults.standard[.mostRecentWorkingVersion] = BuildInfo.appConfiguration.fullDescription
 
                         onSuccess?()
                     }
@@ -90,8 +91,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func presentIncompatibleDataAlert() {
         #if RELEASE
         // This is a common error during development, but shouldn't occur in production
-        guard UserSettings.mostRecentWorkingVersion.value != BuildInfo.appConfiguration.fullDescription else {
-            UserEngagement.logError(NSError(code: .invalidMigration, userInfo: ["mostRecentWorkingVersion": UserSettings.mostRecentWorkingVersion.value ?? "unknown"]))
+        guard UserDefaults.standard[.mostRecentWorkingVersion] != BuildInfo.appConfiguration.fullDescription else {
+            UserEngagement.logError(NSError(code: .invalidMigration, userInfo: ["mostRecentWorkingVersion": UserDefaults.standard[.mostRecentWorkingVersion] ?? "unknown"]))
             preconditionFailure("Migration error thrown for store of same version.")
         }
         #endif
@@ -99,7 +100,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         guard window!.rootViewController?.presentedViewController == nil else { return }
 
         let compatibilityVersionMessage: String?
-        if let mostRecentWorkingVersion = UserSettings.mostRecentWorkingVersion.value {
+        if let mostRecentWorkingVersion = UserDefaults.standard[.mostRecentWorkingVersion] {
             compatibilityVersionMessage = """
                 \n\nYou previously had version \(mostRecentWorkingVersion), but now have version \
                 \(BuildInfo.appConfiguration.fullDescription). You will need to install \
@@ -209,7 +210,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     @objc func initialiseTheme() {
-        let theme = UserSettings.theme.value
+        let theme = UserDefaults.standard[.theme]
         theme.configureForms()
         window!.tintColor = theme.tint
     }

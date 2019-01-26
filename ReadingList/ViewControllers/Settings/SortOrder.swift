@@ -15,9 +15,9 @@ class SortOrder: FormViewController {
                 $0.onChange {
                     guard let selectedValue = $0.value else { return }
                     switch readState {
-                    case .toRead: UserSettings.toReadSortOrder.value = selectedValue
-                    case .reading: UserSettings.readingSortOrder.value = selectedValue
-                    case .finished: UserSettings.finishedSortOrder.value = selectedValue
+                    case .toRead: UserDefaults.standard[.toReadSortOrder] = selectedValue
+                    case .reading: UserDefaults.standard[.readingSortOrder] = selectedValue
+                    case .finished: UserDefaults.standard[.finishedSortOrder] = selectedValue
                     }
                     NotificationCenter.default.post(name: NSNotification.Name.BookSortOrderChanged, object: nil)
                     if let customBooksToTopRow = self.form.rowBy(tag: self.customBooksToTopTag) {
@@ -26,7 +26,7 @@ class SortOrder: FormViewController {
                     UserEngagement.logEvent(.changeSortOrder)
                     UserEngagement.onReviewTrigger()
                 }
-                $0.value = UserSettings.tableSortOrders[readState] == tableSort ? tableSort : nil
+                $0.value = TableSortOrder.byReadState[readState] == tableSort ? tableSort : nil
             }
         }
 
@@ -48,12 +48,12 @@ class SortOrder: FormViewController {
             <<< SwitchRow {
                 $0.tag = self.customBooksToTopTag
                 $0.title = "Add Books to Top"
-                $0.value = UserSettings.addBooksToTopOfCustom.value
+                $0.value = UserDefaults.standard[.addBooksToTopOfCustom]
                 $0.hidden = Condition.function([]) { _ in
-                    UserSettings.toReadSortOrder.value != .customOrder
+                    UserDefaults.standard[.toReadSortOrder] != .customOrder
                 }
                 $0.onChange {
-                    UserSettings.addBooksToTopOfCustom.value = $0.value ?? false
+                    UserDefaults.standard[.addBooksToTopOfCustom] = $0.value ?? false
                 }
             }
 

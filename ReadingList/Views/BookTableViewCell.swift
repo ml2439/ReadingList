@@ -22,7 +22,7 @@ class BookTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        initialise(withTheme: UserSettings.theme.value)
+        initialise(withTheme: UserDefaults.standard[.theme])
         resetUI()
     }
 

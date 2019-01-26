@@ -85,7 +85,7 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
         let controllers = orderedDefaultPredicates.map { readState, predicate -> NSFetchedResultsController<Book> in
             let fetchRequest = NSManagedObject.fetchRequest(Book.self, batch: 25)
             fetchRequest.predicate = predicate
-            fetchRequest.sortDescriptors = UserSettings.selectedBookSortDescriptors(forReadState: readState)
+            fetchRequest.sortDescriptors = TableSortOrder.byReadState[readState]!.sortDescriptors
             return NSFetchedResultsController<Book>(fetchRequest: fetchRequest, managedObjectContext: PersistentStoreManager.container.viewContext, sectionNameKeyPath: #keyPath(Book.readState), cacheName: nil)
         }
 
@@ -157,7 +157,7 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
         let cell = tableView.dequeueReusableCell(withIdentifier: "BookTableViewCell", for: indexPath) as! BookTableViewCell
         let book = resultsController.object(at: indexPath)
         cell.configureFrom(book)
-        cell.initialise(withTheme: UserSettings.theme.value)
+        cell.initialise(withTheme: UserDefaults.standard[.theme])
         return cell
     }
 
@@ -454,7 +454,7 @@ extension BookTable: UISearchResultsUpdating {
         // Disable reorderng when searching, or when the sort order is not custom
         guard !searchController.hasActiveSearchTerms else { return false }
         guard let toReadSectionIndex = sectionIndexByReadState[.toRead] else { return false }
-        guard UserSettings.tableSortOrders[.toRead]! == .customOrder else { return false }
+        guard UserDefaults.standard[.toReadSortOrder] == .customOrder else { return false }
 
         // We can reorder the "ToRead" books if there are more than one
         return indexPath.section == toReadSectionIndex && self.tableView(tableView, numberOfRowsInSection: toReadSectionIndex) > 1

@@ -57,8 +57,8 @@ class Book: NSManagedObject {
         }
         guard sort == nil else { return }
 
-        if let maximalSort = Book.maximalSort(getMaximum: !UserSettings.addBooksToTopOfCustom.value, fromContext: managedObjectContext!) {
-            let plusMinusOne: Int32 = UserSettings.addBooksToTopOfCustom.value ? -1 : 1
+        if let maximalSort = Book.maximalSort(getMaximum: !UserDefaults.standard[.addBooksToTopOfCustom], fromContext: managedObjectContext!) {
+            let plusMinusOne: Int32 = UserDefaults.standard[.addBooksToTopOfCustom] ? -1 : 1
             sort = NSNumber(value: maximalSort + plusMinusOne)
         } else {
             sort = 0

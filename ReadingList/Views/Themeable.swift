@@ -5,7 +5,7 @@ import ImageRow
 import SafariServices
 import ReadingList_Foundation
 
-@objc enum Theme: Int {
+@objc enum Theme: Int, UserSettingType {
     case normal = 1
     case dark = 2
     case black = 3
@@ -126,7 +126,7 @@ fileprivate extension UIViewController {
             assertionFailure("transitionThemeChange called on a non-themable controller"); return
         }
         UIView.transition(with: self.view, duration: 0.3, options: [.beginFromCurrentState, .transitionCrossDissolve], animations: {
-            themable.initialise(withTheme: UserSettings.theme.value)
+            themable.initialise(withTheme: UserDefaults.standard[.theme])
             themable.themeSettingDidChange?()
         }, completion: nil)
     }
@@ -139,7 +139,7 @@ fileprivate extension UIViewController {
 
 extension ThemeableViewController {
     func monitorThemeSetting() {
-        initialise(withTheme: UserSettings.theme.value)
+        initialise(withTheme: UserDefaults.standard[.theme])
         NotificationCenter.default.addObserver(self, selector: #selector(transitionThemeChange), name: NSNotification.Name.ThemeSettingChanged, object: nil)
     }
 }
@@ -147,7 +147,7 @@ extension ThemeableViewController {
 extension UIViewController {
     func presentThemedSafariViewController(_ url: URL) {
         let safariVC = SFSafariViewController(url: url)
-        if UserSettings.theme.value.isDark {
+        if UserDefaults.standard[.theme].isDark {
             safariVC.preferredBarTintColor = .black
         }
         present(safariVC, animated: true, completion: nil)
@@ -224,7 +224,7 @@ class ThemedSplitViewController: UISplitViewController, UISplitViewControllerDel
         // This is called at app startup
         super.traitCollectionDidChange(previousTraitCollection)
         if previousTraitCollection?.horizontalSizeClass != traitCollection.horizontalSizeClass {
-            initialise(withTheme: UserSettings.theme.value)
+            initialise(withTheme: UserDefaults.standard[.theme])
         }
     }
 
@@ -240,7 +240,7 @@ class ThemedSplitViewController: UISplitViewController, UISplitViewControllerDel
     override var preferredStatusBarStyle: UIStatusBarStyle {
         // This override is placed on the base view controller type - the SplitViewController - so that
         // it only needs to be implemented once.
-        return UserSettings.theme.value.statusBarStyle
+        return UserDefaults.standard[.theme].statusBarStyle
     }
 }
 
@@ -265,7 +265,7 @@ class ThemedNavigationController: UINavigationController, ThemeableViewControlle
         navigationBar.initialise(withTheme: theme)
 
         let translucent = splitViewController?.traitCollection.horizontalSizeClass != .regular
-        navigationBar.setTranslucency(translucent, colorIfNotTranslucent: UserSettings.theme.value.viewBackgroundColor)
+        navigationBar.setTranslucency(translucent, colorIfNotTranslucent: UserDefaults.standard[.theme].viewBackgroundColor)
     }
 }
 

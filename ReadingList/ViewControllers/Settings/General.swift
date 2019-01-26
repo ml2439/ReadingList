@@ -9,7 +9,7 @@ class General: FormViewController {
         form +++ SelectableSection<ListCheckRow<Theme>>(header: "Theme", footer: "Change the appearance of Reading List.",
                                                         selectionType: .singleSelection(enableDeselection: false)) {
             $0.onSelectSelectableRow = { _, row in
-                UserSettings.theme.value = row.value!
+                UserDefaults.standard[.theme] = row.value!
                 NotificationCenter.default.post(name: Notification.Name.ThemeSettingChanged, object: nil)
                 UserEngagement.logEvent(.changeTheme)
                 UserEngagement.onReviewTrigger()
@@ -49,14 +49,14 @@ class General: FormViewController {
         return ListCheckRow<Theme> {
             $0.title = name
             $0.selectableValue = theme
-            $0.value = UserSettings.theme.value == theme ? theme : nil
+            $0.value = UserDefaults.standard[.theme] == theme ? theme : nil
         }
     }
 
     func crashReportsSwitchChanged(_ sender: _SwitchRow) {
         guard let switchValue = sender.value else { return }
         if switchValue {
-            UserSettings.sendCrashReports.value = true
+            UserDefaults.standard[.sendCrashReports] = true
             UserEngagement.logEvent(.enableCrashReports)
         } else {
             // If this is being turned off, let's try to persuade them to turn it back on
@@ -70,7 +70,7 @@ class General: FormViewController {
                     sender.reload()
                 } else {
                     UserEngagement.logEvent(.disableCrashReports)
-                    UserSettings.sendCrashReports.value = false
+                    UserDefaults.standard[.sendCrashReports] = false
                 }
             }
         }
@@ -79,7 +79,7 @@ class General: FormViewController {
     func analyticsSwitchChanged(_ sender: _SwitchRow) {
         guard let switchValue = sender.value else { return }
         if switchValue {
-            UserSettings.sendAnalytics.value = true
+            UserDefaults.standard[.sendAnalytics] = true
             UserEngagement.logEvent(.enableAnalytics)
         } else {
             // If this is being turned off, let's try to persuade them to turn it back on
@@ -92,7 +92,7 @@ class General: FormViewController {
                     sender.reload()
                 } else {
                     UserEngagement.logEvent(.disableAnalytics)
-                    UserSettings.sendAnalytics.value = false
+                    UserDefaults.standard[.sendAnalytics] = false
                 }
             }
         }

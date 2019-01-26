@@ -49,7 +49,7 @@ class AddToList: UITableViewController {
         }
 
         return TextBoxAlertController(title: "Add New List", message: "Enter a name for your list", placeholder: "Enter list name",
-                                      keyboardAppearance: UserSettings.theme.value.keyboardAppearance, textValidator: textValidator) { title in
+                                      keyboardAppearance: UserDefaults.standard[.theme].keyboardAppearance, textValidator: textValidator) { title in
             let createdList = List(context: PersistentStoreManager.container.viewContext, name: title!)
             createdList.books = NSOrderedSet(array: books)
             PersistentStoreManager.container.viewContext.saveAndLogIfErrored()
@@ -87,7 +87,7 @@ class AddToList: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cellIdentifier = indexPath.section == addNewListSectionIndex ? "NewListCell" : "ExistingListCell"
         let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
-        cell.defaultInitialise(withTheme: UserSettings.theme.value)
+        cell.defaultInitialise(withTheme: UserDefaults.standard[.theme])
 
         if indexPath.section == addNewListSectionIndex {
             cell.textLabel!.text = "Add New List"
