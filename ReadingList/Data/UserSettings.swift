@@ -12,7 +12,7 @@ extension UserSettingsCollection {
     /// This is the user facing description of the version, e.g. "1.5" or "1.6.1 beta 3".
     static let mostRecentWorkingVersion = UserSetting<String?>("mostRecentWorkingVersion")
 
-    static let mostRecentStartedVersion = UserSetting<[Int]?>("mostRecentStartedVersion")
+    static let lastAppliedUpgradeAction = UserSetting<Int?>("lastAppliedUpgradeAction")
 
     static let theme = UserSetting<Theme>("theme", defaultValue: .normal)
 
