@@ -57,9 +57,8 @@ class SearchOnline: UITableViewController {
         if let navigationController = navigationController {
             navigationController.toolbar.barStyle = theme.barStyle
         } else {
-            #if DEBUG
-            fatalError("navigationController was nil")
-            #endif
+            UserEngagement.logError(NSError(code: ReadingListError.Code.missingNavigationController, userInfo: nil))
+            assertionFailure("NavigationController was unexpectedly nil")
         }
     }
 
@@ -77,13 +76,13 @@ class SearchOnline: UITableViewController {
                 self?.searchController.searchBar.becomeFirstResponder()
             }
         } else {
-            navigationController!.setToolbarHidden(false, animated: true)
+            navigationController?.setToolbarHidden(false, animated: true)
         }
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        navigationController!.setToolbarHidden(true, animated: true)
+        navigationController?.setToolbarHidden(true, animated: true)
     }
 
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -119,7 +118,12 @@ class SearchOnline: UITableViewController {
 
     override func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
         guard tableView.isEditing else { return }
-        if tableView.indexPathsForSelectedRows == nil || tableView.indexPathsForSelectedRows!.isEmpty {
+
+        if let selectedRows = tableView.indexPathsForSelectedRows, !selectedRows.isEmpty {
+            addAllButton.title = "Add \(selectedRows.count) Book\(selectedRows.count == 1 ? "" : "s")"
+            addAllButton.isEnabled = true
+        } else {
+            addAllButton.title = "Add Books"
             addAllButton.isEnabled = false
         }
     }
@@ -134,7 +138,9 @@ class SearchOnline: UITableViewController {
 
         // If we are in multiple selection mode (i.e. Edit mode), switch the Add All button on; otherwise, fetch and segue
         if tableView.isEditing {
-           addAllButton.isEnabled = true
+            let count = tableView.indexPathsForSelectedRows?.count ?? 0
+            addAllButton.title = "Add \(count) Book\(count == 1 ? "" : "s")"
+            addAllButton.isEnabled = true
         } else {
             fetchAndSegue(searchResult: searchResult)
         }
@@ -179,7 +185,7 @@ class SearchOnline: UITableViewController {
         }
 
         // No results should hide the toolbar. Unselecting previously selected results should disable the Add All button
-        navigationController!.setToolbarHidden(tableItems.isEmpty, animated: true)
+        navigationController?.setToolbarHidden(tableItems.isEmpty, animated: true)
         if tableView.isEditing && tableView.indexPathsForSelectedRows?.count ?? 0 == 0 {
             addAllButton.isEnabled = false
         }
@@ -222,20 +228,22 @@ class SearchOnline: UITableViewController {
                 SVProgressHUD.showError(withStatus: "An error occurred. Please try again.")
             }
             .then(on: .main) { book in
+                guard let navigationController = self.navigationController else { return }
                 let editPage = EditBookReadState(newUnsavedBook: book, scratchpadContext: editContext)
-                self.navigationController!.pushViewController(editPage, animated: true)
+                navigationController.pushViewController(editPage, animated: true)
             }
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
-        navigationController!.setToolbarHidden(true, animated: true)
+        navigationController?.setToolbarHidden(true, animated: true)
     }
 
     @IBAction private func changeSelectMode(_ sender: UIBarButtonItem) {
         tableView.setEditing(!tableView.isEditing, animated: true)
         selectModeButton.title = tableView.isEditing ? "Select Single" : "Select Many"
         if !tableView.isEditing {
+            addAllButton.title = "Add Books"
             addAllButton.isEnabled = false
         }
     }
@@ -246,7 +254,7 @@ class SearchOnline: UITableViewController {
         // If there is only 1 cell selected, we might as well proceed as we would in single selection mode
         guard selectedRows.count > 1 else { fetchAndSegue(searchResult: tableItems[selectedRows.first!.row]); return }
 
-        let alert = UIAlertController(title: "Add \(selectedRows.count) books", message: "Are you sure you want to add all \(selectedRows.count) selected books? They will be added to the 'To Read' section.", preferredStyle: .actionSheet)
+        let alert = UIAlertController(title: "Add \(selectedRows.count) Books", message: "Are you sure you want to add all \(selectedRows.count) selected books? They will be added to the 'To Read' section.", preferredStyle: .actionSheet)
         alert.addAction(UIAlertAction(title: "Add All", style: .default) { _ in
             self.addMultiple(selectedRows: selectedRows)
         })
@@ -260,15 +268,30 @@ class SearchOnline: UITableViewController {
 
         // Queue up the fetches
         let editContext = PersistentStoreManager.container.viewContext.childContext()
-        let bookCreations = selectedRows.map { createBook(inContext: editContext, from: tableItems[$0.row]) }
+        let searchResults = selectedRows.map { tableItems[$0.row] }
+        let bookCreations = searchResults.map { createBook(inContext: editContext, from: $0) }
 
         any(bookCreations)
             .always(on: .main, SVProgressHUD.dismiss)
             .catch(on: .main) { _ in
+                // 'any' is rejected if all of the book creation promises were rejected.
                 SVProgressHUD.showError(withStatus: "An error occurred. Please try again.")
             }
             .then(on: .main) { results in
-                let newBookCount = results.compactMap { $0.value }.count
+                let newBooks = results.compactMap { $0.value }
+                let newBookCount = newBooks.count
+
+                // Apply sorting
+                var maximalSort = Book.maximalSort(getMaximum: !UserDefaults.standard[.addBooksToTopOfCustom], fromContext: editContext) ?? 0
+                for book in newBooks {
+                    if UserDefaults.standard[.addBooksToTopOfCustom] {
+                        maximalSort -= 1
+                    } else {
+                        maximalSort += 1
+                    }
+                    book.sort = maximalSort.nsNumber
+                }
+
                 editContext.saveAndLogIfErrored()
                 self.searchController.isActive = false
                 self.presentingViewController!.dismiss(animated: true) {

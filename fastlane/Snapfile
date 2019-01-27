@@ -2,18 +2,19 @@ devices([
 	"iPhone SE",
 	"iPhone 8",
 	"iPhone 8 Plus",
-	"iPhone X",
+        "iPhone XS",
+	"iPhone XS Max",
 	"iPad Pro (9.7-inch)",
 	"iPad Pro (12.9-inch)"
 ])
 languages([
   "en-GB"
 ])
-scheme("Screenshots")
+scheme("ReadingList_Screenshots")
 workspace("ReadingList.xcworkspace")
 clear_previous_screenshots(true)
 reinstall_app(true)
-concurrent_simulators(false)
+concurrent_simulators(true)
 
 # Arguments to pass to the app on launch. See https://docs.fastlane.tools/actions/snapshot/#launch-arguments
 # launch_arguments(["-favColor red"])

@@ -53,20 +53,20 @@ class GoogleBooksTests: XCTestCase {
 
         let parseResult = GoogleBooksParser.parseSearchResults(json)
         // There are 3 results with no author, which we expect to not show up in the list. Hence: 37.
-        XCTAssertEqual(37, parseResult.count)
+        XCTAssertEqual(36, parseResult.count)
         for result in parseResult {
             // Everything must have an ID, a title and at least 1 author
             XCTAssertNotNil(result.id)
             XCTAssertNotNil(result.title)
-            XCTAssert(!result.title.trimmingCharacters(in: CharacterSet.whitespaces).isEmpty)
+            XCTAssert(!result.title.trimmingCharacters(in: .whitespaces).isEmpty)
             XCTAssertGreaterThan(result.authors.count, 0)
-            XCTAssert(!result.authors.contains { $0.trimmingCharacters(in: CharacterSet.whitespaces).isEmpty })
+            XCTAssert(!result.authors.contains { $0.trimmingCharacters(in: .whitespaces).isEmpty })
         }
 
         let resultsWithIsbn = parseResult.filter { $0.isbn13 != nil }.count
-        XCTAssertEqual(29, resultsWithIsbn)
+        XCTAssertEqual(28, resultsWithIsbn)
 
         let resultsWithCover = parseResult.filter { $0.thumbnailCoverUrl != nil }.count
-        XCTAssertEqual(32, resultsWithCover)
+        XCTAssertEqual(31, resultsWithCover)
     }
 }

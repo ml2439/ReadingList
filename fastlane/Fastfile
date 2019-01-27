@@ -14,35 +14,24 @@ xcversion(version: "10.1")
 
 platform :ios do
 
-  desc "Run tests, on iPhone 7 (iOS 10), iPhone 8 (iOS 11) and iPad Pro (iOS 11)"
   lane :test do
     # run tests synchronously as a bug in xcpretty will hide test results when multiple devices are used
-    scan(scheme: "ReadingList", devices: ["iPhone 7 (10.3.1)"])
-    scan(scheme: "ReadingList", devices: ["iPhone 8 (11.4)"], test_without_building: true)
-    scan(scheme: "ReadingList", devices: ["iPhone XS"], test_without_building: true)
-    scan(scheme: "ReadingList", devices: ["iPad Pro (10.5-inch) (11.4)"], test_without_building: true)
+    scan(
+      scheme: "ReadingList",
+      devices: ["iPhone 7 (10.3.1)", "iPad Pro (10.5-inch) (11.4)"],
+      disable_concurrent_testing: true
+    )
   end
 
-  desc "Increments the build number, commits with a special commit message to trigger CI deploy"
-  lane :beta do
-    ensure_git_status_clean
-    build_number = increment_build_number
-    message = "[DEPLOY] Increment to build " + build_number
-    sh("git commit -a -m '" + message + "'")
-    sh("git push")
-  end
-
-  desc "Push a new beta build to TestFlight (not externally released)"
-  lane :deploy do
-    if is_ci
-      configure_keychain
-    end
-    archive
-    upload_to_testflight(skip_submission: true, skip_waiting_for_build_processing: true)
-  end
-
-  lane :archive do
+  desc "Builds the app, handling signing in a CI-supported way."
+  lane :ci_build do
+    configure_keychain
     build_app(workspace: "ReadingList.xcworkspace", scheme: "ReadingList")
+  end
+
+  desc "Uploads the previously built binary to TestFlight"
+  lane :upload_build do
+    upload_to_testflight(skip_submission: true, skip_waiting_for_build_processing: true)
   end
 
   lane :publish do
@@ -76,7 +65,7 @@ platform :ios do
       add_to_search_list: true
     )
     sh("git config --global credential.helper osxkeychain")
-    sh("git clone https://andrew_bennet:$GIT_CERTS_PASSWORD@bitbucket.org/andrew_bennet/certificates.git")
+    sh("git clone https://AndrewBennet:$GITHUB_TOKEN@github.com/AndrewBennet/certificates.git")
     sh("rm -rf certificates")
     match(
       type: "appstore",
@@ -90,40 +79,22 @@ platform :ios do
     increment_build_number(build_number: "1")
   end
 
-  private_lane :commit_detailed_version_bump do
-    version_number = get_version_number(target: "ReadingList")
-    message = "Increment to version " + version_number
-    sh("git commit -a -m '" + message + "'")
-    sh("git push")
-  end
-
-  desc "Increments the build number"
-  lane :build_number do
-    increment_build_number
-  end
-
   desc "Create a commit incrementing the patch number"
   lane :patch do
-    ensure_git_status_clean
     reset_build_number
     increment_version_number(bump_type: "patch")
-    commit_detailed_version_bump
   end
 
   desc "Create a commit incrementing the minor version number"
   lane :minor do
-    ensure_git_status_clean
     reset_build_number
     increment_version_number(bump_type: "minor")
-    commit_detailed_version_bump
   end
 
   desc "Create a commit incrementing the major version number"
   lane :major do
-    ensure_git_status_clean
     reset_build_number
     increment_version_number(bump_type: "major")
-    commit_detailed_version_bump
   end
 
 end

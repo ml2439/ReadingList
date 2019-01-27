@@ -91,7 +91,7 @@ class EditBookMetadata: FormViewController {
                 $0.cellStyle = .value1
                 $0.cellUpdate { cell, _ in
                     cell.textLabel!.textAlignment = .left
-                    cell.textLabel!.textColor = UserSettings.theme.value.titleTextColor
+                    cell.textLabel!.textColor = UserDefaults.standard[.theme].titleTextColor
                     cell.accessoryType = .disclosureIndicator
                     cell.detailTextLabel?.text = book.subjects.map { $0.name }.sorted().joined(separator: ", ")
                 }
@@ -139,6 +139,26 @@ class EditBookMetadata: FormViewController {
                 }
                 $0.hidden = Condition(booleanLiteral: isAddingNewBook)
             }
+
+        #if DEBUG
+        form +++ Section("Debug")
+            <<< IntRow {
+                $0.title = "Sort"
+                $0.value = book.sort?.intValue
+                $0.onChange {
+                    guard let sort = $0.value else { return }
+                    book.sort = NSNumber(value: sort)
+                }
+            }
+            <<< LabelRow {
+                $0.title = "Manual Book ID"
+                $0.value = book.manualBookId
+            }
+            <<< LabelRow {
+                $0.title = "Google Books ID"
+                $0.value = book.googleBooksId
+            }
+        #endif
 
         // Validate on start
         validate()

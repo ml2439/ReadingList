@@ -11,8 +11,16 @@ class About: UITableViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
-        cell.defaultInitialise(withTheme: UserSettings.theme.value)
+        cell.defaultInitialise(withTheme: UserDefaults.standard[.theme])
         return cell
+    }
+
+    override func tableView(_ tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
+        guard let footer = view as? UITableViewHeaderFooterView else { assertionFailure("Unexpected footer view type"); return }
+        guard let textLabel = footer.textLabel else { assertionFailure("Missing text label"); return }
+        textLabel.textAlignment = .center
+        textLabel.font = .systemFont(ofSize: 11.0)
+        textLabel.text = "v\(BuildInfo.appVersion) (\(BuildInfo.appBuildNumber))"
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -72,7 +80,7 @@ class About: UITableViewController {
 
 
         Extra Info:
-        App Version: \(BuildInfo.appConfiguration.userFacingDescription)
+        App Version: \(BuildInfo.appConfiguration.fullDescription)
         iOS Version: \(UIDevice.current.systemVersion)
         Device: \(UIDevice.current.modelName)
         """
@@ -97,7 +105,7 @@ class Attributions: UITableViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
-        let theme = UserSettings.theme.value
+        let theme = UserDefaults.standard[.theme]
         cell.defaultInitialise(withTheme: theme)
         cell.contentView.subviews.forEach {
             guard let label = $0 as? UILabel else { return }

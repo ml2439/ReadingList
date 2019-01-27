@@ -14,11 +14,7 @@ class Settings: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        versionLabel.text = "v\(BuildInfo.appConfiguration.userFacingDescription)"
-
-        if #available(iOS 11.0, *) {
-            monitorLargeTitleSetting()
-        }
+        versionLabel.text = "v\(BuildInfo.appConfiguration.versionAndConfiguration)"
         monitorThemeSetting()
 
         #if DEBUG
@@ -69,7 +65,7 @@ class Settings: UITableViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
-        cell.defaultInitialise(withTheme: UserSettings.theme.value)
+        cell.defaultInitialise(withTheme: UserDefaults.standard[.theme])
         if !appDelegate.tabBarController.selectedSplitViewController!.isSplit { return cell }
 
         // In split mode, change the cells a little to look more like the standard iOS settings app

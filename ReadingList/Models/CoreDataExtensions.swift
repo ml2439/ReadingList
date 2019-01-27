@@ -24,8 +24,8 @@ extension NSManagedObjectContext {
         do {
             try self.save()
         } catch let error as NSError {
-            CLSLogv("%@", getVaList([error.getCoreDataSaveErrorDescription()]))
-            fatalError(error.localizedDescription)
+            UserEngagement.logError(error)
+            preconditionFailure(error.localizedDescription)
         }
     }
 

@@ -32,5 +32,5 @@ This app contains some links to third-party websites. If you click on a link to 
 ## Changes to This Privacy Policy
 I may update our Privacy Policy from time to time. You should review policy for any changes; I will notify you of any changes by updating the new Privacy Policy on this page. These changes are effective immediately.
 
-## Contact Us
+## Contact
 If you have any questions or suggestions about this Privacy Policy, do not hesitate to contact me at feedback@readinglist.app.

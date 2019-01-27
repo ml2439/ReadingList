@@ -49,12 +49,6 @@ class PersistentStoreManager {
 
             // Delete the old store
             tempStoreCoordinator.destroyAndDeleteStore(at: legacyStoreLocation)
-
-            // The same version (1.7.1) also removed support for spotlight indexing, so deindex everything
-            if CSSearchableIndex.isIndexingAvailable() {
-                os_log("Deleting all searchable spotlight items")
-                CSSearchableIndex.default().deleteAllSearchableItems()
-            }
         }
     }
 

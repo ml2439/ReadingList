@@ -1,18 +1,6 @@
 import Foundation
 import os.log
 
-public extension UserDefaults {
-    func incrementCounter(withKey key: String) {
-        let newCount = UserDefaults.standard.integer(forKey: key) + 1
-        UserDefaults.standard.set(newCount, forKey: key)
-        UserDefaults.standard.synchronize()
-    }
-
-    func getCount(withKey: String) -> Int {
-        return UserDefaults.standard.integer(forKey: withKey)
-    }
-}
-
 public extension String {
     /// Return whether the string contains any characters which are not whitespace.
     var isEmptyOrWhitespace: Bool {
@@ -212,6 +200,16 @@ public extension Date {
             // Use the format "12 Feb", or - if the date is not from this year - "12 Feb 2015"
             return self.string(withDateFormat: "d MMM\(short ? "" : "M")\(thisYear == otherYear ? "" : " yyyy")")
         }
+    }
+}
+
+public extension IndexPath {
+    func next() -> IndexPath {
+        return IndexPath(row: row + 1, section: section)
+    }
+
+    func previous() -> IndexPath {
+        return IndexPath(row: row - 1, section: section)
     }
 }
 

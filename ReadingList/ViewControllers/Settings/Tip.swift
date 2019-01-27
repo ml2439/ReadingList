@@ -44,16 +44,25 @@ class Tip: UIViewController, ThemeableViewController {
     }
 
     func displayTipPrices() {
-        guard let tipProducts = tipProducts else { return }
+        guard let tipProducts = tipProducts else {
+            assertionFailure("TipProducts was unexpectedly nil"); return
+        }
+        guard let firstProduct = tipProducts.first else {
+            assertionFailure("TipProducts was unexpectedly empty"); return
+        }
 
         let priceFormatter = NumberFormatter()
         priceFormatter.formatterBehavior = .behavior10_4
         priceFormatter.numberStyle = .currency
-        priceFormatter.locale = tipProducts.first!.priceLocale
+        priceFormatter.locale = firstProduct.priceLocale
 
         for (index, productId) in tipProductIds.enumerated() {
-            guard let product = tipProducts.first(where: { $0.productIdentifier == productId }) else { fatalError("No product with ID \(productId)") }
-            guard let priceString = priceFormatter.string(from: product.price) else { fatalError("Could not format price string \(product.price)") }
+            guard let product = tipProducts.first(where: { $0.productIdentifier == productId }) else {
+                assertionFailure("No product with ID \(productId)"); continue
+            }
+            guard let priceString = priceFormatter.string(from: product.price) else {
+                assertionFailure("Could not format price string \(product.price)"); continue
+            }
 
             let button = tipButtons[index]
             button.isHidden = false
@@ -75,7 +84,7 @@ class Tip: UIViewController, ThemeableViewController {
                 guard let viewController = self else { return }
                 viewController.explanationLabel.text = "Thanks for supporting Reading List! ❤️"
                 viewController.tipButtons.forEach { $0.isHidden = true }
-                UserSettings.hasEverTipped.value = true
+                UserDefaults.standard[.hasEverTipped] = true
 
             case .error(let error):
                 guard error.code != .paymentCancelled else { return }

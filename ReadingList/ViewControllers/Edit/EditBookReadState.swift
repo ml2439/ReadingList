@@ -7,7 +7,8 @@ class EditBookReadState: FormViewController {
 
     private var editContext: NSManagedObjectContext!
     private var book: Book!
-    private var newBook: Bool = false
+    private var newBook = false
+    private let currentPageKey = "currentPage"
 
     convenience init(existingBookID: NSManagedObjectID) {
         self.init()
@@ -35,7 +36,6 @@ class EditBookReadState: FormViewController {
         let readStateKey = "readState"
         let startedReadingKey = "startedReading"
         let finishedReadingKey = "finishedReading"
-        let currentPageKey = "currentPage"
 
         form +++ Section(header: "Reading Log", footer: "")
             <<< SegmentedRow<BookReadState>(readStateKey) {
@@ -53,7 +53,7 @@ class EditBookReadState: FormViewController {
                     case .reading:
                         self.book.startedReading = (self.form.rowBy(tag: startedReadingKey) as! DateRow).value
                         self.book.finishedReading = nil
-                        if let currentPage = (self.form.rowBy(tag: currentPageKey) as! IntRow).value, currentPage >= 0 && currentPage <= Int32.max {
+                        if let currentPage = (self.form.rowBy(tag: self.currentPageKey) as! IntRow).value, currentPage >= 0 && currentPage <= Int32.max {
                             self.book.currentPage = currentPage.nsNumber
                         } else { self.book.currentPage = nil }
                     case .finished:
@@ -97,6 +97,15 @@ class EditBookReadState: FormViewController {
             }
 
         monitorThemeSetting()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        // If we are editing a book (not adding one), pre-select the current page field
+        if self.book.readState == .reading && self.book.changedValues().isEmpty {
+            let currentPageRow = self.form.rowBy(tag: currentPageKey) as! IntRow
+            currentPageRow.cell.textField.becomeFirstResponder()
+        }
     }
 
     func configureNavigationItem() {

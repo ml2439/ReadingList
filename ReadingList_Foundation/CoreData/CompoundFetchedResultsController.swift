@@ -53,7 +53,7 @@ public class CompoundFetchedResultsController<T: NSFetchRequestResult>: NSObject
                 return controller.object(at: IndexPath(row: indexPath.row, section: indexPath.section - sectionCount))
             }
         }
-        fatalError("Could not find index path \(indexPath).")
+        preconditionFailure("Could not find index path \(indexPath).")
     }
 
     public func indexPath(forObject object: T) -> IndexPath? {

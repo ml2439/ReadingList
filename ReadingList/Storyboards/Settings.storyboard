@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<<<<<<< HEAD
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="DTX-v0-0zO">
     <device id="retina5_5" orientation="portrait">
+=======
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="DTX-v0-0zO">
+    <device id="retina4_0" orientation="portrait">
+>>>>>>> master
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
+<<<<<<< HEAD
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
+=======
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+>>>>>>> master
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -191,7 +200,11 @@
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="AcT-sc-cWB">
+<<<<<<< HEAD
                                     <rect key="frame" x="82.666666666666671" y="31.666666666666671" width="248.66666666666663" height="80"/>
+=======
+                                    <rect key="frame" x="36" y="31.5" width="248.5" height="80"/>
+>>>>>>> master
                                     <subviews>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="AppIconOnWhiteRounded" translatesAutoresizingMaskIntoConstraints="NO" id="BFs-13-jz1">
                                             <rect key="frame" x="0.0" y="0.0" width="80" height="80"/>
@@ -260,14 +273,22 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="About" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="3ua-tj-H0t">
+<<<<<<< HEAD
                                                     <rect key="frame" x="79" y="0.0" width="297" height="43.666666666666664"/>
+=======
+                                                    <rect key="frame" x="75" y="0.0" width="210" height="43.5"/>
+>>>>>>> master
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" image="About" id="bF8-ZQ-qam">
+<<<<<<< HEAD
                                                     <rect key="frame" x="20" y="0.0" width="44" height="43.666666666666664"/>
+=======
+                                                    <rect key="frame" x="16" y="0.0" width="44" height="43.5"/>
+>>>>>>> master
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </imageView>
                                             </subviews>
@@ -284,14 +305,22 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Rate" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="Dcf-g1-XpQ">
+<<<<<<< HEAD
                                                     <rect key="frame" x="79" y="0.0" width="315" height="43.666666666666664"/>
+=======
+                                                    <rect key="frame" x="75" y="0.0" width="229" height="43.5"/>
+>>>>>>> master
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" image="Star" id="N18-C6-xrw">
+<<<<<<< HEAD
                                                     <rect key="frame" x="20" y="0.0" width="44" height="43.666666666666664"/>
+=======
+                                                    <rect key="frame" x="16" y="0.0" width="44" height="43.5"/>
+>>>>>>> master
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </imageView>
                                             </subviews>
@@ -305,14 +334,22 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Leave Tip" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="0wo-HB-QfE">
+<<<<<<< HEAD
                                                     <rect key="frame" x="79" y="0.0" width="297" height="43.666666666666664"/>
+=======
+                                                    <rect key="frame" x="75" y="0.0" width="210" height="43.5"/>
+>>>>>>> master
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" image="Rate" id="yoY-MX-cJu">
+<<<<<<< HEAD
                                                     <rect key="frame" x="20" y="0.0" width="44" height="43.666666666666664"/>
+=======
+                                                    <rect key="frame" x="16" y="0.0" width="44" height="43.5"/>
+>>>>>>> master
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </imageView>
                                             </subviews>
@@ -333,14 +370,22 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="General" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="VN9-Jw-6Mj">
+<<<<<<< HEAD
                                                     <rect key="frame" x="79" y="0.0" width="297" height="43.666666666666664"/>
+=======
+                                                    <rect key="frame" x="75" y="0.0" width="210" height="43.5"/>
+>>>>>>> master
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" image="General" id="x8N-uL-385">
+<<<<<<< HEAD
                                                     <rect key="frame" x="20" y="0.0" width="44" height="43.666666666666664"/>
+=======
+                                                    <rect key="frame" x="16" y="0.0" width="44" height="43.5"/>
+>>>>>>> master
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </imageView>
                                             </subviews>
@@ -357,14 +402,22 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Sort" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="alt-vc-jOb">
+<<<<<<< HEAD
                                                     <rect key="frame" x="79" y="0.0" width="297" height="43.666666666666664"/>
+=======
+                                                    <rect key="frame" x="75" y="0.0" width="210" height="43.5"/>
+>>>>>>> master
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" image="Sort" id="Tdj-S0-DOA">
+<<<<<<< HEAD
                                                     <rect key="frame" x="20" y="0.0" width="44" height="43.666666666666664"/>
+=======
+                                                    <rect key="frame" x="16" y="0.0" width="44" height="43.5"/>
+>>>>>>> master
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </imageView>
                                             </subviews>
@@ -381,14 +434,22 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Import / Export" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="exG-mV-Lb6">
+<<<<<<< HEAD
                                                     <rect key="frame" x="79" y="0.0" width="297" height="43.666666666666664"/>
+=======
+                                                    <rect key="frame" x="75" y="0.0" width="210" height="43.5"/>
+>>>>>>> master
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" image="Data" id="9tG-JR-IGa">
+<<<<<<< HEAD
                                                     <rect key="frame" x="20" y="0.0" width="44" height="43.666666666666664"/>
+=======
+                                                    <rect key="frame" x="16" y="0.0" width="44" height="43.5"/>
+>>>>>>> master
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </imageView>
                                             </subviews>
@@ -405,14 +466,22 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="iCloud Sync" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="elX-Yh-5QX">
+<<<<<<< HEAD
                                                     <rect key="frame" x="79" y="0.0" width="297" height="43.666666666666664"/>
+=======
+                                                    <rect key="frame" x="75" y="0.0" width="229" height="43.5"/>
+>>>>>>> master
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" image="Cloud" id="0hW-ap-1Hk">
+<<<<<<< HEAD
                                                     <rect key="frame" x="20" y="0.0" width="44" height="43.666666666666664"/>
+=======
+                                                    <rect key="frame" x="16" y="0.0" width="44" height="43.5"/>
+>>>>>>> master
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </imageView>
                                             </subviews>
@@ -450,7 +519,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <sections>
-                            <tableViewSection id="gNP-kM-fDe">
+                            <tableViewSection footerTitle="v1.10.0 (1452)" id="gNP-kM-fDe">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="szE-7z-GeH" imageView="Leu-nB-A5y" style="IBUITableViewCellStyleDefault" id="0jA-9Z-oTa">
                                         <rect key="frame" x="0.0" y="35" width="414" height="44"/>
@@ -460,14 +529,14 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Website" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="szE-7z-GeH">
-                                                    <rect key="frame" x="79" y="0.0" width="297" height="43.666666666666664"/>
+                                                    <rect key="frame" x="75" y="0.0" width="210" height="43.5"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" image="Website" id="Leu-nB-A5y">
-                                                    <rect key="frame" x="20" y="0.0" width="44" height="43.666666666666664"/>
+                                                    <rect key="frame" x="16" y="0.0" width="44" height="43.5"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </imageView>
                                             </subviews>
@@ -481,14 +550,14 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Share" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="L7D-Cl-z5k">
-                                                    <rect key="frame" x="79" y="0.0" width="315" height="43.666666666666664"/>
+                                                    <rect key="frame" x="75" y="0.0" width="229" height="43.5"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" image="Share" id="mwZ-h2-LLX">
-                                                    <rect key="frame" x="20" y="0.0" width="44" height="43.666666666666664"/>
+                                                    <rect key="frame" x="16" y="0.0" width="44" height="43.5"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </imageView>
                                             </subviews>
@@ -502,14 +571,14 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Contact" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="vGZ-GD-wqK">
-                                                    <rect key="frame" x="79" y="0.0" width="315" height="43.666666666666664"/>
+                                                    <rect key="frame" x="75" y="0.0" width="229" height="43.5"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" image="Contact" id="KoU-nj-FPM">
-                                                    <rect key="frame" x="20" y="0.0" width="44" height="43.666666666666664"/>
+                                                    <rect key="frame" x="16" y="0.0" width="44" height="43.5"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </imageView>
                                             </subviews>
@@ -523,14 +592,14 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Join Beta" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="q7e-g0-jQY">
-                                                    <rect key="frame" x="79" y="0.0" width="315" height="43.666666666666664"/>
+                                                    <rect key="frame" x="75" y="0.0" width="229" height="43.5"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" image="Beta" id="Xgf-Bj-rlI">
-                                                    <rect key="frame" x="20" y="0.0" width="44" height="43.666666666666664"/>
+                                                    <rect key="frame" x="16" y="0.0" width="44" height="43.5"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </imageView>
                                             </subviews>
@@ -544,14 +613,14 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Source Code" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="xzd-ie-yeM">
-                                                    <rect key="frame" x="79" y="0.0" width="297" height="43.666666666666664"/>
+                                                    <rect key="frame" x="75" y="0.0" width="210" height="43.5"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" image="Github" id="mg5-eN-5Ig">
-                                                    <rect key="frame" x="20" y="0.0" width="44" height="43.666666666666664"/>
+                                                    <rect key="frame" x="16" y="0.0" width="44" height="43.5"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </imageView>
                                             </subviews>
@@ -565,14 +634,14 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Attributions" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" id="jOp-CV-H58">
-                                                    <rect key="frame" x="79" y="0.0" width="297" height="43.666666666666664"/>
+                                                    <rect key="frame" x="75" y="0.0" width="210" height="43.5"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" image="Attributions" id="a1o-2m-w7f">
-                                                    <rect key="frame" x="20" y="0.0" width="44" height="43.666666666666664"/>
+                                                    <rect key="frame" x="16" y="0.0" width="44" height="43.5"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </imageView>
                                             </subviews>
@@ -968,7 +1037,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                                 <rect key="frame" x="0.0" y="64" width="414" height="623"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="caH-Lj-YGR" userLabel="ContentView">
-                                        <rect key="frame" x="0.0" y="0.0" width="414" height="268.33333333333331"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="320" height="268.5"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="752" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="66y-FY-yET" userLabel="ExplanationLabel">
                                                 <rect key="frame" x="8" y="8" width="398" height="130.33333333333334"/>
@@ -997,7 +1066,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                                                 </connections>
                                             </button>
                                             <button hidden="YES" opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9LN-NW-9kI">
-                                                <rect key="frame" x="280.66666666666669" y="170.33333333333334" width="44" height="33"/>
+                                                <rect key="frame" x="233.5" y="170.5" width="44" height="33"/>
                                                 <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                 <state key="normal" title="Large"/>
                                                 <connections>
@@ -1005,7 +1074,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                                                 </connections>
                                             </button>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CKg-0A-Rcy">
-                                                <rect key="frame" x="129.66666666666666" y="219.33333333333331" width="154.99999999999997" height="33"/>
+                                                <rect key="frame" x="82.5" y="219.5" width="155" height="33"/>
                                                 <subviews>
                                                     <button hidden="YES" opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="S16-Tj-WdF">
                                                         <rect key="frame" x="114" y="0.0" width="41" height="33"/>
@@ -1161,22 +1230,22 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         </scene>
     </scenes>
     <resources>
-        <image name="About" width="202.06451416015625" height="202.06451416015625"/>
+        <image name="About" width="198.85714721679688" height="198.85714721679688"/>
         <image name="AppIconOnWhiteRounded" width="180" height="180"/>
-        <image name="Attributions" width="202.06451416015625" height="202.06451416015625"/>
-        <image name="Beta" width="202.06451416015625" height="202.06451416015625"/>
-        <image name="Cloud" width="202.06451416015625" height="202.06451416015625"/>
-        <image name="Contact" width="202.06451416015625" height="202.06451416015625"/>
-        <image name="Data" width="202.06451416015625" height="202.06451416015625"/>
-        <image name="General" width="202.06451416015625" height="202.06451416015625"/>
-        <image name="Github" width="202.06451416015625" height="202.06451416015625"/>
-        <image name="Rate" width="202.06451416015625" height="202.06451416015625"/>
-        <image name="Share" width="202.06451416015625" height="202.06451416015625"/>
-        <image name="Sort" width="202.06451416015625" height="202.06451416015625"/>
-        <image name="Star" width="202.06451416015625" height="202.06451416015625"/>
-        <image name="Website" width="202.06451416015625" height="202.06451416015625"/>
-        <image name="settings" width="75" height="75"/>
-        <image name="settings-filled" width="75" height="75"/>
+        <image name="Attributions" width="198.85714721679688" height="198.85714721679688"/>
+        <image name="Beta" width="198.85714721679688" height="198.85714721679688"/>
+        <image name="Cloud" width="198.85714721679688" height="198.85714721679688"/>
+        <image name="Contact" width="198.85714721679688" height="198.85714721679688"/>
+        <image name="Data" width="198.85714721679688" height="198.85714721679688"/>
+        <image name="General" width="198.85714721679688" height="198.85714721679688"/>
+        <image name="Github" width="198.85714721679688" height="198.85714721679688"/>
+        <image name="Rate" width="198.85714721679688" height="198.85714721679688"/>
+        <image name="Share" width="198.85714721679688" height="198.85714721679688"/>
+        <image name="Sort" width="198.85714721679688" height="198.85714721679688"/>
+        <image name="Star" width="198.85714721679688" height="198.85714721679688"/>
+        <image name="Website" width="198.85714721679688" height="198.85714721679688"/>
+        <image name="settings" width="50" height="50"/>
+        <image name="settings-filled" width="50" height="50"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="R0B-Tl-MCg"/>

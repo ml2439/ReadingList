@@ -77,16 +77,21 @@ class Book: NSManagedObject {
 
         // FUTURE: willSave() is called after property validation, so if we add sort/readState validation
         // then this removal of the sort property will need to be done earlier.
+        setSort()
+    }
 
-        // The sort manipulation should be in a method which allows setting of dates
-        if readState == .toRead && sort == nil {
-            let maxSort = Book.maxSort(fromContext: managedObjectContext!) ?? 0
-            sort = (maxSort + 1).nsNumber
+    private func setSort() {
+        guard readState == .toRead else {
+            if sort != nil { sort = nil }
+            return
         }
+        guard sort == nil else { return }
 
-        // Sort is not supported for non To Read books
-        if readState != .toRead && sort != nil {
-            sort = nil
+        if let maximalSort = Book.maximalSort(getMaximum: !UserDefaults.standard[.addBooksToTopOfCustom], fromContext: managedObjectContext!) {
+            let plusMinusOne: Int32 = UserDefaults.standard[.addBooksToTopOfCustom] ? -1 : 1
+            sort = NSNumber(value: maximalSort + plusMinusOne)
+        } else {
+            sort = 0
         }
 
         // Update the modified keys record for Books which have a remote identifier, but only
@@ -190,13 +195,40 @@ extension Book {
         return nil
     }
 
-    static func maxSort(fromContext context: NSManagedObjectContext) -> Int32? {
-        // FUTURE: Could use a fetch expression to just return the max value
+    /**
+     Gets the "maximal" sort value of any book - i.e. either the maximum or minimum value.
+    */
+    static func maximalSort(getMaximum: Bool, fromContext context: NSManagedObjectContext) -> Int32? {
+        // FUTURE: The following code works in the application, but crashes in tests.
+
+        /*let request = NSManagedObject.fetchRequest(Book.self) as! NSFetchRequest<NSFetchRequestResult>
+        request.resultType = .dictionaryResultType
+
+        let key = "sort"
+        let expressionDescription = NSExpressionDescription()
+        expressionDescription.name = key
+        expressionDescription.expression = NSExpression(forFunction: getMaximum ? "max:" : "min:", arguments: [NSExpression(forKeyPath: \Book.sort)])
+        expressionDescription.expressionResultType = .integer32AttributeType
+        request.propertiesToFetch = [expressionDescription]
+
+        let result = try! context.fetch(request) as! [[String: Int32]]
+        return result.first?[key]*/
+
         let fetchRequest = NSManagedObject.fetchRequest(Book.self, limit: 1)
-        fetchRequest.predicate = NSPredicate(format: "%K == %ld", #keyPath(Book.readState), BookReadState.toRead.rawValue)
-        fetchRequest.sortDescriptors = [NSSortDescriptor(\Book.sort, ascending: false)]
+        fetchRequest.predicate = NSPredicate.and([
+            NSPredicate(format: "%K == %ld", #keyPath(Book.readState), BookReadState.toRead.rawValue),
+            NSPredicate(format: "%K != nil", #keyPath(Book.sort))])
+        fetchRequest.sortDescriptors = [NSSortDescriptor(\Book.sort, ascending: !getMaximum)]
         fetchRequest.returnsObjectsAsFaults = false
         return (try! context.fetch(fetchRequest)).first?.sort?.int32
+    }
+
+    static func maxSort(fromContext context: NSManagedObjectContext) -> Int32? {
+        return maximalSort(getMaximum: true, fromContext: context)
+    }
+
+    static func minSort(fromContext context: NSManagedObjectContext) -> Int32? {
+        return maximalSort(getMaximum: false, fromContext: context)
     }
 
     @objc func validateAuthors(_ value: AutoreleasingUnsafeMutablePointer<AnyObject?>) throws {

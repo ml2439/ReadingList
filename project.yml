@@ -1,4 +1,11 @@
 name: ReadingList
+
+options:
+  groupSortPosition: top
+  usesTabs: false
+  indentWith: 4
+  bundleIdPrefix: com.andrewbennet
+
 targets:
   ReadingList:
     type: application
@@ -9,23 +16,21 @@ targets:
       testTargets:
         - ReadingList_UnitTests
         - ReadingList_UITests
-        - ReadingList_Screenshots
     dependencies:
-      - framework: StoreKit.framework
-        embed: false
+      - sdk: StoreKit.framework
       - target: ReadingList_Foundation
-    prebuildScripts:
+    preBuildScripts:
       - name: SwiftLint
         script: |
                 if [[ -z $CI ]]; then
                   "/usr/local/bin/swiftlint" --path "${PROJECT_DIR}"
                 fi
-    postbuildScripts:
+    postBuildScripts:
       - name: "[CP] Embed Pods Frameworks"
         script:
       - name: Run Fabric Script
         inputFiles: [$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)]
-        path: fastlane/fabric.sh
+        path: build/fabric.sh
     settings:
       base:
         ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES: $(inherited)
@@ -33,7 +38,6 @@ targets:
         CODE_SIGN_ENTITLEMENTS: ReadingList/ReadingList.entitlements
         DEVELOPMENT_TEAM: YPDEV2E775
         PRODUCT_BUNDLE_IDENTIFIER: com.andrewbennet.books
-        SWIFT_VERSION: 4.2
       configs:
         Debug:
           PROVISIONING_PROFILE_SPECIFIER: match Development com.andrewbennet.books
@@ -48,14 +52,13 @@ targets:
           enabled: 1
         com.apple.InAppPurchase:
           enabled: 1
+
   ReadingList_Foundation:
     type: framework
     platform: iOS
     deploymentTarget: 10.3
     sources: [ReadingList_Foundation]
-    settings:
-      PRODUCT_BUNDLE_IDENTIFIER: com.andrewbennet.ReadingList-Foundation
-      SWIFT_VERSION: 4.2
+
   ReadingList_UnitTests:
     type: bundle.unit-test
     platform: iOS
@@ -64,35 +67,30 @@ targets:
     dependencies:
       - target: ReadingList
     settings:
-      SWIFT_VERSION: 4.2
       # These settings are added when Xcode creates a new project with test targets.
       # See https://stackoverflow.com/a/30939244/5513562
       BUNDLE_LOADER: $TEST_HOST
       TEST_HOST: $(BUILT_PRODUCTS_DIR)/ReadingList.app/ReadingList
+
   ReadingList_UITests:
     type: bundle.ui-testing
     platform: iOS
     deploymentTarget: 10.3
-    sources: [ReadingList_UITests]
+    sources:
+      - path: ReadingList_UITests
+      - path: ReadingList/Api/GoogleBooksRequest.swift
     dependencies:
       - target: ReadingList
-    settings:
-      SWIFT_VERSION: 4.2
+
   ReadingList_Screenshots:
     type: bundle.ui-testing
     platform: iOS
     deploymentTarget: 10.3
     sources:
       - path: ReadingList_Screenshots
-      - path: ReadingList_UITests/ReadingListApplication.swift
+      - path: ReadingList_UITests/ReadingListApp.swift
     dependencies:
       - target: ReadingList
-    settings:
-      SWIFT_VERSION: 4.2
-schemes:
-  Screenshots:
-    build:
-      targets:
-        ReadingList_Screenshots: [test, run]
-options:
-  groupSortPosition: top
+    scheme:
+      testTargets:
+        - ReadingList_Screenshots
