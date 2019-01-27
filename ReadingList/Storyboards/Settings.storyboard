@@ -447,7 +447,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <sections>
-                            <tableViewSection footerTitle="v1.10.0 - BUILD 1452" id="gNP-kM-fDe">
+                            <tableViewSection footerTitle="v1.10.0 (1452)" id="gNP-kM-fDe">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="szE-7z-GeH" imageView="Leu-nB-A5y" style="IBUITableViewCellStyleDefault" id="0jA-9Z-oTa">
                                         <rect key="frame" x="0.0" y="35" width="320" height="44"/>

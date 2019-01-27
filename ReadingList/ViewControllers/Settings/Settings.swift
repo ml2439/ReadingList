@@ -84,10 +84,10 @@ class Settings: UITableViewController {
                 iCloud Sync is currently being developed. When available, this will synchronise books between different devices. \
                 Until this is available, you can move your book data between devices manually by exporting and importing.
 
-                If you want to help the development of iCloud Sync, you can join the beta program.
+                If you want to help the development of Reading List, you can join the beta program.
                 """
 
-            let alert = UIAlertController(title: "iCloud Sync coming soon", message: message, preferredStyle: .actionSheet)
+            let alert = UIAlertController(title: "iCloud Sync not available", message: message, preferredStyle: .actionSheet)
             alert.addAction(UIAlertAction(title: "Manual Export", style: .default) { _ in
                 self.performSegue(withIdentifier: "settingsData", sender: self)
                 if self.splitViewController!.isSplit {
