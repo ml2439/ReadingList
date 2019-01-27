@@ -22,6 +22,7 @@ class SearchOnlineTests: XCTestCase {
         sleep(1)
         app.typeText("Orwell")
         app.buttons["Search"].tap()
+        sleep(1)
     }
 
     func testSearchAddMany() {
@@ -37,7 +38,7 @@ class SearchOnlineTests: XCTestCase {
         app.tables.cells.element(boundBy: 1).tap()
         toolbar.buttons["Add 2 Books"].tap()
         app.sheets["Add 2 Books"].buttons["Add All"].tap()
-        sleep(2)
+        sleep(3)
         XCTAssertEqual(app.tables.cells.count, 2)
     }
 
@@ -49,7 +50,7 @@ class SearchOnlineTests: XCTestCase {
         performSearch(app)
         app.tables.cells.element(boundBy: 4).tap()
         app.navigationBars.element(boundBy: 0).buttons["Done"].tap()
-        sleep(1)
+        sleep(2)
         XCTAssertEqual(app.tables.cells.count, 1)
 
         performSearch(app)
