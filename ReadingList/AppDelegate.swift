@@ -85,7 +85,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
                         // Initialise the Sync Coordinator which will maintain iCloud synchronisation
                         self.syncCoordinator = SyncCoordinator(container: PersistentStoreManager.container)
-                        if UserSettings.iCloudSyncEnabled.value {
+                        if UserDefaults.standard[.iCloudSyncEnabled] {
                             self.syncCoordinator!.start()
                         }
 
@@ -176,7 +176,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any],
                      fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        if UserSettings.iCloudSyncEnabled.value, let syncCoordinator = syncCoordinator, syncCoordinator.remote.isInitialised {
+        if UserDefaults.standard[.iCloudSyncEnabled], let syncCoordinator = syncCoordinator, syncCoordinator.remote.isInitialised {
             syncCoordinator.remoteNotificationReceived(applicationCallback: completionHandler)
         }
     }

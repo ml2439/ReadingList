@@ -40,10 +40,10 @@ class Debug: FormViewController {
         +++ Section("iCloud Sync")
             <<< ButtonRow {
                 $0.title = "Simulate remote change notification"
-                $0.disabled = Condition(booleanLiteral: !UserSettings.iCloudSyncEnabled.value || appDelegate.syncCoordinator?.remote.isInitialised != true)
+                $0.disabled = Condition(booleanLiteral: !UserDefaults.standard[.iCloudSyncEnabled] || appDelegate.syncCoordinator?.remote.isInitialised != true)
                 $0.onCellSelection { _, _ in
                     DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                        if UserSettings.iCloudSyncEnabled.value, let syncCoordinator = appDelegate.syncCoordinator, syncCoordinator.remote.isInitialised {
+                        if UserDefaults.standard[.iCloudSyncEnabled], let syncCoordinator = appDelegate.syncCoordinator, syncCoordinator.remote.isInitialised {
                             syncCoordinator.remoteNotificationReceived { _ in }
                         }
                     }
