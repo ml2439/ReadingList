@@ -76,13 +76,13 @@ class SearchOnline: UITableViewController {
                 self?.searchController.searchBar.becomeFirstResponder()
             }
         } else {
-            navigationController!.setToolbarHidden(false, animated: true)
+            navigationController?.setToolbarHidden(false, animated: true)
         }
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        navigationController!.setToolbarHidden(true, animated: true)
+        navigationController?.setToolbarHidden(true, animated: true)
     }
 
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -185,7 +185,7 @@ class SearchOnline: UITableViewController {
         }
 
         // No results should hide the toolbar. Unselecting previously selected results should disable the Add All button
-        navigationController!.setToolbarHidden(tableItems.isEmpty, animated: true)
+        navigationController?.setToolbarHidden(tableItems.isEmpty, animated: true)
         if tableView.isEditing && tableView.indexPathsForSelectedRows?.count ?? 0 == 0 {
             addAllButton.isEnabled = false
         }
@@ -236,7 +236,7 @@ class SearchOnline: UITableViewController {
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
-        navigationController!.setToolbarHidden(true, animated: true)
+        navigationController?.setToolbarHidden(true, animated: true)
     }
 
     @IBAction private func changeSelectMode(_ sender: UIBarButtonItem) {
