@@ -1,5 +1,10 @@
 import Foundation
 
+// FUTURE:
+// Compile fails in Release mode if this file is located in ReadingList_Foundation, with errors like:
+//     Undefined symbols for architecture armv7
+//      > Symbol: protocol witness table for Swift.Bool : ReadingList_Foundation.DefaultsStorable in ReadingList_Foundation
+
 /** Storable by this framework */
 public protocol UserSettingType { }
 
