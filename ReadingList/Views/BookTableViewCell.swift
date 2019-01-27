@@ -64,7 +64,7 @@ class BookTableViewCell: UITableViewCell {
         }
 
         #if DEBUG
-            if DebugSettings.showSortNumber {
+            if UserDefaults.standard[.showSortNumber] {
                 titleLabel.text =  "(\(book.sort?.intValue.string ?? "none")) \(book.title)"
             }
         #endif
