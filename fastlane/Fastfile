@@ -18,7 +18,7 @@ platform :ios do
     # run tests synchronously as a bug in xcpretty will hide test results when multiple devices are used
     scan(
       scheme: "ReadingList",
-      devices: ["iPhone 7 (10.3.1)", "iPad Pro (10.5-inch) (11.4)"],
+      devices: ["iPhone 8 (11.4)", "iPad Pro (10.5-inch) (11.4)"],
       disable_concurrent_testing: true
     )
   end
