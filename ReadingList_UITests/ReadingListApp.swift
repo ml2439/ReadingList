@@ -37,6 +37,7 @@ class ReadingListApp: XCUIApplication {
 
     func clickAddButton(addMethod: AddMethod) {
         navigationBars.element(boundBy: 0).buttons["Add"].tap()
+        sleep(1)
         sheets.buttons.element(boundBy: addMethod.rawValue).tap()
     }
 

@@ -12,8 +12,10 @@ class MockServer {
             let request: GoogleBooksRequest
             if let isbnMatch = fileUrl.lastPathComponent.regex("^Isbn_(\\d{13}).json$").first {
                 request = GoogleBooksRequest.searchIsbn(String(isbnMatch.groups.first!))
-            } else if let googleBooksMatch = fileUrl.lastPathComponent.regex("^Fetch_(.*).json$").first {
-                request = GoogleBooksRequest.fetch(googleBooksMatch.groups.first!)
+            } else if let fetch = fileUrl.lastPathComponent.regex("^Fetch_(.+).json$").first {
+                request = GoogleBooksRequest.fetch(fetch.groups.first!)
+            } else if let search = fileUrl.lastPathComponent.regex("^Search_(.+).json$").first {
+                request = GoogleBooksRequest.searchText(search.groups.first!)
             } else {
                 print("Unmatched file \(fileUrl.absoluteString)")
                 return nil

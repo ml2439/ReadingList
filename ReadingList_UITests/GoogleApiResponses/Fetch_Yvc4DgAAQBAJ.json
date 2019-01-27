@@ -1,0 +1,111 @@
+{
+ "kind": "books#volume",
+ "id": "Yvc4DgAAQBAJ",
+ "etag": "EqNLhvyO4Ro",
+ "selfLink": "https://www.googleapis.com/books/v1/volumes/Yvc4DgAAQBAJ",
+ "volumeInfo": {
+  "title": "Why Orwell Matters",
+  "authors": [
+   "Christopher Hitchens"
+  ],
+  "publisher": "Hachette UK",
+  "publishedDate": "2008-08-06",
+  "description": "\u003cb\u003e\"Hitchens presents a George Orwell fit for the twenty-first century.\" --\u003ci\u003eBoston Globe\u003c/i\u003e\u003c/b\u003e\u003cbr\u003eIn this widely acclaimed biographical essay, the masterful polemicist Christopher Hitchens assesses the life, the achievements, and the myth of the great political writer and participant George Orwell. True to his contrarian style, Hitchens is both admiring and aggressive, sympathetic yet critical, taking true measure of his subject as hero and problem. Answering both the detractors and the false claimants, Hitchens tears down the façade of sainthood erected by the hagiographers and rebuts the critics point by point. He examines Orwell and his perspectives on fascism, empire, feminism, and Englishness, as well as his outlook on America, a country and culture toward which he exhibited much ambivalence. Whether thinking about empires or dictators, race or class, nationalism or popular culture, Orwell's moral outlook remains indispensable in a world that has undergone vast changes in the seven decades since his death. Combining the best of Hitchens' polemical punch and intellectual elegance in a tightly woven and subtle argument, this book addresses not only why Orwell matters today, but how he will continue to matter in a future, uncertain world.",
+  "industryIdentifiers": [
+   {
+    "type": "ISBN_10",
+    "identifier": "0786725893"
+   },
+   {
+    "type": "ISBN_13",
+    "identifier": "9780786725892"
+   }
+  ],
+  "readingModes": {
+   "text": true,
+   "image": false
+  },
+  "pageCount": 352,
+  "printedPageCount": 132,
+  "printType": "BOOK",
+  "categories": [
+   "Literary Criticism / Subjects & Themes / Politics",
+   "Philosophy / Political",
+   "Biography & Autobiography / Literary Figures",
+   "Political Science / History & Theory",
+   "Literary Collections / General"
+  ],
+  "maturityRating": "NOT_MATURE",
+  "allowAnonLogging": true,
+  "contentVersion": "1.3.3.0.preview.2",
+  "panelizationSummary": {
+   "containsEpubBubbles": false,
+   "containsImageBubbles": false
+  },
+  "imageLinks": {
+   "smallThumbnail": "http://books.google.com/books/content?id=Yvc4DgAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&imgtk=AFLRE72NAQ7g4b2WxdJlqbnv4NRx038Eidj6iM7mr6GDl7voejGSftp57ac1HyEZB_X-9FQaRgG5P_reCazN7w4-6SKFT3Q6hXH2vWJRIuBRj3zYXiYkeUnI3_WzJZzw90QYL7Spb8MC&source=gbs_api",
+   "thumbnail": "http://books.google.com/books/content?id=Yvc4DgAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&imgtk=AFLRE726FdH89d108_Q1-Oy6BfdxkUZEs7IAFXDVNocKNmnWso3ge0_3-i2j486_NCPO8icl0QnbOvzZbzlLyUYEkDttVHwRZQtDQPb-V77bD3YqYli6w88r9TqdNfxN8aQ_abulObDo&source=gbs_api",
+   "small": "http://books.google.com/books/content?id=Yvc4DgAAQBAJ&printsec=frontcover&img=1&zoom=2&edge=curl&imgtk=AFLRE72UR9mYog7p47_dJVtxu58zv0Q2ZPm5plRhQDIayKg9OgYE30bPjOaZEz3Z8vDFnGxUEnrYAlscGuCeySsvqrPnLlReW0HKFr9QLz8Sw1Mn-pIUdPcoI5HQeliwMaWj4mNhtIKb&source=gbs_api",
+   "medium": "http://books.google.com/books/content?id=Yvc4DgAAQBAJ&printsec=frontcover&img=1&zoom=3&edge=curl&imgtk=AFLRE73Q4yvJDUJwhCLmdcF-XZehJlvhf93SxGumJ_pZB4nkueQgTJ8hgdnU85dC7xuqS2S7nn3-s4UfKDoRpxj62u2EsgYlVIvH8pjqRbBaZtOWxioCu5g9gs1tyU418rQx4UIehOmQ&source=gbs_api",
+   "large": "http://books.google.com/books/content?id=Yvc4DgAAQBAJ&printsec=frontcover&img=1&zoom=4&edge=curl&imgtk=AFLRE728_iN3-ssKLCKuQ9QY7D6k4VrPX4F1kjRRrrNMGJiQPQuPMDRtWt9zoOM87FGl3FTX4WkK9IITexZQNO429Vm-kVrytwDB2p9U1ruNV1IxjtqiFZIOKiDXDUszgYHkcT73au7T&source=gbs_api",
+   "extraLarge": "http://books.google.com/books/content?id=Yvc4DgAAQBAJ&printsec=frontcover&img=1&zoom=6&edge=curl&imgtk=AFLRE71N2F3KnWmjAG0gFe30aUjKCQpdiR8k-TM20JwKdD31g8A0cel-6GN_zKBbqvtMEzVt4Q-E-uxXdIA4aiciV-SU0m_64Qcq-8S3jeZCBqxj8IseT5LW0lf6aH7Z29fTYGiN0-9b&source=gbs_api"
+  },
+  "language": "en",
+  "previewLink": "http://books.google.co.uk/books?id=Yvc4DgAAQBAJ&hl=&source=gbs_api",
+  "infoLink": "https://play.google.com/store/books/details?id=Yvc4DgAAQBAJ&source=gbs_api",
+  "canonicalVolumeLink": "https://market.android.com/details?id=book-Yvc4DgAAQBAJ"
+ },
+ "layerInfo": {
+  "layers": [
+   {
+    "layerId": "geo",
+    "volumeAnnotationsVersion": "4"
+   }
+  ]
+ },
+ "saleInfo": {
+  "country": "GB",
+  "saleability": "FOR_SALE",
+  "isEbook": true,
+  "listPrice": {
+   "amount": 5.49,
+   "currencyCode": "GBP"
+  },
+  "retailPrice": {
+   "amount": 5.49,
+   "currencyCode": "GBP"
+  },
+  "buyLink": "https://play.google.com/store/books/details?id=Yvc4DgAAQBAJ&rdid=book-Yvc4DgAAQBAJ&rdot=1&source=gbs_api",
+  "offers": [
+   {
+    "finskyOfferType": 1,
+    "listPrice": {
+     "amountInMicros": 5490000.0,
+     "currencyCode": "GBP"
+    },
+    "retailPrice": {
+     "amountInMicros": 5490000.0,
+     "currencyCode": "GBP"
+    },
+    "giftable": true
+   }
+  ]
+ },
+ "accessInfo": {
+  "country": "GB",
+  "viewability": "PARTIAL",
+  "embeddable": true,
+  "publicDomain": false,
+  "textToSpeechPermission": "ALLOWED_FOR_ACCESSIBILITY",
+  "epub": {
+   "isAvailable": true,
+   "acsTokenLink": "http://books.google.co.uk/books/download/Why_Orwell_Matters-sample-epub.acsm?id=Yvc4DgAAQBAJ&format=epub&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+  },
+  "pdf": {
+   "isAvailable": false
+  },
+  "webReaderLink": "http://play.google.com/books/reader?id=Yvc4DgAAQBAJ&hl=&printsec=frontcover&source=gbs_api",
+  "accessViewStatus": "SAMPLE",
+  "quoteSharingAllowed": false
+ }
+}
