@@ -16,12 +16,6 @@ class BuildInfo {
         return Bundle.main.infoDictionary!["CFBundleVersion"] as! String
     }
 
-    static var version: Version {
-        let components = appVersion.split(separator: ".").compactMap { Int(String($0)) }
-        guard components.count == 3 else { preconditionFailure("Unexpected format of appVersion string") }
-        return Version(components[0], components[1], components[2])
-    }
-
     private static let isTestFlight = Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt"
 
     static var isDebug: Bool {
