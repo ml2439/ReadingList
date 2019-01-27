@@ -1,4 +1,5 @@
 import Foundation
+import ReadingList_Foundation
 
 class BuildInfo {
     enum BuildType {

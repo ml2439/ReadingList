@@ -3,8 +3,6 @@ import StoreKit
 import Firebase
 
 class UserEngagement {
-    static let appStartupCountKey = "appStartupCount"
-    static let userEngagementCountKey = "userEngagementCount"
 
     // Note: TestFlight users are automatically enrolled in analytics and crash reporting. This should be reflected
     // on the corresponding Settings page.
@@ -12,7 +10,7 @@ class UserEngagement {
         #if DEBUG
         return false
         #else
-        return BuildInfo.appConfiguration == .testFlight || UserSettings.sendAnalytics.value
+        return BuildInfo.appConfiguration == .testFlight || UserDefaults.standard[.sendAnalytics]
         #endif
     }
 
@@ -20,7 +18,7 @@ class UserEngagement {
         #if DEBUG
         return false
         #else
-        return BuildInfo.appConfiguration == .testFlight || UserSettings.sendCrashReports.value
+        return BuildInfo.appConfiguration == .testFlight || UserDefaults.standard[.sendCrashReports]
         #endif
     }
 
@@ -32,14 +30,14 @@ class UserEngagement {
     }
 
     static func onReviewTrigger() {
-        UserDefaults.standard.incrementCounter(withKey: userEngagementCountKey)
+        UserDefaults.standard[.userEngagementCount] += 1
         if shouldTryRequestReview() {
             SKStoreReviewController.requestReview()
         }
     }
 
     static func onAppOpen() {
-        UserDefaults.standard.incrementCounter(withKey: appStartupCountKey)
+        UserDefaults.standard[.appStartupCount] += 1
     }
 
     enum Event: String {
@@ -106,8 +104,8 @@ class UserEngagement {
         let appStartCountMinRequirement = 3
         let userEngagementModulo = 10
 
-        let appStartCount = UserDefaults.standard.getCount(withKey: appStartupCountKey)
-        let userEngagementCount = UserDefaults.standard.getCount(withKey: userEngagementCountKey)
+        let appStartCount = UserDefaults.standard[.appStartupCount]
+        let userEngagementCount = UserDefaults.standard[.userEngagementCount]
 
         return appStartCount >= appStartCountMinRequirement && userEngagementCount % userEngagementModulo == 0
     }

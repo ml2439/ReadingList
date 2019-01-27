@@ -84,7 +84,7 @@ class Tip: UIViewController, ThemeableViewController {
                 guard let viewController = self else { return }
                 viewController.explanationLabel.text = "Thanks for supporting Reading List! ❤️"
                 viewController.tipButtons.forEach { $0.isHidden = true }
-                UserSettings.hasEverTipped.value = true
+                UserDefaults.standard[.hasEverTipped] = true
 
             case .error(let error):
                 guard error.code != .paymentCancelled else { return }

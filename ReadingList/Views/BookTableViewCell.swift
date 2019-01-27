@@ -22,7 +22,7 @@ class BookTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        initialise(withTheme: UserSettings.theme.value)
+        initialise(withTheme: UserDefaults.standard[.theme])
         resetUI()
     }
 
@@ -64,7 +64,7 @@ class BookTableViewCell: UITableViewCell {
         }
 
         #if DEBUG
-            if DebugSettings.showSortNumber {
+            if UserDefaults.standard[.showSortNumber] {
                 titleLabel.text =  "(\(book.sort?.intValue.string ?? "none")) \(book.title)"
             }
         #endif

@@ -282,9 +282,9 @@ class SearchOnline: UITableViewController {
                 let newBookCount = newBooks.count
 
                 // Apply sorting
-                var maximalSort = Book.maximalSort(getMaximum: !UserSettings.addBooksToTopOfCustom.value, fromContext: editContext) ?? 0
+                var maximalSort = Book.maximalSort(getMaximum: !UserDefaults.standard[.addBooksToTopOfCustom], fromContext: editContext) ?? 0
                 for book in newBooks {
-                    if UserSettings.addBooksToTopOfCustom.value {
+                    if UserDefaults.standard[.addBooksToTopOfCustom] {
                         maximalSort -= 1
                     } else {
                         maximalSort += 1

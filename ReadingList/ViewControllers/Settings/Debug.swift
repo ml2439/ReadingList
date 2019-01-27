@@ -22,7 +22,7 @@ class Debug: FormViewController {
                 $0.title = "Import Test Data"
                 $0.onCellSelection { _, _ in
                     SVProgressHUD.show(withStatus: "Loading Data...")
-                    DebugSettings.loadTestData {
+                    DebugSettings.loadData {
                         SVProgressHUD.dismiss()
                     }
                 }
@@ -31,9 +31,9 @@ class Debug: FormViewController {
         +++ Section("Debug Controls")
             <<< SwitchRow {
                 $0.title = "Show sort number"
-                $0.value = DebugSettings.showSortNumber
+                $0.value = UserDefaults.standard[.showSortNumber]
                 $0.onChange {
-                    DebugSettings.showSortNumber = $0.value ?? false
+                    UserDefaults.standard[.showSortNumber] = $0.value ?? false
                 }
             }
 

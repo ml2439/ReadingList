@@ -20,21 +20,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        UserEngagement.initialiseUserAnalytics()
+        #if DEBUG
+        DebugSettings.initialiseSettings()
+        #endif
 
-        setupSvProgressHud()
-        completeStoreTransactions()
+        UserEngagement.initialiseUserAnalytics()
+        SVProgressHUD.setDefaults()
+        SwiftyStoreKit.completeTransactions()
+        UpgradeActionApplier().performUpgrade()
 
         // Grab any options which we take action on after the persistent store is initialised
         let shortcutItem = launchOptions?[.shortcutItem] as? UIApplicationShortcutItem
         let csvFileUrl = launchOptions?[.url] as? URL
-
-        #if DEBUG
-        if CommandLine.arguments.contains("--reset") {
-            UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
-            NSPersistentStoreCoordinator().destroyAndDeleteStore(at: URL.applicationSupport.appendingPathComponent(PersistentStoreManager.storeFileName))
-        }
-        #endif
 
         initialisePersistentStore {
             // Once the store is loaded and the main storyboard instantiated, perform the shortcut action
@@ -63,14 +60,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     os_log("Persistent store loaded", type: .info)
                     DispatchQueue.main.async {
                         #if DEBUG
-                        DebugSettings.initialiseFromCommandLine()
+                        DebugSettings.initialiseData()
                         #endif
                         self.window!.rootViewController = TabBarController()
 
                         // Initialise app-level theme, and monitor the set theme
                         self.initialiseTheme()
-                        self.monitorThemeSetting()
-                        UserSettings.mostRecentWorkingVersion.value = BuildInfo.appConfiguration.fullDescription
+                        NotificationCenter.default.addObserver(self, selector: #selector(self.initialiseTheme),
+                                                               name: .ThemeSettingChanged, object: nil)
+                        UserDefaults.standard[.mostRecentWorkingVersion] = BuildInfo.appConfiguration.fullDescription
 
                         onSuccess?()
                     }
@@ -90,8 +88,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func presentIncompatibleDataAlert() {
         #if RELEASE
         // This is a common error during development, but shouldn't occur in production
-        guard UserSettings.mostRecentWorkingVersion.value != BuildInfo.appConfiguration.fullDescription else {
-            UserEngagement.logError(NSError(code: .invalidMigration, userInfo: ["mostRecentWorkingVersion": UserSettings.mostRecentWorkingVersion.value ?? "unknown"]))
+        guard UserDefaults.standard[.mostRecentWorkingVersion] != BuildInfo.appConfiguration.fullDescription else {
+            UserEngagement.logError(NSError(code: .invalidMigration, userInfo: ["mostRecentWorkingVersion": UserDefaults.standard[.mostRecentWorkingVersion] ?? "unknown"]))
             preconditionFailure("Migration error thrown for store of same version.")
         }
         #endif
@@ -99,7 +97,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         guard window!.rootViewController?.presentedViewController == nil else { return }
 
         let compatibilityVersionMessage: String?
-        if let mostRecentWorkingVersion = UserSettings.mostRecentWorkingVersion.value {
+        if let mostRecentWorkingVersion = UserDefaults.standard[.mostRecentWorkingVersion] {
             compatibilityVersionMessage = """
                 \n\nYou previously had version \(mostRecentWorkingVersion), but now have version \
                 \(BuildInfo.appConfiguration.fullDescription). You will need to install \
@@ -124,25 +122,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         window!.rootViewController!.present(alert, animated: true)
-    }
-
-    func setupSvProgressHud() {
-        // Prepare the progress display style. Switched to dark in 1.4 due to a bug in the display of light style
-        SVProgressHUD.setDefaultStyle(.dark)
-        SVProgressHUD.setDefaultAnimationType(.native)
-        SVProgressHUD.setDefaultMaskType(.clear)
-        SVProgressHUD.setMinimumDismissTimeInterval(2)
-    }
-
-    func completeStoreTransactions() {
-        // Apple recommends to register a transaction observer as soon as the app starts.
-        SwiftyStoreKit.completeTransactions(atomically: true) { purchases in
-            purchases.filter {
-                ($0.transaction.transactionState == .purchased || $0.transaction.transactionState == .restored) && $0.needsFinishTransaction
-            }.forEach {
-                SwiftyStoreKit.finishTransaction($0.transaction)
-            }
-        }
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
@@ -204,12 +183,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
-    func monitorThemeSetting() {
-        NotificationCenter.default.addObserver(self, selector: #selector(initialiseTheme), name: .ThemeSettingChanged, object: nil)
-    }
-
     @objc func initialiseTheme() {
-        let theme = UserSettings.theme.value
+        let theme = UserDefaults.standard[.theme]
         theme.configureForms()
         window!.tintColor = theme.tint
     }
