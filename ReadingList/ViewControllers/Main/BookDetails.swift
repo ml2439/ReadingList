@@ -265,12 +265,8 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
 
         let activityViewController = UIActivityViewController(activityItems: ["\(book.title)\n\(Author.authorDisplay(book.authors))"], applicationActivities: nil)
         activityViewController.popoverPresentationController?.barButtonItem = sender
-
-        var excludedActivityTypes: [UIActivity.ActivityType] = [.assignToContact, .saveToCameraRoll, .addToReadingList, .postToFlickr, .postToVimeo, .openInIBooks]
-        if #available(iOS 11.0, *) {
-            excludedActivityTypes.append(.markupAsPDF)
-        }
-        activityViewController.excludedActivityTypes = excludedActivityTypes
+        activityViewController.excludedActivityTypes = [.assignToContact, .saveToCameraRoll, .addToReadingList,
+                                                        .postToFlickr, .postToVimeo, .openInIBooks, .markupAsPDF]
 
         present(activityViewController, animated: true, completion: nil)
     }
@@ -278,7 +274,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let titleLabel = titleAuthorHeadings[0]
         let titleMaxYPosition = titleLabel.convert(titleLabel.frame, to: view).maxY
-        if didShowNavigationItemTitle != (titleMaxYPosition - scrollView.universalContentInset.top < 0) {
+        if didShowNavigationItemTitle != (titleMaxYPosition - scrollView.adjustedContentInset.top < 0) {
             // Changes to the title view are to be animated
             let fadeTextAnimation = CATransition()
             fadeTextAnimation.duration = 0.2
