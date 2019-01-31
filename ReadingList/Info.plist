@@ -16,7 +16,7 @@
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
 			<key>LSHandlerRank</key>
-			<string>Owner</string>
+			<string>Alternate</string>
 			<key>LSItemContentTypes</key>
 			<array>
 				<string>public.comma-separated-values-text</string>
@@ -101,7 +101,7 @@
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 	</array>
 	<key>UISupportsDocumentBrowser</key>
-	<true/>
+	<false/>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
 </dict>
