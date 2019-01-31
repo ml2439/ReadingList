@@ -16,6 +16,16 @@ or alternatively using `brew cask install fastlane`
 
 # Available Actions
 ## iOS
+### ios install_dependencies
+```
+fastlane ios install_dependencies
+```
+
+### ios preprocess
+```
+fastlane ios preprocess
+```
+Makes necessary configuration adjustments prior to a build
 ### ios test
 ```
 fastlane ios test
@@ -31,9 +41,9 @@ Builds the app, handling signing in a CI-supported way.
 fastlane ios upload_build
 ```
 Uploads the previously built binary to TestFlight
-### ios publish
+### ios release
 ```
-fastlane ios publish
+fastlane ios release
 ```
 
 ### ios snaps
@@ -46,11 +56,6 @@ Create framed screenshots for a range of devices
 fastlane ios dsyms
 ```
 Download DSYMs from iTunes and upload them to Crashlytics
-### ios reset_build_number
-```
-fastlane ios reset_build_number
-```
-
 ### ios patch
 ```
 fastlane ios patch

@@ -1,18 +1,20 @@
-# This file contains the fastlane.tools configuration
-# You can find the documentation at https://docs.fastlane.tools
-#
-# For a list of all available actions, check out
-#
-#     https://docs.fastlane.tools/actions
-#
-
-# Uncomment the line if you want fastlane to automatically update itself
-# update_fastlane
-
 default_platform(:ios)
 xcversion(version: "10.1")
 
 platform :ios do
+
+  desc "Configures Fabric, builds the project file and sets the build number from git."
+  lane :preprocess do
+    sh "./configure_fabric.sh"
+    sh "cd .. && mint run yonaskolb/xcodegen"
+    increment_build_number(build_number: number_of_commits)
+  end
+
+  lane :ci do
+    test
+    configure_keychain
+    build_app(workspace: "ReadingList.xcworkspace", scheme: "ReadingList")
+  end
 
   lane :test do
     # run tests synchronously as a bug in xcpretty will hide test results when multiple devices are used
@@ -23,28 +25,26 @@ platform :ios do
     )
   end
 
-  desc "Builds the app, handling signing in a CI-supported way."
-  lane :ci_build do
-    configure_keychain
-    build_app(workspace: "ReadingList.xcworkspace", scheme: "ReadingList")
-  end
-
   desc "Uploads the previously built binary to TestFlight"
   lane :upload_build do
     upload_to_testflight(skip_submission: true, skip_waiting_for_build_processing: true)
   end
 
-  lane :publish do
-    snaps
-    current_build_number = get_build_number
-    current_version = get_version_number(target: "ReadingList")
-    deliver(skip_metadata: true, build_number: current_build_number, app_version: current_version)
+  lane :release do |options|
+    deliver(
+      build_number: options[:build_number],
+      app_version: options[:version],
+      automatic_release: false
+    )
+    add_git_tag(
+      tag: "v" + options[:version]
+    )
   end
 
   desc "Create framed screenshots for a range of devices"
   lane :snaps do
     snapshot
-    frameit(white: true, path: './fastlane/screenshots')
+    frame_screenshots(white: true)
   end
 
   desc "Download DSYMs from iTunes and upload them to Crashlytics"
@@ -75,25 +75,18 @@ platform :ios do
     )
   end
 
-  lane :reset_build_number do
-    increment_build_number(build_number: "1")
-  end
-
   desc "Create a commit incrementing the patch number"
   lane :patch do
-    reset_build_number
     increment_version_number(bump_type: "patch")
   end
 
   desc "Create a commit incrementing the minor version number"
   lane :minor do
-    reset_build_number
     increment_version_number(bump_type: "minor")
   end
 
   desc "Create a commit incrementing the major version number"
   lane :major do
-    reset_build_number
     increment_version_number(bump_type: "major")
   end
 
