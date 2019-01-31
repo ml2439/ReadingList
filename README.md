@@ -57,4 +57,6 @@ Reading List uses [Core Data](https://developer.apple.com/documentation/coredata
 ## Donate
 If you're enjoying Reading List and would like to donate towards development, you can do so with Bitcoin:
 
-<img src="./media/Bitcoin_QR.png" width="200px;" alt="xpub661MyMwAqRbcF4Rm2PoMAPDNWQMNHqrMtAWeS1WmBocddsv4k5GsJwC3vTNvidDN9kt3bqi964cffEk5bbM2JJNWNxAKcBFjxcy1Whz4Zhe"/>
+<img src="./media/Bitcoin_QR.png" width="150px;" alt="Bitcoin public address"/>
+
+`1Dd8yCPG8rXecXxtsVyRCcCqQR8rPgG6Co`
