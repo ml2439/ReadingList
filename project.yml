@@ -30,7 +30,9 @@ targets:
         script:
       - name: Run Fabric Script
         inputFiles: [$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)]
-        path: build/fabric.sh
+        script: |
+                # Run Fabric script: added here when built for deployment.
+                # FABRIC_SCRIPT_PLACEHOLDER
     settings:
       base:
         ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES: $(inherited)
