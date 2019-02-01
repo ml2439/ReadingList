@@ -55,8 +55,14 @@ Reading List uses [Core Data](https://developer.apple.com/documentation/coredata
 <img src="./media/coredata_entities.png" width="400px;" alt="Core data entities"/>
 
 ## Donate
-If you're enjoying Reading List and would like to donate towards development, you can do so with Bitcoin:
+If you're enjoying Reading List and would like to donate towards development, you can do so.
 
+### Bitcoin
 <img src="./media/Bitcoin_QR.png" width="150px;" alt="Bitcoin public address"/>
 
 `1Dd8yCPG8rXecXxtsVyRCcCqQR8rPgG6Co`
+
+### Etherium
+<img src="https://chart.googleapis.com/chart?cht=qr&chs=150x150&chl=0x400638420664e3eaD06ec92F8Fc05F10B7b9E982" />
+
+`0x400638420664e3eaD06ec92F8Fc05F10B7b9E982`
