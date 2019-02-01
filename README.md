@@ -55,14 +55,19 @@ Reading List uses [Core Data](https://developer.apple.com/documentation/coredata
 <img src="./media/coredata_entities.png" width="400px;" alt="Core data entities"/>
 
 ## Donate
-If you're enjoying Reading List and would like to donate towards development, you can do so.
+Reading List is free to use. If you're enjoying the app, and are feeling generous, you can to contibute towards its development 😊 
 
 ### Bitcoin
-<img src="./media/Bitcoin_QR.png" width="150px;" alt="Bitcoin public address"/>
+<img src="https://chart.googleapis.com/chart?cht=qr&chs=125x125&chl=bitcoin:1Dd8yCPG8rXecXxtsVyRCcCqQR8rPgG6Co" alt="Bitcoin address"/>
 
 `1Dd8yCPG8rXecXxtsVyRCcCqQR8rPgG6Co`
 
 ### Etherium
-<img src="https://chart.googleapis.com/chart?cht=qr&chs=150x150&chl=0x400638420664e3eaD06ec92F8Fc05F10B7b9E982" />
+<img src="https://chart.googleapis.com/chart?cht=qr&chs=125x125&chl=0x400638420664e3eaD06ec92F8Fc05F10B7b9E982" alt="Etherium address" />
 
 `0x400638420664e3eaD06ec92F8Fc05F10B7b9E982`
+
+### Paypal
+<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=AM3XG8UNNS4K2&currency_code=GBP&source=url">
+<img src="https://www.paypalobjects.com/en_GB/i/btn/btn_donate_SM.gif" border="0" name="submit" title="PayPal" alt="Donate with PayPal button" />
+</a>
