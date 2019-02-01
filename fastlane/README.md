@@ -16,31 +16,31 @@ or alternatively using `brew cask install fastlane`
 
 # Available Actions
 ## iOS
-### ios install_dependencies
-```
-fastlane ios install_dependencies
-```
-
 ### ios preprocess
 ```
 fastlane ios preprocess
 ```
-Makes necessary configuration adjustments prior to a build
+Configures Fabric, builds the project file and sets the build number from git.
+### ios ci
+```
+fastlane ios ci
+```
+
 ### ios test
 ```
 fastlane ios test
 ```
 
-### ios ci_build
-```
-fastlane ios ci_build
-```
-Builds the app, handling signing in a CI-supported way.
 ### ios upload_build
 ```
 fastlane ios upload_build
 ```
-Uploads the previously built binary to TestFlight
+Uploads the previously built binary to TestFlight and tags it
+### ios tag_build
+```
+fastlane ios tag_build
+```
+Creates and pushes a tag like 'build/1583'
 ### ios release
 ```
 fastlane ios release

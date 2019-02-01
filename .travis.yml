@@ -16,6 +16,8 @@ install:
 before_script:
   - bundle exec fastlane preprocess
 script:
+  # tag is here for testing purposes; should be moved to after_deploy if works
+  - bundle exec fastlane tag_build
   - bundle exec fastlane ci
 deploy:
   skip_cleanup: true

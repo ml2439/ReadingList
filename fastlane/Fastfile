@@ -26,9 +26,19 @@ platform :ios do
     )
   end
 
-  desc "Uploads the previously built binary to TestFlight"
+  desc "Uploads the previously built binary to TestFlight and tags it"
   lane :upload_build do
     upload_to_testflight(skip_submission: true, skip_waiting_for_build_processing: true)
+    tag_build
+  end
+
+  desc "Creates and pushes a tag like 'build/1583'"
+  lane :tag_build do
+    build_tag = "build/" + get_build_number.to_s
+    add_git_tag(
+      tag: build_tag
+    )
+    sh("git push https://AndrewBennet:$GITHUB_TOKEN@github.com/AndrewBennet/ReadingList.git tag " + build_tag)
   end
 
   lane :release do |options|
