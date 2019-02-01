@@ -16,24 +16,34 @@ or alternatively using `brew cask install fastlane`
 
 # Available Actions
 ## iOS
+### ios preprocess
+```
+fastlane ios preprocess
+```
+Configures Fabric, builds the project file and sets the build number from git.
+### ios ci
+```
+fastlane ios ci
+```
+
 ### ios test
 ```
 fastlane ios test
 ```
 
-### ios ci_build
-```
-fastlane ios ci_build
-```
-Builds the app, handling signing in a CI-supported way.
 ### ios upload_build
 ```
 fastlane ios upload_build
 ```
-Uploads the previously built binary to TestFlight
-### ios publish
+Uploads the previously built binary to TestFlight and tags it
+### ios tag_build
 ```
-fastlane ios publish
+fastlane ios tag_build
+```
+Creates and pushes a tag like 'build/1583'
+### ios release
+```
+fastlane ios release
 ```
 
 ### ios snaps
@@ -46,11 +56,6 @@ Create framed screenshots for a range of devices
 fastlane ios dsyms
 ```
 Download DSYMs from iTunes and upload them to Crashlytics
-### ios reset_build_number
-```
-fastlane ios reset_build_number
-```
-
 ### ios patch
 ```
 fastlane ios patch
