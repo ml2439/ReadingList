@@ -1,8 +1,7 @@
 language: swift
 osx_image: xcode10.1
-# To enable build numbering from commit count
 git:
-  depth: false
+  depth: false # To enable build numbering from an accurate commit count
 cache:
   bundler: true
   cocoapods: true
@@ -16,8 +15,6 @@ install:
 before_script:
   - bundle exec fastlane preprocess
 script:
-  # tag is here for testing purposes; should be moved to after_deploy if works
-  - bundle exec fastlane tag_build
   - bundle exec fastlane ci
 deploy:
   skip_cleanup: true
@@ -26,3 +23,5 @@ deploy:
     - bundle exec fastlane upload_build
   on:
     branch: master
+after_deploy:
+  - bundle exec fastlane tag_build
