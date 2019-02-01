@@ -15,7 +15,7 @@ install:
 before_script:
   - bundle exec fastlane preprocess
 script:
-  - bundle exec fastlane ci
+  - bundle exec fastlane ci || travis_terminate 1;
 deploy:
   skip_cleanup: true
   provider: script
