@@ -133,7 +133,7 @@ extension Organise: DZNEmptyDataSetSource {
     func verticalOffset(forEmptyDataSet scrollView: UIScrollView!) -> CGFloat {
         // The large titles make the empty data set look weirdly low down. Adjust this,
         // by - fairly randomly - the height of the nav bar
-        if #available(iOS 11.0, *), navigationController!.navigationBar.prefersLargeTitles {
+        if navigationController!.navigationBar.prefersLargeTitles {
             return -navigationController!.navigationBar.frame.height
         } else {
             return 0

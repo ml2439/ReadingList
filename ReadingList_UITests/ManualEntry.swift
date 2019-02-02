@@ -76,11 +76,5 @@ class ManualEntry: XCTestCase {
         app.clickTab(.settings)
         app.tables.staticTexts["Import / Export"].tap()
         app.tables.staticTexts["Export"].tap()
-
-        if #available(iOS 11, *) {} else {
-            sleep(5)
-            app.collectionViews.collectionViews.buttons["Add To iCloud Drive"].tap()
-            app.navigationBars["iCloud Drive"].buttons["Cancel"].tap()
-        }
     }
 }

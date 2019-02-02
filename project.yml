@@ -10,7 +10,7 @@ targets:
   ReadingList:
     type: application
     platform: iOS
-    deploymentTarget: 10.3
+    deploymentTarget: 11.0
     sources: [ReadingList]
     scheme:
       testTargets:
@@ -58,13 +58,13 @@ targets:
   ReadingList_Foundation:
     type: framework
     platform: iOS
-    deploymentTarget: 10.3
+    deploymentTarget: 11.0
     sources: [ReadingList_Foundation]
 
   ReadingList_UnitTests:
     type: bundle.unit-test
     platform: iOS
-    deploymentTarget: 10.3
+    deploymentTarget: 11.0
     sources: [ReadingList_UnitTests]
     dependencies:
       - target: ReadingList
@@ -77,7 +77,7 @@ targets:
   ReadingList_UITests:
     type: bundle.ui-testing
     platform: iOS
-    deploymentTarget: 10.3
+    deploymentTarget: 11.0
     sources:
       - path: ReadingList_UITests
       - path: ReadingList/Api/GoogleBooksRequest.swift
@@ -87,7 +87,7 @@ targets:
   ReadingList_Screenshots:
     type: bundle.ui-testing
     platform: iOS
-    deploymentTarget: 10.3
+    deploymentTarget: 11.0
     sources:
       - path: ReadingList_Screenshots
       - path: ReadingList_UITests/ReadingListApp.swift

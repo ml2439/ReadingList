@@ -1,0 +1,112 @@
+{
+ "kind": "books#volume",
+ "id": "kdBiDwAAQBAJ",
+ "etag": "n0bn8+14n2o",
+ "selfLink": "https://www.googleapis.com/books/v1/volumes/kdBiDwAAQBAJ",
+ "volumeInfo": {
+  "title": "Poverty Safari",
+  "subtitle": "Understanding the Anger of Britain's Underclass",
+  "authors": [
+   "Darren McGarvey"
+  ],
+  "publisher": "Pan Macmillan",
+  "publishedDate": "2018-08-09",
+  "description": "\u003cp\u003e\u003cb\u003eThe \u003ci\u003eSunday Times\u003c/i\u003e Top Ten bestseller.\u003c/b\u003e\u003cbr\u003e\u003cb\u003eWinner of the Orwell Prize 2018.\u003c/b\u003e\u003cbr\u003e\u003cb\u003eNamed the most 'Rebellious Read of the 21st Century' in a Scottish Book Trust poll.\u003c/b\u003e\u003cbr\u003e\u003cb\u003e\u003c/b\u003e\u003cbr\u003eDarren McGarvey has experienced poverty and its devastating effects first-hand. He knows why people from deprived communities all around Britain feel angry and unheard. And he wants to explain . . . \u003c/p\u003e\u003cp\u003eSo he invites you to come on a safari of sorts. But not the kind where the wildlife is surveyed from a safe distance. This book takes you inside the experience of poverty to show how the pressures really feel and how hard their legacy is to overcome. \u003c/p\u003e\u003cp\u003eArguing that both the political left and right misunderstand poverty as it is actually lived, McGarvey sets out what everybody – including himself – could do to change things. Razor-sharp, fearless and brutally honest,\u003ci\u003e Poverty Safari\u003c/i\u003e is an unforgettable insight into modern Britain.\u003c/p\u003e",
+  "industryIdentifiers": [
+   {
+    "type": "ISBN_10",
+    "identifier": "152900635X"
+   },
+   {
+    "type": "ISBN_13",
+    "identifier": "9781529006353"
+   }
+  ],
+  "readingModes": {
+   "text": true,
+   "image": false
+  },
+  "pageCount": 224,
+  "printedPageCount": 284,
+  "printType": "BOOK",
+  "categories": [
+   "Social Science / Poverty & Homelessness",
+   "Social Science / Social Classes & Economic Disparity",
+   "Business & Economics / Labor",
+   "Political Science / Public Policy / Social Services & Welfare",
+   "Social Science / Discrimination & Race Relations"
+  ],
+  "maturityRating": "NOT_MATURE",
+  "allowAnonLogging": true,
+  "contentVersion": "1.3.3.0.preview.2",
+  "panelizationSummary": {
+   "containsEpubBubbles": false,
+   "containsImageBubbles": false
+  },
+  "imageLinks": {
+   "smallThumbnail": "http://books.google.com/books/content?id=kdBiDwAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&imgtk=AFLRE71nYJwi-0mM8-U4G-wUrRE6f7y9P2BX4iE1cry3saIxPOiXhSrusnFgwzG5lwtSGSUlykR_q1vIxnaPUpjVohYlqIEoiwmq3nNVlYRA2AOP8KitGXnpawWNDh8Pqq4D8IxkBf9k&source=gbs_api",
+   "thumbnail": "http://books.google.com/books/content?id=kdBiDwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&imgtk=AFLRE71kLTArbvr6qXqq1vsfHMbZl2eDU-VeOnMqBworG9MGK-EZ34k4G-I2nTxezRPwkBNcmIvcBBuYExq3Ldd216qIfs9W3mLNarznDqt8Cdpz-SX86SU1Aixv_15qTshstfCu9KJP&source=gbs_api",
+   "small": "http://books.google.com/books/content?id=kdBiDwAAQBAJ&printsec=frontcover&img=1&zoom=2&edge=curl&imgtk=AFLRE70KJ3n25JBlyfYLdX9IWMthWpem7VLytE8ahUlVawXPQxr466wwlzT2pr7JfKt5imic_rDUl5HlayqbkIt6Mbei7oWuebfUk70oEpNH_rPJraxo-JwZnOMu4B7DwU2R-3wrZYno&source=gbs_api",
+   "medium": "http://books.google.com/books/content?id=kdBiDwAAQBAJ&printsec=frontcover&img=1&zoom=3&edge=curl&imgtk=AFLRE73CfhMxYqK8xRvh2oH5hLaYGnRH8I6O4jIJqud_RxZ7vTkk-zlmuhcJ9gk-PXzz3ha_GaQe_GeErdXwPNuJCfPjn2PAZLcv3_puYRn9vwVMA1WVk1NrwQ9LV72RByPR3tO5QmhV&source=gbs_api",
+   "large": "http://books.google.com/books/content?id=kdBiDwAAQBAJ&printsec=frontcover&img=1&zoom=4&edge=curl&imgtk=AFLRE704a0RVK6IOgwr4jVhLuGkAGo1dJpDG2lDRqRgFU7x_awsnffPLxt5dHIiXEQbG92Jm03nSafSEFrUwZv0C0M2vhTx6SSmrwpC0L4GubE9eVPMaOmD3_WzL7SdPhUvJTC15BCTK&source=gbs_api",
+   "extraLarge": "http://books.google.com/books/content?id=kdBiDwAAQBAJ&printsec=frontcover&img=1&zoom=6&edge=curl&imgtk=AFLRE73YeJfZDTgtF-sZUIfN5Srt9wI3EV4glp0ruQDD_KU8gy9MZ5Gzo_T2FZUyCXUzWPn9w6PP3i9E0PhFYo5l0m3LYU__-h8srjoGonssh2ph9-qW5FAnnnCHZYKRbvEVleEgU_sk&source=gbs_api"
+  },
+  "language": "en",
+  "previewLink": "http://books.google.co.uk/books?id=kdBiDwAAQBAJ&hl=&source=gbs_api",
+  "infoLink": "https://play.google.com/store/books/details?id=kdBiDwAAQBAJ&source=gbs_api",
+  "canonicalVolumeLink": "https://market.android.com/details?id=book-kdBiDwAAQBAJ"
+ },
+ "layerInfo": {
+  "layers": [
+   {
+    "layerId": "geo",
+    "volumeAnnotationsVersion": "4"
+   }
+  ]
+ },
+ "saleInfo": {
+  "country": "GB",
+  "saleability": "FOR_SALE",
+  "isEbook": true,
+  "listPrice": {
+   "amount": 8.99,
+   "currencyCode": "GBP"
+  },
+  "retailPrice": {
+   "amount": 5.67,
+   "currencyCode": "GBP"
+  },
+  "buyLink": "https://play.google.com/store/books/details?id=kdBiDwAAQBAJ&rdid=book-kdBiDwAAQBAJ&rdot=1&source=gbs_api",
+  "offers": [
+   {
+    "finskyOfferType": 1,
+    "listPrice": {
+     "amountInMicros": 8990000.0,
+     "currencyCode": "GBP"
+    },
+    "retailPrice": {
+     "amountInMicros": 5670000.0,
+     "currencyCode": "GBP"
+    },
+    "giftable": true
+   }
+  ]
+ },
+ "accessInfo": {
+  "country": "GB",
+  "viewability": "PARTIAL",
+  "embeddable": true,
+  "publicDomain": false,
+  "textToSpeechPermission": "ALLOWED_FOR_ACCESSIBILITY",
+  "epub": {
+   "isAvailable": true,
+   "acsTokenLink": "http://books.google.co.uk/books/download/Poverty_Safari-sample-epub.acsm?id=kdBiDwAAQBAJ&format=epub&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+  },
+  "pdf": {
+   "isAvailable": false
+  },
+  "webReaderLink": "http://play.google.com/books/reader?id=kdBiDwAAQBAJ&hl=&printsec=frontcover&source=gbs_api",
+  "accessViewStatus": "SAMPLE",
+  "quoteSharingAllowed": false
+ }
+}

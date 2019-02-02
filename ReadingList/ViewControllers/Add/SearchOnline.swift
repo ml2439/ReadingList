@@ -31,13 +31,8 @@ class SearchOnline: UITableViewController {
         searchController.searchBar.text = initialSearchString
         searchController.searchBar.delegate = self
         searchController.searchBar.autocapitalizationType = .words
-
-        if #available(iOS 11.0, *) {
-            navigationItem.searchController = searchController
-            navigationItem.hidesSearchBarWhenScrolling = false
-        } else {
-            tableView.tableHeaderView = searchController.searchBar
-        }
+        navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
 
         // If we have an entry-point search, fire it off now
         if let initialSearchString = initialSearchString {
@@ -102,12 +97,7 @@ class SearchOnline: UITableViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
-        let navigationHeaderHeight: CGFloat
-        if #available(iOS 11.0, *) {
-            navigationHeaderHeight = tableView.universalContentInset.top
-        } else {
-            navigationHeaderHeight = tableView.universalContentInset.top + searchController.searchBar.frame.height
-        }
+        let navigationHeaderHeight = tableView.adjustedContentInset.top
         emptyDatasetView.setTopDistance(navigationHeaderHeight + 20)
     }
 

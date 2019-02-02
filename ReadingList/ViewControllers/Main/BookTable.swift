@@ -16,6 +16,7 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
     override func viewDidLoad() {
         searchController = UISearchController(filterPlaceholderText: "Your Library")
         searchController.searchResultsUpdater = self
+        navigationItem.searchController = searchController
 
         tableView.keyboardDismissMode = .onDrag
         tableView.register(UINib(BookTableViewCell.self), forCellReuseIdentifier: String(describing: BookTableViewCell.self))
@@ -25,14 +26,6 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
 
         // Handle the data fetch, sort and filtering
         buildResultsController()
-
-        // Some search bar styles are slightly different on iOS 11
-        if #available(iOS 11.0, *) {
-            navigationItem.searchController = searchController
-        } else {
-            tableView.tableHeaderView = TableHeaderSearchBar(searchBar: searchController.searchBar)
-            tableView.setContentOffset(CGPoint(x: 0, y: searchController.searchBar.frame.height), animated: false)
-        }
 
         configureNavBarButtons()
 
@@ -309,37 +302,6 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
         self.present(optionsAlert, animated: true, completion: nil)
     }
 
-    override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-
-        // Start with the delete action
-        var rowActions = [UITableViewRowAction(style: .destructive, title: "Delete") { _, indexPath in
-            let confirm = self.confirmDeleteAlert(indexPaths: [indexPath])
-            confirm.popoverPresentationController?.setSourceCell(atIndexPath: indexPath, inTable: tableView)
-            self.present(confirm, animated: true)
-        }]
-
-        // Add the other state change actions where appropriate
-        if indexPath.section == sectionIndexByReadState[.toRead] {
-            let startAction = UITableViewRowAction(style: .normal, title: "Start", color: .buttonBlue) { _, indexPath in
-                self.resultsController.object(at: indexPath).startReading()
-                PersistentStoreManager.container.viewContext.saveAndLogIfErrored()
-            }
-            rowActions.append(startAction)
-        } else if indexPath.section == sectionIndexByReadState[.reading] {
-            let readingBook = self.resultsController.object(at: indexPath)
-            if readingBook.startedReading! < Date() {
-                let finishAction = UITableViewRowAction(style: .normal, title: "Finish", color: .flatGreen) { _, _ in
-                    readingBook.finishReading()
-                    PersistentStoreManager.container.viewContext.saveAndLogIfErrored()
-                }
-                rowActions.append(finishAction)
-            }
-        }
-
-        return rowActions
-    }
-
-    @available(iOS 11.0, *)
     override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { _, _, callback in
             let confirm = self.confirmDeleteAlert(indexPaths: [indexPath], callback: callback)
@@ -355,7 +317,6 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
         return UISwipeActionsConfiguration(performFirstActionWithFullSwipe: false, actions: [deleteAction, editAction])
     }
 
-    @available(iOS 11.0, *)
     override func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
 
         var actions = [UIContextualAction(style: .normal, title: "Log", image: #imageLiteral(resourceName: "Timetable")) { _, _, callback in
@@ -598,7 +559,7 @@ extension BookTable: DZNEmptyDataSetSource {
 
         // The large titles make the empty data set look weirdly low down. Adjust this,
         // by - fairly randomly - the height of the nav bar
-        if #available(iOS 11.0, *), navigationController!.navigationBar.prefersLargeTitles {
+        if navigationController!.navigationBar.prefersLargeTitles {
             return -navigationController!.navigationBar.frame.height
         } else {
             return 0
@@ -636,13 +597,13 @@ extension BookTable: DZNEmptyDataSetDelegate {
         if !searchController.hasActiveSearchTerms {
             // Deactivate the search controller so that clearing a search term cannot hide an active search bar
             if searchController.isActive { searchController.isActive = false }
-            searchController.searchBar.isActiveOrVisible = false
+            searchController.searchBar.isActive = false
         }
         navigationItem.leftBarButtonItem!.setHidden(true)
     }
 
     func emptyDataSetDidDisappear(_ scrollView: UIScrollView!) {
-        searchController.searchBar.isActiveOrVisible = true
+        searchController.searchBar.isActive = true
         navigationItem.leftBarButtonItem!.setHidden(false)
     }
 }
