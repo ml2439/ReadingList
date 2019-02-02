@@ -25,7 +25,3 @@ extension UserSettingsCollection {
     static let appStartupCount = UserSetting<Int>("appStartupCount", defaultValue: 0)
     static let userEngagementCount = UserSetting<Int>("userEngagementCount", defaultValue: 0)
 }
-
-extension Notification.Name {
-    static let BookSortOrderChanged = Notification.Name("book-sort-order-changed")
-}

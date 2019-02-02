@@ -12,7 +12,7 @@ extension UserSettingsCollection {
     static let quickActionSimulation = UserSetting<QuickAction?>("shortcut-type-simulation")
 }
 
-class DebugSettings {
+class Debug {
 
     private static let screenshotsCommand = "--UITests_Screenshots"
 

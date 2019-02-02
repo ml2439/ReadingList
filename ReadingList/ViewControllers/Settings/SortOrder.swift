@@ -19,7 +19,7 @@ class SortOrder: FormViewController {
                     case .reading: UserDefaults.standard[.readingSortOrder] = selectedValue
                     case .finished: UserDefaults.standard[.finishedSortOrder] = selectedValue
                     }
-                    NotificationCenter.default.post(name: NSNotification.Name.BookSortOrderChanged, object: nil)
+                    NotificationCenter.default.post(name: .BookSortOrderChanged, object: nil)
                     if let customBooksToTopRow = self.form.rowBy(tag: self.customBooksToTopTag) {
                         customBooksToTopRow.evaluateHidden()
                     }
@@ -74,4 +74,8 @@ class SortOrder: FormViewController {
 
         monitorThemeSetting()
     }
+}
+
+extension Notification.Name {
+    static let BookSortOrderChanged = Notification.Name("book-sort-order-changed")
 }

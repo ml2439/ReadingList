@@ -22,7 +22,7 @@ class Debug: FormViewController {
                 $0.title = "Import Test Data"
                 $0.onCellSelection { _, _ in
                     SVProgressHUD.show(withStatus: "Loading Data...")
-                    DebugSettings.loadData {
+                    Debug.loadData {
                         SVProgressHUD.dismiss()
                     }
                 }

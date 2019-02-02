@@ -21,7 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         #if DEBUG
-        DebugSettings.initialiseSettings()
+        Debug.initialiseSettings()
         #endif
 
         UserEngagement.initialiseUserAnalytics()
@@ -65,7 +65,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     os_log("Persistent store loaded", type: .info)
                     DispatchQueue.main.async {
                         #if DEBUG
-                        DebugSettings.initialiseData()
+                        Debug.initialiseData()
                         #endif
                         self.window!.rootViewController = TabBarController()
 
