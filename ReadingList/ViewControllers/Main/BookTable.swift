@@ -13,8 +13,6 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
         (readState: $0, predicate: NSPredicate(format: "%K == %ld", #keyPath(Book.readState), $0.rawValue))
     }
 
-    @IBOutlet private weak var tableFooter: UILabel!
-
     override func viewDidLoad() {
         searchController = UISearchController(filterPlaceholderText: "Your Library")
         searchController.searchResultsUpdater = self
@@ -28,9 +26,6 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
 
         // Handle the data fetch, sort and filtering
         buildResultsController()
-
-        // Set the table footer text
-        tableFooter.text = footerText()
 
         configureNavBarButtons()
 
@@ -55,11 +50,6 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
         super.viewDidAppear(animated)
     }
 
-    override func initialise(withTheme theme: Theme) {
-        super.initialise(withTheme: theme)
-        tableFooter.textColor = theme.subtitleTextColor
-    }
-
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
 
@@ -69,9 +59,14 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
     }
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return titleForHeader(inSection: section)
+    }
+
+    func titleForHeader(inSection section: Int) -> String {
         // Turn the section name into a BookReadState and use its description property
-        let sectionAsInt = Int16(resultsController.sections![section].name)!
-        return BookReadState(rawValue: sectionAsInt)!.description
+        let sectionAsInt = Int(resultsController.sections![section].name)!
+        let rowCount = resultsController.sections![section].numberOfObjects
+        return "\(BookReadState(rawValue: Int16(sectionAsInt))!.description.uppercased()) (\(rowCount))"
     }
 
     func buildResultsController() {
@@ -134,7 +129,6 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
     @objc func refetch() {
         // FUTURE: This can leave the EmptyDataSet off-screen if a bulk delete has occurred. Can't find a way to prevent this.
         try! self.resultsController.performFetch()
-        self.tableFooter.text = self.footerText()
         self.tableView.reloadData()
     }
 
@@ -162,12 +156,6 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
         } else {
             guard let selectedCell = tableView.cellForRow(at: indexPath) else { return }
             performSegue(withIdentifier: "showDetail", sender: selectedCell)
-        }
-    }
-
-    override func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection: Int) {
-        if let headerTitle = view as? UITableViewHeaderFooterView {
-            headerTitle.textLabel?.textColor = .lightGray
         }
     }
 
@@ -231,13 +219,6 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
         optionsAlert.popoverPresentationController?.barButtonItem = sender
 
         self.present(optionsAlert, animated: true, completion: nil)
-    }
-
-    func footerText() -> String? {
-        return sectionIndexByReadState.map {
-            let count = tableView(tableView, numberOfRowsInSection: $0.value)
-            return "\($0.key.description): \(count) book\(count == 1 ? "" : "s")"
-        }.reversed().joined(separator: "\n")
     }
 
     var sectionIndexByReadState: [BookReadState: Int] {
@@ -407,7 +388,6 @@ extension BookTable: UISearchResultsUpdating {
         if anyChangedPredicates {
             try! resultsController.performFetch()
             tableView.reloadData()
-            tableFooter.text = footerText()
         }
     }
 
@@ -516,16 +496,20 @@ extension BookTable: UISearchResultsUpdating {
 }
 
 extension BookTable: NSFetchedResultsControllerDelegate {
-    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        tableView.controllerWillChangeContent(controller)
+    func controllerWillChangeContent(_: NSFetchedResultsController<NSFetchRequestResult>) {
+        tableView.beginUpdates()
     }
 
-    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        tableView.controllerDidChangeContent(controller)
+    func controllerDidChangeContent(_: NSFetchedResultsController<NSFetchRequestResult>) {
+        tableView.endUpdates()
 
-        // The fetched results controller delegate is only done manually (rather than set to the tableView) so we
-        // can trigger the footer text to reload also
-        tableFooter.text = footerText()
+        // Reload the footer text whenever content changes
+        for section in 0..<resultsController.sections!.count {
+            let title = titleForHeader(inSection: section)
+            guard let headerView = tableView.headerView(forSection: section) else { continue }
+            headerView.textLabel?.text = title
+            headerView.sizeToFit()
+        }
     }
 
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
