@@ -30,22 +30,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UpgradeActionApplier().performUpgrade()
 
         // Grab any options which we take action on after the persistent store is initialised
-        let shortcutItem = launchOptions?[.shortcutItem] as? UIApplicationShortcutItem
+        let quickAction: QuickAction?
+        if let shortcut = launchOptions?[.shortcutItem] as? UIApplicationShortcutItem {
+            quickAction = QuickAction(rawValue: shortcut.type)
+        } else {
+            quickAction = nil
+        }
         let csvFileUrl = launchOptions?[.url] as? URL
 
         initialisePersistentStore {
             // Once the store is loaded and the main storyboard instantiated, perform the shortcut action
             // or open the CSV file, is specified. This is done here rather than in application:open,
             // for example, in the case where the app is not yet launched.
-            if let shortcutItem = shortcutItem {
-                self.performShortcut(shortcutItem.type)
+            if let quickAction = quickAction {
+                quickAction.perform(from: self.tabBarController)
             } else if let csvFileUrl = csvFileUrl {
                 self.openCsvImport(url: csvFileUrl)
             }
         }
 
         // If there was a QuickAction or URL-open, it is handled here, so prevent another handler from being called
-        return shortcutItem == nil && csvFileUrl == nil
+        return quickAction == nil && csvFileUrl == nil
     }
 
     /**
@@ -126,8 +131,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         #if DEBUG
-        if let shortcutType = UserDefaults.standard.string(forKey: "shortcut-type-simulation") {
-            performShortcut(shortcutType)
+        if let simulatedQuickAction = UserDefaults.standard[.quickActionSimulation] {
+            simulatedQuickAction.perform(from: tabBarController)
         }
         #endif
         UserEngagement.onAppOpen()
@@ -138,7 +143,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
-        performShortcut(shortcutItem.type)
+        guard let quickAction = QuickAction(rawValue: shortcutItem.type) else {
+            completionHandler(false)
+            return
+        }
+        quickAction.perform(from: tabBarController)
         completionHandler(true)
     }
 
@@ -160,37 +169,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         navController.viewControllers.first!.performSegue(withIdentifier: "settingsData", sender: url)
     }
 
-    func performShortcut(_ type: String) {
-        func presentFromToRead(_ viewController: UIViewController) {
-            // All quick actions are presented from the To Read tab
-            tabBarController.selectedTab = .toRead
-
-            // Dismiss any modal views before presenting
-            let navController = tabBarController.selectedSplitViewController!.masterNavigationController
-            navController.dismissAndPopToRoot()
-            navController.viewControllers.first!.present(viewController, animated: true, completion: nil)
-        }
-
-        switch type {
-        case ShortcutType.scanBarcode.rawValue:
-            UserEngagement.logEvent(.scanBarcodeQuickAction)
-            presentFromToRead(UIStoryboard.ScanBarcode.rootAsFormSheet())
-        case ShortcutType.searchOnline.rawValue:
-            UserEngagement.logEvent(.searchOnlineQuickAction)
-            presentFromToRead(UIStoryboard.SearchOnline.rootAsFormSheet())
-        default:
-            assertionFailure("Unexpected shortcut type: \(type)")
-        }
-    }
-
     @objc func initialiseTheme() {
         let theme = UserDefaults.standard[.theme]
         theme.configureForms()
         window!.tintColor = theme.tint
     }
-}
-
-enum ShortcutType: String {
-    case scanBarcode = "com.andrewbennet.books.ScanBarcode"
-    case searchOnline = "com.andrewbennet.books.SearchBooks"
 }
