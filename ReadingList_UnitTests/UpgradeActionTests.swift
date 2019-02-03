@@ -5,7 +5,7 @@ import ReadingList_Foundation
 
 class UpgradeActionTests: XCTestCase {
     func testActionIdsAreSequential() {
-        let ids = UpgradeActionApplier().actions.map { $0.id }
+        let ids = UpgradeManager().actions.map { $0.id }
         let sortedIds = ids.sorted()
         XCTAssertEqual(ids, sortedIds)
     }
@@ -36,7 +36,7 @@ class UpgradeActionTests: XCTestCase {
         let legacyTableSortOrderKey = "tableSortOrder"
         UserDefaults.standard.set(legacyValue, forKey: legacyTableSortOrderKey)
 
-        UpgradeActionApplier().performUpgrade()
+        UpgradeManager().performUpgradeIfNecessary()
         XCTAssertEqual(TableSortOrder.byReadState, expectedSorts)
         XCTAssertGreaterThan(UserDefaults.standard[.lastAppliedUpgradeAction]!, 0)
         XCTAssertNil(UserDefaults.standard.object(forKey: legacyTableSortOrderKey))
