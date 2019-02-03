@@ -28,10 +28,6 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
 
     var didShowNavigationItemTitle = false
 
-    var parentSplitViewController: UISplitViewController? {
-        return appDelegate.tabBarController.selectedSplitViewController
-    }
-
     func setViewEnabled(_ enabled: Bool) {
         // Show or hide the whole view and nav bar buttons. Exit early if nothing to do.
         if view.isHidden != !enabled {
@@ -202,7 +198,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         guard deletedObjects?.contains(book) != true else {
             // If the book was deleted, set our book to nil and update this page. Pop back to the book table if necessary
             self.book = nil
-            parentSplitViewController?.masterNavigationController.popToRootViewController(animated: false)
+            splitViewController?.masterNavigationController.popToRootViewController(animated: false)
             return
         }
 

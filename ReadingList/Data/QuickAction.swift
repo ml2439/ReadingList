@@ -4,15 +4,15 @@ import UIKit
 enum QuickAction: String {
     case scanBarcode = "com.andrewbennet.books.ScanBarcode"
     case searchOnline = "com.andrewbennet.books.SearchBooks"
-    
+
     func perform(from root: TabBarController) {
         // All quick actions are presented from the To Read tab
         root.selectedTab = .toRead
-        
+
         // Dismiss any modal views before presenting
         let navController = root.selectedSplitViewController!.masterNavigationController
         navController.dismissAndPopToRoot()
-        
+
         let viewController: UIViewController
         switch self {
         case .scanBarcode:

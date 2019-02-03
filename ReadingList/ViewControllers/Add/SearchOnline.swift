@@ -184,7 +184,7 @@ class SearchOnline: UITableViewController {
     func presentDuplicateBookAlert(book: Book, fromSelectedIndex indexPath: IndexPath) {
         let alert = duplicateBookAlertController(goToExistingBook: {
             self.presentingViewController!.dismiss(animated: true) {
-                appDelegate.tabBarController.simulateBookSelection(book, allowTableObscuring: true)
+                (self.tabBarController as? TabBarController)?.simulateBookSelection(book, allowTableObscuring: true)
             }
         }, cancel: {
             self.tableView.deselectRow(at: indexPath, animated: true)

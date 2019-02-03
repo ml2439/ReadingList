@@ -152,7 +152,7 @@ class EditBookReadState: FormViewController {
 
         presentingViewController!.dismiss(animated: true) {
             if self.newBook {
-                appDelegate.tabBarController.simulateBookSelection(self.book, allowTableObscuring: false)
+                (self.tabBarController as? TabBarController)?.simulateBookSelection(self.book, allowTableObscuring: false)
             }
             UserEngagement.onReviewTrigger()
         }

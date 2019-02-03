@@ -5,10 +5,6 @@ import CoreData
 import ReadingList_Foundation
 import os.log
 
-var appDelegate: AppDelegate {
-    return UIApplication.shared.delegate as! AppDelegate
-}
-
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 

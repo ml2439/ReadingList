@@ -151,7 +151,7 @@ class ScanBarcode: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
     func presentDuplicateAlert(_ book: Book) {
         let alert = duplicateBookAlertController(goToExistingBook: {
             self.dismiss(animated: true) {
-                appDelegate.tabBarController.simulateBookSelection(book, allowTableObscuring: true)
+                (self.tabBarController as? TabBarController)?.simulateBookSelection(book, allowTableObscuring: true)
             }
         }, cancel: {
             self.session?.startRunning()
