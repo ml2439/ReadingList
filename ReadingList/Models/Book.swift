@@ -5,30 +5,73 @@ import os.log
 
 @objc(Book)
 class Book: NSManagedObject {
+
+    enum Key: String {
+        //swiftlint:disable redundant_string_enum_value
+        case isbn13 = "isbn13"
+        case pageCount = "pageCount"
+        case currentPage = "currentPage"
+        case rating = "rating"
+        case sort = "sort"
+        //swiftlint:enable redundant_string_enum_value
+    }
+
+    private func safelyGetPrimitiveValue(_ key: Book.Key) -> Any? {
+        return safelyGetPrimitiveValue(forKey: key.rawValue)
+    }
+
+    private func safelySetPrimitiveValue(_ value: Any?, _ key: Book.Key) {
+        return safelySetPrimitiveValue(value, forKey: key.rawValue)
+    }
+
     @NSManaged var readState: BookReadState
     @NSManaged var startedReading: Date?
     @NSManaged var finishedReading: Date?
-
-    @NSManaged var isbn13: NSNumber?
     @NSManaged var googleBooksId: String?
     @NSManaged var manualBookId: String?
-
     @NSManaged var title: String
-    @NSManaged private(set) var authors: [Author]
-    @NSManaged private(set) var authorSort: String // Calculated sort helper
-
-    @NSManaged var pageCount: NSNumber?
+    @NSManaged private(set) var authorSort: String
     @NSManaged var publicationDate: Date?
     @NSManaged var bookDescription: String?
     @NSManaged var coverImage: Data?
     @NSManaged var notes: String?
-    @NSManaged var rating: NSNumber? // Valid values are 1-5.
     @NSManaged var languageCode: String? // ISO 639.1: two-digit language code
-    @NSManaged var currentPage: NSNumber?
-    @NSManaged var sort: NSNumber?
 
     @NSManaged var subjects: Set<Subject>
     @NSManaged private(set) var lists: Set<List>
+
+    @objc var authors: [Author] {
+        get { return safelyGetPrimitiveValue(forKey: #keyPath(Book.authors)) as! [Author] }
+        set {
+            safelySetPrimitiveValue(newValue, forKey: #keyPath(Book.authors))
+            authorSort = newValue.lastNamesSort
+        }
+    }
+
+    var isbn13: Int64? {
+        get { return safelyGetPrimitiveValue(.isbn13) as! Int64? }
+        set { safelySetPrimitiveValue(newValue, .isbn13) }
+    }
+
+    var pageCount: Int32? {
+        get { return safelyGetPrimitiveValue(.pageCount) as! Int32? }
+        set { safelySetPrimitiveValue(newValue, .pageCount) }
+    }
+
+    var currentPage: Int32? {
+        get { return safelyGetPrimitiveValue(.currentPage) as! Int32? }
+        set { safelySetPrimitiveValue(newValue, .currentPage) }
+    }
+
+    var rating: Int16? {
+        get { return safelyGetPrimitiveValue(.rating) as! Int16? }
+        set { safelySetPrimitiveValue(newValue, .rating) }
+    }
+
+    var sort: Int32? {
+        get { return safelyGetPrimitiveValue(.sort) as! Int32? }
+        set { safelySetPrimitiveValue(newValue, .sort) }
+    }
 
     convenience init(context: NSManagedObjectContext, readState: BookReadState) {
         self.init(context: context)
@@ -59,7 +102,7 @@ class Book: NSManagedObject {
 
         if let maximalSort = Book.maximalSort(getMaximum: !UserDefaults.standard[.addBooksToTopOfCustom], fromContext: managedObjectContext!) {
             let plusMinusOne: Int32 = UserDefaults.standard[.addBooksToTopOfCustom] ? -1 : 1
-            sort = NSNumber(value: maximalSort + plusMinusOne)
+            sort = maximalSort + plusMinusOne
         } else {
             sort = 0
         }
@@ -76,34 +119,25 @@ class Book: NSManagedObject {
 
 extension Book {
 
-    func setAuthors(_ authors: [Author]) {
-        self.authors = authors
-        self.authorSort = Author.authorSort(authors)
-    }
-
     // FUTURE: make a convenience init which takes a fetch result?
     func populate(fromFetchResult fetchResult: FetchResult) {
         googleBooksId = fetchResult.id
         title = fetchResult.title
-        populateAuthors(fromStrings: fetchResult.authors)
+        authors = fetchResult.authors
         bookDescription = fetchResult.description
         subjects = Set(fetchResult.subjects.map { Subject.getOrCreate(inContext: self.managedObjectContext!, withName: $0) })
         coverImage = fetchResult.coverImage
-        pageCount = fetchResult.pageCount?.nsNumber
+        pageCount = fetchResult.pageCount
         publicationDate = fetchResult.publishedDate
-        if let isbnInt = fetchResult.isbn13?.int {
-            isbn13 = NSNumber(value: isbnInt)
-        }
+        isbn13 = fetchResult.isbn13?.int
         languageCode = fetchResult.languageCode
     }
 
     func populate(fromSearchResult searchResult: SearchResult, withCoverImage coverImage: Data? = nil) {
         googleBooksId = searchResult.id
         title = searchResult.title
-        populateAuthors(fromStrings: searchResult.authors)
-        if let isbnInt = ISBN13(searchResult.isbn13)?.int {
-            isbn13 = NSNumber(value: isbnInt)
-        }
+        authors = searchResult.authors
+        isbn13 = ISBN13(searchResult.isbn13)?.int
         self.coverImage = coverImage
     }
 
@@ -119,7 +153,7 @@ extension Book {
             }
         }
 
-        self.setAuthors(authorNames.map { Author(lastName: $0.1, firstNames: $0.0) })
+        self.authors = authorNames.map { Author(lastName: $0.1, firstNames: $0.0) }
     }
 
     static func get(fromContext context: NSManagedObjectContext, googleBooksId: String? = nil, isbn: String? = nil) -> Book? {
@@ -137,7 +171,7 @@ extension Book {
         // then try fetching by ISBN
         if let isbn = isbn {
             let isbnFetch = NSManagedObject.fetchRequest(Book.self, limit: 1)
-            isbnFetch.predicate = NSPredicate(format: "%K == %@", #keyPath(Book.isbn13), isbn)
+            isbnFetch.predicate = NSPredicate(format: "%K == %@", Book.Key.isbn13.rawValue, isbn)
             isbnFetch.returnsObjectsAsFaults = false
             return (try! context.fetch(isbnFetch)).first
         }
@@ -167,10 +201,10 @@ extension Book {
         let fetchRequest = NSManagedObject.fetchRequest(Book.self, limit: 1)
         fetchRequest.predicate = NSPredicate.and([
             NSPredicate(format: "%K == %ld", #keyPath(Book.readState), BookReadState.toRead.rawValue),
-            NSPredicate(format: "%K != nil", #keyPath(Book.sort))])
+            NSPredicate(format: "%K != nil", Book.Key.sort.rawValue)])
         fetchRequest.sortDescriptors = [NSSortDescriptor(\Book.sort, ascending: !getMaximum)]
         fetchRequest.returnsObjectsAsFaults = false
-        return (try! context.fetch(fetchRequest)).first?.sort?.int32
+        return (try! context.fetch(fetchRequest)).first?.sort
     }
 
     static func maxSort(fromContext context: NSManagedObjectContext) -> Int32? {

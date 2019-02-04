@@ -53,8 +53,8 @@ class EditBookReadState: FormViewController {
                     case .reading:
                         self.book.startedReading = (self.form.rowBy(tag: startedReadingKey) as! DateRow).value
                         self.book.finishedReading = nil
-                        if let currentPage = (self.form.rowBy(tag: self.currentPageKey) as! IntRow).value, currentPage >= 0 && currentPage <= Int32.max {
-                            self.book.currentPage = currentPage.nsNumber
+                        if let currentPage = (self.form.rowBy(tag: self.currentPageKey) as! Int32Row).value, currentPage >= 0 {
+                            self.book.currentPage = currentPage
                         } else { self.book.currentPage = nil }
                     case .finished:
                         self.book.startedReading = (self.form.rowBy(tag: startedReadingKey) as! DateRow).value
@@ -85,14 +85,14 @@ class EditBookReadState: FormViewController {
                     self.book.finishedReading = cell.value
                 }
             }
-            <<< IntRow(currentPageKey) {
+            <<< Int32Row(currentPageKey) {
                 $0.title = "Current Page"
-                $0.value = book.currentPage?.intValue
+                $0.value = book.currentPage
                 $0.hidden = Condition.function([readStateKey]) { [unowned self] _ in
                     self.book.readState != .reading
                 }
                 $0.onChange { [unowned self] cell in
-                    self.book.currentPage = cell.value?.nsNumber
+                    self.book.currentPage = cell.value
                 }
             }
 
@@ -103,7 +103,7 @@ class EditBookReadState: FormViewController {
         super.viewDidAppear(animated)
         // If we are editing a book (not adding one), pre-select the current page field
         if self.book.readState == .reading && self.book.changedValues().isEmpty {
-            let currentPageRow = self.form.rowBy(tag: currentPageKey) as! IntRow
+            let currentPageRow = self.form.rowBy(tag: currentPageKey) as! Int32Row
             currentPageRow.cell.textField.becomeFirstResponder()
         }
     }

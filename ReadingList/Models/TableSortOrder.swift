@@ -29,7 +29,7 @@ enum TableSortOrder: Int, UserSettingType {
         case .byFinishDate:
             return [NSSortDescriptor(\Book.finishedReading, ascending: false), NSSortDescriptor(\Book.startedReading, ascending: false)]
         case .customOrder:
-            return [NSSortDescriptor(\Book.sort), NSSortDescriptor(\Book.googleBooksId), NSSortDescriptor(\Book.manualBookId)]
+            return [NSSortDescriptor(Book.Key.sort.rawValue), NSSortDescriptor(\Book.googleBooksId), NSSortDescriptor(\Book.manualBookId)]
         }
     }
 

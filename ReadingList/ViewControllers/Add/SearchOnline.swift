@@ -279,7 +279,7 @@ class SearchOnline: UITableViewController {
                     } else {
                         maximalSort += 1
                     }
-                    book.sort = maximalSort.nsNumber
+                    book.sort = maximalSort
                 }
 
                 editContext.saveAndLogIfErrored()

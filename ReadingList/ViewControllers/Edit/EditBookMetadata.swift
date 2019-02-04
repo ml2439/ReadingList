@@ -62,13 +62,13 @@ class EditBookMetadata: FormViewController {
             +++ AuthorSection(book: book, navigationController: navigationController!)
 
             +++ Section(header: "Additional Information", footer: "Note: if provided, ISBN-13 must be a valid, 13 digit ISBN.")
-            <<< IntRow {
+            <<< Int32Row {
                 $0.title = "Page Count"
-                $0.value = book.pageCount?.intValue
+                $0.value = book.pageCount
                 $0.onChange {
                     guard let pageCount = $0.value else { book.pageCount = nil; return }
-                    guard pageCount >= 0 && pageCount <= Int32.max else { book.pageCount = nil; return }
-                    book.pageCount = pageCount.nsNumber
+                    guard pageCount >= 0 else { book.pageCount = nil; return }
+                    book.pageCount = pageCount
                 }
             }
             <<< PickerInlineRow<Language> {
@@ -107,10 +107,10 @@ class EditBookMetadata: FormViewController {
             }
             <<< Int64Row(isbnRowKey) {
                 $0.title = "ISBN-13"
-                $0.value = book.isbn13?.int64Value
+                $0.value = book.isbn13
                 $0.formatter = nil
                 $0.onChange {
-                    book.isbn13 = $0.value?.nsNumber
+                    book.isbn13 = $0.value
                 }
             }
 
@@ -142,12 +142,11 @@ class EditBookMetadata: FormViewController {
 
         #if DEBUG
         form +++ Section("Debug")
-            <<< IntRow {
+            <<< Int32Row {
                 $0.title = "Sort"
-                $0.value = book.sort?.intValue
+                $0.value = book.sort
                 $0.onChange {
-                    guard let sort = $0.value else { return }
-                    book.sort = NSNumber(value: sort)
+                    book.sort = $0.value
                 }
             }
             <<< LabelRow {
@@ -315,7 +314,7 @@ class AuthorSection: MultivaluedSection {
         if book.authors.map({ ($0.lastName, $0.firstNames) }).elementsEqual(newAuthors, by: { $0.0 == $1.0 && $0.1 == $1.1 }) {
             return
         }
-        book.setAuthors(newAuthors.map { Author(lastName: $0.0, firstNames: $0.1) })
+        book.authors = newAuthors.map { Author(lastName: $0.0, firstNames: $0.1) }
     }
 
     override func rowsHaveBeenRemoved(_ rows: [BaseRow], at: IndexSet) {

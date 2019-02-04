@@ -63,19 +63,19 @@ private class BookCSVParserDelegate: CSVParserDelegate {
         guard let authors = values["Authors"] else { return nil }
         let book = Book(context: self.context, readState: .toRead)
         book.title = title
-        book.setAuthors(createAuthors(authors))
+        book.authors = createAuthors(authors)
         book.googleBooksId = values["Google Books ID"]
         book.manualBookId = book.googleBooksId == nil ? UUID().uuidString : nil
-        book.isbn13 = ISBN13(values["ISBN-13"])?.int.nsNumber
-        book.pageCount = Int(values["Page Count"])?.nsNumber
-        book.currentPage = Int(values["Current Page"])?.nsNumber
+        book.isbn13 = ISBN13(values["ISBN-13"])?.int
+        book.pageCount = Int32(values["Page Count"])
+        book.currentPage = Int32(values["Current Page"])
         book.notes = values["Notes"]?.replacingOccurrences(of: "\r\n", with: "\n")
         book.publicationDate = Date(iso: values["Publication Date"])
         book.bookDescription = values["Description"]?.replacingOccurrences(of: "\r\n", with: "\n")
         book.startedReading = Date(iso: values["Started Reading"])
         book.finishedReading = Date(iso: values["Finished Reading"])
         book.subjects = Set(createSubjects(values["Subjects"]))
-        book.rating = Int(values["Rating"])?.nsNumber
+        book.rating = Int16(values["Rating"])
         book.languageCode = values["Language Code"]
         return book
     }
@@ -142,7 +142,7 @@ private class BookCSVParserDelegate: CSVParserDelegate {
                     currentSort = Book.maxSort(fromContext: context) ?? -1
                 }
                 currentSort! += 1
-                newBook.sort = currentSort?.nsNumber
+                newBook.sort = currentSort
             }
 
             // If the book is not valid, delete it

@@ -19,9 +19,9 @@ class EditBookNotes: FormViewController {
 
         form +++ Section(header: "Notes", footer: "")
             <<< StarRatingRow { [unowned self] in
-                $0.value = self.book.rating?.intValue
+                $0.value = self.book.rating
                 $0.onChange { [unowned self] in
-                    self.book.rating = $0.value == nil ? nil : NSNumber(value: $0.value!)
+                    self.book.rating = $0.value
                 }
             }
             <<< TextAreaRow {
