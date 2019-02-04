@@ -61,7 +61,7 @@ private class BookCSVParserDelegate: CSVParserDelegate {
     private func createBook(_ values: [String: String]) -> Book? {
         guard let title = values["Title"] else { return nil }
         guard let authors = values["Authors"] else { return nil }
-        let book = Book(context: self.context, readState: .toRead)
+        let book = Book(context: self.context)
         book.title = title
         book.authors = createAuthors(authors)
         book.googleBooksId = values["Google Books ID"]

@@ -21,7 +21,15 @@ class EditBookMetadata: FormViewController {
     convenience init(bookToCreateReadState: BookReadState) {
         self.init()
         self.isAddingNewBook = true
-        self.book = Book(context: editBookContext, readState: bookToCreateReadState)
+        self.book = Book(context: editBookContext)
+        book.readState = bookToCreateReadState
+        if book.readState == .reading {
+            book.startedReading = Date()
+        }
+        if book.readState == .finished {
+            book.startedReading = Date()
+            book.finishedReading = Date()
+        }
         self.book.manualBookId = UUID().uuidString
     }
 

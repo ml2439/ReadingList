@@ -201,7 +201,7 @@ class SearchOnline: UITableViewController {
                 }
             }
             .then(on: .main) { fetchResult -> Book in
-                let book = Book(context: context, readState: .toRead)
+                let book = Book(context: context)
                 book.populate(fromFetchResult: fetchResult)
                 return book
             }

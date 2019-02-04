@@ -20,25 +20,31 @@ class ModelTests: XCTestCase {
         UserDefaults.standard[.addBooksToTopOfCustom] = false
 
         func createBook(_ readState: BookReadState, _ title: String) -> Book {
-            let book = Book(context: testContainer.viewContext, readState: readState)
+            let book = Book(context: testContainer.viewContext)
+            book.readState = readState
+            if readState == .reading {
+                book.startedReading = Date()
+            }
+            if readState == .finished {
+                book.startedReading = Date()
+                book.finishedReading = Date()
+            }
             book.title = title
             book.manualBookId = UUID().uuidString
-            book.setAuthors([Author(lastName: "Lastname", firstNames: "Firstname")])
+            book.authors = [Author(lastName: "Lastname", firstNames: "Firstname")]
             return book
         }
 
         // Add two books and check sort increments for both
         let book = createBook(.toRead, "title1")
         try! testContainer.viewContext.save()
-        let bookSort = Int32(truncating: book.sort!)
-        XCTAssertEqual(maxSort + 1, bookSort)
-        XCTAssertEqual(Book.maxSort(fromContext: testContainer.viewContext)!, bookSort)
+        XCTAssertEqual(maxSort + 1, book.sort)
+        XCTAssertEqual(Book.maxSort(fromContext: testContainer.viewContext)!, book.sort)
 
         let book2 = createBook(.toRead, "title2")
         try! testContainer.viewContext.save()
-        let book2Sort = Int32(truncating: book2.sort!)
-        XCTAssertEqual(maxSort + 2, book2Sort)
-        XCTAssertEqual(Book.maxSort(fromContext: testContainer.viewContext)!, book2Sort)
+        XCTAssertEqual(maxSort + 2, book2.sort)
+        XCTAssertEqual(Book.maxSort(fromContext: testContainer.viewContext)!, book2.sort)
 
         // Start reading book2; check it has no sort and the maxSort goes down
         book2.startReading()
@@ -57,7 +63,7 @@ class ModelTests: XCTestCase {
         book4.sort = 12
         try! testContainer.viewContext.save()
         XCTAssertEqual(12, book4.sort)
-        XCTAssertEqual(Book.maxSort(fromContext: testContainer.viewContext)!, Int32(truncating: book4.sort!))
+        XCTAssertEqual(Book.maxSort(fromContext: testContainer.viewContext)!, book4.sort)
 
         // Update the setting
         UserDefaults.standard[.addBooksToTopOfCustom] = true
@@ -65,14 +71,14 @@ class ModelTests: XCTestCase {
         // Add a book and check the sort is below other books
         let book5 = createBook(.toRead, "title5")
         try! testContainer.viewContext.save()
-        XCTAssertEqual(-1, Int32(truncating: book5.sort!))
-        XCTAssertEqual(Book.minSort(fromContext: testContainer.viewContext)!, Int32(truncating: book5.sort!))
+        XCTAssertEqual(-1, book5.sort)
+        XCTAssertEqual(Book.minSort(fromContext: testContainer.viewContext)!, book5.sort)
 
         // Add another - check that the sort goes down
         let book6 = createBook(.toRead, "title6")
         try! testContainer.viewContext.save()
-        XCTAssertEqual(-2, Int32(truncating: book6.sort!))
-        XCTAssertEqual(Book.minSort(fromContext: testContainer.viewContext)!, Int32(truncating: book6.sort!))
+        XCTAssertEqual(-2, book6.sort)
+        XCTAssertEqual(Book.minSort(fromContext: testContainer.viewContext)!, book6.sort)
 
         // And again, in different state, check sort is nil
         let book7 = createBook(.reading, "title7")
@@ -82,21 +88,21 @@ class ModelTests: XCTestCase {
     }
 
     func testAuthorCalculatedProperties() {
-        let book = Book(context: testContainer.viewContext, readState: .toRead)
+        let book = Book(context: testContainer.viewContext)
         book.title = "title"
         book.manualBookId = UUID().uuidString
-        book.setAuthors([Author(lastName: "Birkhäuser", firstNames: "Wahlöö"),
-                                    Author(lastName: "Sjöwall", firstNames: "Maj")])
+        book.authors = [Author(lastName: "Birkhäuser", firstNames: "Wahlöö"),
+                                    Author(lastName: "Sjöwall", firstNames: "Maj")]
         try! testContainer.viewContext.save()
 
         XCTAssertEqual("birkhauser.wahloo..sjowall.maj", book.authorSort)
-        XCTAssertEqual("Wahlöö Birkhäuser, Maj Sjöwall", Author.authorDisplay(book.authors))
+        XCTAssertEqual("Wahlöö Birkhäuser, Maj Sjöwall", book.authors.fullNames)
     }
 
     func testLanguageValidation() {
-        let book = Book(context: testContainer.viewContext, readState: .toRead)
+        let book = Book(context: testContainer.viewContext)
         book.title = "Test"
-        book.setAuthors([Author(lastName: "Test", firstNames: "Author")])
+        book.authors = [Author(lastName: "Test", firstNames: "Author")]
         book.manualBookId = UUID().uuidString
 
         book.languageCode = "zz"
@@ -107,9 +113,9 @@ class ModelTests: XCTestCase {
     }
 
     func testIsbnValidation() {
-        let book = Book(context: testContainer.viewContext, readState: .toRead)
+        let book = Book(context: testContainer.viewContext)
         book.title = "Test"
-        book.setAuthors([Author(lastName: "Test", firstNames: "Author")])
+        book.authors = [Author(lastName: "Test", firstNames: "Author")]
         book.manualBookId = UUID().uuidString
 
         book.isbn13 = 1234567891234

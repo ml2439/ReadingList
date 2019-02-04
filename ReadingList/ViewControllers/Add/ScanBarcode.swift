@@ -187,7 +187,7 @@ class ScanBarcode: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
 
                     // If there is no duplicate, we can safely go to the next page
                     let context = PersistentStoreManager.container.viewContext.childContext()
-                    let book = Book(context: context, readState: .toRead)
+                    let book = Book(context: context)
                     book.populate(fromFetchResult: fetchResult)
                     navigationController.pushViewController(
                         EditBookReadState(newUnsavedBook: book, scratchpadContext: context),

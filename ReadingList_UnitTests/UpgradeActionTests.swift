@@ -36,7 +36,7 @@ class UpgradeActionTests: XCTestCase {
         let legacyTableSortOrderKey = "tableSortOrder"
         UserDefaults.standard.set(legacyValue, forKey: legacyTableSortOrderKey)
 
-        UpgradeManager().performUpgradeIfNecessary()
+        UpgradeManager().performNecessaryUpgradeActions()
         XCTAssertEqual(TableSortOrder.byReadState, expectedSorts)
         XCTAssertGreaterThan(UserDefaults.standard[.lastAppliedUpgradeAction]!, 0)
         XCTAssertNil(UserDefaults.standard.object(forKey: legacyTableSortOrderKey))
