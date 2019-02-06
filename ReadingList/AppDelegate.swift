@@ -7,6 +7,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var launchManager = LaunchManager()
     let upgradeManager = UpgradeManager()
 
+    static var shared: AppDelegate {
+        return UIApplication.shared.delegate as! AppDelegate
+    }
+
+    var tabBarController: TabBarController? {
+        return window?.rootViewController as? TabBarController
+    }
+
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         launchManager.initialise(window: window!)
         upgradeManager.performNecessaryUpgradeActions()
