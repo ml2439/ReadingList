@@ -13,6 +13,8 @@ class Book: NSManagedObject {
         case currentPage = "currentPage"
         case rating = "rating"
         case sort = "sort"
+        case startedReading = "startedReading"
+        case finishedReading = "finishedReading"
         //swiftlint:enable redundant_string_enum_value
     }
 
@@ -24,9 +26,40 @@ class Book: NSManagedObject {
         return safelySetPrimitiveValue(value, forKey: key.rawValue)
     }
 
-    @NSManaged var readState: BookReadState
-    @NSManaged var startedReading: Date?
-    @NSManaged var finishedReading: Date?
+    @NSManaged private(set) var readState: BookReadState
+
+    @objc var startedReading: Date? {
+        get { return safelyGetPrimitiveValue(.startedReading) as! Date? }
+        set {
+            safelySetPrimitiveValue(newValue, .startedReading)
+            let newReadState = suitableReadState(newValue, finishedReading)
+            if readState != newReadState {
+                readState = newReadState
+            }
+        }
+    }
+
+    @objc var finishedReading: Date? {
+        get { return safelyGetPrimitiveValue(.finishedReading) as! Date? }
+        set {
+            safelySetPrimitiveValue(newValue, .finishedReading)
+            let newReadState = suitableReadState(startedReading, newValue)
+            if readState != newReadState {
+                readState = newReadState
+            }
+        }
+    }
+
+    private func suitableReadState(_ started: Date?, _ finished: Date?) -> BookReadState {
+        if started == nil && finished == nil {
+            return .toRead
+        } else if started != nil && finished == nil {
+            return .reading
+        } else {
+            return .finished
+        }
+    }
+
     @NSManaged var googleBooksId: String?
     @NSManaged var manualBookId: String?
     @NSManaged var title: String
@@ -40,7 +73,7 @@ class Book: NSManagedObject {
     @NSManaged private(set) var lists: Set<List>
 
     @objc var authors: [Author] {
-        get { return safelyGetPrimitiveValue(forKey: #keyPath(Book.authors)) as! [Author] }
+        get { return (safelyGetPrimitiveValue(forKey: #keyPath(Book.authors)) as! [Author]?) ?? [] }
         set {
             safelySetPrimitiveValue(newValue, forKey: #keyPath(Book.authors))
             authorSort = newValue.lastNamesSort

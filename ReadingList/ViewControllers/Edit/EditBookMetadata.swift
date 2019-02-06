@@ -22,7 +22,6 @@ class EditBookMetadata: FormViewController {
         self.init()
         self.isAddingNewBook = true
         self.book = Book(context: editBookContext)
-        book.readState = bookToCreateReadState
         if book.readState == .reading {
             book.startedReading = Date()
         }

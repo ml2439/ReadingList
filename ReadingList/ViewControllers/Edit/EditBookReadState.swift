@@ -8,19 +8,23 @@ class EditBookReadState: FormViewController {
     private var editContext: NSManagedObjectContext!
     private var book: Book!
     private var newBook = false
+
     private let currentPageKey = "currentPage"
+    private let readStateKey = "readState"
+    private let startedReadingKey = "startedReading"
+    private let finishedReadingKey = "finishedReading"
 
     convenience init(existingBookID: NSManagedObjectID) {
         self.init()
-        self.editContext = PersistentStoreManager.container.viewContext.childContext()
-        self.book = (editContext.object(with: existingBookID) as! Book)
+        editContext = PersistentStoreManager.container.viewContext.childContext()
+        book = (editContext.object(with: existingBookID) as! Book)
     }
 
     convenience init(newUnsavedBook: Book, scratchpadContext: NSManagedObjectContext) {
         self.init()
-        self.newBook = true
-        self.book = newUnsavedBook
-        self.editContext = scratchpadContext
+        newBook = true
+        book = newUnsavedBook
+        editContext = scratchpadContext
     }
 
     override func viewDidLoad() {
@@ -33,66 +37,42 @@ class EditBookReadState: FormViewController {
 
         let now = Date()
 
-        let readStateKey = "readState"
-        let startedReadingKey = "startedReading"
-        let finishedReadingKey = "finishedReading"
-
         form +++ Section(header: "Reading Log", footer: "")
             <<< SegmentedRow<BookReadState>(readStateKey) {
                 $0.options = [.toRead, .reading, .finished]
                 $0.value = book.readState
-                $0.onChange { [unowned self] row in
-                    self.book.readState = row.value!
-
-                    // Make sure we update the read dates
-                    switch self.book.readState {
-                    case .toRead:
-                        self.book.startedReading = nil
-                        self.book.finishedReading = nil
-                        self.book.currentPage = nil
-                    case .reading:
-                        self.book.startedReading = (self.form.rowBy(tag: startedReadingKey) as! DateRow).value
-                        self.book.finishedReading = nil
-                        if let currentPage = (self.form.rowBy(tag: self.currentPageKey) as! Int32Row).value, currentPage >= 0 {
-                            self.book.currentPage = currentPage
-                        } else { self.book.currentPage = nil }
-                    case .finished:
-                        self.book.startedReading = (self.form.rowBy(tag: startedReadingKey) as! DateRow).value
-                        self.book.finishedReading = (self.form.rowBy(tag: finishedReadingKey) as! DateRow).value
-                        self.book.currentPage = nil
-                    }
+                $0.onChange { [unowned self] _ in
+                    self.updateBookFromForm()
                 }
             }
             <<< DateRow(startedReadingKey) {
                 $0.title = "Started"
-                //$0.maximumDate = Date.startOfToday()
                 $0.value = book.startedReading ?? now
-                $0.onChange { [unowned self] cell in
-                    self.book.startedReading = cell.value
+                $0.onChange { [unowned self] _ in
+                    self.updateBookFromForm()
                 }
-                $0.hidden = Condition.function([readStateKey]) { [unowned self] _ in
-                    self.book.readState == .toRead
+                $0.hidden = Condition.function([readStateKey]) { [unowned self] form in
+                    (form.rowBy(tag: self.readStateKey) as! SegmentedRow<BookReadState>).value == .toRead
                 }
             }
             <<< DateRow(finishedReadingKey) {
                 $0.title = "Finished"
-                //$0.maximumDate = Date.startOfToday()
-                $0.hidden = Condition.function([readStateKey]) { [unowned self] _ in
-                    self.book.readState != .finished
-                }
                 $0.value = book.finishedReading ?? now
-                $0.onChange {[unowned self] cell in
-                    self.book.finishedReading = cell.value
+                $0.onChange { [unowned self] _ in
+                    self.updateBookFromForm()
+                }
+                $0.hidden = Condition.function([readStateKey]) { [unowned self] form in
+                    (form.rowBy(tag: self.readStateKey) as! SegmentedRow<BookReadState>).value != .finished
                 }
             }
             <<< Int32Row(currentPageKey) {
                 $0.title = "Current Page"
                 $0.value = book.currentPage
-                $0.hidden = Condition.function([readStateKey]) { [unowned self] _ in
-                    self.book.readState != .reading
-                }
                 $0.onChange { [unowned self] cell in
                     self.book.currentPage = cell.value
+                }
+                $0.hidden = Condition.function([readStateKey]) { [unowned self] form in
+                    (form.rowBy(tag: self.readStateKey) as! SegmentedRow<BookReadState>).value != .reading
                 }
             }
 
@@ -105,6 +85,23 @@ class EditBookReadState: FormViewController {
         if self.book.readState == .reading && self.book.changedValues().isEmpty {
             let currentPageRow = self.form.rowBy(tag: currentPageKey) as! Int32Row
             currentPageRow.cell.textField.becomeFirstResponder()
+        }
+    }
+
+    private func updateBookFromForm() {
+        let readState = (form.rowBy(tag: readStateKey) as! SegmentedRow<BookReadState>).value ?? .toRead
+        if readState == .toRead {
+            book.startedReading = nil
+            book.finishedReading = nil
+            book.currentPage = nil
+        } else if readState == .reading {
+            book.startedReading = (form.rowBy(tag: startedReadingKey) as! DateRow).value
+            book.finishedReading = nil
+            book.currentPage = (form.rowBy(tag: currentPageKey) as! Int32Row).value
+        } else {
+            book.startedReading = (form.rowBy(tag: startedReadingKey) as! DateRow).value
+            book.finishedReading = (form.rowBy(tag: finishedReadingKey) as! DateRow).value
+            book.currentPage = nil
         }
     }
 
@@ -122,6 +119,7 @@ class EditBookReadState: FormViewController {
 
     @objc func cancelPressed() {
         // FUTURE: Duplicates code in EditBookMetadata. Consolidate.
+        updateBookFromForm()
         guard book.changedValues().isEmpty else {
             // Confirm exit dialog
             let confirmExit = UIAlertController(title: "Unsaved changes", message: "Are you sure you want to discard your unsaved changes?", preferredStyle: .actionSheet)

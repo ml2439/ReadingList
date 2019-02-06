@@ -130,13 +130,7 @@ private class BookCSVParserDelegate: CSVParserDelegate {
             }
 
             guard let newBook = createBook(values) else { invalidCount += 1; return }
-
-            // FUTURE: the read state could be inferred from the dates at save time
-            if newBook.finishedReading != nil {
-                newBook.readState = .finished
-            } else if newBook.startedReading != nil {
-                newBook.readState = .reading
-            } else {
+            if newBook.readState == .toRead {
                 // Get the current sort value if we have not done so yet
                 if currentSort == nil {
                     currentSort = Book.maxSort(fromContext: context) ?? -1
