@@ -22,11 +22,10 @@ class ModelTests: XCTestCase {
         func createBook(_ readState: BookReadState, _ title: String) -> Book {
             let book = Book(context: testContainer.viewContext)
             if readState == .reading {
-                book.startedReading = Date()
+                book.setReading(started: Date())
             }
             if readState == .finished {
-                book.startedReading = Date()
-                book.finishedReading = Date()
+                book.setFinished(started: Date(), finished: Date())
             }
             book.title = title
             book.manualBookId = UUID().uuidString
@@ -46,7 +45,7 @@ class ModelTests: XCTestCase {
         XCTAssertEqual(Book.maxSort(fromContext: testContainer.viewContext)!, book2.sort)
 
         // Start reading book2; check it has no sort and the maxSort goes down
-        book2.startReading()
+        book2.setReading(started: Date())
         try! testContainer.viewContext.save()
         XCTAssertEqual(nil, book2.sort)
         XCTAssertEqual(Book.maxSort(fromContext: testContainer.viewContext)!, maxSort + 1)
@@ -81,7 +80,7 @@ class ModelTests: XCTestCase {
 
         // And again, in different state, check sort is nil
         let book7 = createBook(.reading, "title7")
-        book7.startedReading = Date()
+        book7.setReading(started: Date())
         try! testContainer.viewContext.save()
         XCTAssertNil(book7.sort)
     }

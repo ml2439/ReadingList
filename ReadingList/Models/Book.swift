@@ -193,21 +193,9 @@ extension Book {
      Gets the "maximal" sort value of any book - i.e. either the maximum or minimum value.
     */
     static func maximalSort(getMaximum: Bool, fromContext context: NSManagedObjectContext) -> Int32? {
-        // FUTURE: The following code works in the application, but crashes in tests.
-
-        /*let request = NSManagedObject.fetchRequest(Book.self) as! NSFetchRequest<NSFetchRequestResult>
-        request.resultType = .dictionaryResultType
-
-        let key = "sort"
-        let expressionDescription = NSExpressionDescription()
-        expressionDescription.name = key
-        expressionDescription.expression = NSExpression(forFunction: getMaximum ? "max:" : "min:", arguments: [NSExpression(forKeyPath: \Book.sort)])
-        expressionDescription.expressionResultType = .integer32AttributeType
-        request.propertiesToFetch = [expressionDescription]
-
-        let result = try! context.fetch(request) as! [[String: Int32]]
-        return result.first?[key]*/
-
+        // The following code could (and in fact was) rewritten to use an NSExpression to just grab the max or min
+        // sort, but it crashes when the store type is InMemoryStore (as it is in tests). Would need to rewrite
+        // the unit tests to use SQL stores. See https://stackoverflow.com/a/13681549/5513562
         let fetchRequest = NSManagedObject.fetchRequest(Book.self, limit: 1)
         fetchRequest.predicate = NSPredicate.and([
             NSPredicate(format: "%K == %ld", #keyPath(Book.readState), BookReadState.toRead.rawValue),
