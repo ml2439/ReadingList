@@ -22,12 +22,11 @@ class EditBookMetadata: FormViewController {
         self.init()
         self.isAddingNewBook = true
         self.book = Book(context: editBookContext)
-        if book.readState == .reading {
-            book.startedReading = Date()
+        if bookToCreateReadState == .reading {
+            book.setReading(started: Date())
         }
-        if book.readState == .finished {
-            book.startedReading = Date()
-            book.finishedReading = Date()
+        if bookToCreateReadState == .finished {
+            book.setFinished(started: Date(), finished: Date())
         }
         self.book.manualBookId = UUID().uuidString
     }

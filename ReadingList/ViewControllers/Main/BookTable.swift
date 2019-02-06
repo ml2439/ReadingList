@@ -191,11 +191,9 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
             optionsAlert.addAction(UIAlertAction(title: title, style: .default) { _ in
                 for book in selectedRows.map(self.resultsController.object) {
                     if initialSelectionReadState == .toRead {
-                        book.startReading()
-                    } else if book.startedReading! < Date() {
-                        // It is not "invalid" to have a book with a started date in the future; but it is invalid
-                        // to have a finish date before the start date.
-                        book.finishReading()
+                        book.setReading(started: Date())
+                    } else if let started = book.startedReading {
+                        book.setFinished(started: started, finished: Date())
                     }
                 }
                 PersistentStoreManager.container.viewContext.saveIfChanged()
@@ -335,9 +333,9 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
         let leadingSwipeAction = UIContextualAction(style: .normal, title: readStateOfSection == .toRead ? "Start" : "Finish") { _, _, callback in
             let book = self.resultsController.object(at: indexPath)
             if readStateOfSection == .toRead {
-                book.startReading()
-            } else {
-                book.finishReading()
+                book.setReading(started: Date())
+            } else if let started = book.startedReading {
+                book.setFinished(started: started, finished: Date())
             }
             book.managedObjectContext!.saveAndLogIfErrored()
             UserEngagement.logEvent(.transitionReadState)

@@ -72,8 +72,16 @@ private class BookCSVParserDelegate: CSVParserDelegate {
         book.notes = values["Notes"]?.replacingOccurrences(of: "\r\n", with: "\n")
         book.publicationDate = Date(iso: values["Publication Date"])
         book.bookDescription = values["Description"]?.replacingOccurrences(of: "\r\n", with: "\n")
-        book.startedReading = Date(iso: values["Started Reading"])
-        book.finishedReading = Date(iso: values["Finished Reading"])
+        if let started = Date(iso: values["Started Reading"]) {
+            if let finished = Date(iso: values["Finished Reading"]) {
+                book.setFinished(started: started, finished: finished)
+            } else {
+                book.setReading(started: started)
+            }
+        } else {
+            book.setToRead()
+        }
+
         book.subjects = Set(createSubjects(values["Subjects"]))
         book.rating = Int16(values["Rating"])
         book.languageCode = values["Language Code"]

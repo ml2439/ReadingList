@@ -21,7 +21,6 @@ class ModelTests: XCTestCase {
 
         func createBook(_ readState: BookReadState, _ title: String) -> Book {
             let book = Book(context: testContainer.viewContext)
-            book.readState = readState
             if readState == .reading {
                 book.startedReading = Date()
             }

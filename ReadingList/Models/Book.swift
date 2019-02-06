@@ -6,59 +6,13 @@ import os.log
 @objc(Book)
 class Book: NSManagedObject {
 
-    enum Key: String {
-        //swiftlint:disable redundant_string_enum_value
-        case isbn13 = "isbn13"
-        case pageCount = "pageCount"
-        case currentPage = "currentPage"
-        case rating = "rating"
-        case sort = "sort"
-        case startedReading = "startedReading"
-        case finishedReading = "finishedReading"
-        //swiftlint:enable redundant_string_enum_value
-    }
-
-    private func safelyGetPrimitiveValue(_ key: Book.Key) -> Any? {
-        return safelyGetPrimitiveValue(forKey: key.rawValue)
-    }
-
-    private func safelySetPrimitiveValue(_ value: Any?, _ key: Book.Key) {
-        return safelySetPrimitiveValue(value, forKey: key.rawValue)
-    }
-
+    /**
+     The read state of a book is determined by the presence or absence of the startedReading and finishedReading
+     dates. It exists as a core data attribute primarily to allow its use as a section keypath.
+     */
     @NSManaged private(set) var readState: BookReadState
-
-    @objc var startedReading: Date? {
-        get { return safelyGetPrimitiveValue(.startedReading) as! Date? }
-        set {
-            safelySetPrimitiveValue(newValue, .startedReading)
-            let newReadState = suitableReadState(newValue, finishedReading)
-            if readState != newReadState {
-                readState = newReadState
-            }
-        }
-    }
-
-    @objc var finishedReading: Date? {
-        get { return safelyGetPrimitiveValue(.finishedReading) as! Date? }
-        set {
-            safelySetPrimitiveValue(newValue, .finishedReading)
-            let newReadState = suitableReadState(startedReading, newValue)
-            if readState != newReadState {
-                readState = newReadState
-            }
-        }
-    }
-
-    private func suitableReadState(_ started: Date?, _ finished: Date?) -> BookReadState {
-        if started == nil && finished == nil {
-            return .toRead
-        } else if started != nil && finished == nil {
-            return .reading
-        } else {
-            return .finished
-        }
-    }
+    @NSManaged private(set) var startedReading: Date?
+    @NSManaged private(set) var finishedReading: Date?
 
     @NSManaged var googleBooksId: String?
     @NSManaged var manualBookId: String?
@@ -71,6 +25,57 @@ class Book: NSManagedObject {
     @NSManaged var languageCode: String? // ISO 639.1: two-digit language code
     @NSManaged var subjects: Set<Subject>
     @NSManaged private(set) var lists: Set<List>
+
+    func setToRead() {
+        readState = .toRead
+        startedReading = nil
+        finishedReading = nil
+        currentPage = nil
+    }
+
+    func setReading(started: Date) {
+        readState = .reading
+        startedReading = started
+        finishedReading = nil
+    }
+
+    func setFinished(started: Date, finished: Date) {
+        readState = .finished
+        startedReading = started
+        if finished >= started {
+            finishedReading = finished
+        } else {
+            finishedReading = started
+        }
+        currentPage = nil
+    }
+
+    /**
+     Enumerates the attributes which are not represented as standard NSManaged variables. These are usually
+     the optional numerical attributes, which are much more convenient to use when handled manually in their
+     Swift types, than represented as @NSManaged optional NSNumber objects.
+    */
+    enum Key: String {
+        //swiftlint:disable redundant_string_enum_value
+        case authors = "authors"
+        case isbn13 = "isbn13"
+        case pageCount = "pageCount"
+        case currentPage = "currentPage"
+        case rating = "rating"
+        case sort = "sort"
+        //swiftlint:enable redundant_string_enum_value
+    }
+
+    private func safelyGetPrimitiveValue(_ key: Book.Key) -> Any? {
+        return safelyGetPrimitiveValue(forKey: key.rawValue)
+    }
+
+    private func safelySetPrimitiveValue(_ value: Any?, _ key: Book.Key) {
+        return safelySetPrimitiveValue(value, forKey: key.rawValue)
+    }
+
+    // The following variables are manually managed rather than using @NSManaged, to allow non-objc types
+    // to be used, or to allow us to hook into the setter, to update other properties automatically.
 
     @objc var authors: [Author] {
         get { return (safelyGetPrimitiveValue(forKey: #keyPath(Book.authors)) as! [Author]?) ?? [] }
@@ -218,22 +223,5 @@ extension Book {
 
     static func minSort(fromContext context: NSManagedObjectContext) -> Int32? {
         return maximalSort(getMaximum: false, fromContext: context)
-    }
-
-    func startReading() {
-        guard readState == .toRead else {
-            os_log("Attempted to start a book in state %{public}s; was ignored.", type: .error, readState.description)
-            return
-        }
-        startedReading = Date()
-    }
-
-    func finishReading() {
-        guard readState == .reading else {
-            os_log("Attempted to finish a book in state %{public}s; was ignored.", type: .error, readState.description)
-            return
-        }
-        currentPage = nil
-        finishedReading = Date()
     }
 }

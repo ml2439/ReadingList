@@ -91,17 +91,13 @@ class EditBookReadState: FormViewController {
     private func updateBookFromForm() {
         let readState = (form.rowBy(tag: readStateKey) as! SegmentedRow<BookReadState>).value ?? .toRead
         if readState == .toRead {
-            book.startedReading = nil
-            book.finishedReading = nil
-            book.currentPage = nil
+            book.setToRead()
         } else if readState == .reading {
-            book.startedReading = (form.rowBy(tag: startedReadingKey) as! DateRow).value
-            book.finishedReading = nil
+            book.setReading(started: (form.rowBy(tag: startedReadingKey) as! DateRow).value ?? Date())
             book.currentPage = (form.rowBy(tag: currentPageKey) as! Int32Row).value
         } else {
-            book.startedReading = (form.rowBy(tag: startedReadingKey) as! DateRow).value
-            book.finishedReading = (form.rowBy(tag: finishedReadingKey) as! DateRow).value
-            book.currentPage = nil
+            book.setFinished(started: (form.rowBy(tag: startedReadingKey) as! DateRow).value ?? Date(),
+                             finished: (form.rowBy(tag: finishedReadingKey) as! DateRow).value ?? Date())
         }
     }
 

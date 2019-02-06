@@ -222,9 +222,9 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         }
 
         if book.readState == .toRead {
-            book.startReading()
-        } else {
-            book.finishReading()
+            book.setReading(started: Date())
+        } else if let started = book.startedReading {
+            book.setFinished(started: started, finished: Date())
         }
         book.managedObjectContext!.saveAndLogIfErrored()
 
@@ -288,13 +288,13 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         var previewActions = [UIPreviewActionItem]()
         if book.readState == .toRead {
             previewActions.append(UIPreviewAction(title: "Start", style: .default) { _, _ in
-                book.startReading()
+                book.setReading(started: Date())
                 book.managedObjectContext!.saveAndLogIfErrored()
                 UserEngagement.logEvent(.transitionReadState)
             })
-        } else if book.readState == .reading {
+        } else if book.readState == .reading, let started = book.startedReading {
             previewActions.append(UIPreviewAction(title: "Finish", style: .default) { _, _ in
-                book.finishReading()
+                book.setFinished(started: started, finished: Date())
                 book.managedObjectContext!.saveAndLogIfErrored()
                 UserEngagement.logEvent(.transitionReadState)
             })
