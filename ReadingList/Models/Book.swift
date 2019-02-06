@@ -225,7 +225,6 @@ extension Book {
             os_log("Attempted to start a book in state %{public}s; was ignored.", type: .error, readState.description)
             return
         }
-        readState = .reading
         startedReading = Date()
     }
 
@@ -234,7 +233,6 @@ extension Book {
             os_log("Attempted to finish a book in state %{public}s; was ignored.", type: .error, readState.description)
             return
         }
-        readState = .finished
         currentPage = nil
         finishedReading = Date()
     }
