@@ -1,7 +1,6 @@
 import Foundation
 import CoreData
 
-// FUTURE: rename to "tag"?
 @objc(Subject)
 class Subject: NSManagedObject {
     @NSManaged var name: String

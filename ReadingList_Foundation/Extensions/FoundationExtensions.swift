@@ -43,36 +43,47 @@ public extension String {
     }
 }
 
-public extension Int {
+public extension Int16 {
     var string: String {
-        return String(describing: self)
+        return "\(self)"
     }
 
     init?(_ string: String?) {
-        guard let str = string else { return nil }
-        self.init(str)
-    }
-
-    var nsNumber: NSNumber {
-        return NSNumber(value: self)
-    }
-}
-
-public extension Int64 {
-    var nsNumber: NSNumber {
-        return NSNumber(value: self)
+        guard let string = string else { return nil }
+        self.init(string)
     }
 }
 
 public extension Int32 {
-    var nsNumber: NSNumber {
-        return NSNumber(value: self)
+    var string: String {
+        return "\(self)"
+    }
+
+    init?(_ string: String?) {
+        guard let string = string else { return nil }
+        self.init(string)
     }
 }
 
-public extension NSNumber {
-    var int32: Int32 {
-        return Int32(truncating: self)
+public extension Int64 {
+    var string: String {
+        return "\(self)"
+    }
+
+    init?(_ string: String?) {
+        guard let string = string else { return nil }
+        self.init(string)
+    }
+}
+
+public extension Int {
+    var string: String {
+        return "\(self)"
+    }
+
+    init?(_ string: String?) {
+        guard let string = string else { return nil }
+        self.init(string)
     }
 }
 

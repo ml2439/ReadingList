@@ -91,7 +91,7 @@ class Tip: UIViewController, ThemeableViewController {
 
                 let alert = UIAlertController(title: "Tip Failed", message: "Something went wrong - thanks for trying though!", preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "OK", style: .default))
-                appDelegate.window?.rootViewController?.present(alert, animated: true)
+                (UIApplication.shared.delegate as! AppDelegate).window?.rootViewController?.present(alert, animated: true)
             }
         }
     }

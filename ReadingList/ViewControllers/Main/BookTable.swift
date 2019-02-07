@@ -191,11 +191,9 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
             optionsAlert.addAction(UIAlertAction(title: title, style: .default) { _ in
                 for book in selectedRows.map(self.resultsController.object) {
                     if initialSelectionReadState == .toRead {
-                        book.startReading()
-                    } else if book.startedReading! < Date() {
-                        // It is not "invalid" to have a book with a started date in the future; but it is invalid
-                        // to have a finish date before the start date.
-                        book.finishReading()
+                        book.setReading(started: Date())
+                    } else if let started = book.startedReading {
+                        book.setFinished(started: started, finished: Date())
                     }
                 }
                 PersistentStoreManager.container.viewContext.saveIfChanged()
@@ -335,9 +333,9 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
         let leadingSwipeAction = UIContextualAction(style: .normal, title: readStateOfSection == .toRead ? "Start" : "Finish") { _, _, callback in
             let book = self.resultsController.object(at: indexPath)
             if readStateOfSection == .toRead {
-                book.startReading()
-            } else {
-                book.finishReading()
+                book.setReading(started: Date())
+            } else if let started = book.startedReading {
+                book.setFinished(started: started, finished: Date())
             }
             book.managedObjectContext!.saveAndLogIfErrored()
             UserEngagement.logEvent(.transitionReadState)
@@ -444,7 +442,7 @@ extension BookTable: UISearchResultsUpdating {
         // Update the sort indices for all books in the range, increasing the sort by 1 for each cell.
         var sort = topRowSort
         for book in booksInMovementRange {
-            book.sort = NSNumber(value: sort)
+            book.sort = sort
             sort += 1
         }
 
@@ -461,35 +459,31 @@ extension BookTable: UISearchResultsUpdating {
         resultsController.delegate = self
     }
 
-    private func getDesiredSort(for indexPath: IndexPath) -> Int {
+    private func getDesiredSort(for indexPath: IndexPath) -> Int32 {
         // The desired sort index should be the sort of the book immediately above the specified cell,
         // plus 1, or - if the cell is at the top - the value of the current minimum sort.
         guard indexPath.row != 0 else {
-            if let minSort = Book.minSort(fromContext: PersistentStoreManager.container.viewContext) {
-                return Int(minSort)
-            } else {
-                return 0
-            }
+            return Book.minSort(fromContext: PersistentStoreManager.container.viewContext) ?? 0
         }
         let indexPathAboveCell = indexPath.previous()
-        guard let sortIndexAboveCell = resultsController.object(at: indexPathAboveCell).sort?.intValue else {
+        guard let sortIndexAboveCell = resultsController.object(at: indexPathAboveCell).sort else {
             preconditionFailure("Book at index (\(indexPathAboveCell.section), \(indexPathAboveCell.row)) has nil sort")
         }
         return sortIndexAboveCell + 1
     }
 
-    private func cleanupClashingSortIndices(from topIndexPath: IndexPath, withSort topSort: Int) {
+    private func cleanupClashingSortIndices(from topIndexPath: IndexPath, withSort topSort: Int32) {
         var cleanupIndex = topIndexPath
         while cleanupIndex.row < tableView.numberOfRows(inSection: cleanupIndex.section) {
             let cleanupBook = resultsController.object(at: cleanupIndex)
-            let cleanupSort = cleanupIndex.row - topIndexPath.row + topSort
+            let cleanupSort = Int32(cleanupIndex.row - topIndexPath.row) + topSort
 
             // No need to proceed if the sort index is large enough
-            if let currentSort = cleanupBook.sort, currentSort.intValue >= cleanupSort { break }
+            if let currentSort = cleanupBook.sort, currentSort >= cleanupSort { break }
 
-            os_log("Adjusting sort index of book at index %d from %{public}s to %d.", type: .debug, cleanupIndex.row, cleanupBook.sort?.stringValue ?? "nil", cleanupSort)
+            os_log("Adjusting sort index of book at index %d from %{public}s to %d.", type: .debug, cleanupIndex.row, String(describing: cleanupBook.sort), cleanupSort)
 
-            cleanupBook.sort = NSNumber(value: cleanupSort)
+            cleanupBook.sort = cleanupSort
             cleanupIndex = cleanupIndex.next()
         }
     }

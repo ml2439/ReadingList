@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14135" systemVersion="17G65" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14460.32" systemVersion="18C54" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Book" representedClassName="Book" syncable="YES">
         <attribute name="authors" attributeType="Transformable" syncable="YES"/>
         <attribute name="authorSort" optional="YES" attributeType="String" syncable="YES"/>
@@ -15,7 +15,7 @@
         <attribute name="pageCount" optional="YES" attributeType="Integer 32" minValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="publicationDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="rating" optional="YES" attributeType="Integer 16" minValueString="1" maxValueString="5" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="readState" attributeType="Integer 16" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="readState" attributeType="Integer 16" defaultValueString="2" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="sort" optional="YES" attributeType="Integer 32" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="startedReading" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="title" attributeType="String" syncable="YES"/>

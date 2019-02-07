@@ -24,8 +24,8 @@ class GoogleBooksTests: XCTestCase {
         XCTAssertEqual(book.title, parseResult.title)
         XCTAssertEqual(book.authors.count, parseResult.authors.count)
         XCTAssertEqual(book.subjects.map { $0.name }, parseResult.subjects)
-        XCTAssertEqual(book.pageCount?.intValue, parseResult.pageCount)
-        XCTAssertEqual(book.isbn13?.int64Value, parseResult.isbn13?.int)
+        XCTAssertEqual(book.pageCount, parseResult.pageCount)
+        XCTAssertEqual(book.isbn13, parseResult.isbn13?.int)
         XCTAssertEqual(book.bookDescription, parseResult.description)
     }
 
@@ -35,17 +35,17 @@ class GoogleBooksTests: XCTestCase {
         let parseResult = GoogleBooksParser.parseFetchResults(json)!
         XCTAssertEqual("The Sellout", parseResult.title)
         XCTAssertEqual(1, parseResult.authors.count)
-        XCTAssertEqual("Paul Beatty", parseResult.authors.first!)
+        XCTAssertEqual("Paul Beatty", parseResult.authors.fullNames)
         XCTAssertEqual("Fiction", parseResult.subjects[0])
         XCTAssertEqual("Satire", parseResult.subjects[1])
         XCTAssertEqual(304, parseResult.pageCount)
         XCTAssertEqual(9781786070166, parseResult.isbn13?.int)
         XCTAssertNotNil(parseResult.description)
 
-        let book = Book(context: testContainer.viewContext, readState: .toRead)
+        let book = Book(context: testContainer.viewContext)
         book.populate(fromFetchResult: parseResult)
         XCTAssertEqual(book.authorSort, "beatty.paul")
-        XCTAssertEqual(Author.authorDisplay(book.authors), "Paul Beatty")
+        XCTAssertEqual(book.authors.fullNames, "Paul Beatty")
     }
 
     func testGoogleBooksSearchParsing() {
@@ -60,7 +60,7 @@ class GoogleBooksTests: XCTestCase {
             XCTAssertNotNil(result.title)
             XCTAssert(!result.title.trimmingCharacters(in: .whitespaces).isEmpty)
             XCTAssertGreaterThan(result.authors.count, 0)
-            XCTAssert(!result.authors.contains { $0.trimmingCharacters(in: .whitespaces).isEmpty })
+            XCTAssert(!result.authors.contains { $0.lastName.isEmpty })
         }
 
         let resultsWithIsbn = parseResult.filter { $0.isbn13 != nil }.count

@@ -46,7 +46,7 @@ class BookTableViewCell: UITableViewCell {
 
     func configureFrom(_ book: Book, includeReadDates: Bool = true) {
         titleLabel.text = book.title
-        authorsLabel.text = Author.authorDisplay(book.authors)
+        authorsLabel.text = book.authors.fullNames
         bookCover.image = UIImage(optionalData: book.coverImage) ?? #imageLiteral(resourceName: "CoverPlaceholder")
         if includeReadDates {
             switch book.readState {
@@ -56,7 +56,7 @@ class BookTableViewCell: UITableViewCell {
             }
 
             // Configure the reading progress display
-            if let currentPage = book.currentPage?.intValue, let pageCount = book.pageCount?.intValue, currentPage > 0 {
+            if let currentPage = book.currentPage, let pageCount = book.pageCount, currentPage > 0 {
                 let progress = Float(currentPage) / Float(pageCount)
                 let progressText = currentPage > pageCount ? "100%" : "\(100 * currentPage / pageCount)%"
                 configureReadingProgress(text: progressText, progress: progress)
@@ -64,8 +64,8 @@ class BookTableViewCell: UITableViewCell {
         }
 
         #if DEBUG
-            if UserDefaults.standard[.showSortNumber] {
-                titleLabel.text =  "(\(book.sort?.intValue.string ?? "none")) \(book.title)"
+            if let sort = book.sort, UserDefaults.standard[.showSortNumber] {
+                titleLabel.text = "(\(sort)) \(book.title)"
             }
         #endif
     }
@@ -78,7 +78,7 @@ class BookTableViewCell: UITableViewCell {
 
     func configureFrom(_ searchResult: SearchResult) {
         titleLabel.text = searchResult.title
-        authorsLabel.text = searchResult.authors.joined(separator: ", ")
+        authorsLabel.text = searchResult.authors.fullNames
 
         guard let coverURL = searchResult.thumbnailCoverUrl else { bookCover.image = #imageLiteral(resourceName: "CoverPlaceholder"); return }
         coverImageRequest = URLSession.shared.startedDataTask(with: coverURL) { [weak self] data, _, _ in

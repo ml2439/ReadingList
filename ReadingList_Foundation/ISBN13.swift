@@ -6,10 +6,6 @@ public struct ISBN13 {
         return String(int)
     }
 
-    public var number: NSNumber {
-        return NSNumber(value: int)
-    }
-
     public let int: Int64
 
     public init?(_ value: Int64) {

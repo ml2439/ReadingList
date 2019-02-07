@@ -8,6 +8,7 @@ class PersistentStoreManager {
 
     private static let storeName = "books"
     static var storeFileName: String { return "\(storeName).sqlite" }
+    static var storeLocation: URL { return URL.applicationSupport.appendingPathComponent(storeFileName) }
 
     /**
      Creates the NSPersistentContainer, migrating if necessary.
@@ -16,11 +17,6 @@ class PersistentStoreManager {
         if container != nil {
             os_log("Reinitialising persistent container")
         }
-        let storeLocation = URL.applicationSupport.appendingPathComponent(storeFileName)
-
-        // Default location of NSPersistentContainer is in the ApplicationSupport directory;
-        // previous versions put the store in the Documents directory. Move it if necessary.
-        moveStoreFromLegacyLocationIfNecessary(toNewLocation: storeLocation)
 
         // Migrate the store to the latest version if necessary and then initialise
         container = NSPersistentContainer(name: storeName, manuallyMigratedStoreAt: storeLocation)
@@ -35,13 +31,13 @@ class PersistentStoreManager {
      If a store exists in the Documents directory, copies it to the Application Support directory and destroys
      the old store.
     */
-    private static func moveStoreFromLegacyLocationIfNecessary(toNewLocation newLocation: URL) {
+    static func moveStoreFromLegacyLocationIfNecessary() {
         let legacyStoreLocation = URL.documents.appendingPathComponent(storeFileName)
-        if FileManager.default.fileExists(atPath: legacyStoreLocation.path) && !FileManager.default.fileExists(atPath: newLocation.path) {
+        if FileManager.default.fileExists(atPath: legacyStoreLocation.path) && !FileManager.default.fileExists(atPath: storeLocation.path) {
             os_log("Store located in Documents directory; migrating to Application Support directory")
             let tempStoreCoordinator = NSPersistentStoreCoordinator()
             try! tempStoreCoordinator.replacePersistentStore(
-                at: newLocation,
+                at: storeLocation,
                 destinationOptions: nil,
                 withPersistentStoreFrom: legacyStoreLocation,
                 sourceOptions: nil,

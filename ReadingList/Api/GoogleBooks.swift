@@ -146,7 +146,7 @@ class GoogleBooksParser {
         guard let searchResult = existingSearchResult ?? GoogleBooksParser.parseItem(fetchResult) else { return nil }
 
         let result = FetchResult(fromSearchResult: searchResult)
-        result.pageCount = fetchResult["volumeInfo", "pageCount"].int
+        result.pageCount = fetchResult["volumeInfo", "pageCount"].int32
         if let code = fetchResult["volumeInfo"]["language"].string, Language.byIsoCode[code] != nil {
             result.languageCode = code
         }
@@ -187,27 +187,35 @@ class GoogleBooksParser {
 class SearchResult {
     let id: String
     var title: String
-    var authors: [String]
+    var authors: [Author]
     var isbn13: String?
     var thumbnailCoverUrl: URL?
 
     init(id: String, title: String, authors: [String]) {
         self.id = id
         self.title = title
-        self.authors = authors
+        self.authors = authors.map {
+            if let range = $0.range(of: " ", options: .backwards) {
+                let firstNames = $0[..<range.upperBound].trimming()
+                let lastName = $0[range.lowerBound...].trimming()
+                return Author(lastName: lastName, firstNames: firstNames)
+            } else {
+                return Author(lastName: $0, firstNames: nil)
+            }
+        }
     }
 }
 
 class FetchResult {
     let id: String
     var title: String
-    var authors = [String]()
+    var authors = [Author]()
     var isbn13: ISBN13?
     var description: String?
     var subjects = [String]()
     var languageCode: String?
     var publishedDate: Date?
-    var pageCount: Int?
+    var pageCount: Int32?
     var hasThumbnailImage: Bool = false
     var hasSmallImage: Bool = false
 

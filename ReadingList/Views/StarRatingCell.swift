@@ -2,7 +2,7 @@ import Foundation
 import UIKit
 import Eureka
 
-public class StarRatingCell: Cell<Int>, CellType {
+public class StarRatingCell: Cell<Int16>, CellType {
 
     @IBOutlet private weak var stackView: UIStackView!
     @IBOutlet weak var leftLabel: UILabel! //swiftlint:disable:this private_outlet
@@ -35,7 +35,7 @@ public class StarRatingCell: Cell<Int>, CellType {
     }
 
     @objc func buttonTapped(_ sender: UIButton) {
-        let tappedRating = sender.tag
+        let tappedRating = Int16(sender.tag)
 
         // Star ratings are togglable. Tapping on the already selected rating will clear the rating.
         if row.value == tappedRating {

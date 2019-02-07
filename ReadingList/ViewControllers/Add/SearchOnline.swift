@@ -183,8 +183,12 @@ class SearchOnline: UITableViewController {
 
     func presentDuplicateBookAlert(book: Book, fromSelectedIndex indexPath: IndexPath) {
         let alert = duplicateBookAlertController(goToExistingBook: {
-            self.presentingViewController!.dismiss(animated: true) {
-                appDelegate.tabBarController.simulateBookSelection(book, allowTableObscuring: true)
+            self.presentingViewController?.dismiss(animated: true) {
+                guard let tabBarController = AppDelegate.shared.tabBarController else {
+                    assertionFailure()
+                    return
+                }
+                tabBarController.simulateBookSelection(book, allowTableObscuring: true)
             }
         }, cancel: {
             self.tableView.deselectRow(at: indexPath, animated: true)
@@ -201,7 +205,7 @@ class SearchOnline: UITableViewController {
                 }
             }
             .then(on: .main) { fetchResult -> Book in
-                let book = Book(context: context, readState: .toRead)
+                let book = Book(context: context)
                 book.populate(fromFetchResult: fetchResult)
                 return book
             }
@@ -279,12 +283,12 @@ class SearchOnline: UITableViewController {
                     } else {
                         maximalSort += 1
                     }
-                    book.sort = maximalSort.nsNumber
+                    book.sort = maximalSort
                 }
 
                 editContext.saveAndLogIfErrored()
                 self.searchController.isActive = false
-                self.presentingViewController!.dismiss(animated: true) {
+                self.presentingViewController?.dismiss(animated: true) {
                     var status = "\(newBookCount) \("book".pluralising(newBookCount)) added"
                     if newBookCount != selectedRows.count {
                         let erroredCount = selectedRows.count - newBookCount

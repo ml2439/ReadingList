@@ -57,5 +57,6 @@ class SearchOnlineTests: XCTestCase {
         app.tables.cells.element(boundBy: 4).tap()
         let duplicateAlert = app.alerts.element(boundBy: 0)
         XCTAssertEqual("Book Already Added", duplicateAlert.label)
+        app.alerts["Book Already Added"].buttons["Go To Existing Book"].tap()       
     }
 }
