@@ -66,7 +66,7 @@ class EditBookNotes: FormViewController {
         view.endEditing(true)
         editContext.saveIfChanged()
 
-        presentingViewController!.dismiss(animated: true) {
+        presentingViewController?.dismiss(animated: true) {
             UserEngagement.onReviewTrigger()
         }
     }

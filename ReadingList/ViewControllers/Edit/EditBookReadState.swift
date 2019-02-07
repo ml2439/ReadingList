@@ -144,9 +144,13 @@ class EditBookReadState: FormViewController {
             searchOnline.searchController.isActive = false
         }
 
-        presentingViewController!.dismiss(animated: true) {
+        presentingViewController?.dismiss(animated: true) {
             if self.newBook {
-                (self.tabBarController as? TabBarController)?.simulateBookSelection(self.book, allowTableObscuring: false)
+                guard let tabBarController = AppDelegate.shared.tabBarController else {
+                    assertionFailure()
+                    return
+                }
+                tabBarController.simulateBookSelection(self.book, allowTableObscuring: false)
             }
             UserEngagement.onReviewTrigger()
         }

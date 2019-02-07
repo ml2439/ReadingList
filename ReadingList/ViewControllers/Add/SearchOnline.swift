@@ -183,9 +183,9 @@ class SearchOnline: UITableViewController {
 
     func presentDuplicateBookAlert(book: Book, fromSelectedIndex indexPath: IndexPath) {
         let alert = duplicateBookAlertController(goToExistingBook: {
-            self.presentingViewController!.dismiss(animated: true) {
+            self.presentingViewController?.dismiss(animated: true) {
                 guard let tabBarController = AppDelegate.shared.tabBarController else {
-                    assertionFailure("Tab bar controller not available")
+                    assertionFailure()
                     return
                 }
                 tabBarController.simulateBookSelection(book, allowTableObscuring: true)
@@ -288,7 +288,7 @@ class SearchOnline: UITableViewController {
 
                 editContext.saveAndLogIfErrored()
                 self.searchController.isActive = false
-                self.presentingViewController!.dismiss(animated: true) {
+                self.presentingViewController?.dismiss(animated: true) {
                     var status = "\(newBookCount) \("book".pluralising(newBookCount)) added"
                     if newBookCount != selectedRows.count {
                         let erroredCount = selectedRows.count - newBookCount

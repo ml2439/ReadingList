@@ -152,7 +152,7 @@ class ScanBarcode: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
         let alert = duplicateBookAlertController(goToExistingBook: {
             self.dismiss(animated: true) {
                 guard let tabBarController = AppDelegate.shared.tabBarController else {
-                    assertionFailure("Tab bar controller not available")
+                    assertionFailure()
                     return
                 }
                 tabBarController.simulateBookSelection(book, allowTableObscuring: true)
