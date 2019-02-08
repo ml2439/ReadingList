@@ -7,19 +7,44 @@ class ListBookTable: UITableViewController {
 
     var list: List!
     var ignoreNotifications = false
+    var controller: NSFetchedResultsController<Book>?
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         tableView.register(UINib(BookTableViewCell.self), forCellReuseIdentifier: String(describing: BookTableViewCell.self))
+
         navigationItem.title = list.name
-        navigationItem.rightBarButtonItem = editButtonItem
+        let reorder = UIBarButtonItem(title: "Order", style: .plain, target: self, action: #selector(orderButtonPressed))
+        navigationItem.rightBarButtonItems = [editButtonItem, reorder]
 
         tableView.emptyDataSetSource = self
         tableView.emptyDataSetDelegate = self
 
         registerForSaveNotifications()
         monitorThemeSetting()
+
+        generateResultsControllerIfNecessary()
+    }
+
+    func generateResultsControllerIfNecessary() {
+        guard let sortDescriptors = list.order.sortDescriptors else {
+            controller = nil
+            return
+        }
+        let fetch = NSManagedObject.fetchRequest(Book.self, batch: 50)
+        fetch.predicate = NSPredicate(format: "%@ IN %K", list, #keyPath(Book.lists))
+        fetch.sortDescriptors = sortDescriptors
+        controller = NSFetchedResultsController(fetchRequest: fetch, managedObjectContext: PersistentStoreManager.container.viewContext, sectionNameKeyPath: nil, cacheName: nil)
+        try! controller!.performFetch()
+        controller!.delegate = tableView
+    }
+
+    func sortOrderChanged() {
+        generateResultsControllerIfNecessary()
+        tableView.reloadData()
+        // Put the top row at the "middle", so that the top row is not right up at the top of the table
+        tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .middle, animated: false)
     }
 
     func registerForSaveNotifications() {
@@ -27,9 +52,25 @@ class ListBookTable: UITableViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(changeOccurred(_:)), name: .NSManagedObjectContextObjectsDidChange, object: list.managedObjectContext!)
     }
 
+    @objc func orderButtonPressed() {
+        let alert = UIAlertController(title: "Choose Order", message: "", preferredStyle: .alert)
+        for listOrder in ListOrder.allCases {
+            let title = list.order == listOrder ? "  \(listOrder) ✓" : listOrder.description
+            alert.addAction(UIAlertAction(title: title, style: .default) { _ in
+                if self.list.order != listOrder {
+                    self.list.order = listOrder
+                    self.list.managedObjectContext!.saveAndLogIfErrored()
+                    self.sortOrderChanged()
+                }
+            })
+        }
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        present(alert, animated: true, completion: nil)
+    }
+
     @objc func changeOccurred(_ notification: Notification) {
         guard !ignoreNotifications else { return }
-        guard let userInfo = (notification as NSNotification).userInfo else { return }
+        guard let userInfo = notification.userInfo else { return }
 
         let deletedObjects = userInfo[NSDeletedObjectsKey] as? NSSet ?? NSSet()
         guard !deletedObjects.contains(list) else {
@@ -38,11 +79,13 @@ class ListBookTable: UITableViewController {
             return
         }
 
-        // Reload the data
-        tableView.reloadData()
+        // We are not using an NSFetchResultsControllerDelegate if the sort order is manual, so reload the table data.
+        if controller?.delegate == nil {
+            tableView.reloadData()
+        }
     }
 
-    func performUIEdit(_ block: () -> Void) {
+    private func ignoringSaveNotifications(_ block: () -> Void) {
         ignoreNotifications = true
         block()
         ignoreNotifications = false
@@ -52,19 +95,29 @@ class ListBookTable: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard section == 0 else { return 0 }
-        return list.books.count
+        if let controller = controller {
+            return controller.sections![0].numberOfObjects
+        } else {
+            return list.books.count
+        }
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: BookTableViewCell.self), for: indexPath) as! BookTableViewCell
-        let book = list.books.object(at: indexPath.row) as! Book
+
+        let book: Book
+        if let controller = controller {
+            book = controller.object(at: indexPath)
+        } else {
+            book = list.books.object(at: indexPath.row) as! Book
+        }
         cell.initialise(withTheme: UserDefaults.standard[.theme])
-        cell.configureFrom(book, includeReadDates: false)
+        cell.configureFrom(book, includeReadDates: list.order == .finished)
         return cell
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.performSegue(withIdentifier: "showDetail", sender: indexPath)
+        performSegue(withIdentifier: "showDetail", sender: indexPath)
     }
 
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
@@ -72,26 +125,36 @@ class ListBookTable: UITableViewController {
     }
 
     private func removeBook(at indexPath: IndexPath) {
-        list.removeBooks(NSSet(object: list.books[indexPath.row]))
+        let bookToRemove: Book
+        if let controller = controller {
+            bookToRemove = controller.object(at: indexPath)
+        } else {
+            bookToRemove = list.books[indexPath.row] as! Book
+        }
+        list.removeBooks(NSSet(object: bookToRemove))
         list.managedObjectContext!.saveAndLogIfErrored()
         UserEngagement.logEvent(.removeBookFromList)
     }
 
     override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         return [UITableViewRowAction(style: .destructive, title: "Remove") { _, indexPath in
-            self.performUIEdit {
+            self.ignoringSaveNotifications {
                 self.removeBook(at: indexPath)
-                self.tableView.deleteRows(at: [indexPath], with: .automatic)
+                if self.controller?.delegate == nil {
+                    self.tableView.deleteRows(at: [indexPath], with: .automatic)
+                }
             }
             self.tableView.reloadEmptyDataSet()
         }]
     }
 
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool { return list.books.count > 1 }
+    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+        return list.order == .custom && list.books.count > 1
+    }
 
     override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         guard sourceIndexPath != destinationIndexPath else { return }
-        performUIEdit {
+        ignoringSaveNotifications {
             var books = list.books.map { ($0 as! Book) }
             let movedBook = books.remove(at: sourceIndexPath.row)
             books.insert(movedBook, at: destinationIndexPath.row)
@@ -103,8 +166,14 @@ class ListBookTable: UITableViewController {
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let detailsViewController = (segue.destination as? UINavigationController)?.topViewController as? BookDetails {
-            let senderIndex = sender as! IndexPath
-            detailsViewController.book = (list.books.object(at: senderIndex.row) as! Book)
+            guard let senderIndex = sender as? IndexPath else { preconditionFailure() }
+            let book: Book
+            if let controller = controller {
+                book = controller.object(at: senderIndex)
+            } else {
+                book = list.books.object(at: senderIndex.row) as! Book
+            }
+            detailsViewController.book = book
         }
     }
 }
