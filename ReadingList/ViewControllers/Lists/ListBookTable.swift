@@ -21,13 +21,23 @@ class ListBookTable: UITableViewController {
         tableView.emptyDataSetSource = self
         tableView.emptyDataSetDelegate = self
 
-        registerForSaveNotifications()
+        NotificationCenter.default.addObserver(self, selector: #selector(managedObjectContextChanged(_:)), name: .NSManagedObjectContextObjectsDidChange,
+                                               object: list.managedObjectContext!)
         monitorThemeSetting()
 
         generateResultsControllerIfNecessary()
     }
 
-    func generateResultsControllerIfNecessary() {
+    override func setEditing(_ editing: Bool, animated: Bool) {
+        guard let orderButton = navigationItem.rightBarButtonItems?[safe: 1] else {
+            assertionFailure()
+            return
+        }
+        orderButton.isEnabled = !editing
+        super.setEditing(editing, animated: animated)
+    }
+
+    private func generateResultsControllerIfNecessary() {
         guard let sortDescriptors = list.order.sortDescriptors else {
             controller = nil
             return
@@ -40,19 +50,14 @@ class ListBookTable: UITableViewController {
         controller!.delegate = tableView
     }
 
-    func sortOrderChanged() {
+    private func sortOrderChanged() {
         generateResultsControllerIfNecessary()
         tableView.reloadData()
         // Put the top row at the "middle", so that the top row is not right up at the top of the table
         tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .middle, animated: false)
     }
 
-    func registerForSaveNotifications() {
-        // Watch for changes in the managed object context, in order to update the table
-        NotificationCenter.default.addObserver(self, selector: #selector(changeOccurred(_:)), name: .NSManagedObjectContextObjectsDidChange, object: list.managedObjectContext!)
-    }
-
-    @objc func orderButtonPressed() {
+    @objc private func orderButtonPressed() {
         let alert = UIAlertController(title: "Choose Order", message: "", preferredStyle: .alert)
         for listOrder in ListOrder.allCases {
             let title = list.order == listOrder ? "  \(listOrder) ✓" : listOrder.description
@@ -68,7 +73,7 @@ class ListBookTable: UITableViewController {
         present(alert, animated: true, completion: nil)
     }
 
-    @objc func changeOccurred(_ notification: Notification) {
+    @objc private func managedObjectContextChanged(_ notification: Notification) {
         guard !ignoreNotifications else { return }
         guard let userInfo = notification.userInfo else { return }
 
@@ -112,7 +117,7 @@ class ListBookTable: UITableViewController {
             book = list.books.object(at: indexPath.row) as! Book
         }
         cell.initialise(withTheme: UserDefaults.standard[.theme])
-        cell.configureFrom(book, includeReadDates: list.order == .finished)
+        cell.configureFrom(book, includeReadDates: false)
         return cell
     }
 
