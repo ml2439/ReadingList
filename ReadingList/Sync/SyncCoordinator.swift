@@ -2,6 +2,7 @@ import Foundation
 import CoreData
 import UIKit
 import CloudKit
+import Reachability
 import os.log
 
 /**
@@ -36,6 +37,7 @@ class SyncCoordinator {
     private let upstreamChangeProcessors: [UpstreamChangeProcessor]
     private let downstreamChangeProcessor: BookDownloader
 
+    let reachability = Reachability()!
     let remote = BookCloudKitRemote()
 
     private var notificationObservers = [NSObjectProtocol]()
@@ -52,6 +54,25 @@ class SyncCoordinator {
         self.downstreamChangeProcessor = BookDownloader(syncContext, remote)
         self.upstreamChangeProcessors = [BookUploader(syncContext, remote),
                                          BookDeleter(syncContext, remote)]
+    }
+
+    func monitorNetworkReachability() {
+        do {
+            try reachability.startNotifier()
+            NotificationCenter.default.addObserver(self, selector: #selector(networkConnectivityDidChange), name: .reachabilityChanged, object: nil)
+        } catch {
+            os_log("Error starting reachability notifier: %{public}s", type: .error, error.localizedDescription)
+        }
+    }
+
+    @objc func networkConnectivityDidChange() {
+        let currentConnection = reachability.connection
+        os_log("Network connectivity changed to %{public}s", type: .info, currentConnection.description)
+        if currentConnection == .none {
+            stop()
+        } else {
+            start()
+        }
     }
 
     /**
@@ -154,7 +175,7 @@ class SyncCoordinator {
                 retryAfterSeconds = 10.0
             }
             os_log("Pause sync notification received: stopping SyncCoordinator for %d seconds", retryAfterSeconds)
-            
+
             self.stop()
             DispatchQueue.main.asyncAfter(deadline: .now() + retryAfterSeconds) {
                 self.start()

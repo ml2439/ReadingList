@@ -1,0 +1,985 @@
+{
+ "items": [
+  {
+   "id": "kdBiDwAAQBAJ",
+   "volumeInfo": {
+    "title": "Poverty Safari",
+    "authors": [
+     "Darren McGarvey"
+    ],
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_13",
+      "identifier": "9781529006353"
+     },
+     {
+      "type": "ISBN_10",
+      "identifier": "152900635X"
+     }
+    ],
+    "categories": [
+     "Social Science"
+    ],
+    "imageLinks": {
+     "thumbnail": "http://books.google.com/books/content?id=kdBiDwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    }
+   }
+  },
+  {
+   "id": "Yvc4DgAAQBAJ",
+   "volumeInfo": {
+    "title": "Why Orwell Matters",
+    "authors": [
+     "Christopher Hitchens"
+    ],
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_13",
+      "identifier": "9780786725892"
+     },
+     {
+      "type": "ISBN_10",
+      "identifier": "0786725893"
+     }
+    ],
+    "categories": [
+     "Literary Criticism"
+    ],
+    "imageLinks": {
+     "thumbnail": "http://books.google.com/books/content?id=Yvc4DgAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    }
+   }
+  },
+  {
+   "id": "RMLTetNVilQC",
+   "volumeInfo": {
+    "title": "Finding George Orwell in Burma",
+    "authors": [
+     "Emma Larkin"
+    ],
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_13",
+      "identifier": "9781847084552"
+     },
+     {
+      "type": "ISBN_10",
+      "identifier": "1847084559"
+     }
+    ],
+    "categories": [
+     "Travel"
+    ],
+    "imageLinks": {
+     "thumbnail": "http://books.google.com/books/content?id=RMLTetNVilQC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    }
+   }
+  },
+  {
+   "id": "7Qni9o2sRhMC",
+   "volumeInfo": {
+    "title": "The Road to Wigan Pier",
+    "authors": [
+     "George Orwell"
+    ],
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_13",
+      "identifier": "9780141913889"
+     },
+     {
+      "type": "ISBN_10",
+      "identifier": "0141913886"
+     }
+    ],
+    "categories": [
+     "Biography & Autobiography"
+    ],
+    "imageLinks": {
+     "thumbnail": "http://books.google.com/books/content?id=7Qni9o2sRhMC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    }
+   }
+  },
+  {
+   "id": "AggpqYLjLNYC",
+   "volumeInfo": {
+    "title": "Homage to Catalonia",
+    "authors": [
+     "George Orwell"
+    ],
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_13",
+      "identifier": "9780141183053"
+     },
+     {
+      "type": "ISBN_10",
+      "identifier": "0141183055"
+     }
+    ],
+    "categories": [
+     "Biography & Autobiography"
+    ],
+    "imageLinks": {
+     "thumbnail": "http://books.google.com/books/content?id=AggpqYLjLNYC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    }
+   }
+  },
+  {
+   "id": "i9E8DwAAQBAJ",
+   "volumeInfo": {
+    "title": "Orwell on Truth",
+    "authors": [
+     "George Orwell"
+    ],
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_13",
+      "identifier": "9781473559073"
+     },
+     {
+      "type": "ISBN_10",
+      "identifier": "1473559073"
+     }
+    ],
+    "categories": [
+     "Literary Criticism"
+    ],
+    "imageLinks": {
+     "thumbnail": "http://books.google.com/books/content?id=i9E8DwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    }
+   }
+  },
+  {
+   "id": "PN2SAwAAQBAJ",
+   "volumeInfo": {
+    "title": "Down and Out in Paris and London",
+    "authors": [
+     "George Orwell"
+    ],
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_13",
+      "identifier": "9781105495953"
+     },
+     {
+      "type": "ISBN_10",
+      "identifier": "1105495957"
+     }
+    ],
+    "categories": [
+     "Homelessness"
+    ],
+    "imageLinks": {
+     "thumbnail": "http://books.google.com/books/content?id=PN2SAwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    }
+   }
+  },
+  {
+   "id": "yH_gSaP_GqsC",
+   "volumeInfo": {
+    "title": "Orwell in Spain",
+    "authors": [
+     "George Orwell"
+    ],
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_13",
+      "identifier": "9780141913902"
+     },
+     {
+      "type": "ISBN_10",
+      "identifier": "0141913908"
+     }
+    ],
+    "categories": [
+     "Literary Collections"
+    ],
+    "imageLinks": {
+     "thumbnail": "http://books.google.com/books/content?id=yH_gSaP_GqsC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    }
+   }
+  },
+  {
+   "id": "b-UZDQAAQBAJ",
+   "volumeInfo": {
+    "title": "Churchill and Orwell",
+    "authors": [
+     "Thomas E. Ricks"
+    ],
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_13",
+      "identifier": "9780698164543"
+     },
+     {
+      "type": "ISBN_10",
+      "identifier": "0698164547"
+     }
+    ],
+    "categories": [
+     "Biography & Autobiography"
+    ],
+    "imageLinks": {
+     "thumbnail": "http://books.google.com/books/content?id=b-UZDQAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    }
+   }
+  },
+  {
+   "id": "ABzfuAEACAAJ",
+   "volumeInfo": {
+    "title": "Orwell on Freedom",
+    "authors": [
+     "George Orwell"
+    ],
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "1787301400"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9781787301405"
+     }
+    ],
+    "imageLinks": {
+     "thumbnail": "http://books.google.com/books/content?id=ABzfuAEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
+    }
+   }
+  },
+  {
+   "id": "RMb4Et3FgN4C",
+   "volumeInfo": {
+    "title": "Keep the Aspidistra Flying",
+    "authors": [
+     "George Orwell"
+    ],
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_13",
+      "identifier": "9780141913919"
+     },
+     {
+      "type": "ISBN_10",
+      "identifier": "0141913916"
+     }
+    ],
+    "categories": [
+     "Fiction"
+    ],
+    "imageLinks": {
+     "thumbnail": "http://books.google.com/books/content?id=RMb4Et3FgN4C&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    }
+   }
+  },
+  {
+   "id": "x8-fnamQuUkC",
+   "volumeInfo": {
+    "title": "The Cambridge Companion to George Orwell",
+    "authors": [
+     "John Rodden"
+    ],
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "0521675073"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9780521675079"
+     }
+    ],
+    "categories": [
+     "Literary Criticism"
+    ],
+    "imageLinks": {
+     "thumbnail": "http://books.google.com/books/content?id=x8-fnamQuUkC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    }
+   }
+  },
+  {
+   "id": "tgJ6ygAACAAJ",
+   "volumeInfo": {
+    "title": "Orwell in Tribune",
+    "authors": [
+     "George Orwell"
+    ],
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "0413777200"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9780413777201"
+     }
+    ],
+    "imageLinks": {
+     "thumbnail": "http://books.google.com/books/content?id=tgJ6ygAACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
+    }
+   }
+  },
+  {
+   "id": "kQqcCwAAQBAJ",
+   "volumeInfo": {
+    "title": "Keep the Aspidastra Flying",
+    "authors": [
+     "George Orwell"
+    ],
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_13",
+      "identifier": "9781551998909"
+     },
+     {
+      "type": "ISBN_10",
+      "identifier": "1551998904"
+     }
+    ],
+    "categories": [
+     "Fiction"
+    ],
+    "imageLinks": {
+     "thumbnail": "http://books.google.com/books/content?id=kQqcCwAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
+    }
+   }
+  },
+  {
+   "id": "EIDJtAEACAAJ",
+   "volumeInfo": {
+    "title": "Animal Farm",
+    "authors": [
+     "George George Orwell"
+    ],
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "198653314X"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9781986533140"
+     }
+    ],
+    "imageLinks": {
+     "thumbnail": "http://books.google.com/books/content?id=EIDJtAEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
+    }
+   }
+  },
+  {
+   "id": "QxtUCwAAQBAJ",
+   "volumeInfo": {
+    "title": "Or Orwell",
+    "authors": [
+     "Alex Woloch"
+    ],
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_13",
+      "identifier": "9780674282483"
+     },
+     {
+      "type": "ISBN_10",
+      "identifier": "0674282485"
+     }
+    ],
+    "categories": [
+     "Literary Criticism"
+    ],
+    "imageLinks": {
+     "thumbnail": "http://books.google.com/books/content?id=QxtUCwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    }
+   }
+  },
+  {
+   "id": "kotPYEqx7kMC",
+   "volumeInfo": {
+    "title": "1984",
+    "authors": [
+     "George Orwell"
+    ],
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_13",
+      "identifier": "9780547249643"
+     },
+     {
+      "type": "ISBN_10",
+      "identifier": "0547249640"
+     }
+    ],
+    "categories": [
+     "Fiction"
+    ],
+    "imageLinks": {
+     "thumbnail": "http://books.google.com/books/content?id=kotPYEqx7kMC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    }
+   }
+  },
+  {
+   "id": "oWE9CgAAQBAJ",
+   "volumeInfo": {
+    "title": "Citizen Clem",
+    "authors": [
+     "John Bew"
+    ],
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_13",
+      "identifier": "9781784299736"
+     },
+     {
+      "type": "ISBN_10",
+      "identifier": "1784299731"
+     }
+    ],
+    "categories": [
+     "Biography & Autobiography"
+    ],
+    "imageLinks": {
+     "thumbnail": "http://books.google.com/books/content?id=oWE9CgAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    }
+   }
+  },
+  {
+   "id": "s-7ihMZgiRgC",
+   "volumeInfo": {
+    "title": "George Orwell",
+    "authors": [
+     "John Rodden"
+    ],
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "1412824532"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9781412824538"
+     }
+    ],
+    "categories": [
+     "Literary Criticism"
+    ],
+    "imageLinks": {
+     "thumbnail": "http://books.google.com/books/content?id=s-7ihMZgiRgC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    }
+   }
+  },
+  {
+   "id": "wDfBiTEaoxgC",
+   "volumeInfo": {
+    "title": "Orwell and Politics",
+    "authors": [
+     "George Orwell",
+     "Peter Hobley Davison"
+    ],
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_13",
+      "identifier": "9780141185187"
+     },
+     {
+      "type": "ISBN_10",
+      "identifier": "014118518X"
+     }
+    ],
+    "categories": [
+     "Fiction"
+    ],
+    "imageLinks": {
+     "thumbnail": "http://books.google.com/books/content?id=wDfBiTEaoxgC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    }
+   }
+  },
+  {
+   "id": "ZqSYNyGNunIC",
+   "volumeInfo": {
+    "title": "George Orwell, Nineteen Eighty-Four: Winston Smith's Rebellion",
+    "authors": [
+     "Gaby Schneidereit"
+    ],
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_13",
+      "identifier": "9783638775182"
+     },
+     {
+      "type": "ISBN_10",
+      "identifier": "3638775186"
+     }
+    ],
+    "imageLinks": {
+     "thumbnail": "http://books.google.com/books/content?id=ZqSYNyGNunIC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    }
+   }
+  },
+  {
+   "id": "pL-7i7LkeeQC",
+   "volumeInfo": {
+    "title": "Orwell Subverted",
+    "authors": [
+     "Daniel J. Leab"
+    ],
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_13",
+      "identifier": "9780271045146"
+     },
+     {
+      "type": "ISBN_10",
+      "identifier": "0271045140"
+     }
+    ],
+    "categories": [
+     "Performing Arts"
+    ],
+    "imageLinks": {
+     "thumbnail": "http://books.google.com/books/content?id=pL-7i7LkeeQC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    }
+   }
+  },
+  {
+   "id": "WQwlYM9GcXAC",
+   "volumeInfo": {
+    "title": "George Orwell, Updated Edition",
+    "authors": [
+     "Harold Bloom"
+    ],
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_13",
+      "identifier": "9781438113005"
+     },
+     {
+      "type": "ISBN_10",
+      "identifier": "1438113005"
+     }
+    ],
+    "imageLinks": {
+     "thumbnail": "http://books.google.com/books/content?id=WQwlYM9GcXAC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    }
+   }
+  },
+  {
+   "id": "y9OEAgAAQBAJ",
+   "volumeInfo": {
+    "title": "George Orwell",
+    "authors": [
+     "Jeffrey Meyers"
+    ],
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_13",
+      "identifier": "9781134723775"
+     },
+     {
+      "type": "ISBN_10",
+      "identifier": "1134723776"
+     }
+    ],
+    "categories": [
+     "Literary Criticism"
+    ],
+    "imageLinks": {
+     "thumbnail": "http://books.google.com/books/content?id=y9OEAgAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    }
+   }
+  },
+  {
+   "id": "AvjQAAAAMAAJ",
+   "volumeInfo": {
+    "title": "A History of the Churches of Orwell, Pennsylvania (Congregational, Presbyterian, Methodist, Federated) 1803-1951",
+    "authors": [
+     "Victor Charles Detty"
+    ],
+    "industryIdentifiers": [
+     {
+      "type": "OTHER",
+      "identifier": "WISC:89059430348"
+     }
+    ],
+    "categories": [
+     "Church buildings"
+    ],
+    "imageLinks": {
+     "thumbnail": "http://books.google.com/books/content?id=AvjQAAAAMAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
+    }
+   }
+  },
+  {
+   "id": "RbFpCwAAQBAJ",
+   "volumeInfo": {
+    "title": "The Girl from the Fiction Department",
+    "authors": [
+     "Hilary Spurling"
+    ],
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_13",
+      "identifier": "9780241974612"
+     },
+     {
+      "type": "ISBN_10",
+      "identifier": "0241974615"
+     }
+    ],
+    "categories": [
+     "Biography & Autobiography"
+    ],
+    "imageLinks": {
+     "thumbnail": "http://books.google.com/books/content?id=RbFpCwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    }
+   }
+  },
+  {
+   "id": "EvxuQgAACAAJ",
+   "volumeInfo": {
+    "title": "The Betrayal of Dissent",
+    "authors": [
+     "Scott Lucas"
+    ],
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "0745321976"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9780745321974"
+     }
+    ],
+    "categories": [
+     "Political Science"
+    ],
+    "imageLinks": {
+     "thumbnail": "http://books.google.com/books/content?id=EvxuQgAACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
+    }
+   }
+  },
+  {
+   "id": "zaxG_3ivhVAC",
+   "volumeInfo": {
+    "title": "George Orwell: In front of your nose, 1946-1950",
+    "authors": [
+     "George Orwell",
+     "Sonia Orwell",
+     "Ian Angus"
+    ],
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "1567921361"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9781567921366"
+     }
+    ],
+    "categories": [
+     "Literary Collections"
+    ],
+    "imageLinks": {
+     "thumbnail": "http://books.google.com/books/content?id=zaxG_3ivhVAC&printsec=frontcover&img=1&zoom=1&source=gbs_api"
+    }
+   }
+  },
+  {
+   "id": "rURaCwAAQBAJ",
+   "volumeInfo": {
+    "title": "Orwell's Politics",
+    "authors": [
+     "J. Newsinger"
+    ],
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_13",
+      "identifier": "9780333983607"
+     },
+     {
+      "type": "ISBN_10",
+      "identifier": "0333983602"
+     }
+    ],
+    "categories": [
+     "Literary Criticism"
+    ],
+    "imageLinks": {
+     "thumbnail": "http://books.google.com/books/content?id=rURaCwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    }
+   }
+  },
+  {
+   "id": "baY6DwAAQBAJ",
+   "volumeInfo": {
+    "title": "Notes on Nationalism",
+    "authors": [
+     "George Orwell"
+    ],
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_13",
+      "identifier": "9780241339572"
+     },
+     {
+      "type": "ISBN_10",
+      "identifier": "024133957X"
+     }
+    ],
+    "categories": [
+     "Political Science"
+    ],
+    "imageLinks": {
+     "thumbnail": "http://books.google.com/books/content?id=baY6DwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    }
+   }
+  },
+  {
+   "id": "s--KJsTWQnEC",
+   "volumeInfo": {
+    "title": "Orwell: Shooting an Elephant - A semiotic approach",
+    "authors": [
+     "Michael Reichmann"
+    ],
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_13",
+      "identifier": "9783638382298"
+     },
+     {
+      "type": "ISBN_10",
+      "identifier": "363838229X"
+     }
+    ],
+    "categories": [
+     "Literary Criticism"
+    ],
+    "imageLinks": {
+     "thumbnail": "http://books.google.com/books/content?id=s--KJsTWQnEC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    }
+   }
+  },
+  {
+   "id": "g-gyr7ddFYUC",
+   "volumeInfo": {
+    "title": "The Orwell Mystique",
+    "authors": [
+     "Daphne Patai"
+    ],
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "0870234471"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9780870234477"
+     }
+    ],
+    "categories": [
+     "Literary Criticism"
+    ],
+    "imageLinks": {
+     "thumbnail": "http://books.google.com/books/content?id=g-gyr7ddFYUC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    }
+   }
+  },
+  {
+   "id": "aspDPgAACAAJ",
+   "volumeInfo": {
+    "title": "Orwell",
+    "authors": [
+     "Michael Shelden"
+    ],
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "1842751735"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9781842751732"
+     }
+    ],
+    "categories": [
+     "Authors, English"
+    ],
+    "imageLinks": {
+     "thumbnail": "http://books.google.com/books/content?id=aspDPgAACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
+    }
+   }
+  },
+  {
+   "id": "Bm1yQgAACAAJ",
+   "volumeInfo": {
+    "title": "Essays",
+    "authors": [
+     "George Orwell"
+    ],
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "0375415033"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9780375415036"
+     }
+    ],
+    "categories": [
+     "Literary Collections"
+    ],
+    "imageLinks": {
+     "thumbnail": "http://books.google.com/books/content?id=Bm1yQgAACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
+    }
+   }
+  },
+  {
+   "id": "YeGTkQEACAAJ",
+   "volumeInfo": {
+    "title": "The Lost Orwell",
+    "authors": [
+     "George Orwell",
+     "Peter Hobley Davison"
+    ],
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "1857252144"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9781857252149"
+     }
+    ],
+    "categories": [
+     "Literary Collections"
+    ],
+    "imageLinks": {
+     "thumbnail": "http://books.google.com/books/content?id=YeGTkQEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
+    }
+   }
+  },
+  {
+   "id": "VY8aAQAAMAAJ",
+   "volumeInfo": {
+    "title": "Orwell",
+    "authors": [
+     "George Orwell"
+    ],
+    "industryIdentifiers": [
+     {
+      "type": "OTHER",
+      "identifier": "IND:30000110626268"
+     }
+    ],
+    "categories": [
+     "Drama"
+    ],
+    "imageLinks": {
+     "thumbnail": "http://books.google.com/books/content?id=VY8aAQAAMAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
+    }
+   }
+  },
+  {
+   "id": "a19QjWd5f68C",
+   "volumeInfo": {
+    "title": "A Very British Killing",
+    "authors": [
+     "A. T. Williams"
+    ],
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_13",
+      "identifier": "9781448138777"
+     },
+     {
+      "type": "ISBN_10",
+      "identifier": "1448138779"
+     }
+    ],
+    "categories": [
+     "History"
+    ],
+    "imageLinks": {
+     "thumbnail": "http://books.google.com/books/content?id=a19QjWd5f68C&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    }
+   }
+  },
+  {
+   "id": "NZNiDwAAQBAJ",
+   "volumeInfo": {
+    "title": "Burning Down George Orwell's House",
+    "authors": [
+     "Andrew Ervin"
+    ],
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_13",
+      "identifier": "9781616954956"
+     },
+     {
+      "type": "ISBN_10",
+      "identifier": "1616954957"
+     }
+    ],
+    "categories": [
+     "Fiction"
+    ],
+    "imageLinks": {
+     "thumbnail": "http://books.google.com/books/content?id=NZNiDwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    }
+   }
+  },
+  {
+   "id": "c3bdiY35h3MC",
+   "volumeInfo": {
+    "title": "Facing Unpleasant Facts",
+    "authors": [
+     "George Orwell"
+    ],
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_13",
+      "identifier": "9780547417769"
+     },
+     {
+      "type": "ISBN_10",
+      "identifier": "0547417764"
+     }
+    ],
+    "categories": [
+     "Literary Collections"
+    ],
+    "imageLinks": {
+     "thumbnail": "http://books.google.com/books/content?id=c3bdiY35h3MC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    }
+   }
+  },
+  {
+   "id": "HWlRm5yz3hkC",
+   "volumeInfo": {
+    "title": "Orwell",
+    "authors": [
+     "D J Taylor"
+    ],
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_13",
+      "identifier": "9781409028505"
+     },
+     {
+      "type": "ISBN_10",
+      "identifier": "140902850X"
+     }
+    ],
+    "categories": [
+     "Biography & Autobiography"
+    ],
+    "imageLinks": {
+     "thumbnail": "http://books.google.com/books/content?id=HWlRm5yz3hkC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    }
+   }
+  }
+ ]
+}

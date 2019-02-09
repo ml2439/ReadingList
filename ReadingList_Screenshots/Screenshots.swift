@@ -14,8 +14,8 @@ class Screenshots: XCTestCase {
     }
 
     func testSnapshot() {
-        // Screenshot is designed for iOS 11 only
-        guard #available(iOS 11.0, *) else { return }
+        // Screenshot is designed for iOS 12 only
+        guard #available(iOS 12.0, *) else { return }
 
         let app = ReadingListApp()
         app.clickTab(.toRead)

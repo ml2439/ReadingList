@@ -31,7 +31,7 @@ class Settings: UITableViewController {
 
     #if DEBUG
     @objc func onLongPressHeader(_ recognizer: UILongPressGestureRecognizer) {
-        present(Debug().inThemedNavController(), animated: true, completion: nil)
+        present(DebugForm().inThemedNavController(), animated: true, completion: nil)
     }
     #endif
 
@@ -66,12 +66,12 @@ class Settings: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
         cell.defaultInitialise(withTheme: UserDefaults.standard[.theme])
-        if !appDelegate.tabBarController.selectedSplitViewController!.isSplit { return cell }
-
-        // In split mode, change the cells a little to look more like the standard iOS settings app
-        cell.selectedBackgroundView = UIView(backgroundColor: UIColor(fromHex: 5350396))
-        cell.textLabel!.highlightedTextColor = .white
-        cell.accessoryType = .none
+        if splitViewController?.isSplit == true {
+            // In split mode, change the cells a little to look more like the standard iOS settings app
+            cell.selectedBackgroundView = UIView(backgroundColor: UIColor(fromHex: 5350396))
+            cell.textLabel!.highlightedTextColor = .white
+            cell.accessoryType = .none
+        }
         return cell
     }
 

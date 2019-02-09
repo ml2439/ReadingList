@@ -13,10 +13,10 @@ class UpgradeAction {
     }
 }
 
-class UpgradeActionApplier {
+class UpgradeManager {
     let actions = [
 
-        // This version removed support for spotlight indexing, so deindex everything
+        // At some point we desupported spotlight indexing, so deindex everything
         UpgradeAction(id: 1) {
             if CSSearchableIndex.isIndexingAvailable() {
                 os_log("Deleting all searchable spotlight items")
@@ -25,7 +25,7 @@ class UpgradeActionApplier {
         },
 
         // Migrate the legacy UserDefault settings used for table sort order storage, but only if
-        // this has not already been performed by the app already.
+        // this has not already been performed by the app already during normal operation.
         UpgradeAction(id: 2) {
             os_log("Migrating table sort order UserDefaults settings")
 
@@ -53,10 +53,20 @@ class UpgradeActionApplier {
 
             // No need for the legacy setting now: remove it
             UserDefaults.standard.removeObject(forKey: legacyTableSortOrderKey)
+        },
+
+        // Previous versions of the app stored the persistent store in a non-default location.
+        // This file move was previously attempted every launch; the vast majority of users
+        // will already have their store in the new location.
+        UpgradeAction(id: 3) {
+            PersistentStoreManager.moveStoreFromLegacyLocationIfNecessary()
         }
     ]
 
-    func performUpgrade() {
+    /**
+     Performs any necessary upgrade actions required, prior to the initialisation of the persistent store.
+    */
+    func performNecessaryUpgradeActions() {
         // Work out what our threshold should be when considering which upgrade actions to apply
         let threshold: Int?
         if let lastAppliedUpgradeAction = UserDefaults.standard[.lastAppliedUpgradeAction] {

@@ -10,6 +10,19 @@ public extension NSManagedObject {
         context.delete(self)
     }
 
+    func safelySetPrimitiveValue(_ value: Any?, forKey key: String) {
+        willChangeValue(forKey: key)
+        setPrimitiveValue(value, forKey: key)
+        didChangeValue(forKey: key)
+    }
+
+    func safelyGetPrimitiveValue(forKey key: String) -> Any? {
+        willAccessValue(forKey: key)
+        let value = primitiveValue(forKey: key)
+        didAccessValue(forKey: key)
+        return value
+    }
+
     static func fetchRequest<T: NSManagedObject>(_ type: T.Type, limit: Int? = nil, batch: Int? = nil) -> NSFetchRequest<T> {
         // Apple bug: the following lines do not work when run from a test target
         // let fetchRequest = T.fetchRequest() as! NSFetchRequest<T>

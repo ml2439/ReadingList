@@ -33,16 +33,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
-                        <label key="tableFooterView" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Reading: 1 book To Read: 17 books" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="qjR-Ii-EZk">
-                            <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <fontDescription key="fontDescription" name="GillSans" family="Gill Sans" pointSize="15"/>
-                            <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
-                            <nil key="highlightedColor"/>
-                            <userDefinedRuntimeAttributes>
-                                <userDefinedRuntimeAttribute type="string" keyPath="dynamicFontSize" value="Subhead"/>
-                            </userDefinedRuntimeAttributes>
-                        </label>
                         <connections>
                             <outlet property="dataSource" destination="4HX-WC-tQz" id="E8k-dW-boW"/>
                             <outlet property="delegate" destination="4HX-WC-tQz" id="xSO-ff-FJD"/>
@@ -57,7 +47,6 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="tableFooter" destination="qjR-Ii-EZk" id="HmG-rb-hEC"/>
                         <segue destination="myb-KF-3dK" kind="showDetail" identifier="showDetail" id="bOj-r5-ku9"/>
                     </connections>
                 </tableViewController>

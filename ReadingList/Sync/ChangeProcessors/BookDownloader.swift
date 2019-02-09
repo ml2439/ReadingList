@@ -103,7 +103,7 @@ class BookDownloader {
             localBook.update(from: remoteBook)
         } else {
             os_log("Creating new book from remote record %{public}s", type: .info, remoteBook.recordID.recordName)
-            let book = Book(context: self.context, readState: .toRead)
+            let book = Book(context: self.context)
             book.update(from: remoteBook)
         }
     }

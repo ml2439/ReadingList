@@ -13,7 +13,7 @@ class CloudSync: UITableViewController {
         super.viewDidLoad()
         monitorThemeSetting()
         enabledSwitch.isOn = UserDefaults.standard[.iCloudSyncEnabled]
-        if !UserDefaults.standard[.iCloudSyncEnabled] && appDelegate.reachability.connection == .none {
+        if !UserDefaults.standard[.iCloudSyncEnabled] && AppDelegate.shared.syncCoordinator?.reachability.connection == .none {
             enabledSwitch.isEnabled = false
         }
         NotificationCenter.default.addObserver(self, selector: #selector(networkConnectivityDidChange), name: .reachabilityChanged, object: nil)
@@ -21,7 +21,7 @@ class CloudSync: UITableViewController {
 
     @objc private func networkConnectivityDidChange() {
         guard !UserDefaults.standard[.iCloudSyncEnabled] else { return }
-        enabledSwitch.isEnabled = appDelegate.reachability.connection != .none
+        enabledSwitch.isEnabled = AppDelegate.shared.syncCoordinator?.reachability.connection != .none
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -44,7 +44,7 @@ class CloudSync: UITableViewController {
     }
 
     private func syncSwitchTurnedOn() {
-        guard let syncCoordinator = appDelegate.syncCoordinator else { fatalError("Unexpected nil sync coordinator") }
+        guard let syncCoordinator = AppDelegate.shared.syncCoordinator else { fatalError("Unexpected nil sync coordinator") }
 
         SVProgressHUD.show(withStatus: "Enabling iCloud")
         DispatchQueue.main.async {
@@ -58,7 +58,7 @@ class CloudSync: UITableViewController {
                         self.requestSyncMergeAction()
                     } else {
                         UserDefaults.standard[.iCloudSyncEnabled] = true
-                        appDelegate.syncCoordinator!.start()
+                        AppDelegate.shared.syncCoordinator!.start()
                     }
                 }
             }
@@ -82,7 +82,7 @@ class CloudSync: UITableViewController {
             """, preferredStyle: .actionSheet)
         alert.addAction(UIAlertAction(title: "Merge", style: .default) { _ in
             UserDefaults.standard[.iCloudSyncEnabled] = true
-            appDelegate.syncCoordinator!.start()
+            AppDelegate.shared.syncCoordinator!.start()
         })
         alert.addAction(UIAlertAction(title: "Replace", style: .destructive) { [unowned self] _ in
             self.presentConfirmReplaceDialog()
@@ -103,7 +103,7 @@ class CloudSync: UITableViewController {
         alert.addAction(UIAlertAction(title: "Replace", style: .destructive) { _ in
             PersistentStoreManager.delete(type: Book.self)
             UserDefaults.standard[.iCloudSyncEnabled] = true
-            appDelegate.syncCoordinator!.start()
+            AppDelegate.shared.syncCoordinator!.start()
         })
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { [unowned self] _ in
             self.enabledSwitch.setOn(false, animated: true)
@@ -113,7 +113,7 @@ class CloudSync: UITableViewController {
     }
 
     private func syncSwitchTurnedOff() {
-        guard let syncCoordinator = appDelegate.syncCoordinator else { fatalError("Unexpected nil sync coordinator") }
+        guard let syncCoordinator = AppDelegate.shared.syncCoordinator else { fatalError("Unexpected nil sync coordinator") }
 
         let alert = UIAlertController(title: "Disable Sync?", message: """
             If you disable iCloud sync, changes you make will no longer be \

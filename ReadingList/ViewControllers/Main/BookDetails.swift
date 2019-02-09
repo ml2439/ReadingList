@@ -28,10 +28,6 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
 
     var didShowNavigationItemTitle = false
 
-    var parentSplitViewController: UISplitViewController? {
-        return appDelegate.tabBarController.selectedSplitViewController
-    }
-
     func setViewEnabled(_ enabled: Bool) {
         // Show or hide the whole view and nav bar buttons. Exit early if nothing to do.
         if view.isHidden != !enabled {
@@ -51,7 +47,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
 
         cover.image = UIImage(optionalData: book.coverImage) ?? #imageLiteral(resourceName: "CoverPlaceholder")
         titleAuthorHeadings[0].text = book.title
-        titleAuthorHeadings[1].text = Author.authorDisplay(book.authors)
+        titleAuthorHeadings[1].text = book.authors.fullNames
         (navigationItem.titleView as! UINavigationBarLabel).setTitle(book.title)
 
         switch book.readState {
@@ -97,11 +93,11 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         }
         setTextOrHideLine(tableVaules[3], readTimeText)
         let pageNumberText: String?
-        if let currentPage = book.currentPage?.intValue {
-            if let totalPages = book.pageCount?.intValue, currentPage <= totalPages, currentPage > 0 {
+        if let currentPage = book.currentPage {
+            if let totalPages = book.pageCount, currentPage <= totalPages, currentPage > 0 {
                 pageNumberText = "\(currentPage) (\(100 * currentPage / totalPages)% complete)"
             } else {
-                pageNumberText = currentPage.string
+                pageNumberText = "\(currentPage)"
             }
         } else { pageNumberText = nil }
 
@@ -110,7 +106,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         ratingStarsStackView.superview!.superview!.superview!.isHidden = book.rating == nil
         if let rating = book.rating {
             for (index, star) in ratingStarsStackView.arrangedSubviews[...4].enumerated() {
-                star.isHidden = index + 1 > rating.intValue
+                star.isHidden = index + 1 > rating
             }
         }
 
@@ -118,8 +114,8 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         bookNotes.text = book.notes
         noNotes.isHidden = book.notes != nil || book.rating != nil
 
-        setTextOrHideLine(tableVaules[5], book.isbn13?.stringValue)
-        setTextOrHideLine(tableVaules[6], book.pageCount?.intValue.string)
+        setTextOrHideLine(tableVaules[5], book.isbn13?.string)
+        setTextOrHideLine(tableVaules[6], book.pageCount?.string)
         setTextOrHideLine(tableVaules[7], book.publicationDate?.toPrettyString(short: false))
         setTextOrHideLine(tableVaules[8], book.subjects.map { $0.name }.sorted().joined(separator: ", ").nilIfWhitespace())
         setTextOrHideLine(tableVaules[9], book.languageCode == nil ? nil : Language.byIsoCode[book.languageCode!]?.displayName)
@@ -202,7 +198,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         guard deletedObjects?.contains(book) != true else {
             // If the book was deleted, set our book to nil and update this page. Pop back to the book table if necessary
             self.book = nil
-            parentSplitViewController?.masterNavigationController.popToRootViewController(animated: false)
+            splitViewController?.masterNavigationController.popToRootViewController(animated: false)
             return
         }
 
@@ -226,9 +222,9 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         }
 
         if book.readState == .toRead {
-            book.startReading()
-        } else {
-            book.finishReading()
+            book.setReading(started: Date())
+        } else if let started = book.startedReading {
+            book.setFinished(started: started, finished: Date())
         }
         book.managedObjectContext!.saveAndLogIfErrored()
 
@@ -263,14 +259,10 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     @IBAction private func shareButtonPressed(_ sender: UIBarButtonItem) {
         guard let book = book else { return }
 
-        let activityViewController = UIActivityViewController(activityItems: ["\(book.title)\n\(Author.authorDisplay(book.authors))"], applicationActivities: nil)
+        let activityViewController = UIActivityViewController(activityItems: ["\(book.title)\n\(book.authors.fullNames))"], applicationActivities: nil)
         activityViewController.popoverPresentationController?.barButtonItem = sender
-
-        var excludedActivityTypes: [UIActivity.ActivityType] = [.assignToContact, .saveToCameraRoll, .addToReadingList, .postToFlickr, .postToVimeo, .openInIBooks]
-        if #available(iOS 11.0, *) {
-            excludedActivityTypes.append(.markupAsPDF)
-        }
-        activityViewController.excludedActivityTypes = excludedActivityTypes
+        activityViewController.excludedActivityTypes = [.assignToContact, .saveToCameraRoll, .addToReadingList,
+                                                        .postToFlickr, .postToVimeo, .openInIBooks, .markupAsPDF]
 
         present(activityViewController, animated: true, completion: nil)
     }
@@ -278,7 +270,7 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let titleLabel = titleAuthorHeadings[0]
         let titleMaxYPosition = titleLabel.convert(titleLabel.frame, to: view).maxY
-        if didShowNavigationItemTitle != (titleMaxYPosition - scrollView.universalContentInset.top < 0) {
+        if didShowNavigationItemTitle != (titleMaxYPosition - scrollView.adjustedContentInset.top < 0) {
             // Changes to the title view are to be animated
             let fadeTextAnimation = CATransition()
             fadeTextAnimation.duration = 0.2
@@ -296,13 +288,13 @@ class BookDetails: UIViewController, UIScrollViewDelegate {
         var previewActions = [UIPreviewActionItem]()
         if book.readState == .toRead {
             previewActions.append(UIPreviewAction(title: "Start", style: .default) { _, _ in
-                book.startReading()
+                book.setReading(started: Date())
                 book.managedObjectContext!.saveAndLogIfErrored()
                 UserEngagement.logEvent(.transitionReadState)
             })
-        } else if book.readState == .reading {
+        } else if book.readState == .reading, let started = book.startedReading {
             previewActions.append(UIPreviewAction(title: "Finish", style: .default) { _, _ in
-                book.finishReading()
+                book.setFinished(started: started, finished: Date())
                 book.managedObjectContext!.saveAndLogIfErrored()
                 UserEngagement.logEvent(.transitionReadState)
             })
@@ -344,7 +336,7 @@ extension BookDetails: ThemeableViewController {
 
 extension Book {
     var amazonAffiliateLink: URL? {
-        let authorText = authors.first?.displayFirstLast
+        let authorText = authors.first?.fullName
         let amazonSearch = "https://www.amazon.com/s?url=search-alias%3Dstripbooks&field-author=\(authorText ?? "")&field-title=\(title)"
 
         // Use https://bestazon.io/#WebService to localize Amazon links

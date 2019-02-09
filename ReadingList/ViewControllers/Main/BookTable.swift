@@ -13,11 +13,10 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
         (readState: $0, predicate: NSPredicate(format: "%K == %ld", #keyPath(Book.readState), $0.rawValue))
     }
 
-    @IBOutlet private weak var tableFooter: UILabel!
-
     override func viewDidLoad() {
         searchController = UISearchController(filterPlaceholderText: "Your Library")
         searchController.searchResultsUpdater = self
+        navigationItem.searchController = searchController
 
         tableView.keyboardDismissMode = .onDrag
         tableView.register(UINib(BookTableViewCell.self), forCellReuseIdentifier: String(describing: BookTableViewCell.self))
@@ -27,17 +26,6 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
 
         // Handle the data fetch, sort and filtering
         buildResultsController()
-
-        // Some search bar styles are slightly different on iOS 11
-        if #available(iOS 11.0, *) {
-            navigationItem.searchController = searchController
-        } else {
-            tableView.tableHeaderView = TableHeaderSearchBar(searchBar: searchController.searchBar)
-            tableView.setContentOffset(CGPoint(x: 0, y: searchController.searchBar.frame.height), animated: false)
-        }
-
-        // Set the table footer text
-        tableFooter.text = footerText()
 
         configureNavBarButtons()
 
@@ -62,11 +50,6 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
         super.viewDidAppear(animated)
     }
 
-    override func initialise(withTheme theme: Theme) {
-        super.initialise(withTheme: theme)
-        tableFooter.textColor = theme.subtitleTextColor
-    }
-
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
 
@@ -76,9 +59,14 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
     }
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return titleForHeader(inSection: section)
+    }
+
+    func titleForHeader(inSection section: Int) -> String {
         // Turn the section name into a BookReadState and use its description property
-        let sectionAsInt = Int16(resultsController.sections![section].name)!
-        return BookReadState(rawValue: sectionAsInt)!.description
+        let sectionAsInt = Int(resultsController.sections![section].name)!
+        let rowCount = resultsController.sections![section].numberOfObjects
+        return "\(BookReadState(rawValue: Int16(sectionAsInt))!.description.uppercased()) (\(rowCount))"
     }
 
     func buildResultsController() {
@@ -141,7 +129,6 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
     @objc func refetch() {
         // FUTURE: This can leave the EmptyDataSet off-screen if a bulk delete has occurred. Can't find a way to prevent this.
         try! self.resultsController.performFetch()
-        self.tableFooter.text = self.footerText()
         self.tableView.reloadData()
     }
 
@@ -169,12 +156,6 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
         } else {
             guard let selectedCell = tableView.cellForRow(at: indexPath) else { return }
             performSegue(withIdentifier: "showDetail", sender: selectedCell)
-        }
-    }
-
-    override func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection: Int) {
-        if let headerTitle = view as? UITableViewHeaderFooterView {
-            headerTitle.textLabel?.textColor = .lightGray
         }
     }
 
@@ -210,11 +191,9 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
             optionsAlert.addAction(UIAlertAction(title: title, style: .default) { _ in
                 for book in selectedRows.map(self.resultsController.object) {
                     if initialSelectionReadState == .toRead {
-                        book.startReading()
-                    } else if book.startedReading! < Date() {
-                        // It is not "invalid" to have a book with a started date in the future; but it is invalid
-                        // to have a finish date before the start date.
-                        book.finishReading()
+                        book.setReading(started: Date())
+                    } else if let started = book.startedReading {
+                        book.setFinished(started: started, finished: Date())
                     }
                 }
                 PersistentStoreManager.container.viewContext.saveIfChanged()
@@ -238,13 +217,6 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
         optionsAlert.popoverPresentationController?.barButtonItem = sender
 
         self.present(optionsAlert, animated: true, completion: nil)
-    }
-
-    func footerText() -> String? {
-        return sectionIndexByReadState.map {
-            let count = tableView(tableView, numberOfRowsInSection: $0.value)
-            return "\($0.key.description): \(count) book\(count == 1 ? "" : "s")"
-        }.reversed().joined(separator: "\n")
     }
 
     var sectionIndexByReadState: [BookReadState: Int] {
@@ -328,37 +300,6 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
         self.present(optionsAlert, animated: true, completion: nil)
     }
 
-    override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-
-        // Start with the delete action
-        var rowActions = [UITableViewRowAction(style: .destructive, title: "Delete") { _, indexPath in
-            let confirm = self.confirmDeleteAlert(indexPaths: [indexPath])
-            confirm.popoverPresentationController?.setSourceCell(atIndexPath: indexPath, inTable: tableView)
-            self.present(confirm, animated: true)
-        }]
-
-        // Add the other state change actions where appropriate
-        if indexPath.section == sectionIndexByReadState[.toRead] {
-            let startAction = UITableViewRowAction(style: .normal, title: "Start", color: .buttonBlue) { _, indexPath in
-                self.resultsController.object(at: indexPath).startReading()
-                PersistentStoreManager.container.viewContext.saveAndLogIfErrored()
-            }
-            rowActions.append(startAction)
-        } else if indexPath.section == sectionIndexByReadState[.reading] {
-            let readingBook = self.resultsController.object(at: indexPath)
-            if readingBook.startedReading! < Date() {
-                let finishAction = UITableViewRowAction(style: .normal, title: "Finish", color: .flatGreen) { _, _ in
-                    readingBook.finishReading()
-                    PersistentStoreManager.container.viewContext.saveAndLogIfErrored()
-                }
-                rowActions.append(finishAction)
-            }
-        }
-
-        return rowActions
-    }
-
-    @available(iOS 11.0, *)
     override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { _, _, callback in
             let confirm = self.confirmDeleteAlert(indexPaths: [indexPath], callback: callback)
@@ -374,7 +315,6 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
         return UISwipeActionsConfiguration(performFirstActionWithFullSwipe: false, actions: [deleteAction, editAction])
     }
 
-    @available(iOS 11.0, *)
     override func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
 
         var actions = [UIContextualAction(style: .normal, title: "Log", image: #imageLiteral(resourceName: "Timetable")) { _, _, callback in
@@ -393,9 +333,9 @@ class BookTable: UITableViewController { //swiftlint:disable:this type_body_leng
         let leadingSwipeAction = UIContextualAction(style: .normal, title: readStateOfSection == .toRead ? "Start" : "Finish") { _, _, callback in
             let book = self.resultsController.object(at: indexPath)
             if readStateOfSection == .toRead {
-                book.startReading()
-            } else {
-                book.finishReading()
+                book.setReading(started: Date())
+            } else if let started = book.startedReading {
+                book.setFinished(started: started, finished: Date())
             }
             book.managedObjectContext!.saveAndLogIfErrored()
             UserEngagement.logEvent(.transitionReadState)
@@ -446,7 +386,6 @@ extension BookTable: UISearchResultsUpdating {
         if anyChangedPredicates {
             try! resultsController.performFetch()
             tableView.reloadData()
-            tableFooter.text = footerText()
         }
     }
 
@@ -503,7 +442,7 @@ extension BookTable: UISearchResultsUpdating {
         // Update the sort indices for all books in the range, increasing the sort by 1 for each cell.
         var sort = topRowSort
         for book in booksInMovementRange {
-            book.sort = NSNumber(value: sort)
+            book.sort = sort
             sort += 1
         }
 
@@ -520,51 +459,51 @@ extension BookTable: UISearchResultsUpdating {
         resultsController.delegate = self
     }
 
-    private func getDesiredSort(for indexPath: IndexPath) -> Int {
+    private func getDesiredSort(for indexPath: IndexPath) -> Int32 {
         // The desired sort index should be the sort of the book immediately above the specified cell,
         // plus 1, or - if the cell is at the top - the value of the current minimum sort.
         guard indexPath.row != 0 else {
-            if let minSort = Book.minSort(fromContext: PersistentStoreManager.container.viewContext) {
-                return Int(minSort)
-            } else {
-                return 0
-            }
+            return Book.minSort(fromContext: PersistentStoreManager.container.viewContext) ?? 0
         }
         let indexPathAboveCell = indexPath.previous()
-        guard let sortIndexAboveCell = resultsController.object(at: indexPathAboveCell).sort?.intValue else {
+        guard let sortIndexAboveCell = resultsController.object(at: indexPathAboveCell).sort else {
             preconditionFailure("Book at index (\(indexPathAboveCell.section), \(indexPathAboveCell.row)) has nil sort")
         }
         return sortIndexAboveCell + 1
     }
 
-    private func cleanupClashingSortIndices(from topIndexPath: IndexPath, withSort topSort: Int) {
+    private func cleanupClashingSortIndices(from topIndexPath: IndexPath, withSort topSort: Int32) {
         var cleanupIndex = topIndexPath
         while cleanupIndex.row < tableView.numberOfRows(inSection: cleanupIndex.section) {
             let cleanupBook = resultsController.object(at: cleanupIndex)
-            let cleanupSort = cleanupIndex.row - topIndexPath.row + topSort
+            let cleanupSort = Int32(cleanupIndex.row - topIndexPath.row) + topSort
 
             // No need to proceed if the sort index is large enough
-            if let currentSort = cleanupBook.sort, currentSort.intValue >= cleanupSort { break }
+            if let currentSort = cleanupBook.sort, currentSort >= cleanupSort { break }
 
-            os_log("Adjusting sort index of book at index %d from %{public}s to %d.", type: .debug, cleanupIndex.row, cleanupBook.sort?.stringValue ?? "nil", cleanupSort)
+            os_log("Adjusting sort index of book at index %d from %{public}s to %d.", type: .debug, cleanupIndex.row, String(describing: cleanupBook.sort), cleanupSort)
 
-            cleanupBook.sort = NSNumber(value: cleanupSort)
+            cleanupBook.sort = cleanupSort
             cleanupIndex = cleanupIndex.next()
         }
     }
 }
 
 extension BookTable: NSFetchedResultsControllerDelegate {
-    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        tableView.controllerWillChangeContent(controller)
+    func controllerWillChangeContent(_: NSFetchedResultsController<NSFetchRequestResult>) {
+        tableView.beginUpdates()
     }
 
-    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        tableView.controllerDidChangeContent(controller)
+    func controllerDidChangeContent(_: NSFetchedResultsController<NSFetchRequestResult>) {
+        tableView.endUpdates()
 
-        // The fetched results controller delegate is only done manually (rather than set to the tableView) so we
-        // can trigger the footer text to reload also
-        tableFooter.text = footerText()
+        // Reload the footer text whenever content changes
+        for section in 0..<resultsController.sections!.count {
+            let title = titleForHeader(inSection: section)
+            guard let headerView = tableView.headerView(forSection: section) else { continue }
+            headerView.textLabel?.text = title
+            headerView.sizeToFit()
+        }
     }
 
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
@@ -618,7 +557,7 @@ extension BookTable: DZNEmptyDataSetSource {
 
         // The large titles make the empty data set look weirdly low down. Adjust this,
         // by - fairly randomly - the height of the nav bar
-        if #available(iOS 11.0, *), navigationController!.navigationBar.prefersLargeTitles {
+        if navigationController!.navigationBar.prefersLargeTitles {
             return -navigationController!.navigationBar.frame.height
         } else {
             return 0
@@ -656,13 +595,13 @@ extension BookTable: DZNEmptyDataSetDelegate {
         if !searchController.hasActiveSearchTerms {
             // Deactivate the search controller so that clearing a search term cannot hide an active search bar
             if searchController.isActive { searchController.isActive = false }
-            searchController.searchBar.isActiveOrVisible = false
+            searchController.searchBar.isActive = false
         }
         navigationItem.leftBarButtonItem!.setHidden(true)
     }
 
     func emptyDataSetDidDisappear(_ scrollView: UIScrollView!) {
-        searchController.searchBar.isActiveOrVisible = true
+        searchController.searchBar.isActive = true
         navigationItem.leftBarButtonItem!.setHidden(false)
     }
 }

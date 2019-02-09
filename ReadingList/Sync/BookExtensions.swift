@@ -23,14 +23,14 @@ extension Book {
         case .title: return title as NSString
         case .googleBooksId: return googleBooksId as NSString?
         case .isbn13: return isbn13 as NSNumber?
-        case .pageCount: return pageCount
+        case .pageCount: return pageCount as NSNumber?
         case .publicationDate: return publicationDate as NSDate?
         case .bookDescription: return bookDescription as NSString?
         case .notes: return notes as NSString?
-        case .currentPage: return currentPage
+        case .currentPage: return currentPage as NSNumber?
         case .languageCode: return languageCode as NSString?
-        case .rating: return rating
-        case .sort: return sort
+        case .rating: return rating as NSNumber?
+        case .sort: return sort as NSNumber?
         case .readDates:
             switch readState {
             case .toRead: return nil
@@ -50,22 +50,27 @@ extension Book {
         switch ckRecordKey {
         case .title: title = value as! String
         case .googleBooksId: googleBooksId = value as? String
-        case .isbn13: isbn13 = value as? NSNumber
-        case .pageCount: pageCount = value as? NSNumber
+        case .isbn13: isbn13 = value as? Int64
+        case .pageCount: pageCount = value as? Int32
         case .publicationDate: publicationDate = value as? Date
         case .bookDescription: bookDescription = value as? String
         case .notes: notes = value as? String
-        case .currentPage: currentPage = value as? NSNumber
+        case .currentPage: currentPage = value as? Int32
         case .languageCode: languageCode = value as? String
-        case .rating: rating = value as? NSNumber
-        case .sort: sort = value as? NSNumber
+        case .rating: rating = value as? Int16
+        case .sort: sort = value as? Int32
         case .readDates:
-            let datesArray = value as? [Date]
-            startedReading = datesArray?[safe: 0]
-            finishedReading = datesArray?[safe: 1]
-            updateReadState()
+            if let datesArray = value as? [Date] {
+                if datesArray.count == 1 {
+                    setReading(started: datesArray[0])
+                } else if datesArray.count == 2 {
+                    setFinished(started: datesArray[0], finished: datesArray[1])
+                }
+            } else {
+                setToRead()
+            }
         case .authors:
-            setAuthors(NSKeyedUnarchiver.unarchiveObject(with: value as! Data) as! [Author])
+            authors = NSKeyedUnarchiver.unarchiveObject(with: value as! Data) as! [Author]
         case .coverImage:
             guard let imageAsset = value as? CKAsset, FileManager.default.fileExists(atPath: imageAsset.fileURL.path) else {
                 coverImage = nil

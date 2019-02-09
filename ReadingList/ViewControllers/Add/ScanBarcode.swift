@@ -151,7 +151,11 @@ class ScanBarcode: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
     func presentDuplicateAlert(_ book: Book) {
         let alert = duplicateBookAlertController(goToExistingBook: {
             self.dismiss(animated: true) {
-                appDelegate.tabBarController.simulateBookSelection(book, allowTableObscuring: true)
+                guard let tabBarController = AppDelegate.shared.tabBarController else {
+                    assertionFailure()
+                    return
+                }
+                tabBarController.simulateBookSelection(book, allowTableObscuring: true)
             }
         }, cancel: {
             self.session?.startRunning()
@@ -187,7 +191,7 @@ class ScanBarcode: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
 
                     // If there is no duplicate, we can safely go to the next page
                     let context = PersistentStoreManager.container.viewContext.childContext()
-                    let book = Book(context: context, readState: .toRead)
+                    let book = Book(context: context)
                     book.populate(fromFetchResult: fetchResult)
                     navigationController.pushViewController(
                         EditBookReadState(newUnsavedBook: book, scratchpadContext: context),

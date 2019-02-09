@@ -5,7 +5,7 @@ import Eureka
 import SVProgressHUD
 import Crashlytics
 
-class Debug: FormViewController {
+class DebugForm: FormViewController {
 
     @objc func dismissSelf() {
         dismiss(animated: true, completion: nil)
@@ -22,7 +22,7 @@ class Debug: FormViewController {
                 $0.title = "Import Test Data"
                 $0.onCellSelection { _, _ in
                     SVProgressHUD.show(withStatus: "Loading Data...")
-                    DebugSettings.loadData {
+                    Debug.loadData {
                         SVProgressHUD.dismiss()
                     }
                 }
@@ -40,10 +40,10 @@ class Debug: FormViewController {
         +++ Section("iCloud Sync")
             <<< ButtonRow {
                 $0.title = "Simulate remote change notification"
-                $0.disabled = Condition(booleanLiteral: !UserDefaults.standard[.iCloudSyncEnabled] || appDelegate.syncCoordinator?.remote.isInitialised != true)
+                $0.disabled = Condition(booleanLiteral: !UserDefaults.standard[.iCloudSyncEnabled] || AppDelegate.shared.syncCoordinator?.remote.isInitialised != true)
                 $0.onCellSelection { _, _ in
                     DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                        if UserDefaults.standard[.iCloudSyncEnabled], let syncCoordinator = appDelegate.syncCoordinator, syncCoordinator.remote.isInitialised {
+                        if UserDefaults.standard[.iCloudSyncEnabled], let syncCoordinator = AppDelegate.shared.syncCoordinator, syncCoordinator.remote.isInitialised {
                             syncCoordinator.remoteNotificationReceived { _ in }
                         }
                     }

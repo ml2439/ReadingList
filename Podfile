@@ -1,5 +1,5 @@
 # Uncomment the next line to define a global platform for your project
-platform :ios, '10.3'
+platform :ios, '11.0'
 use_frameworks!
 
 target 'ReadingList' do
@@ -19,7 +19,8 @@ target 'ReadingList' do
   pod 'ReachabilitySwift'
 
   target 'ReadingList_UnitTests' do
-    inherit! :search_paths
+    inherit! :complete
+    pod 'SwiftyJSON', '~> 4.0'
   end
   target 'ReadingList_UITests' do
     inherit! :complete

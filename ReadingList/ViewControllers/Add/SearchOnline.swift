@@ -31,13 +31,8 @@ class SearchOnline: UITableViewController {
         searchController.searchBar.text = initialSearchString
         searchController.searchBar.delegate = self
         searchController.searchBar.autocapitalizationType = .words
-
-        if #available(iOS 11.0, *) {
-            navigationItem.searchController = searchController
-            navigationItem.hidesSearchBarWhenScrolling = false
-        } else {
-            tableView.tableHeaderView = searchController.searchBar
-        }
+        navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
 
         // If we have an entry-point search, fire it off now
         if let initialSearchString = initialSearchString {
@@ -102,12 +97,7 @@ class SearchOnline: UITableViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
-        let navigationHeaderHeight: CGFloat
-        if #available(iOS 11.0, *) {
-            navigationHeaderHeight = tableView.universalContentInset.top
-        } else {
-            navigationHeaderHeight = tableView.universalContentInset.top + searchController.searchBar.frame.height
-        }
+        let navigationHeaderHeight = tableView.adjustedContentInset.top
         emptyDatasetView.setTopDistance(navigationHeaderHeight + 20)
     }
 
@@ -193,8 +183,12 @@ class SearchOnline: UITableViewController {
 
     func presentDuplicateBookAlert(book: Book, fromSelectedIndex indexPath: IndexPath) {
         let alert = duplicateBookAlertController(goToExistingBook: {
-            self.presentingViewController!.dismiss(animated: true) {
-                appDelegate.tabBarController.simulateBookSelection(book, allowTableObscuring: true)
+            self.presentingViewController?.dismiss(animated: true) {
+                guard let tabBarController = AppDelegate.shared.tabBarController else {
+                    assertionFailure()
+                    return
+                }
+                tabBarController.simulateBookSelection(book, allowTableObscuring: true)
             }
         }, cancel: {
             self.tableView.deselectRow(at: indexPath, animated: true)
@@ -211,7 +205,7 @@ class SearchOnline: UITableViewController {
                 }
             }
             .then(on: .main) { fetchResult -> Book in
-                let book = Book(context: context, readState: .toRead)
+                let book = Book(context: context)
                 book.populate(fromFetchResult: fetchResult)
                 return book
             }
@@ -289,12 +283,12 @@ class SearchOnline: UITableViewController {
                     } else {
                         maximalSort += 1
                     }
-                    book.sort = maximalSort.nsNumber
+                    book.sort = maximalSort
                 }
 
                 editContext.saveAndLogIfErrored()
                 self.searchController.isActive = false
-                self.presentingViewController!.dismiss(animated: true) {
+                self.presentingViewController?.dismiss(animated: true) {
                     var status = "\(newBookCount) \("book".pluralising(newBookCount)) added"
                     if newBookCount != selectedRows.count {
                         let erroredCount = selectedRows.count - newBookCount

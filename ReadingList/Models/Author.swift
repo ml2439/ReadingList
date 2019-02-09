@@ -2,7 +2,7 @@ import Foundation
 import CoreData
 
 @objc(Author)
-public class Author: NSObject, NSCoding {
+class Author: NSObject, NSCoding {
 
     let lastName: String
     let firstNames: String?
@@ -12,32 +12,39 @@ public class Author: NSObject, NSCoding {
         self.firstNames = firstNames
     }
 
-    public required convenience init?(coder aDecoder: NSCoder) {
+    required convenience init?(coder aDecoder: NSCoder) {
         let lastName = aDecoder.decodeObject(forKey: "lastName") as! String
         let firstNames = aDecoder.decodeObject(forKey: "firstNames") as! String?
         self.init(lastName: lastName, firstNames: firstNames)
     }
 
-    public func encode(with aCoder: NSCoder) {
+    func encode(with aCoder: NSCoder) {
         aCoder.encode(self.lastName, forKey: "lastName")
         aCoder.encode(self.firstNames, forKey: "firstNames")
     }
 
-    var displayFirstLast: String {
-        return (firstNames == nil ? "" : "\(firstNames!) ") + lastName
+    var fullName: String {
+        guard let firstNames = firstNames else { return lastName }
+        return "\(firstNames) \(lastName)"
     }
 
-    var displayLastCommaFirst: String {
-        return lastName + (firstNames == nil ? "" : ", \(firstNames!)")
+    var lastNameCommaFirstName: String {
+        guard let firstNames = firstNames else { return lastName }
+        return "\(lastName), \(firstNames)"
     }
 
-    static func authorSort(_ authors: [Author]) -> String {
-        return authors.map {
-            [$0.lastName, $0.firstNames].compactMap { $0?.sortable }.joined(separator: ".")
-        }.joined(separator: "..")
+    var lastNameSort: String {
+        guard let firstNames = firstNames else { return lastName.sortable }
+        return "\(lastName.sortable).\(firstNames.sortable)"
+    }
+}
+
+extension Array where Element == Author {
+    var lastNamesSort: String {
+        return self.map { $0.lastNameSort }.joined(separator: "..")
     }
 
-    static func authorDisplay(_ authors: [Author]) -> String {
-        return authors.map { $0.displayFirstLast }.joined(separator: ", ")
+    var fullNames: String {
+        return self.map { $0.fullName }.joined(separator: ", ")
     }
 }

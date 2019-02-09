@@ -43,10 +43,10 @@ class DataVC: UITableViewController {
     }
 
     func requestImport(presentingIndexPath: IndexPath) {
-        let documentImport = UIDocumentMenuViewController(documentTypes: ["public.comma-separated-values-text"], in: .import)
-        documentImport.delegate = self
-        documentImport.popoverPresentationController?.setSourceCell(atIndexPath: presentingIndexPath, inTable: tableView, arrowDirections: .up)
-        present(documentImport, animated: true)
+        let documentPicker = UIDocumentPickerViewController(documentTypes: ["public.comma-separated-values-text"], in: .import)
+        documentPicker.delegate = self
+        documentPicker.popoverPresentationController?.setSourceCell(atIndexPath: presentingIndexPath, inTable: tableView, arrowDirections: .up)
+        present(documentPicker, animated: true)
     }
 
     func confirmImport(fromFile url: URL) {
@@ -152,13 +152,6 @@ class DataVC: UITableViewController {
         areYouSure.addAction(UIAlertAction(title: "Cancel", style: .cancel))
 
         present(areYouSure, animated: true)
-    }
-}
-
-extension DataVC: UIDocumentMenuDelegate {
-    func documentMenu(_ documentMenu: UIDocumentMenuViewController, didPickDocumentPicker documentPicker: UIDocumentPickerViewController) {
-        documentPicker.delegate = self
-        present(documentPicker, animated: true, completion: nil)
     }
 }
 

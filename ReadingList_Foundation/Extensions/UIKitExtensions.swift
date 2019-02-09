@@ -74,7 +74,6 @@ public extension UIStoryboard {
     }
 }
 
-@available(iOS 11.0, *)
 public extension UISwipeActionsConfiguration {
     convenience init(performFirstActionWithFullSwipe: Bool, actions: [UIContextualAction]) {
         self.init(actions: actions)
@@ -82,7 +81,6 @@ public extension UISwipeActionsConfiguration {
     }
 }
 
-@available(iOS 11.0, *)
 public extension UIContextualAction {
     convenience init(style: UIContextualAction.Style, title: String?, image: UIImage?,
                      backgroundColor: UIColor? = nil, handler: @escaping UIContextualAction.Handler) {
@@ -189,12 +187,8 @@ public extension UITabBarItem {
 
 public extension UIActivity.ActivityType {
     static var documentUnsuitableTypes: [UIActivity.ActivityType] {
-        var types: [UIActivity.ActivityType] = [.addToReadingList, .assignToContact, .saveToCameraRoll, .postToFlickr, .postToVimeo,
-                                       .postToTencentWeibo, .postToTwitter, .postToFacebook, .openInIBooks]
-        if #available(iOS 11.0, *) {
-            types.append(.markupAsPDF)
-        }
-        return types
+        return [.addToReadingList, .assignToContact, .saveToCameraRoll, .postToFlickr, .postToVimeo,
+                .postToTencentWeibo, .postToTwitter, .postToFacebook, .openInIBooks, .markupAsPDF]
     }
 }
 
@@ -206,25 +200,6 @@ public extension UISearchBar {
         set {
             isUserInteractionEnabled = newValue
             alpha = newValue ? 1.0 : 0.5
-        }
-    }
-
-    var isActiveOrVisible: Bool {
-        get {
-            if #available(iOS 11.0, *) {
-                return isActive
-            } else {
-                return !isHidden
-            }
-        }
-        set {
-            // iOS >10 search bars can be made hidden without much consequence;
-            // iOS 11 search bars are part of navigation items, which makes hiding them look weird. Instead we "disable" them.
-            if #available(iOS 11.0, *) {
-                isActive = newValue
-            } else {
-                isHidden = !newValue
-            }
         }
     }
 }
@@ -246,16 +221,6 @@ public extension UITableViewRowAction {
     convenience init(style: UITableViewRowAction.Style, title: String?, color: UIColor, handler: @escaping (UITableViewRowAction, IndexPath) -> Void) {
         self.init(style: style, title: title, handler: handler)
         self.backgroundColor = color
-    }
-}
-
-public extension UIScrollView {
-    var universalContentInset: UIEdgeInsets {
-        if #available(iOS 11.0, *) {
-            return adjustedContentInset
-        } else {
-            return contentInset
-        }
     }
 }
 

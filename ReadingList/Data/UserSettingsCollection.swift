@@ -27,7 +27,3 @@ extension UserSettingsCollection {
 
     static let iCloudSyncEnabled = UserSetting<Bool>("iCloudSyncEnabled", defaultValue: false)
 }
-
-extension Notification.Name {
-    static let BookSortOrderChanged = Notification.Name("book-sort-order-changed")
-}

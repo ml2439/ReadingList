@@ -52,15 +52,15 @@ extension Book {
             case #keyPath(Book.authors): return .authors
             case #keyPath(Book.coverImage): return .coverImage
             case #keyPath(Book.googleBooksId): return .googleBooksId
-            case #keyPath(Book.isbn13): return .isbn13
-            case #keyPath(Book.pageCount): return .pageCount
+            case Book.Key.isbn13.rawValue: return .isbn13
+            case Book.Key.pageCount.rawValue: return .pageCount
             case #keyPath(Book.publicationDate): return .publicationDate
             case #keyPath(Book.bookDescription): return .bookDescription
             case #keyPath(Book.notes): return .notes
-            case #keyPath(Book.currentPage): return .currentPage
+            case Book.Key.currentPage.rawValue: return .currentPage
             case #keyPath(Book.languageCode): return .languageCode
-            case #keyPath(Book.rating): return .rating
-            case #keyPath(Book.sort): return .sort
+            case Book.Key.rating.rawValue: return .rating
+            case Book.Key.sort.rawValue: return .sort
             case #keyPath(Book.startedReading): return .readDates
             case #keyPath(Book.finishedReading): return .readDates
             default: return nil
