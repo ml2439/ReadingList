@@ -18,7 +18,8 @@ target 'ReadingList' do
   pod 'Firebase/Core'
 
   target 'ReadingList_UnitTests' do
-    inherit! :search_paths
+    inherit! :complete
+    pod 'SwiftyJSON', '~> 4.0'
   end
   target 'ReadingList_UITests' do
     inherit! :complete
