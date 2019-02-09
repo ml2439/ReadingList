@@ -31,7 +31,7 @@ class ScanBarcode: XCTestCase {
         // Normal mode
         scanBarcode(app: app)
         let cancel = app.navigationBars.element(boundBy: 0).buttons["Cancel"]
-        _ = cancel.waitForExistence(timeout: 1)
+        _ = cancel.waitForExistence(timeout: 5)
         cancel.tap()
     }
 
@@ -43,7 +43,7 @@ class ScanBarcode: XCTestCase {
         // Valid ISBN
         scanBarcode(app: app)
         let done = app.navigationBars.element(boundBy: 0).buttons["Done"]
-        _ = done.waitForExistence(timeout: 1)
+        _ = done.waitForExistence(timeout: 5)
         done.tap()
     }
 
@@ -71,9 +71,9 @@ class ScanBarcode: XCTestCase {
 
         // Existing ISBN
         scanBarcode(app: app)
-        _ = app.alerts.element(boundBy: 0).waitForExistence(timeout: 2)
-        XCTAssertEqual(app.alerts.count, 1)
         let duplicateAlert = app.alerts.element(boundBy: 0)
+        _ = duplicateAlert.waitForExistence(timeout: 5)
+        XCTAssertEqual(app.alerts.count, 1)
         XCTAssertEqual("Book Already Added", duplicateAlert.label)
         duplicateAlert.buttons["Cancel"].tap()
         app.navigationBars.element(boundBy: 0).buttons["Cancel"].tap()
