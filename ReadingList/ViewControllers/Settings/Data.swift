@@ -107,7 +107,7 @@ class DataVC: UITableViewController {
         let exportAll = NSManagedObject.fetchRequest(Book.self)
         exportAll.sortDescriptors = [
             NSSortDescriptor(\Book.readState),
-            NSSortDescriptor(\Book.sort),
+            NSSortDescriptor(Book.Key.sort.rawValue),
             NSSortDescriptor(\Book.startedReading),
             NSSortDescriptor(\Book.finishedReading)]
         exportAll.relationshipKeyPathsForPrefetching = [#keyPath(Book.subjects), #keyPath(Book.authors), #keyPath(Book.lists)]
