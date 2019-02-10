@@ -48,7 +48,7 @@ class Lists: XCTestCase {
         app.clickTab(.organise)
         app.tables.cells.element(boundBy: 0).tap()
 
-        let orderButton = app.topNavBar.buttons["Order"]
+        let orderButton = app.navigationBars.firstMatch.buttons["Order"]
         orderButton.tap()
         let chooseOrderAlert = app.alerts["Choose Order"]
         for button in chooseOrderAlert.buttons.allElementsBoundByIndex {
