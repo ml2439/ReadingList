@@ -19,7 +19,9 @@ class Settings: XCTestCase {
         app.tables.staticTexts["Export"].tap()
 
         let cancel = app.buttons["Cancel"]
-        XCTAssert(cancel.waitForExistence(timeout: 5))
-        cancel.tap()
+        if UIDevice.current.userInterfaceIdiom != .pad {
+            XCTAssert(cancel.waitForExistence(timeout: 5))
+            cancel.tap()
+        }
     }
 }
