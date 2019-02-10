@@ -8,17 +8,13 @@ class SortOrder: FormViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        func tableSortRow(forReadState readState: BookReadState, _ tableSort: TableSortOrder) -> ListCheckRow<TableSortOrder> {
-            return ListCheckRow<TableSortOrder> {
-                $0.title = tableSort.displayName
+        func tableSortRow(forReadState readState: BookReadState, _ tableSort: BookSort) -> ListCheckRow<BookSort> {
+            return ListCheckRow<BookSort> {
+                $0.title = tableSort.description
                 $0.selectableValue = tableSort
                 $0.onChange {
                     guard let selectedValue = $0.value else { return }
-                    switch readState {
-                    case .toRead: UserDefaults.standard[.toReadSortOrder] = selectedValue
-                    case .reading: UserDefaults.standard[.readingSortOrder] = selectedValue
-                    case .finished: UserDefaults.standard[.finishedSortOrder] = selectedValue
-                    }
+                    UserDefaults.standard[UserSettingsCollection.sortSetting(for: readState)] = selectedValue
                     NotificationCenter.default.post(name: .BookSortOrderChanged, object: nil)
                     if let customBooksToTopRow = self.form.rowBy(tag: self.customBooksToTopTag) {
                         customBooksToTopRow.evaluateHidden()
@@ -26,7 +22,7 @@ class SortOrder: FormViewController {
                     UserEngagement.logEvent(.changeSortOrder)
                     UserEngagement.onReviewTrigger()
                 }
-                $0.value = TableSortOrder.byReadState[readState] == tableSort ? tableSort : nil
+                $0.value = UserDefaults.standard[UserSettingsCollection.sortSetting(for: readState)] == tableSort ? tableSort : nil
             }
         }
 
@@ -36,41 +32,41 @@ class SortOrder: FormViewController {
             To Read, Reading and Finished.
             """)
 
-        +++ SelectableSection<ListCheckRow<TableSortOrder>>(header: "To Read", footer: """
+        +++ SelectableSection<ListCheckRow<BookSort>>(header: "Order 'To Read' By:", footer: """
                 Title sorts the books alphabetically; Author sorts the books alphabetically by \
                 the first author's surname; Custom allows the books to be sorted manually: tap \
                 Edit and drag to reorder the books. New books can be added to either the top or \
                 the bottom of the list.
                 """, selectionType: .singleSelection(enableDeselection: false))
-            <<< tableSortRow(forReadState: .toRead, .byTitle)
-            <<< tableSortRow(forReadState: .toRead, .byAuthor)
-            <<< tableSortRow(forReadState: .toRead, .customOrder)
+            <<< tableSortRow(forReadState: .toRead, .title)
+            <<< tableSortRow(forReadState: .toRead, .author)
+            <<< tableSortRow(forReadState: .toRead, .custom)
             <<< SwitchRow {
                 $0.tag = self.customBooksToTopTag
                 $0.title = "Add Books to Top"
                 $0.value = UserDefaults.standard[.addBooksToTopOfCustom]
                 $0.hidden = Condition.function([]) { _ in
-                    UserDefaults.standard[.toReadSortOrder] != .customOrder
+                    UserDefaults.standard[.toReadSort] != .custom
                 }
                 $0.onChange {
                     UserDefaults.standard[.addBooksToTopOfCustom] = $0.value ?? false
                 }
             }
 
-        +++ SelectableSection<ListCheckRow<TableSortOrder>>(header: "Reading", footer: """
+        +++ SelectableSection<ListCheckRow<BookSort>>(header: "Order 'Reading' By:", footer: """
                 Start Date orders the books with the most recently started book first.
                 """, selectionType: .singleSelection(enableDeselection: false))
-            <<< tableSortRow(forReadState: .reading, .byStartDate)
-            <<< tableSortRow(forReadState: .reading, .byTitle)
-            <<< tableSortRow(forReadState: .reading, .byAuthor)
+            <<< tableSortRow(forReadState: .reading, .startDate)
+            <<< tableSortRow(forReadState: .reading, .title)
+            <<< tableSortRow(forReadState: .reading, .author)
 
-        +++ SelectableSection<ListCheckRow<TableSortOrder>>(header: "Finished", footer: """
+        +++ SelectableSection<ListCheckRow<BookSort>>(header: "Order 'Finished' By:", footer: """
                 Finish Date orders the books with the most recently finished book first.
                 """, selectionType: .singleSelection(enableDeselection: false))
-            <<< tableSortRow(forReadState: .finished, .byStartDate)
-            <<< tableSortRow(forReadState: .finished, .byFinishDate)
-            <<< tableSortRow(forReadState: .finished, .byTitle)
-            <<< tableSortRow(forReadState: .finished, .byAuthor)
+            <<< tableSortRow(forReadState: .finished, .startDate)
+            <<< tableSortRow(forReadState: .finished, .finishDate)
+            <<< tableSortRow(forReadState: .finished, .title)
+            <<< tableSortRow(forReadState: .finished, .author)
 
         monitorThemeSetting()
     }

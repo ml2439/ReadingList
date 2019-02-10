@@ -323,7 +323,7 @@ extension Theme {
         SwitchRow.defaultCellUpdate = initialiseCell(_:_:)
         DateRow.defaultCellUpdate = initialiseCell(_:_:)
         ListCheckRow<Theme>.defaultCellUpdate = initialiseCell(_:_:)
-        ListCheckRow<TableSortOrder>.defaultCellUpdate = initialiseCell(_:_:)
+        ListCheckRow<BookSort>.defaultCellUpdate = initialiseCell(_:_:)
         ImageRow.defaultCellUpdate = initialiseCell(_:_:)
         SegmentedRow<BookReadState>.defaultCellUpdate = initialiseCell(_:_:)
         LabelRow.defaultCellUpdate = initialiseCell(_:_:)

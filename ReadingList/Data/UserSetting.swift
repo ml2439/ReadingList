@@ -12,6 +12,9 @@ public protocol UserSettingType { }
 protocol DefaultsStorable: UserSettingType { }
 
 extension Int: DefaultsStorable {}
+extension Int16: DefaultsStorable {}
+extension Int32: DefaultsStorable {}
+extension Int64: DefaultsStorable {}
 extension String: DefaultsStorable {}
 extension URL: DefaultsStorable {}
 extension Bool: DefaultsStorable {}

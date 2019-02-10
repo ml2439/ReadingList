@@ -36,8 +36,8 @@ class UpgradeManager {
                 return
             }
 
-            let nonLegacySettings = [UserSettingsCollection.toReadSortOrder, UserSettingsCollection.readingSortOrder,
-                                     UserSettingsCollection.finishedSortOrder]
+            let nonLegacySettings = [UserSettingsCollection.toReadSort, UserSettingsCollection.readingSort,
+                                     UserSettingsCollection.finishedSort]
             for setting in nonLegacySettings {
                 guard UserDefaults.standard.object(forKey: setting.key) == nil else {
                     os_log("Value already exists for %{public}s; no migration.", setting.key)
@@ -45,9 +45,9 @@ class UpgradeManager {
                 }
                 os_log("Migrating value for %{public}s from legacy value %d.", setting.key, legacyTableSortOrder)
                 if legacyTableSortOrder == 1 {
-                    UserDefaults.standard[setting] = .byTitle
+                    UserDefaults.standard[setting] = .title
                 } else if legacyTableSortOrder == 2 {
-                    UserDefaults.standard[setting] = .byAuthor
+                    UserDefaults.standard[setting] = .author
                 }
             }
 

@@ -38,13 +38,16 @@ class ListBookTable: UITableViewController {
     }
 
     private func generateResultsControllerIfNecessary() {
-        guard let sortDescriptors = list.order.sortDescriptors else {
+        if list.order == .custom {
+            // Custom order is determined by the ordering within the ordered relationship, and we can't
+            // use make the controller sort by that ordering.
             controller = nil
             return
         }
+
         let fetch = NSManagedObject.fetchRequest(Book.self, batch: 50)
         fetch.predicate = NSPredicate(format: "%@ IN %K", list, #keyPath(Book.lists))
-        fetch.sortDescriptors = sortDescriptors
+        fetch.sortDescriptors = list.order.sortDescriptors
         controller = NSFetchedResultsController(fetchRequest: fetch, managedObjectContext: PersistentStoreManager.container.viewContext, sectionNameKeyPath: nil, cacheName: nil)
         try! controller!.performFetch()
         controller!.delegate = tableView
@@ -59,7 +62,7 @@ class ListBookTable: UITableViewController {
 
     @objc private func orderButtonPressed() {
         let alert = UIAlertController(title: "Choose Order", message: "", preferredStyle: .alert)
-        for listOrder in ListOrder.allCases {
+        for listOrder in BookSort.allCases {
             let title = list.order == listOrder ? "  \(listOrder) ✓" : listOrder.description
             alert.addAction(UIAlertAction(title: title, style: .default) { _ in
                 if self.list.order != listOrder {

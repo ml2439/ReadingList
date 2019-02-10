@@ -14,19 +14,19 @@ class UpgradeActionTests: XCTestCase {
         // Legacy sort orders: byDate = 0; byTitle = 1; byAuthor = 2
         assertSuccessfulSortMigration(
             legacyValue: 0,
-            expectedSorts: [.toRead: .customOrder, .reading: .byStartDate, .finished: .byFinishDate]
+            expectedSorts: [.toRead: .custom, .reading: .startDate, .finished: .finishDate]
         )
         assertSuccessfulSortMigration(
             legacyValue: 1,
-            expectedSorts: [.toRead: .byTitle, .reading: .byTitle, .finished: .byTitle]
+            expectedSorts: [.toRead: .title, .reading: .title, .finished: .title]
         )
         assertSuccessfulSortMigration(
             legacyValue: 2,
-            expectedSorts: [.toRead: .byAuthor, .reading: .byAuthor, .finished: .byAuthor]
+            expectedSorts: [.toRead: .author, .reading: .author, .finished: .author]
         )
     }
 
-    private func assertSuccessfulSortMigration(legacyValue: Int, expectedSorts: [BookReadState: TableSortOrder]) {
+    private func assertSuccessfulSortMigration(legacyValue: Int, expectedSorts: [BookReadState: BookSort]) {
         // Reset all user defaults
         UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
 
@@ -37,7 +37,9 @@ class UpgradeActionTests: XCTestCase {
         UserDefaults.standard.set(legacyValue, forKey: legacyTableSortOrderKey)
 
         UpgradeManager().performNecessaryUpgradeActions()
-        XCTAssertEqual(TableSortOrder.byReadState, expectedSorts)
+        for kvp in expectedSorts {
+            XCTAssertEqual(UserDefaults.standard[UserSettingsCollection.sortSetting(for: kvp.key)], kvp.value)
+        }
         XCTAssertGreaterThan(UserDefaults.standard[.lastAppliedUpgradeAction]!, 0)
         XCTAssertNil(UserDefaults.standard.object(forKey: legacyTableSortOrderKey))
     }
