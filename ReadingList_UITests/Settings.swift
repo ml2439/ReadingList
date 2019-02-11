@@ -31,11 +31,11 @@ class Settings: XCTestCase {
         app.launch()
 
         app.clickTab(.settings)
-        let tablesQuery = app.tables
-        tablesQuery.staticTexts["Sort"].tap()
+        app.tables.staticTexts["Sort"].tap()
 
+        let tables = app.tables.element(boundBy: UIDevice.current.userInterfaceIdiom == .pad ? 1 : 0)
         var sortCount = 0
-        for cell in tablesQuery.children(matching: .cell).allElementsBoundByIndex {
+        for cell in tables.children(matching: .cell).allElementsBoundByIndex {
             guard cell.exists else {
                 if sortCount > 9 { return }
                 fatalError("Only \(sortCount) sorts tested")
