@@ -50,7 +50,7 @@ class Lists: XCTestCase {
 
         let orderButton = app.navigationBars.firstMatch.buttons["Order"]
         orderButton.tap()
-        let chooseOrderAlert = app.alerts["Choose Order"]
+        let chooseOrderAlert = app.sheets["Choose Order"]
         for button in chooseOrderAlert.buttons.allElementsBoundByIndex {
             button.tap()
             orderButton.tap()

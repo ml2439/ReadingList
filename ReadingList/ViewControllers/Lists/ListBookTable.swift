@@ -15,7 +15,7 @@ class ListBookTable: UITableViewController {
         tableView.register(UINib(BookTableViewCell.self), forCellReuseIdentifier: String(describing: BookTableViewCell.self))
 
         navigationItem.title = list.name
-        let reorder = UIBarButtonItem(title: "Order", style: .plain, target: self, action: #selector(orderButtonPressed))
+        let reorder = UIBarButtonItem(title: "Order", style: .plain, target: self, action: #selector(orderButtonPressed(_:)))
         navigationItem.rightBarButtonItems = [editButtonItem, reorder]
 
         tableView.emptyDataSetSource = self
@@ -60,8 +60,11 @@ class ListBookTable: UITableViewController {
         tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .middle, animated: false)
     }
 
-    @objc private func orderButtonPressed() {
-        let alert = UIAlertController(title: "Choose Order", message: "", preferredStyle: .alert)
+    @objc private func orderButtonPressed(_ sender: UIBarButtonItem) {
+        let alert = UIAlertController(title: "Choose Order", message: nil, preferredStyle: .actionSheet)
+        if let popover = alert.popoverPresentationController {
+            popover.barButtonItem = sender
+        }
         for listOrder in BookSort.allCases {
             let title = list.order == listOrder ? "  \(listOrder) ✓" : listOrder.description
             alert.addAction(UIAlertAction(title: title, style: .default) { _ in
