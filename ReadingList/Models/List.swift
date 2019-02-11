@@ -5,6 +5,7 @@ import CoreData
 public class List: NSManagedObject {
     @NSManaged var name: String
     @NSManaged var books: NSOrderedSet
+    @NSManaged var order: BookSort
 
     convenience init(context: NSManagedObjectContext, name: String) {
         self.init(context: context)

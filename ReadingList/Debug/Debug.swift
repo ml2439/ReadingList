@@ -28,7 +28,7 @@ class Debug {
 
     static func initialiseData() {
         if CommandLine.arguments.contains("--UITests_PopulateData") {
-            loadData {
+            loadData(downloadImages: CommandLine.arguments.contains(screenshotsCommand)) {
                 if CommandLine.arguments.contains("--UITests_DeleteLists") {
                     PersistentStoreManager.delete(type: List.self)
                     NotificationCenter.default.post(name: .PersistentStoreBatchOperationOccurred, object: nil)
@@ -37,9 +37,9 @@ class Debug {
         }
     }
 
-    static func loadData(_ completion: (() -> Void)?) {
+    static func loadData(downloadImages: Bool, _ completion: (() -> Void)?) {
         let csvPath = Bundle.main.url(forResource: "examplebooks", withExtension: "csv")!
-        BookCSVImporter(includeImages: CommandLine.arguments.contains(screenshotsCommand)).startImport(fromFileAt: csvPath) { error, _ in
+        BookCSVImporter(includeImages: downloadImages).startImport(fromFileAt: csvPath) { error, _ in
             guard error == nil else { preconditionFailure("Error in CSV file") }
             DispatchQueue.main.async {
                 completion?()

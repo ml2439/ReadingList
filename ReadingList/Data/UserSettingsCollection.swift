@@ -16,9 +16,17 @@ extension UserSettingsCollection {
 
     static let theme = UserSetting<Theme>("theme", defaultValue: .normal)
 
-    static let toReadSortOrder = UserSetting<TableSortOrder>("toReadSortOrder", defaultValue: .customOrder)
-    static let readingSortOrder = UserSetting<TableSortOrder>("readingSortOrder", defaultValue: .byStartDate)
-    static let finishedSortOrder = UserSetting<TableSortOrder>("finishedSortOrder", defaultValue: .byFinishDate)
+    static let toReadSort = UserSetting<BookSort>("toReadSortOrder", defaultValue: .custom)
+    static let readingSort = UserSetting<BookSort>("readingSortOrder", defaultValue: .startDate)
+    static let finishedSort = UserSetting<BookSort>("finishedSortOrder", defaultValue: .finishDate)
+
+    static func sortSetting(for readState: BookReadState) -> UserSetting<BookSort> {
+        switch readState {
+        case .toRead: return toReadSort
+        case .reading: return readingSort
+        case .finished: return finishedSort
+        }
+    }
 
     static let addBooksToTopOfCustom = UserSetting<Bool>("addCustomBooksToTopOfCustom", defaultValue: false)
 

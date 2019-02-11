@@ -39,6 +39,21 @@ class Lists: XCTestCase {
         let enterList2NameTextField = addNewListAlert.collectionViews.textFields.firstMatch
         enterList2NameTextField.typeText("B List")
         addList2Alert.buttons["OK"].tap()
+    }
 
+    func testListOrders() {
+        let app = ReadingListApp()
+        app.launchArguments = ["--reset", "--UITests_PopulateData"]
+        app.launch()
+        app.clickTab(.organise)
+        app.tables.cells.element(boundBy: 0).tap()
+
+        let orderButton = app.navigationBars.firstMatch.buttons["Order"]
+        orderButton.tap()
+        let chooseOrderAlert = app.sheets["Choose Order"]
+        for button in chooseOrderAlert.buttons.allElementsBoundByIndex {
+            button.tap()
+            orderButton.tap()
+        }
     }
 }
