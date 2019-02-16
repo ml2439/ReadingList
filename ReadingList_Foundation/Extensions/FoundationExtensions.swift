@@ -202,6 +202,9 @@ public extension Date {
 
         let daysDifference = Calendar.current.dateComponents([.day], from: otherDate, to: today).day!
 
+        if daysDifference == 0 {
+            return "Today"
+        }
         if daysDifference > 0 && daysDifference <= 3 {
             return self.string(withDateFormat: "EEE\(short ? "" : "E")")
         } else {
